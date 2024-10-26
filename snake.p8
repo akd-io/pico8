@@ -4,13 +4,35 @@ __lua__
 
 -- snake
 -- by akd
+
+-- Button characters: 🅾️❎⬅️➡️⬆️⬇️
+
+-- COLORS
+c_color_black = 0
+c_color_dark_blue = 1
+c_color_dark_purple = 2
+c_color_dark_green = 3
+c_color_brown = 4
+c_color_dark_gray = 5
+c_color_light_gray = 6
+c_color_white = 7
+c_color_red = 8
+c_color_orange = 9
+c_color_yellow = 10
+c_color_green = 11
+c_color_blue = 12
+c_color_lavender = 13
+c_color_pink = 14
+c_color_light_peach = 15
+
+-- SCENES
 c_scene_menu = 0
-c_scene_playing = 1
+c_scene_game = 1
 c_scene_death_screen = 2
 scene = c_scene_menu
 
 -- SPRITES
--- Snake
+-- Snake sprites
 c_sprite_snake_body_right = 1
 c_sprite_snake_body_up = 2
 c_sprite_snake_body_left = 3
@@ -31,9 +53,9 @@ c_sprite_snake_tail_right = 32
 c_sprite_snake_tail_up = 33
 c_sprite_snake_tail_left = 34
 c_sprite_snake_tail_down = 35
--- Food
+-- Food sprites
 c_sprite_food = 25
--- Terrain
+-- Terrain sprites
 c_sprite_sand = 26
 c_sprite_sand_spots_1 = 27
 c_sprite_sand_spots_2 = 28
@@ -41,10 +63,28 @@ c_sprite_sand_spots_3 = 29
 c_sprite_sand_plants_1 = 30
 c_sprite_sand_plants_2 = 31
 
+-- MAP
+map_width = 16
+map_height = 16
+
+-- This function wraps a value within a range, uverflowing and underflowing as needed.
+function wrap_within_range(i, min_val, max_val)
+  local range_size = max_val - min_val + 1
+  return (i - min_val) % range_size + min_val
+end
+
+-- This function takes two booles and returns a directional value.
+function button_delta(boola, boolb)
+  local delta = 0
+  if boola then delta -= 1 end
+  if boolb then delta += 1 end
+  return delta
+end
+
 function generate_map()
   local a_map = { {} }
-  for x = 0, 15 do
-    for y = 0, 15 do
+  for x = 1, map_width do
+    for y = 1, map_width do
       local random_sprite = rnd({
         c_sprite_sand, c_sprite_sand, c_sprite_sand, c_sprite_sand, c_sprite_sand, c_sprite_sand,
         c_sprite_sand, c_sprite_sand, c_sprite_sand_spots_1, c_sprite_sand_spots_2,
@@ -59,27 +99,82 @@ function generate_map()
   return a_map
 end
 
-function render_map(sprite_map)
-  for x = 0, 15 do
-    for y = 0, 15 do
-      spr(sprite_map[x][y], x * 8, y * 8)
+function _init()
+  scene = c_scene_menu
+end
+
+current_map = {}
+function new_game()
+  scene = c_scene_game
+  current_map = generate_map()
+end
+
+function log(text)
+  printh(text, "log.txt")
+end
+
+selected_menu_option = 1
+menu_options = { "nEW gAME", "oPTIONS", "qUIT" }
+function update_menu_scene()
+  local dy = button_delta(btnp(⬆️), btnp(⬇️))
+  selected_menu_option = wrap_within_range(selected_menu_option + dy, 1, #menu_options)
+
+  if btnp(❎) then
+    if selected_menu_option == 1 then
+      new_game()
+    elseif selected_menu_option == 2 then
+      log("Options")
+    elseif selected_menu_option == 3 then
+      extcmd("shutdown")
     end
   end
 end
 
-my_map = {}
-
-function _init()
-  my_map = generate_map()
+function update_game_scene()
+  -- TODO
 end
 
 function _update()
-  -- TODO
+  if scene == c_scene_menu then
+    update_menu_scene()
+  elseif scene == c_scene_game then
+    update_game_scene(current_map)
+  end
+end
+
+function render_menu_scene()
+  print("snake", 40, 20, 14)
+  for i = 1, #menu_options do
+    local y = 20 + i * 8
+    local option = menu_options[i]
+    local color = i == selected_menu_option and c_color_pink or c_color_light_gray
+    print(option, 40, y, color)
+    if i == selected_menu_option then
+      print(">", 32, y, color)
+      print("<", 32 + (3 + #option) * 4, y, color)
+    end
+  end
+end
+
+function render_game_scene()
+  render_map(current_map)
 end
 
 function _draw()
   cls()
-  render_map(my_map)
+  if scene == c_scene_menu then
+    render_menu_scene()
+  elseif scene == c_scene_game then
+    render_game_scene(current_map)
+  end
+end
+
+function render_map(sprite_map)
+  for x = 1, map_width do
+    for y = 1, map_height do
+      spr(sprite_map[x][y], x * 8, y * 8)
+    end
+  end
 end
 
 __gfx__
