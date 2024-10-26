@@ -1,9 +1,9 @@
 pico-8 cartridge // http://www.pico-8.com
 version 42
 __lua__
+
 -- snake
 -- by akd
-
 c_scene_menu = 0
 c_scene_playing = 1
 c_scene_death_screen = 2
@@ -42,56 +42,45 @@ c_sprite_sand_plants_1 = 30
 c_sprite_sand_plants_2 = 31
 
 function generate_map()
- a_map = {{}}
- for x=0,15 do
-  for y=0,15 do
-   random_sprite = rnd({
-    c_sprite_sand,
-    c_sprite_sand,
-    c_sprite_sand,
-    c_sprite_sand,
-    c_sprite_sand,
-    c_sprite_sand,
-    c_sprite_sand,
-    c_sprite_sand,
-    c_sprite_sand_spots_1,
-    c_sprite_sand_spots_2,
-    c_sprite_sand_spots_3,
-    c_sprite_sand_plants_1,
-    c_sprite_sand_plants_2
-   })
-   if a_map[x] == nil then
-    a_map[x] = {}
-   end
-   a_map[x][y]=random_sprite
+  a_map = { {} }
+  for x = 0, 15 do
+    for y = 0, 15 do
+      random_sprite = rnd({
+        c_sprite_sand, c_sprite_sand, c_sprite_sand, c_sprite_sand, c_sprite_sand, c_sprite_sand,
+        c_sprite_sand, c_sprite_sand, c_sprite_sand_spots_1, c_sprite_sand_spots_2,
+        c_sprite_sand_spots_3, c_sprite_sand_plants_1, c_sprite_sand_plants_2
+      })
+      if a_map[x] == nil then
+        a_map[x] = {}
+      end
+      a_map[x][y] = random_sprite
+    end
   end
- end
- return a_map
+  return a_map
 end
 
 function render_map(sprite_map)
- for x=0,15 do
-  for y=0,15 do
-   spr(sprite_map[x][y], x*8, y*8)
+  for x = 0, 15 do
+    for y = 0, 15 do
+      spr(sprite_map[x][y], x * 8, y * 8)
+    end
   end
- end
 end
 
 my_map = {}
 
 function _init()
- my_map = generate_map()
+  my_map = generate_map()
 end
 
 function _update()
- -- TODO
+  -- TODO
 end
 
 function _draw()
- cls()
- render_map(my_map)
+  cls()
+  render_map(my_map)
 end
-
 
 __gfx__
 00000000000000000b3b3b3000000000033bbbb0033bbbb00b3b3b300000000000000000000000000bb3b330033b3bb000000000000000000000000000000000
