@@ -33,22 +33,22 @@ scene = c_scene_menu
 
 -- SPRITES
 -- Snake sprites
-c_sprite_snake_body_right = 1
-c_sprite_snake_body_up = 2
-c_sprite_snake_body_left = 3
-c_sprite_snake_body_down = 4
-c_sprite_snake_body_u_r = 5
-c_sprite_snake_body_l_u = 6
-c_sprite_snake_body_d_l = 7
-c_sprite_snake_body_r_d = 8
-c_sprite_snake_body_d_r = 9
-c_sprite_snake_body_r_u = 10
-c_sprite_snake_body_u_l = 11
-c_sprite_snake_body_l_d = 12
 c_sprite_snake_head_right = 16
 c_sprite_snake_head_up = 17
 c_sprite_snake_head_left = 18
 c_sprite_snake_head_down = 19
+c_sprite_snake_body_right = 1
+c_sprite_snake_body_up = 2
+c_sprite_snake_body_left = 3
+c_sprite_snake_body_down = 4
+c_sprite_snake_body_r_u = 5
+c_sprite_snake_body_u_l = 6
+c_sprite_snake_body_l_d = 7
+c_sprite_snake_body_d_r = 8
+c_sprite_snake_body_d_l = 9
+c_sprite_snake_body_r_d = 10
+c_sprite_snake_body_u_r = 11
+c_sprite_snake_body_l_u = 12
 c_sprite_snake_tail_right = 32
 c_sprite_snake_tail_up = 33
 c_sprite_snake_tail_left = 34
@@ -67,6 +67,10 @@ c_sprite_sand_plants_2 = 31
 map_width = 16
 map_height = 16
 
+function log(text)
+  printh(text, "log.txt")
+end
+
 -- This function wraps a value within a range, uverflowing and underflowing as needed.
 function wrap_within_range(i, min_val, max_val)
   local range_size = max_val - min_val + 1
@@ -74,7 +78,7 @@ function wrap_within_range(i, min_val, max_val)
 end
 
 -- This function takes two booles and returns a directional value.
-function button_delta(boola, boolb)
+function bool_delta(boola, boolb)
   local delta = 0
   if boola then delta -= 1 end
   if boolb then delta += 1 end
@@ -109,14 +113,10 @@ function new_game()
   current_map = generate_map()
 end
 
-function log(text)
-  printh(text, "log.txt")
-end
-
 selected_menu_option = 1
-menu_options = { "nEW gAME", "oPTIONS", "qUIT" }
+menu_options = { "new game", "options", "quit" }
 function update_menu_scene()
-  local dy = button_delta(btnp(⬆️), btnp(⬇️))
+  local dy = bool_delta(btnp(⬆️), btnp(⬇️))
   selected_menu_option = wrap_within_range(selected_menu_option + dy, 1, #menu_options)
 
   if btnp(❎) then
@@ -130,8 +130,46 @@ function update_menu_scene()
   end
 end
 
+-- Snake body coordinates from head to tail.
+snake = {
+  { x = 8, y = 8 },
+  { x = 7, y = 8 },
+  { x = 6, y = 8 },
+  { x = 5, y = 8 }
+}
 function update_game_scene()
-  -- TODO
+  local controller_dx = bool_delta(btn(⬅️), btn(➡️))
+  local controller_dy = bool_delta(btn(⬆️), btn(⬇️))
+
+  -- If the player is trying to move diagonally, then ignore the input.
+  if controller_dx ~= 0 and controller_dy ~= 0 then
+    controller_dx = 0
+    conroller_dy = 0
+  end
+
+  local snake_dx = snake[1].x - snake[2].x
+  local snake_dy = snake[1].y - snake[2].y
+
+  -- If the player is trying to move in the opposite direction of the current direction,
+  -- then ignore the input.
+  if controller_dx == -snake_dx then
+    controller_dx = 0
+  end
+  if controller_dy == -snake_dy then
+    controller_dy = 0
+  end
+
+  local dx = controller_dx == 0 and controller_dy == 0 and snake_dx or controller_dx
+  local dy = controller_dx == 0 and controller_dy == 0 and snake_dy or controller_dy
+
+  -- Move the snake's body.
+  for i = #snake, 2, -1 do
+    snake[i].x = snake[i - 1].x
+    snake[i].y = snake[i - 1].y
+  end
+  -- Move the snake's head.
+  snake[1].x = wrap_within_range(snake[1].x + dx, 0, map_width - 1)
+  snake[1].y = wrap_within_range(snake[1].y + dy, 0, map_height - 1)
 end
 
 function _update()
@@ -150,14 +188,18 @@ function render_menu_scene()
     local color = i == selected_menu_option and c_color_pink or c_color_light_gray
     print(option, 40, y, color)
     if i == selected_menu_option then
-      print(">", 32, y, color)
-      print("<", 32 + (3 + #option) * 4, y, color)
+      x1 = 32
+      x2 = 32 + (3 + #option) * 4
+      xDelta = ceil(2 * cos(time()) + 0.5)
+      print(">", x1 + xDelta, y, color)
+      print("<", x2 - xDelta, y, color)
     end
   end
 end
 
 function render_game_scene()
   render_map(current_map)
+  render_snake(snake)
 end
 
 function _draw()
@@ -172,20 +214,88 @@ end
 function render_map(sprite_map)
   for x = 1, map_width do
     for y = 1, map_height do
-      spr(sprite_map[x][y], x * 8, y * 8)
+      spr(sprite_map[x][y], (x - 1) * 8, (y - 1) * 8)
     end
   end
 end
 
+function render_snake(snake)
+  for i = 1, #snake do
+    local prev = snake[i + 1]
+    local curr = snake[i]
+    local next = snake[i - 1]
+
+    function dx1() return curr.x - prev.x end
+    function dy1() return curr.y - prev.y end
+    function dx2() return next.x - curr.x end
+    function dy2() return next.y - curr.y end
+
+    local sprite = 0
+    if prev != nil and next != nil then
+      -- Render body
+      if dx1() == 1 and dx2() == 1 then
+        sprite = c_sprite_snake_body_right
+      elseif dx1() == -1 and dx2() == -1 then
+        sprite = c_sprite_snake_body_left
+      elseif dy1() == 1 and dy2() == 1 then
+        sprite = c_sprite_snake_body_down
+      elseif dy1() == -1 and dy2() == -1 then
+        sprite = c_sprite_snake_body_up
+        --
+      elseif dx1() == 1 and dy2() == 1 then
+        sprite = c_sprite_snake_body_r_d
+      elseif dx1() == 1 and dy2() == -1 then
+        sprite = c_sprite_snake_body_r_u
+      elseif dx1() == -1 and dy2() == 1 then
+        sprite = c_sprite_snake_body_l_d
+      elseif dx1() == -1 and dy2() == -1 then
+        sprite = c_sprite_snake_body_l_u
+        --
+      elseif dy1() == 1 and dx2() == 1 then
+        sprite = c_sprite_snake_body_d_r
+      elseif dy1() == 1 and dx2() == -1 then
+        sprite = c_sprite_snake_body_d_l
+      elseif dy1() == -1 and dx2() == 1 then
+        sprite = c_sprite_snake_body_u_r
+      elseif dy1() == -1 and dx2() == -1 then
+        sprite = c_sprite_snake_body_u_l
+      end
+    elseif prev == nil then
+      -- Render tail
+      if dx2() == 1 then
+        sprite = c_sprite_snake_tail_right
+      elseif dx2() == -1 then
+        sprite = c_sprite_snake_tail_left
+      elseif dy2() == 1 then
+        sprite = c_sprite_snake_tail_down
+      elseif dy2() == -1 then
+        sprite = c_sprite_snake_tail_up
+      end
+    elseif next == nil then
+      -- Render head
+      if dx1() == 1 then
+        sprite = c_sprite_snake_head_right
+      elseif dx1() == -1 then
+        sprite = c_sprite_snake_head_left
+      elseif dy1() == 1 then
+        sprite = c_sprite_snake_head_down
+      elseif dy1() == -1 then
+        sprite = c_sprite_snake_head_up
+      end
+    end
+    spr(sprite, curr.x * 8, curr.y * 8)
+  end
+end
+
 __gfx__
-00000000000000000b3b3b3000000000033bbbb0033bbbb00b3b3b300000000000000000000000000bb3b330033b3bb000000000000000000000000000000000
-00000000bbbbbbbb0bb3b3303333333303b3bbb003b3bbbbbbb3b3303333300000033333000bbbbb0b3b3b3333b3bbb0bbbbb000000000000000000000000000
-00700700bbb3bbb30bbb3b30b3b3b3b3033b3bb0033b3bb3bbbb3b30b3b3b3000033b3b300bbbb3b0bb3b3b33b3b3bb0bbb3bb00000000000000000000000000
-00077000bb3bbb3b0bbbb3303b3b3b3b03b3b3b003b3bb3bbb3bb3303b3bb33003bb3b3b0bbbb3b30bbb3b3bb3b3b3b03b3bbbb0000000000000000000000000
-00077000b3b3b3b30b3b3b30b3bbb3bb033bbbb0033bb3b3b3b3bb30b3bb3b30033bb3bb0b3b3b3b0bbbb3b33b3bbbb0b3b3bbb0000000000000000000000000
-007007003b3b3b3b0bb3b3303bbb3bbb03b3bbb0003b3b3b3b3b33003bb3b33003b3bbbb0bb3b3b300bb3bbbb3bbbb003b3b3bb0000000000000000000000000
-00000000333333330bbb3b30bbbbbbbb033b3bb00003333333333000bbbb3b30033b3bbb0bbb3b33000bbbbbbbbbb00033b3b3b0000000000000000000000000
-00000000000000000bbbb3300000000003b3b3b000000000000000000bbbb33003b3b3b00bb3b3300000000000000000033b3bb0000000000000000000000000
+00000000000000000b3b3b3000000000033bbbb00b3b3b300000000000000000033bbbb0033b3bb000000000000000000bb3b330000000000000000000000000
+00000000bbbbbbbb0bb3b3303333333303b3bbb0bbb3b330333330000003333303b3bbbb33b3bbb0bbbbb000000bbbbb0b3b3b33000000000000000000000000
+00700700bbb3bbb30bbb3b30b3b3b3b3033b3bb0bbbb3b30b3b3b3000033b3b3033b3bb33b3b3bb0bbb3bb0000bbbb3b0bb3b3b3000000000000000000000000
+00077000bb3bbb3b0bbbb3303b3b3b3b03b3b3b0bb3bb3303b3bb33003bb3b3b03b3bb3bb3b3b3b03b3bbbb00bbbb3b30bbb3b3b000000000000000000000000
+00077000b3b3b3b30b3b3b30b3bbb3bb033bbbb0b3b3bb30b3bb3b30033bb3bb033bb3b33b3bbbb0b3b3bbb00b3b3b3b0bbbb3b3000000000000000000000000
+007007003b3b3b3b0bb3b3303bbb3bbb03b3bbb03b3b33003bb3b33003b3bbbb003b3b3bb3bbbb003b3b3bb00bb3b3b300bb3bbb000000000000000000000000
+00000000333333330bbb3b30bbbbbbbb033b3bb033333000bbbb3b30033b3bbb00033333bbbbb00033b3b3b00bbb3b33000bbbbb000000000000000000000000
+00000000000000000bbbb3300000000003b3b3b0000000000bbbb33003b3b3b00000000000000000033b3bb00bb3b33000000000000000000000000000000000
 0bb0000000bb330000000000033bbbb0000000000000000000000000000000000000000000000000ffffffffffffffffffffffffffffffffffffffffffffffff
 b75bbbb00b3b3b300333333303b3bb7b000000000000000000000000000000000000000000000000ffffffffffffffffffffffffff4fffffffffffffffffffff
 bbbbbb3b0bbb3b303bbbb3b3033b3b5b0000000000000000000000000000000000000000000ee000fffffffffffffffffffffffffffffffffffffffff3f3ffff
