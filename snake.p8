@@ -42,10 +42,10 @@ c_sprite_sand_plants_1 = 30
 c_sprite_sand_plants_2 = 31
 
 function generate_map()
-  a_map = { {} }
+  local a_map = { {} }
   for x = 0, 15 do
     for y = 0, 15 do
-      random_sprite = rnd({
+      local random_sprite = rnd({
         c_sprite_sand, c_sprite_sand, c_sprite_sand, c_sprite_sand, c_sprite_sand, c_sprite_sand,
         c_sprite_sand, c_sprite_sand, c_sprite_sand_spots_1, c_sprite_sand_spots_2,
         c_sprite_sand_spots_3, c_sprite_sand_plants_1, c_sprite_sand_plants_2
