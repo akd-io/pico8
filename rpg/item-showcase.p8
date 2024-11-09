@@ -9,7 +9,6 @@ __lua__
 #include ../lib/get_text_width.lua
 #include lib/equipment.lua
 
-
 function generateItem()
   local equipment_type = rnd(equipment_types)
 
