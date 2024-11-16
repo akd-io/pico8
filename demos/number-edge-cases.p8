@@ -9,15 +9,17 @@ __lua__
 function logHexStringStats(hex)
   local val = tonum(hex, 0x3)
   local calcedHex = tostr(val, 0x1)
-  printh("Input: " .. hex .. " Decimal: " .. pad(val, 11, " ") .. " Hex: " .. calcedHex)
+  printh("Input: " .. hex .. " | Decimal: " .. pad(val, 11, " ") .. " | Hex: " .. calcedHex)
 end
 
 function logDecStringStats(decStr)
   local dec = tonum(decStr)
   local calcedHex = tostr(dec, 0x1)
-  printh("Input: " .. pad(decStr, 8, " ") .. " Decimal: " .. pad(dec, 6, " ") .. " Hex: " .. calcedHex)
+  printh("Input: " .. pad(decStr, 8, " ") .. " | Decimal: " .. pad(dec, 6, " ") .. " | Hex: " .. calcedHex)
 end
 
+printh("")
+printh("Values surrounding 0x8000.0000:")
 logHexStringStats("7ffffff9") -- Input: 7ffffff9 Decimal:  32767.9999 Hex: 0x7fff.fff9
 logHexStringStats("7ffffffa") -- Input: 7ffffffa Decimal:       32768 Hex: 0x7fff.fffa
 logHexStringStats("7ffffffb") -- Input: 7ffffffb Decimal:       32768 Hex: 0x7fff.fffb
@@ -34,6 +36,8 @@ logHexStringStats("80000005") -- Input: 80000005 Decimal:      -32768 Hex: 0x800
 logHexStringStats("80000006") -- Input: 80000006 Decimal:      -32768 Hex: 0x8000.0006
 logHexStringStats("80000007") -- Input: 80000007 Decimal: -32767.9999 Hex: 0x8000.0007
 
+printh("")
+printh("Values surrounding 0x0000.0000:")
 logHexStringStats("fffffff9") -- Input: fffffff9 Decimal:     -0.0001 Hex: 0xffff.fff9
 logHexStringStats("fffffffa") -- Input: fffffffa Decimal:          -0 Hex: 0xffff.fffa
 logHexStringStats("fffffffb") -- Input: fffffffb Decimal:          -0 Hex: 0xffff.fffb
@@ -50,6 +54,8 @@ logHexStringStats("00000005") -- Input: 00000005 Decimal:           0 Hex: 0x000
 logHexStringStats("00000006") -- Input: 00000006 Decimal:           0 Hex: 0x0000.0006
 logHexStringStats("00000007") -- Input: 00000007 Decimal:      0.0001 Hex: 0x0000.0007
 
+printh("")
+printh("Decimals surrounding 0:")
 logDecStringStats("-1") --       Input:       -1 Decimal:     -1 Hex: 0xffff.0000
 logDecStringStats("-0.1") --     Input:     -0.1 Decimal:   -0.1 Hex: 0xffff.e667
 logDecStringStats("-0.01") --    Input:    -0.01 Decimal:  -0.01 Hex: 0xffff.fd71
@@ -71,5 +77,7 @@ logDecStringStats("0.01") --     Input:     0.01 Decimal:   0.01 Hex: 0x0000.028
 logDecStringStats("0.1") --      Input:      0.1 Decimal:    0.1 Hex: 0x0000.1999
 logDecStringStats("1") --        Input:        1 Decimal:      1 Hex: 0x0001.0000
 
+printh("")
+printh("Bitwise not operator trick ~0 to get 0xffff.ffff:")
 -- The bitwise not operator ~ can be used `~0` as a shortcut to 0xffff.ffff
-printh("Input: " .. pad("~0", 8, " ") .. " Decimal: " .. pad(~0, 6, " ") .. " Hex: " .. tostr(~0, 0x1))
+printh("Input: " .. "~0" .. " | Decimal: " .. ~0 .. " | Hex: " .. tostr(~0, 0x1))
