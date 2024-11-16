@@ -5,13 +5,13 @@
 -- memory here: https://pico-8.fandom.com/wiki/Memory#Hardware_state
 function withTempSeed(seed, callback)
   -- Save PRNG state, the 8 bytes starting at 0x5f44.
-  local prevPrngState1, prevPrngState2 = peek4(0x5f44, 2)
+  local state1, state2 = $0x5f44, $0x5f48
   -- Set new seed
   srand(seed)
   -- Call callback function
   local retval = callback()
   -- Restore PRNG state
-  poke4(0x5f44, prevPrngState1, prevPrngState2)
+  poke4(0x5f44, state1, state2)
   -- Return value from callback function
   return retval
 end

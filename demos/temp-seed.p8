@@ -9,7 +9,7 @@ __lua__
 local debug = true
 
 function getPrngStateString()
-  return sub(tostr(peek4(0x5f44), 0x3), 3) .. sub(tostr(peek4(0x5f48), 0x3), 3)
+  return sub(tostr($0x5f44, 0x3), 3) .. sub(tostr($0x5f48, 0x3), 3)
 end
 
 printh("")
