@@ -37,9 +37,7 @@ Affix ideas:
 - Utility
   - movement speed
 
-]]--
-
-
+]]
 
 -- 16 equipment types (4 bits)
 local equipment_types = { "main-hand", "off-hand", "head", "neck", "body", "waist", "legs", "feet", "hands", "finger" }
@@ -62,7 +60,7 @@ local affix_type_keys = {
   "stat13",
   "stat14",
   "stat15",
-  "stat16",
+  "stat16"
 }
 local num_affix_types = #affix_type_keys
 local max_affixes_per_item = 6
