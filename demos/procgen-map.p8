@@ -4,6 +4,17 @@ __lua__
 -- Procgen map
 -- by akd
 
+-- There is a series of different ways this can be implemented in increasing order of performance.
+-- 1. (this cart) Calculate every tile on screen every frame.
+-- 2. Initialize the screen with an initial calculation of every tile.
+--    Thereafter, only once the player has moved enough to render new tiles on screen do we move the tiles over and calculate the new edge tiles.
+-- 3. Similar to no. 2, but instead of moving the tiles over, let all tiles stay where they are, and query into the myMap object using modulus 17.
+--    This should save a lot of moving stuff around.
+-- 4. Try number 3 but using the Pico-8 map feature.
+--    17x17 map, indexing just as in no. 3, using modulo 17.
+-- 5. Try using the spritesheet instead. This way we can generate sprites on the fly and get 1x1 size tiles instead of 8x8.
+--    The width of the spritesheet is only 16 tiles, so we might need to get creative mapping the 17x17 map coords to the 16x32 spritesheet coords.
+
 #include ../lib/join.lua
 #include ../lib/table_to_str.lua
 #include ../lib/clamp.lua
