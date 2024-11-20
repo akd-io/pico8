@@ -1,106 +1,116 @@
-local BigInteger = {}
-BigInteger.__index = BigInteger
-
-function BigInteger.new(value)
-  local self = setmetatable({}, BigInteger)
+function create_bigint(value)
+  local self = {}
+  self.digits = {}
   if type(value) == "string" then
-    self.digits = {}
     for i = #value, 1, -1 do
-      table.insert(self.digits, tonumber(value:sub(i, i)))
+      add(self.digits, tonum(sub(value, i, i)))
     end
   elseif type(value) == "number" then
-    self.digits = {}
     while value > 0 do
-      table.insert(self.digits, value % 10)
-      value = math.floor(value / 10)
+      add(self.digits, value % 10)
+      value = flr(value / 10)
     end
   else
-    error("Invalid input type for BigInteger")
+    assert(false, "invalid input type for bigint")
   end
-  self:removeLeadingZeros()
   return self
 end
 
-function BigInteger:removeLeadingZeros()
-  while #self.digits > 1 and self.digits[#self.digits] == 0 do
-    table.remove(self.digits)
-  end
-end
-
-function BigInteger:toString()
+function bigint_tostring(self)
   local result = ""
   for i = #self.digits, 1, -1 do
-    result = result .. tostring(self.digits[i])
+    result = result .. tostr(self.digits[i])
   end
   return #result > 0 and result or "0"
 end
 
-function BigInteger:add(other)
-  local result = BigInteger.new("0")
+function bigint_add(a, b)
+  local result = create_bigint("0")
   local carry = 0
   local i = 1
-  while i <= #self.digits or i <= #other.digits or carry > 0 do
-    local sum = (self.digits[i] or 0) + (other.digits[i] or 0) + carry
+  while i <= #a.digits or i <= #b.digits or carry > 0 do
+    local sum = (a.digits[i] or 0) + (b.digits[i] or 0) + carry
     result.digits[i] = sum % 10
-    carry = math.floor(sum / 10)
+    carry = flr(sum / 10)
     i = i + 1
   end
-  result:removeLeadingZeros()
   return result
 end
 
-function BigInteger:multiply(other)
-  local result = BigInteger.new("0")
-  for i = 1, #self.digits do
-    local partial = BigInteger.new("0")
+function bigint_multiply(a, b)
+  local result = create_bigint("0")
+  for i = 1, #a.digits do
+    local partial = create_bigint("0")
     local carry = 0
-    for j = 1, #other.digits do
-      local prod = self.digits[i] * other.digits[j] + carry
+    for j = 1, #b.digits do
+      local prod = a.digits[i] * b.digits[j] + carry
       partial.digits[i + j - 1] = prod % 10
-      carry = math.floor(prod / 10)
+      carry = flr(prod / 10)
     end
     if carry > 0 then
-      partial.digits[i + #other.digits] = carry
+      partial.digits[i + #b.digits] = carry
     end
-    result = result:add(partial)
+    result = bigint_add(result, partial)
   end
-  result:removeLeadingZeros()
   return result
 end
 
-function BigInteger:divMod(divisor)
-  if divisor:toString() == "0" then
-    error("Division by zero")
+function bigint_compare(a, b)
+  if #a.digits > #b.digits then return 1 end
+  if #a.digits < #b.digits then return -1 end
+  for i = #a.digits, 1, -1 do
+    if a.digits[i] > b.digits[i] then return 1 end
+    if a.digits[i] < b.digits[i] then return -1 end
   end
-  local quotient = BigInteger.new("0")
-  local remainder = BigInteger.new("0")
-  for i = #self.digits, 1, -1 do
-    remainder = remainder:multiply(BigInteger.new("10"))
-    remainder = remainder:add(BigInteger.new(tostring(self.digits[i])))
-    local digit = 0
-    while BigInteger.new(tostring(digit + 1)):multiply(divisor):toString() <= remainder:toString() do
-      digit = digit + 1
+  return 0
+end
+
+function bigint_subtract(a, b)
+  local result = create_bigint("0")
+  local borrow = 0
+  for i = 1, #a.digits do
+    local diff = a.digits[i] - (b.digits[i] or 0) - borrow
+    if diff < 0 then
+      diff += 10
+      borrow = 1
+    else
+      borrow = 0
     end
-    quotient = quotient:multiply(BigInteger.new("10")):add(BigInteger.new(tostring(digit)))
-    remainder = remainder:add(BigInteger.new(tostring(-digit)):multiply(divisor))
+    result.digits[i] = diff
   end
-  quotient:removeLeadingZeros()
-  remainder:removeLeadingZeros()
+  while #result.digits > 1 and result.digits[#result.digits] == 0 do
+    result.digits[#result.digits] = nil
+  end
+  return result
+end
+
+function bigint_divmod(a, b)
+  assert(bigint_tostring(b) != "0", "division by zero")
+  local quotient = create_bigint("0")
+  local remainder = create_bigint("0")
+  for i = #a.digits, 1, -1 do
+    remainder = bigint_multiply(remainder, create_bigint("10"))
+    remainder = bigint_add(remainder, create_bigint(tostr(a.digits[i])))
+    local digit = 0
+    while bigint_compare(bigint_multiply(create_bigint(tostr(digit + 1)), b), remainder) <= 0 do
+      digit += 1
+    end
+    quotient = bigint_add(bigint_multiply(quotient, create_bigint("10")), create_bigint(tostr(digit)))
+    remainder = bigint_subtract(remainder, bigint_multiply(create_bigint(tostr(digit)), b))
+  end
   return quotient, remainder
 end
 
-function BigInteger:divide(other)
-  local quotient, _ = self:divMod(other)
+function bigint_divide(a, b)
+  local quotient, _ = bigint_divmod(a, b)
   return quotient
 end
 
-function BigInteger:mod(other)
-  local _, remainder = self:divMod(other)
+function bigint_mod(a, b)
+  local _, remainder = bigint_divmod(a, b)
   return remainder
 end
 
-function BigInteger:remainder(other)
-  return self:mod(other)
+function bigint_remainder(a, b)
+  return bigint_mod(a, b)
 end
-
-return BigInteger
