@@ -21,9 +21,11 @@ __lua__
 #include ../lib/get_text_width.lua
 #include ../lib/overlay.lua
 
-local tileLength = 4
+local tileLength = 16
 local screenW = 128
-local maxTilesVisiblePerRow = screenW / tileLength + 1
+local pixelsPerWorldCoord = 8
+function getMaxTilesVisiblePerRow() return screenW \ tileLength + 1 end -- Because the character can stand in the center of a tile, such that we only see half of the edge tiles, we need to render one extra tile.
+function getTilesPerWorldCoord() return pixelsPerWorldCoord / tileLength end
 
 local character = {
   -- Its x and y coordinates are world coordinates.
@@ -40,6 +42,8 @@ local character = {
   -- The character is always drawn in the center of on the screen.
   draw = function()
     spr(1, 60, 60)
+    -- 0 ... 60 61 62 63 (63.5) 64 65 66 67 ... 127
+    -- Character's center position is 63.5,63.5
   end
 }
 
@@ -49,38 +53,59 @@ local myMap = {
   -- The indices x and y are in the range 0-16. And, offset by the character's position, represent the world coordinates.
   -- The tile at 8,8 is always the tile under the character.
   grid = {},
+  pixelOffsetX = 0,
+  pixelOffsetY = 0,
   -- noise(x,y) returns a number between 0 and 1
-  -- TODO: improve noise function
   noise = function(worldX, worldY)
     local value = cos(worldX / 40) + sin(worldY / 40)
     -- Adjust from -2..2 to 0..1
     return (value + 2) / 4
   end,
   update = function(self)
-    if (btnp(❎)) self.seed = rnd(~0)
-    withTempSeed(
+    if btnp(❎) then self.seed = rnd(~0) end
+
+    if btnp(🅾️) then
+      tileLength = (tileLength == 1) and 16 or tileLength \ 2
+    end
+
+    local randomOffsetWorldX, randomOffsetWorldY = unpack(withTempSeed(
       self.seed, function()
-        local randomOffsetX = rnd(1000)
-        local randomOffsetY = rnd(1000)
-        for x = 0, maxTilesVisiblePerRow - 1 do
-          self.grid[x] = {}
-          for y = 0, maxTilesVisiblePerRow - 1 do
-            local sprite = 16 * self.noise(
-              flr(randomOffsetX) + flr(character.worldX) + x * (tileLength / 8) - 8,
-              flr(randomOffsetY) + flr(character.worldY) + y * (tileLength / 8) - 8
-            )
-            self.grid[x][y] = mid(sprite, 0, 15) -- noise() is 0-1 inclusive, but we really needed it to be exclusive, so we clamp.
-          end
-        end
+        return { rnd(1000) \ 1, rnd(1000) \ 1 }
       end
-    )
+    ))
+
+    local centerScreenOffsetWorldX = 8
+    local centerScreenOffsetWorldY = 8
+    local maxTilesVisiblePerRow = getMaxTilesVisiblePerRow()
+    local tilesPerWorldCoord = getTilesPerWorldCoord()
+
+    for tileX = 0, maxTilesVisiblePerRow - 1 do
+      self.grid[tileX] = {}
+      for tileY = 0, maxTilesVisiblePerRow - 1 do
+        local characterTileX = character.worldX * tilesPerWorldCoord
+        local characterTileY = character.worldY * tilesPerWorldCoord
+        local worldX = (tileX + characterTileX \ 1) / tilesPerWorldCoord - centerScreenOffsetWorldX
+        local worldY = (tileY + characterTileY \ 1) / tilesPerWorldCoord - centerScreenOffsetWorldY
+        local sprite = 16 * self.noise(worldX + randomOffsetWorldX, worldY + randomOffsetWorldY)
+        self.pixelOffsetX = -(characterTileX % 1) * tileLength
+        self.pixelOffsetY = -(characterTileY % 1) * tileLength
+        self.grid[tileX][tileY] = mid(sprite, 0, 15) -- noise() is 0-1 inclusive, but we really need it to be exclusive, so we clamp.
+      end
+    end
   end,
   draw = function(self)
-    for worldX = 0, maxTilesVisiblePerRow - 1 do
-      for worldY = 0, maxTilesVisiblePerRow - 1 do
-        local screenX = tileLength * (worldX - (0x0000.ffff & character.worldX))
-        local screenY = tileLength * (worldY - (0x0000.ffff & character.worldY))
-        rectfill(screenX, screenY, screenX + tileLength - 1, screenY + tileLength - 1, flr(self.grid[worldX][worldY]))
+    local maxTilesVisiblePerRow = getMaxTilesVisiblePerRow()
+    for tileX = 0, maxTilesVisiblePerRow - 1 do
+      for tileY = 0, maxTilesVisiblePerRow - 1 do
+        local screenX = tileX * tileLength + self.pixelOffsetX
+        local screenY = tileY * tileLength + self.pixelOffsetY
+        rectfill(
+          screenX,
+          screenY,
+          screenX + tileLength - 1,
+          screenY + tileLength - 1,
+          flr(self.grid[tileX][tileY])
+        )
       end
     end
   end
@@ -101,11 +126,13 @@ end
 function drawStats()
   local string = "x: " .. character.worldX .. "\n"
       .. "y: " .. character.worldY .. "\n"
-      .. "seed: " .. myMap.seed .. "\n"
-      .. "mem: " .. stat(0)
+      .. "sEED: " .. myMap.seed .. "\n"
+      .. "tILElEN: " .. tileLength .. "\n"
+      .. "mEM: " .. stat(0)
+  local stringHeight = 5 * 6 - 1
   local stringWidth = getTextWidth(string)
-  local x, y = 128 - stringWidth - 7, 98
-  overlay(x, y, stringWidth + 4, 27)
+  local x, y = 128 - stringWidth - 7, 128 - stringHeight - 7
+  overlay(x, y, stringWidth + 4, stringHeight + 4)
   print(string, x + 2, y + 2, 13)
 end
 
