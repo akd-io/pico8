@@ -1,61 +1,40 @@
-function create_bigint(value)
-  local self = {}
-  self.digits = {}
-  if type(value) == "string" then
-    for i = #value, 1, -1 do
-      add(self.digits, tonum(sub(value, i, i)))
+-- Helper function to create a new BigInteger
+function bi_new(n)
+  local bi = { sign = 1, digits = {} }
+  if type(n) == "number" then
+    if n < 0 then
+      bi.sign = -1
+      n = -n
     end
-  elseif type(value) == "number" then
-    while value > 0 do
-      add(self.digits, value % 10)
-      value = flr(value / 10)
+    while n > 0 do
+      add(bi.digits, n % 10)
+      n = flr(n / 10)
     end
-  else
-    assert(false, "invalid input type for bigint")
+  elseif type(n) == "string" then
+    if sub(n, 1, 1) == "-" then
+      bi.sign = -1
+      n = sub(n, 2)
+    end
+    for i = #n, 1, -1 do
+      add(bi.digits, tonum(sub(n, i, i)))
+    end
   end
-  return self
+  if #bi.digits == 0 then add(bi.digits, 0) end
+  return bi
 end
 
-function bigint_tostring(self)
-  local result = ""
-  for i = #self.digits, 1, -1 do
-    result = result .. tostr(self.digits[i])
+-- Helper function to remove leading zeros
+function bi_trim_zeros(bi)
+  while #bi.digits > 1 and bi.digits[#bi.digits] == 0 do
+    deli(bi.digits, #bi.digits)
   end
-  return #result > 0 and result or "0"
+  if #bi.digits == 1 and bi.digits[1] == 0 then
+    bi.sign = 1
+  end
 end
 
-function bigint_add(a, b)
-  local result = create_bigint("0")
-  local carry = 0
-  local i = 1
-  while i <= #a.digits or i <= #b.digits or carry > 0 do
-    local sum = (a.digits[i] or 0) + (b.digits[i] or 0) + carry
-    result.digits[i] = sum % 10
-    carry = flr(sum / 10)
-    i = i + 1
-  end
-  return result
-end
-
-function bigint_multiply(a, b)
-  local result = create_bigint("0")
-  for i = 1, #a.digits do
-    local partial = create_bigint("0")
-    local carry = 0
-    for j = 1, #b.digits do
-      local prod = a.digits[i] * b.digits[j] + carry
-      partial.digits[i + j - 1] = prod % 10
-      carry = flr(prod / 10)
-    end
-    if carry > 0 then
-      partial.digits[i + #b.digits] = carry
-    end
-    result = bigint_add(result, partial)
-  end
-  return result
-end
-
-function bigint_compare(a, b)
+-- Helper function to compare absolute values
+function bi_abs_compare(a, b)
   if #a.digits > #b.digits then return 1 end
   if #a.digits < #b.digits then return -1 end
   for i = #a.digits, 1, -1 do
@@ -65,52 +44,125 @@ function bigint_compare(a, b)
   return 0
 end
 
-function bigint_subtract(a, b)
-  local result = create_bigint("0")
-  local borrow = 0
-  for i = 1, #a.digits do
-    local diff = a.digits[i] - (b.digits[i] or 0) - borrow
-    if diff < 0 then
-      diff += 10
-      borrow = 1
-    else
-      borrow = 0
+-- Addition operation
+function bi_add(a, b)
+  local result = bi_new(0)
+  local carry = 0
+  local i = 1
+  local a_len, b_len = #a.digits, #b.digits
+  local max_len = max(a_len, b_len)
+
+  if a.sign == b.sign then
+    -- Simple addition
+    while i <= max_len or carry > 0 do
+      local sum = carry
+      if i <= a_len then sum += a.digits[i] end
+      if i <= b_len then sum += b.digits[i] end
+      carry = flr(sum / 10)
+      result.digits[i] = sum % 10
+      i += 1
     end
-    result.digits[i] = diff
+    result.sign = a.sign
+  else
+    -- Subtraction
+    local larger, smaller
+    if bi_abs_compare(a, b) >= 0 then
+      larger, smaller = a, b
+      result.sign = a.sign
+    else
+      larger, smaller = b, a
+      result.sign = b.sign
+    end
+
+    while i <= max_len do
+      local diff = (larger.digits[i] or 0) - (smaller.digits[i] or 0) - carry
+      if diff < 0 then
+        diff += 10
+        carry = 1
+      else
+        carry = 0
+      end
+      result.digits[i] = diff
+      i += 1
+    end
   end
-  while #result.digits > 1 and result.digits[#result.digits] == 0 do
-    result.digits[#result.digits] = nil
-  end
+
+  bi_trim_zeros(result)
   return result
 end
 
-function bigint_divmod(a, b)
-  assert(bigint_tostring(b) != "0", "division by zero")
-  local quotient = create_bigint("0")
-  local remainder = create_bigint("0")
-  for i = #a.digits, 1, -1 do
-    remainder = bigint_multiply(remainder, create_bigint("10"))
-    remainder = bigint_add(remainder, create_bigint(tostr(a.digits[i])))
-    local digit = 0
-    while bigint_compare(bigint_multiply(create_bigint(tostr(digit + 1)), b), remainder) <= 0 do
-      digit += 1
-    end
-    quotient = bigint_add(bigint_multiply(quotient, create_bigint("10")), create_bigint(tostr(digit)))
-    remainder = bigint_subtract(remainder, bigint_multiply(create_bigint(tostr(digit)), b))
+-- Improved multiplication operation
+function bi_multiply(a, b)
+  local result = bi_new(0)
+  result.digits = {}
+
+  for i = 1, #a.digits + #b.digits do
+    result.digits[i] = 0
   end
+
+  for i = 1, #a.digits do
+    local carry = 0
+    for j = 1, #b.digits do
+      local index = i + j - 1
+      local prod = result.digits[index] + a.digits[i] * b.digits[j] + carry
+      result.digits[index] = prod % 10
+      carry = flr(prod / 10)
+    end
+    if carry > 0 then
+      result.digits[i + #b.digits] += carry
+    end
+  end
+
+  result.sign = a.sign * b.sign
+  bi_trim_zeros(result)
+  return result
+end
+
+-- Improved division operation
+function bi_divide(a, b)
+  if #b.digits == 1 and b.digits[1] == 0 then
+    error("division by zero")
+  end
+
+  -- Check if a < b
+  if bi_abs_compare(a, b) < 0 then
+    return bi_new(0), a
+  end
+
+  local quotient = bi_new(0)
+  local remainder = bi_new(0)
+
+  for i = #a.digits, 1, -1 do
+    -- Shift remainder left by 1 digit and add current digit of a
+    remainder = bi_multiply(remainder, bi_new(10))
+    remainder = bi_add(remainder, bi_new(a.digits[i]))
+
+    -- Find the largest digit q such that b * q <= remainder
+    local q = 0
+    while bi_abs_compare(bi_multiply(b, bi_new(q + 1)), remainder) <= 0 do
+      q += 1
+    end
+
+    -- Subtract b * q from remainder
+    remainder = bi_add(remainder, bi_multiply(b, bi_new(-q)))
+
+    -- Add q to the quotient
+    quotient = bi_add(bi_multiply(quotient, bi_new(10)), bi_new(q))
+  end
+
+  quotient.sign = a.sign * b.sign
+  remainder.sign = a.sign
+  bi_trim_zeros(quotient)
+  bi_trim_zeros(remainder)
   return quotient, remainder
 end
 
-function bigint_divide(a, b)
-  local quotient, _ = bigint_divmod(a, b)
-  return quotient
-end
-
-function bigint_mod(a, b)
-  local _, remainder = bigint_divmod(a, b)
-  return remainder
-end
-
-function bigint_remainder(a, b)
-  return bigint_mod(a, b)
+-- Helper function to convert BigInteger to string
+function bi_tostring(bi)
+  local str = ""
+  for i = #bi.digits, 1, -1 do
+    str = str .. bi.digits[i]
+  end
+  if bi.sign < 0 then str = "-" .. str end
+  return str
 end

@@ -1,7 +1,7 @@
 function tableToStr(tbl)
   local strings = {}
-  for k, v in pairs(tbl) do
-    add(strings, k .. ": " .. v)
+  for key, value in pairs(tbl) do
+    add(strings, key .. ": " .. value)
   end
   return join(strings, " | ")
 end
