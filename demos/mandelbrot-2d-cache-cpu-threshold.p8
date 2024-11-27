@@ -7,6 +7,7 @@ __lua__
 #include ../lib/get_text_width.lua
 #include ../lib/overlay.lua
 #include ../lib/draw_to_spritesheet.lua
+#include ../lib/mandelbrot.lua
 
 local UNRESOLVED_COLOR = 15 -- white, or pick another unused color
 local unresolvedPixels = {} -- {{x,y}, {x,y}, ...} table for tracking pixels that need to be resolved
@@ -15,39 +16,6 @@ local cpuThreshold = 0.7
 local pixelOffsetX = 0
 local pixelOffsetY = 0
 local zoom = 1
-
-function mandelbrot(x, y)
-  -- Scale and offset the coordinates
-  local cx = (x - 64) / (32 * zoom)
-  local cy = (y - 64) / (32 * zoom)
-
-  -- Main cardioid test
-  local cx_minus_0_25 = cx - 0.25
-  local cy_squared = cy * cy
-  local q = cx_minus_0_25 * cx_minus_0_25 + cy_squared
-  if q * (q + cx_minus_0_25) <= 0.25 * cy_squared then
-    return 0
-  end
-
-  -- Period-2 bulb test
-  local cx_plus_1 = cx + 1
-  if cx_plus_1 * cx_plus_1 + cy_squared <= 0.0625 then
-    return 0
-  end
-
-  -- Calculate the Mandelbrot value
-  local zx, zy = 0, 0
-  for i = 1, 25 do
-    local zx_squared = zx * zx
-    local zy_squared = zy * zy
-    if zx_squared + zy_squared > 4 then
-      return i
-    end
-    zy = 2 * zx * zy + cy
-    zx = zx_squared - zy_squared + cx
-  end
-  return 0
-end
 
 function drawFullSpritesheet()
   drawToSpritesheet(function()
@@ -60,7 +28,7 @@ function drawFullSpritesheet()
           add(unresolvedPixels, { x, y })
         else
           local x, y = screenX + pixelOffsetX, screenY + pixelOffsetY
-          local value = mandelbrot(x, y)
+          local value = mandelbrot(x, y, zoom)
           pset(x % 128, y % 128, value)
         end
       end
@@ -73,7 +41,7 @@ function processUnresolvedPixels()
     while #unresolvedPixels > 0 and stat(1) < cpuThreshold do
       local x, y = unpack(deli(unresolvedPixels, #unresolvedPixels))
       if pixelOffsetX <= x and x <= pixelOffsetX + 127 and pixelOffsetY <= y and y <= pixelOffsetY + 127 then
-        local value = mandelbrot(x, y)
+        local value = mandelbrot(x, y, zoom)
         pset(x % 128, y % 128, value)
       end
     end
@@ -128,7 +96,7 @@ function _update60()
           add(unresolvedPixels, { x, y })
         else
           local y = screenY + pixelOffsetY
-          local value = mandelbrot(x, y)
+          local value = mandelbrot(x, y, zoom)
           pset(x % 128, y % 128, value)
         end
       end
@@ -143,7 +111,7 @@ function _update60()
           add(unresolvedPixels, { x, y })
         else
           local x = screenX + pixelOffsetX
-          local value = mandelbrot(x, y)
+          local value = mandelbrot(x, y, zoom)
           pset(x % 128, y % 128, value)
         end
       end
