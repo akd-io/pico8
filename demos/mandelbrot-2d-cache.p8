@@ -1,7 +1,7 @@
 pico-8 cartridge // http://www.pico-8.com
 version 42
 __lua__
--- Mandelbrot Cached
+-- mandelbrot 2d cache
 -- by akd
 
 #include ../lib/get_text_width.lua
