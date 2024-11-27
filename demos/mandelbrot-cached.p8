@@ -6,6 +6,7 @@ __lua__
 
 #include ../lib/get_text_width.lua
 #include ../lib/overlay.lua
+#include ../lib/draw_to_spritesheet.lua
 
 local pixelOffsetX = 0
 local pixelOffsetY = 0
@@ -18,7 +19,7 @@ function mandelbrot(x, y)
   local cx = (x - 64) / (32 * zoom)
 
   -- Calculate the Mandelbrot value
-  for i = 1, 20 do
+  for i = 1, 25 do
     local zx_squared = zx * zx
     local zy_squared = zy * zy
     if zx_squared + zy_squared > 4 then
@@ -30,35 +31,95 @@ function mandelbrot(x, y)
   return 0
 end
 
+function drawFullSpritesheet()
+  drawToSpritesheet(function()
+    for screenX = 0, 127 do
+      for screenY = 0, 127 do
+        local x, y = screenX + pixelOffsetX, screenY + pixelOffsetY
+        local value = mandelbrot(x, y)
+        pset(x % 128, y % 128, value)
+      end
+    end
+  end)
+end
+
+function _init()
+  drawFullSpritesheet()
+end
+
 function _update60()
   -- Handle zoom with O and X buttons
   if btnp(🅾️) then
     zoom *= 2
-  end
-  if btnp(❎) then
+    pixelOffsetX *= 2
+    pixelOffsetY *= 2
+    drawFullSpritesheet()
+    return
+  elseif btnp(❎) then
     zoom *= 0.5
+    pixelOffsetX *= 0.5
+    pixelOffsetY *= 0.5
+    drawFullSpritesheet()
+    return
   end
 
   -- Move exactly 1 pixel at a time
-  if btnp(➡️) then pixelOffsetX += 1 end
-  if btnp(⬅️) then pixelOffsetX -= 1 end
-  if btnp(⬇️) then pixelOffsetY += 1 end
-  if btnp(⬆️) then pixelOffsetY -= 1 end
+  local dx = tonum(btn(➡️)) - tonum(btn(⬅️))
+  local dy = tonum(btn(⬇️)) - tonum(btn(⬆️))
+  pixelOffsetX += dx
+  pixelOffsetY += dy
 
-  for x = 0, 127 do
-    for y = 0, 127 do
-      local value = mandelbrot(x + pixelOffsetX, y + pixelOffsetY)
-    end
+  if 0 == dx and 0 == dy then
+    return
   end
+
+  drawToSpritesheet(function()
+    -- Calculate and draw new pixels based on movement
+    if dx > 0 or dx < 0 then
+      local screenX = dx > 0 and 127 or 0
+      local x = screenX + pixelOffsetX
+      for screenY = 0, 127 do
+        local y = screenY + pixelOffsetY
+        local value = mandelbrot(x, y)
+        pset(x % 128, y % 128, value)
+      end
+    end
+    if dy > 0 or dy < 0 then
+      local screenY = dy > 0 and 127 or 0
+      local y = screenY + pixelOffsetY
+      for screenX = 0, 127 do
+        local x = screenX + pixelOffsetX
+        local value = mandelbrot(x, y)
+        pset(x % 128, y % 128, value)
+      end
+    end
+  end)
 end
 
 function _draw()
-  for x = 0, 127 do
-    for y = 0, 127 do
-      local value = mandelbrot(x + pixelOffsetX, y + pixelOffsetY)
-      pset(x, y, value)
-    end
+  -- Calculate the source rectangles based on pixel offset
+  local ox = pixelOffsetX % 128
+  local oy = pixelOffsetY % 128
+
+  -- Clear the screen
+  cls()
+
+  -- Draw up to 4 rectangles to cover the screen
+  -- Top-left
+  sspr(ox, oy, 128 - ox, 128 - oy, 0, 0)
+  -- Top-right (if needed)
+  if ox > 0 then
+    sspr(0, oy, ox, 128 - oy, 128 - ox, 0)
   end
+  -- Bottom-left (if needed)
+  if oy > 0 then
+    sspr(ox, 0, 128 - ox, oy, 0, 128 - oy)
+  end
+  -- Bottom-right (if needed)
+  if ox > 0 and oy > 0 then
+    sspr(0, 0, ox, oy, 128 - ox, 128 - oy)
+  end
+
   drawStats()
 end
 

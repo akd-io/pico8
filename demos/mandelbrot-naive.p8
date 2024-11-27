@@ -40,10 +40,8 @@ function _update60()
   end
 
   -- Move exactly 1 pixel at a time
-  if btnp(➡️) then pixelOffsetX += 1 end
-  if btnp(⬅️) then pixelOffsetX -= 1 end
-  if btnp(⬇️) then pixelOffsetY += 1 end
-  if btnp(⬆️) then pixelOffsetY -= 1 end
+  pixelOffsetX += tonum(btn(➡️)) - tonum(btn(⬅️))
+  pixelOffsetY += tonum(btn(⬇️)) - tonum(btn(⬆️))
 
   for x = 0, 127 do
     for y = 0, 127 do
