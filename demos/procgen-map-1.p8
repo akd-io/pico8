@@ -6,6 +6,7 @@ __lua__
 
 -- There is a series of different ways this can be implemented in increasing order of performance.
 -- 1. (this cart) Calculate every tile on screen every frame.
+--    Performance (Tile length 1): 30/60 23.79 20.9X (Last digit off-screen)
 -- 2. Initialize the screen with an initial calculation of every tile.
 --    Thereafter, only once the player has moved enough to render new tiles on screen do we move the tiles over and calculate the new edge tiles.
 -- 3. Similar to no. 2, but instead of moving the tiles over, let all tiles stay where they are, and query into the myMap object using modulus 17.

@@ -5,10 +5,16 @@ __lua__
 -- by akd
 
 -- There is a series of different ways this can be implemented in increasing order of performance.
--- 1. (this cart) Calculate every tile on screen every frame.
--- 2. Initialize the screen with an initial calculation of every tile.
+-- 1. Calculate every tile on screen every frame.
+--    Performance (Tile length 1):
+--      CPU: 30/60 23.79 20.9X (Last digit off-screen)
+--      MEM: 178.2266
+-- 2. (This cart) Initialize the screen with an initial calculation of every tile.
 --    Thereafter, only once the player has moved enough to render new tiles on screen do we move the tiles over and calculate the new edge tiles.
--- 3. Similar to no. 2, but instead of moving the tiles over, let all tiles stay where they are, and query into the myMap object using modulus 17.
+--    Performance (Tile length 1):
+--      CPU: 30/60 4.95 4.87
+--      MEM: 184.0801
+-- 3. Similar to no. 2, but instead of moving the tiles over, let all tiles stay where they are, and query into the myMap object using `mod maxTilesVisiblePerRow`.
 --    This should save a lot of moving stuff around.
 -- 4. Try number 3 but using the Pico-8 map feature.
 --    17x17 map, indexing just as in no. 3, using modulo 17.
@@ -55,42 +61,108 @@ local myMap = {
   grid = {},
   pixelOffsetX = 0,
   pixelOffsetY = 0,
+  lastCharX = 0,
+  lastCharY = 0,
+  initialized = false,
   -- noise(x,y) returns a number between 0 and 1
   noise = function(worldX, worldY)
     local value = cos(worldX / 40) + sin(worldY / 40)
     -- Adjust from -2..2 to 0..1
     return (value + 2) / 4
   end,
-  update = function(self)
-    if btnp(❎) then self.seed = rnd(~0) end
-
-    if btnp(🅾️) then
-      tileLength = (tileLength == 1) and 16 or tileLength \ 2
-    end
-
+  initializeGrid = function(self)
     local randomOffsetWorldX, randomOffsetWorldY = unpack(withTempSeed(
       self.seed, function()
         return { rnd(1000) \ 1, rnd(1000) \ 1 }
       end
     ))
-
     local centerScreenOffsetWorldX = 8
     local centerScreenOffsetWorldY = 8
     local maxTilesVisiblePerRow = getMaxTilesVisiblePerRow()
     local tilesPerWorldCoord = getTilesPerWorldCoord()
+    local characterTileX = character.worldX * tilesPerWorldCoord
+    local characterTileY = character.worldY * tilesPerWorldCoord
 
     for tileX = 0, maxTilesVisiblePerRow - 1 do
       self.grid[tileX] = {}
       for tileY = 0, maxTilesVisiblePerRow - 1 do
-        local characterTileX = character.worldX * tilesPerWorldCoord
-        local characterTileY = character.worldY * tilesPerWorldCoord
         local worldX = (tileX + characterTileX \ 1) / tilesPerWorldCoord - centerScreenOffsetWorldX
         local worldY = (tileY + characterTileY \ 1) / tilesPerWorldCoord - centerScreenOffsetWorldY
         local sprite = 16 * self.noise(worldX + randomOffsetWorldX, worldY + randomOffsetWorldY)
-        self.pixelOffsetX = -(characterTileX % 1) * tileLength
-        self.pixelOffsetY = -(characterTileY % 1) * tileLength
-        self.grid[tileX][tileY] = mid(sprite, 0, 15) -- noise() is 0-1 inclusive, but we really need it to be exclusive, so we clamp.
+        self.grid[tileX][tileY] = mid(sprite, 0, 15)
       end
+    end
+
+    self.lastCharX = character.worldX
+    self.lastCharY = character.worldY
+    self.initialized = true
+  end,
+
+  update = function(self)
+    if btnp(❎) then
+      self.seed = rnd(~0)
+      self.initialized = false
+    end
+
+    if btnp(🅾️) then
+      tileLength = (tileLength == 1) and 16 or tileLength \ 2
+      self.initialized = false
+    end
+
+    if not self.initialized then
+      self:initializeGrid()
+      return
+    end
+
+    local tilesPerWorldCoord = getTilesPerWorldCoord()
+    local characterTileX = character.worldX * tilesPerWorldCoord
+    local characterTileY = character.worldY * tilesPerWorldCoord
+
+    -- Update pixel offsets
+    self.pixelOffsetX = -(characterTileX % 1) * tileLength
+    self.pixelOffsetY = -(characterTileY % 1) * tileLength
+
+    -- Check if character moved enough to need new tiles
+    local lastTileX = self.lastCharX * tilesPerWorldCoord
+    local lastTileY = self.lastCharY * tilesPerWorldCoord
+
+    if abs(characterTileX - lastTileX) >= 1 or abs(characterTileY - lastTileY) >= 1 then
+      -- Character moved at least one tile, update grid
+      local maxTilesVisiblePerRow = getMaxTilesVisiblePerRow()
+
+      -- Shift existing tiles
+      local shiftX = flr(characterTileX - lastTileX)
+      local shiftY = flr(characterTileY - lastTileY)
+
+      local randomOffsetWorldX, randomOffsetWorldY = unpack(withTempSeed(
+        self.seed, function()
+          return { rnd(1000) \ 1, rnd(1000) \ 1 }
+        end
+      ))
+      local centerScreenOffsetWorldX = 8
+      local centerScreenOffsetWorldY = 8
+
+      local newGrid = {}
+      for tileX = 0, maxTilesVisiblePerRow - 1 do
+        newGrid[tileX] = {}
+        for tileY = 0, maxTilesVisiblePerRow - 1 do
+          local oldX = tileX + shiftX
+          local oldY = tileY + shiftY
+          if oldX >= 0 and oldX < maxTilesVisiblePerRow
+              and oldY >= 0 and oldY < maxTilesVisiblePerRow then
+            newGrid[tileX][tileY] = self.grid[oldX][oldY]
+          else
+            local worldX = (tileX + characterTileX \ 1) / tilesPerWorldCoord - centerScreenOffsetWorldX
+            local worldY = (tileY + characterTileY \ 1) / tilesPerWorldCoord - centerScreenOffsetWorldY
+            local sprite = 16 * self.noise(worldX + randomOffsetWorldX, worldY + randomOffsetWorldY)
+            newGrid[tileX][tileY] = mid(sprite, 0, 15)
+          end
+        end
+      end
+
+      self.grid = newGrid
+      self.lastCharX = character.worldX
+      self.lastCharY = character.worldY
     end
   end,
   draw = function(self)
