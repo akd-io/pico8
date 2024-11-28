@@ -3,4 +3,5 @@
 function roundRectfill(x0, y0, x1, y1, col)
   rectfill(x0 + 1, y0, x1 - 1, y1, col)
   rectfill(x0, y0 + 1, x1, y1 - 1, col)
+  -- TODO: Use 2 line()-calls instead of one of the rectfills above to save cpu cycles
 end

@@ -157,3 +157,36 @@ local affix_types = {
     longStr = function(tier, value) return "+" .. value .. " stat16" end
   }
 }
+
+function getTier(item)
+  local tier = 0
+  for key, val in pairs(item.affixes) do
+    tier += val
+  end
+  return tier
+end
+
+function drawItem(item, x, y)
+  drawItemLabel(item, x, y)
+  drawItemStats(item, x + 2, y + 11)
+end
+
+function drawItemLabel(item, x, y)
+  local text = "t" .. getTier(item) .. " " .. item.equipment_type
+
+  local textWidth = getTextWidth(text)
+  local textHeight = 5
+
+  local padding = 2
+  roundRectfill(x, y, x + padding + textWidth + padding - 1, y + padding + textHeight + padding - 1, 5)
+  print(text, x + 2, y + 2, 6)
+end
+
+function drawItemStats(item, x, y)
+  for affix_type, affix_tier in pairs(item.affixes) do
+    local affix_data = affix_types[affix_type]
+    local affix_value = affix_data.value(affix_tier)
+    print("t" .. affix_tier .. " " .. affix_data.str(affix_tier, affix_value), x, y)
+    y += 7
+  end
+end
