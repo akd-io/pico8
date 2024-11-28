@@ -1,4 +1,5 @@
-function mandelbrot(x, y, zoom)
+function mandelbrot(x, y, zoom, iterations)
+  local iterations = iterations or 25
   -- Scale and offset the coordinates
   local cx = (x - 64) / (32 * zoom)
   local cy = (y - 64) / (32 * zoom)
@@ -19,7 +20,7 @@ function mandelbrot(x, y, zoom)
 
   -- Calculate the Mandelbrot value
   local zx, zy = 0, 0
-  for i = 1, 25 do
+  for i = 1, iterations do
     local zx_squared = zx * zx
     local zy_squared = zy * zy
     if zx_squared + zy_squared > 4 then

@@ -8,17 +8,20 @@ __lua__
 #include ../lib/overlay.lua
 #include ../lib/draw_to_spritesheet.lua
 #include ../lib/mandelbrot.lua
+#include ../lib/join.lua
 
-local pixelOffsetX = 0
-local pixelOffsetY = 0
+local offsetX = 0
+local offsetY = 0
 local zoom = 1
+local iterations = 25
+local showHUD = false
 
 function drawFullSpritesheet()
   drawToSpritesheet(function()
     for screenX = 0, 127 do
       for screenY = 0, 127 do
-        local x, y = screenX + pixelOffsetX, screenY + pixelOffsetY
-        local value = mandelbrot(x, y, zoom)
+        local x, y = screenX + offsetX, screenY + offsetY
+        local value = mandelbrot(x, y, zoom, iterations)
         pset(x % 128, y % 128, value)
       end
     end
@@ -27,30 +30,48 @@ end
 
 function _init()
   drawFullSpritesheet()
+
+  menuitem(
+    1, "toggle hud", function()
+      showHUD = not showHUD
+    end
+  )
 end
 
 function _update60()
+  local dx = tonum(btn(➡️)) - tonum(btn(⬅️))
+  local dy = tonum(btn(⬇️)) - tonum(btn(⬆️))
+
   -- Handle zoom with O and X buttons
-  if btnp(🅾️) then
-    zoom *= 2
-    pixelOffsetX *= 2
-    pixelOffsetY *= 2
-    drawFullSpritesheet()
+  if btn(🅾️) then
+    if btnp(⬆️) then
+      zoom *= 2
+      offsetX *= 2
+      offsetY *= 2
+      drawFullSpritesheet()
+    elseif btnp(⬇️) then
+      local newZoom = zoom * 0.5
+      zoom = newZoom == 0 and 0x0000.0001 or newZoom
+      offsetX *= 0.5
+      offsetY *= 0.5
+      drawFullSpritesheet()
+    end
     return
-  elseif btnp(❎) then
-    local newZoom = zoom * 0.5
-    zoom = newZoom == 0 and 0x0000.0001 or newZoom
-    pixelOffsetX *= 0.5
-    pixelOffsetY *= 0.5
-    drawFullSpritesheet()
+  elseif btn(❎) then
+    if btnp(⬆️) then
+      local newIterations = iterations + 1
+      iterations = newIterations > 255 and 255 or newIterations
+      drawFullSpritesheet()
+    elseif btnp(⬇️) then
+      local newIterations = iterations - 1
+      iterations = newIterations < 1 and 1 or newIterations
+      drawFullSpritesheet()
+    end
     return
   end
 
-  -- Move exactly 1 pixel at a time
-  local dx = tonum(btn(➡️)) - tonum(btn(⬅️))
-  local dy = tonum(btn(⬇️)) - tonum(btn(⬆️))
-  pixelOffsetX += dx
-  pixelOffsetY += dy
+  offsetX += dx
+  offsetY += dy
 
   if 0 == dx and 0 == dy then
     return
@@ -60,19 +81,19 @@ function _update60()
     -- Calculate and draw new pixels based on movement
     if dx > 0 or dx < 0 then
       local screenX = dx > 0 and 127 or 0
-      local x = screenX + pixelOffsetX
+      local x = screenX + offsetX
       for screenY = 0, 127 do
-        local y = screenY + pixelOffsetY
-        local value = mandelbrot(x, y, zoom)
+        local y = screenY + offsetY
+        local value = mandelbrot(x, y, zoom, iterations)
         pset(x % 128, y % 128, value)
       end
     end
     if dy > 0 or dy < 0 then
       local screenY = dy > 0 and 127 or 0
-      local y = screenY + pixelOffsetY
+      local y = screenY + offsetY
       for screenX = 0, 127 do
-        local x = screenX + pixelOffsetX
-        local value = mandelbrot(x, y, zoom)
+        local x = screenX + offsetX
+        local value = mandelbrot(x, y, zoom, iterations)
         pset(x % 128, y % 128, value)
       end
     end
@@ -81,8 +102,8 @@ end
 
 function _draw()
   -- Calculate the source rectangles based on pixel offset
-  local ox = pixelOffsetX % 128
-  local oy = pixelOffsetY % 128
+  local ox = offsetX % 128
+  local oy = offsetY % 128
 
   -- Clear the screen
   cls()
@@ -103,18 +124,41 @@ function _draw()
     sspr(0, 0, ox, oy, 128 - ox, 128 - oy)
   end
 
-  drawStats()
+  if showHUD then
+    drawControls()
+    drawStats()
+  end
+end
+
+function drawControls()
+  local lines = {
+    "🅾️+⬆️: zoom in",
+    "🅾️+⬇️: zoom out",
+    "❎+⬆️: inc. iterations",
+    "❎+⬇️: dec. iterations",
+    "⬅️⬆️⬇️➡️: move"
+  }
+  local string = join(lines, "\n")
+  local letterHeight = 6
+  local stringHeight = #lines * letterHeight - 1
+  local stringWidth = getTextWidth(string)
+  local x, y = 3, 3
+  overlay(x, y, stringWidth + 4, stringHeight + 4)
+  print(string, x + 2, y + 2, 13)
 end
 
 function drawStats()
-  local string = "x: " .. pixelOffsetX .. "\n"
-      .. "y: " .. pixelOffsetY .. "\n"
-      .. "zoom: " .. zoom .. "\n"
-      .. "cpu: " .. stat(1) .. "\n"
-      .. "mem: " .. stat(0)
-  local lines = 5
+  local lines = {
+    "x: " .. offsetX,
+    "y: " .. offsetY,
+    "zoom: " .. zoom,
+    "iterations: " .. iterations,
+    "cpu: " .. stat(1),
+    "mem: " .. stat(0)
+  }
+  local string = join(lines, "\n")
   local letterHeight = 6
-  local stringHeight = lines * letterHeight - 1
+  local stringHeight = #lines * letterHeight - 1
   local stringWidth = getTextWidth(string)
   local x, y = 128 - stringWidth - 7, 128 - stringHeight - 7
   overlay(x, y, stringWidth + 4, stringHeight + 4)
