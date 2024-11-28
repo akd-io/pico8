@@ -1,5 +1,4 @@
 --[[
-
 Affix ideas:
 - attributes
   - strength
@@ -36,14 +35,10 @@ Affix ideas:
   - knockback
 - Utility
   - movement speed
-
 ]]
 
--- 16 equipment types (4 bits)
-local equipment_types = { "main-hand", "off-hand", "head", "neck", "body", "waist", "legs", "feet", "hands", "finger" }
--- 16 affix tiers (4 bits)
+local item_types = { "main-hand", "off-hand", "head", "neck", "body", "waist", "legs", "feet", "hands", "finger" }
 local affix_tiers = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }
--- 16 affix types (16 bit)
 local affix_type_keys = {
   "health",
   "flatDamage",

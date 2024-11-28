@@ -7,10 +7,10 @@ __lua__
 #include ../lib/shallow_copy.lua
 #include ../lib/round_rectfill.lua
 #include ../lib/get_text_width.lua
-#include lib/equipment.lua
+#include lib/items.lua
 
 function generateItem()
-  local equipment_type = rnd(equipment_types)
+  local equipment_type = rnd(item_types)
 
   local availableAffixesBag = shallow_copy(affix_type_keys)
   local numAffixes = ceil(rnd(max_affixes_per_item))
@@ -63,13 +63,7 @@ function drawItemTooltip(item, x, y)
     tier = tier + val
   end
   print("t" .. tier .. " " .. item.equipment_type, x, y)
-  y += 7
-  for affix_type, affix_tier in pairs(item.affixes) do
-    local affix_data = affix_types[affix_type]
-    local affix_value = affix_data.value(affix_tier)
-    print("t" .. affix_tier .. " " .. affix_data.str(affix_tier, affix_value), x, y)
-    y += 7
-  end
+  drawRawItemStats(item, x, y + 7)
 end
 
 function drawRawItemStats(item, x, y)
