@@ -8,8 +8,9 @@ __lua__
 function initReact()
   local components = {}
   local currentComponent = nil
+  local frame = 0
 
-  function createComponent(func)
+  local function createComponent(func)
     return function(key, ...)
       -- Generate a unique ID for this component instance
       local instanceId = key or "default"
@@ -26,6 +27,7 @@ function initReact()
       local prevComponent = currentComponent
       currentComponent = components[instanceId]
       currentComponent.hookIndex = 1
+      currentComponent.lastRenderFrame = frame
 
       -- Run component with remaining args
       local props = pack(...)
@@ -39,7 +41,7 @@ function initReact()
     end
   end
 
-  function useState(initialValue)
+  local function useState(initialValue)
     assert(currentComponent, "hooks can only be called inside components")
 
     local hooks = currentComponent.hooks
@@ -56,7 +58,7 @@ function initReact()
     local _component = currentComponent
     local _hookIndex = hookIndex
 
-    function setValue(val)
+    local function setValue(val)
       printh("useState: setValue: val = " .. val or "nil")
 
       _component.hooks[_hookIndex] = val
@@ -70,10 +72,25 @@ function initReact()
     return value, setValue
   end
 
-  return createComponent, useState
+  local function renderRoot(rootComponent)
+    rootComponent("root")
+
+    -- Clean up any unmounted components
+    for k, component in pairs(components) do
+      -- If component wasn't rendered this frame, remove it completely
+      if component.lastRenderFrame != frame then
+        components[k] = nil
+      end
+    end
+
+    -- Increment frame counter
+    frame += 1
+  end
+
+  return createComponent, renderRoot, useState
 end
 
-local createComponent, useState = initReact()
+local createComponent, renderRoot, useState = initReact()
 
 -- Example usage
 local frame = 1
@@ -82,35 +99,36 @@ local circleComponent = createComponent(function(x, y, r, col)
   circfill(x, y, r, col)
 end)
 
-local eyeballComponent = createComponent(function(x, y)
+local eyeballComponent = createComponent(function()
+  local x, setX = useState(rnd() * 128)
+  local y, setY = useState(rnd() * 128)
+
   circleComponent("circle1", x, y, 10, 7)
   circleComponent("circle2", x, y, 4, 0)
-end)
 
-local counterComponent = createComponent(function()
-  local count, setCount = useState(0)
-  setCount(count + 1)
-  print("count: " .. count, 0, 0, 0)
+  setX((x + 1) % 128)
+  setY((y + 1) % 128)
 end)
 
 local containerComponent = createComponent(function()
   cls(15)
-  local x1, setX1 = useState(0)
 
-  if (frame % 2 == 1) then
-    counterComponent("counter1")
+  -- Because the fourth eyeball is only rendered 99% of the time, it will sometimes not be rendered and unmount.
+  -- This will result in the fourth eyeball's getting cleaned up and be given a new initial position when re-mounted.
+  -- Eyeballs 1-3 are not conditional, and their state is correctly persisted forever.
+
+  local renderFourthEyeball = rnd() < 0.99
+  local eyeballs = renderFourthEyeball and 4 or 3
+  for i = 1, eyeballs do
+    eyeballComponent("eye" .. i)
   end
-
-  local x2, setX2 = useState(64)
-  setX1((x1 + 1) % 128)
-  setX2((x2 + 1) % 128)
-
-  eyeballComponent("eye1", x1, 64)
-  eyeballComponent("eye2", x2, 64)
 end)
 
-function _update60() end
-function _draw()
-  containerComponent("root")
+local function _update60() end
+local function _draw()
+  renderRoot(containerComponent)
+
+  print(stat(0), 0, 10)
+
   frame += 1
 end
