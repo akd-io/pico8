@@ -1,9 +1,6 @@
 pico-8 cartridge // http://www.pico-8.com
 version 42
 __lua__
-#include ../lib/join.lua
-#include ../lib/table_to_str.lua
-
 -- React library
 function initReact()
   local components = {}
@@ -12,8 +9,8 @@ function initReact()
 
   local function createComponent(func)
     return function(key, ...)
-      -- Generate a unique ID for this component instance
-      local instanceId = key or "default"
+      assert(key != nil, "key must be provided")
+      local instanceId = key
 
       -- Initialize component state if needed
       if not components[instanceId] then
@@ -30,11 +27,7 @@ function initReact()
       currentComponent.lastRenderFrame = frame
 
       -- Run component with remaining args
-      local props = pack(...)
-      local propsString = props == nil and "nil" or tableToStr(props)
-      printh("Started rendering component " .. instanceId .. " with props " .. propsString)
       func(...)
-      printh("Finished rendering component " .. instanceId .. " with props " .. propsString)
 
       -- Restore previous component context
       currentComponent = prevComponent
@@ -45,30 +38,20 @@ function initReact()
     assert(currentComponent, "hooks can only be called inside components")
 
     local hooks = currentComponent.hooks
-    printh("useState: hooks = " .. (tableToStr(hooks) or "nil"))
 
     local hookIndex = currentComponent.hookIndex
-    printh("useState: hookIndex = " .. (hookIndex or "nil"))
 
     local value = hooks[hookIndex] or initialValue
-    printh("useState: hooks[hookIndex] = " .. (hooks[hookIndex] or "nil"))
-    printh("useState: initialValue = " .. initialValue)
-    printh("useState: value = " .. value)
 
     local _component = currentComponent
     local _hookIndex = hookIndex
 
     local function setValue(val)
-      printh("useState: setValue: val = " .. val or "nil")
-
       _component.hooks[_hookIndex] = val
-      printh("useState: setValue: _component.hooks[_hookIndex] = " .. (_component.hooks[_hookIndex] or "nil"))
     end
 
     currentComponent.hookIndex += 1
-    printh("useState: incremented hookIndex to " .. (currentComponent.hookIndex or "nil"))
 
-    printh("useState: returning value " .. (value or "nil"))
     return value, setValue
   end
 
@@ -113,12 +96,14 @@ end)
 local containerComponent = createComponent(function()
   cls(15)
 
-  -- Because the fourth eyeball is only rendered 99% of the time, it will sometimes not be rendered and unmount.
-  -- This will result in the fourth eyeball's getting cleaned up and be given a new initial position when re-mounted.
+  -- Because the last eyeball is only rendered 99% of the time, it will sometimes not be rendered and unmount.
+  -- This will result in the last eyeball's getting cleaned up and be given a new initial position when re-mounted.
   -- Eyeballs 1-3 are not conditional, and their state is correctly persisted forever.
 
-  local renderFourthEyeball = rnd() < 0.99
-  local eyeballs = renderFourthEyeball and 4 or 3
+  local eyeballs = 3
+  if (rnd() < 0.99) then
+    eyeballs += 1
+  end
   for i = 1, eyeballs do
     eyeballComponent("eye" .. i)
   end
@@ -128,7 +113,7 @@ local function _update60() end
 local function _draw()
   renderRoot(containerComponent)
 
-  print(stat(0), 0, 10)
+  print("mem: " .. stat(0), 0, 10)
 
   frame += 1
 end
