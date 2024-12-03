@@ -1,3 +1,27 @@
+--[[
+-- TODO: Remove key requirement. Build component tree. Fix conditional component rendering problem using insight from JSX output below. (Children needs to be specified in a tree for component indexes not to change during conditional rendering or loops)
+<div>
+  <h1>Using Context and useReducer</h1>
+  {state}
+  {state % 2 == 0 && <Counter />}
+  {state % 2 == 1 && <Counter />}
+</div>
+
+/*#__PURE__*/_jsxs(
+  "div",
+  {
+    children: [
+      /*#__PURE__*/_jsx("h1", {
+        children: "Using Context and useReducer"
+      }),
+      state,
+      state % 2 == 0 && /*#__PURE__*/_jsx(Counter, {}),
+      state % 2 == 1 && /*#__PURE__*/_jsx(Counter, {})
+    ]
+  }
+);
+]]
+
 -- React library
 function initReact()
   local components = {}
