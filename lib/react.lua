@@ -65,7 +65,6 @@ function initReact()
 
     local _component = currentComponent
     local _hookIndex = hookIndex
-
     local function setValue(val)
       _component.hooks[_hookIndex] = val
     end
@@ -83,9 +82,6 @@ function initReact()
     if (hooks[hookIndex] == nil) then
       hooks[hookIndex] = { current = initialValue }
     end
-
-    local _component = currentComponent
-    local _hookIndex = hookIndex
 
     currentComponent.hookIndex += 1
     return hooks[hookIndex]
