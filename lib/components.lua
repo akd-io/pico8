@@ -33,6 +33,19 @@ function initComponents()
   end
 
   -- Name is inspired by useState from React, but functions more like useRef.
+  local stateMetatable = {
+    __index = function(t)
+      return t.current
+    end,
+    __newindex = function(t, k, v)
+      if k == "current" then
+        rawset(t, k, v)
+      else
+        t.current = v
+      end
+    end
+  }
+
   local function useState(initialValue)
     assert(currentComponent, "hooks can only be called inside components")
 
@@ -40,7 +53,9 @@ function initComponents()
     local hookIndex = currentComponent.hookIndex
 
     if (hooks[hookIndex] == nil) then
-      hooks[hookIndex] = { current = initialValue }
+      local state = { current = initialValue }
+      setmetatable(state, stateMetatable)
+      hooks[hookIndex] = state
     end
 
     local _component = currentComponent
