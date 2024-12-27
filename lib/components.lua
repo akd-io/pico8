@@ -1,8 +1,8 @@
 -- Components library
 
 function initComponents()
-  local components = {}
-  local currentComponent = nil
+  local componentInstances = {}
+  local currentComponentInstance = nil
   local frame = 0
 
   local function createComponent(func)
@@ -10,29 +10,28 @@ function initComponents()
       assert(key != nil, "key must be provided")
       local instanceId = key
 
-      -- Initialize component state if missing
-      if not components[instanceId] then
-        components[instanceId] = {
+      -- Initialize component state if missing (initial render)
+      if not componentInstances[instanceId] then
+        componentInstances[instanceId] = {
           hooks = {},
           hookIndex = 1
         }
       end
 
       -- Set current component context
-      local prevComponent = currentComponent
-      currentComponent = components[instanceId]
-      currentComponent.hookIndex = 1
-      currentComponent.lastRenderFrame = frame
+      local prevComponentInstance = currentComponentInstance
+      currentComponentInstance = componentInstances[instanceId]
+      currentComponentInstance.hookIndex = 1
+      currentComponentInstance.lastRenderFrame = frame
 
       -- Run component with remaining args
       func(...)
 
       -- Restore previous component context
-      currentComponent = prevComponent
+      currentComponentInstance = prevComponentInstance
     end
   end
 
-  -- Name is inspired by useState from React, but functions more like useRef.
   local stateMetatable = {
     __index = function(t)
       return t.current
@@ -45,34 +44,33 @@ function initComponents()
       end
     end
   }
-
+  -- useState's name is inspired by useState from React, but functions more like useRef, as it is mutable.
+  -- In contrast to useRef, it hides its `.current` implementation from the user.
   local function useState(initialValue)
-    assert(currentComponent, "hooks can only be called inside components")
+    assert(currentComponentInstance != nil, "hooks can only be called inside components")
 
-    local hooks = currentComponent.hooks
-    local hookIndex = currentComponent.hookIndex
+    local hooks = currentComponentInstance.hooks
+    local hookIndex = currentComponentInstance.hookIndex
 
     if (hooks[hookIndex] == nil) then
+      -- Initial render
       local state = { current = initialValue }
       setmetatable(state, stateMetatable)
       hooks[hookIndex] = state
     end
 
-    local _component = currentComponent
-    local _hookIndex = hookIndex
-
-    currentComponent.hookIndex += 1
+    currentComponentInstance.hookIndex += 1
     return hooks[hookIndex]
   end
 
   local function renderRoot(rootComponent)
     rootComponent("__components_root")
 
-    -- Clean up any unmounted components
-    for k, component in pairs(components) do
+    -- Clean up any unmounted component instances
+    for k, component in pairs(componentInstances) do
       -- If component wasn't rendered this frame, remove it completely
       if component.lastRenderFrame != frame then
-        components[k] = nil
+        componentInstances[k] = nil
       end
     end
 
