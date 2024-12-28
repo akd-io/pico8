@@ -1,14 +1,40 @@
 -- Components library
 
-function initComponents()
+-- Future TODOs:
+-- TODO: Turn __initComponents into an immediately invoked anonymous function expression
+--[[
+  TODO: Add support for conditional component renders by specifying children in an array.
+  - Component instances should then use their position in the children array to generate their instance id.
+  - This way, child component instances will keep their ids between renders, even when some are rendered conditionally.
+      (That is when specifying nil instead of a component in the children array.)
+  - In turn, make the key prop optional. What API to specify kep prop has the nicest DX?
+]]
+
+function __initComponents()
+  -- Holds the state of component instances
   local componentInstances = {}
+
+  -- Used to generate component IDs during component creation
+  local componentCreationCounter = 0
+
+  -- Used during render
   local currentComponentInstance = nil
+  local currentComponentInstanceId = nil
   local frame = 0
 
   local function createComponent(func)
+    local componentId = componentCreationCounter
+    componentCreationCounter += 1
+
     return function(key, ...)
       assert(key != nil, "key must be provided")
-      local instanceId = key
+
+      -- Save parent/previous component instance and id
+      local parentComponentInstanceId = currentComponentInstanceId
+      local parentComponentInstance = currentComponentInstance
+
+      -- Generate instance id
+      local instanceId = parentComponentInstanceId .. "-" .. key
 
       -- Initialize component state if missing (initial render)
       if not componentInstances[instanceId] then
@@ -18,8 +44,8 @@ function initComponents()
         }
       end
 
-      -- Set current component context
-      local prevComponentInstance = currentComponentInstance
+      -- Update current component context
+      currentComponentInstanceId = instanceId
       currentComponentInstance = componentInstances[instanceId]
       currentComponentInstance.hookIndex = 1
       currentComponentInstance.lastRenderFrame = frame
@@ -27,8 +53,11 @@ function initComponents()
       -- Run component with remaining args
       func(...)
 
-      -- Restore previous component context
-      currentComponentInstance = prevComponentInstance
+      printh("Rendering " .. currentComponentInstanceId)
+
+      -- Restore parent component context
+      currentComponentInstanceId = parentComponentInstanceId
+      currentComponentInstance = parentComponentInstance
     end
   end
 
@@ -67,9 +96,9 @@ function initComponents()
     rootComponent("__components_root")
 
     -- Clean up any unmounted component instances
-    for k, component in pairs(componentInstances) do
+    for k, componentInstance in pairs(componentInstances) do
       -- If component wasn't rendered this frame, remove it completely
-      if component.lastRenderFrame != frame then
+      if componentInstance.lastRenderFrame != frame then
         componentInstances[k] = nil
       end
     end
@@ -81,4 +110,4 @@ function initComponents()
   return createComponent, renderRoot, useState
 end
 
-local createComponent, renderRoot, useState = initComponents()
+local createComponent, renderRoot, useState = __initComponents()
