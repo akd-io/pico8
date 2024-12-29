@@ -34,7 +34,8 @@ function __initComponents()
       local parentComponentInstance = currentComponentInstance
 
       -- Generate instance id
-      local instanceId = parentComponentInstanceId .. "-" .. key
+      local prefix = parentComponentInstanceId and parentComponentInstanceId .. "-" or ""
+      local instanceId = prefix .. key
 
       -- Initialize component state if missing (initial render)
       if not componentInstances[instanceId] then
