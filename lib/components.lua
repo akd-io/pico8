@@ -1,4 +1,52 @@
 -- Components library
+local stateMetaTable = {}
+stateMetaTable.__index = function(t) return t.current end
+stateMetaTable.__tostring = function(t) return tostr(t.current) end
+stateMetaTable.__newindex = function(t, k, v)
+  printh("newindex " .. k .. "=" .. v)
+  -- TODO: This function is never called! We might need .current after all :(
+  if k == "current" then
+    rawset(t, k, v)
+  else
+    printh("Setting .current")
+    t.current = v
+  end
+end
+stateMetaTable.__add = function(a, b)
+  _a = getmetatable(a) == stateMetaTable and a.current or a
+  _b = getmetatable(b) == stateMetaTable and b.current or b
+  return _a + _b
+end
+stateMetaTable.__sub = function(a, b)
+  _a = getmetatable(a) == stateMetaTable and a.current or a
+  _b = getmetatable(b) == stateMetaTable and b.current or b
+  return _a - _b
+end
+stateMetaTable.__mul = function(a, b)
+  _a = getmetatable(a) == stateMetaTable and a.current or a
+  _b = getmetatable(b) == stateMetaTable and b.current or b
+  return _a * _b
+end
+stateMetaTable.__pow = function(a, b)
+  _a = getmetatable(a) == stateMetaTable and a.current or a
+  _b = getmetatable(b) == stateMetaTable and b.current or b
+  return _a ^ _b
+end
+stateMetaTable.__div = function(a, b)
+  _a = getmetatable(a) == stateMetaTable and a.current or a
+  _b = getmetatable(b) == stateMetaTable and b.current or b
+  return _a / _b
+end
+stateMetaTable.__mod = function(a, b)
+  _a = getmetatable(a) == stateMetaTable and a.current or a
+  _b = getmetatable(b) == stateMetaTable and b.current or b
+  return _a % _b
+end
+stateMetaTable.__concat = function(a, b)
+  _a = getmetatable(a) == stateMetaTable and a.current or a
+  _b = getmetatable(b) == stateMetaTable and b.current or b
+  return tostr(_a) .. tostr(_b)
+end
 
 -- Future TODOs:
 -- TODO: Turn __initComponents into an immediately invoked anonymous function expression
@@ -54,7 +102,7 @@ function __initComponents()
       -- Run component with remaining args
       func(...)
 
-      printh("Rendering " .. currentComponentInstanceId)
+      --printh("Rendering " .. currentComponentInstanceId)
 
       -- Restore parent component context
       currentComponentInstanceId = parentComponentInstanceId
@@ -62,18 +110,6 @@ function __initComponents()
     end
   end
 
-  local stateMetatable = {
-    __index = function(t)
-      return t.current
-    end,
-    __newindex = function(t, k, v)
-      if k == "current" then
-        rawset(t, k, v)
-      else
-        t.current = v
-      end
-    end
-  }
   -- useState's name is inspired by useState from React, but functions more like useRef, as it is mutable.
   -- In contrast to useRef, it hides its `.current` implementation from the user.
   local function useState(initialValue)
@@ -85,7 +121,7 @@ function __initComponents()
     if (hooks[hookIndex] == nil) then
       -- Initial render
       local state = { current = initialValue }
-      setmetatable(state, stateMetatable)
+      setmetatable(state, stateMetaTable)
       hooks[hookIndex] = state
     end
 
