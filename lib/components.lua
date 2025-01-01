@@ -39,10 +39,7 @@ function __initComponents()
 
       -- Initialize component state if missing (initial render)
       if not instances[instanceId] then
-        instances[instanceId] = {
-          hooks = {},
-          hookIndex = 1
-        }
+        instances[instanceId] = { hooks = {} }
       end
 
       -- Update current component context
