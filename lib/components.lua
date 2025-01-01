@@ -12,14 +12,14 @@
 
 function __initComponents()
   -- Holds the state of component instances
-  local componentInstances = {}
+  local instances = {}
 
   -- Used to generate component IDs during component creation
   local componentCreationCounter = 0
 
   -- Used during render
-  local currentComponentInstance = nil
-  local currentComponentInstanceId = nil
+  local currentInstance = nil
+  local currentInstanceId = nil
   local frame = 0
 
   local function createComponent(func)
@@ -30,35 +30,35 @@ function __initComponents()
       assert(key != nil, "key must be provided")
 
       -- Save parent/previous component instance and id
-      local parentComponentInstanceId = currentComponentInstanceId
-      local parentComponentInstance = currentComponentInstance
+      local parentInstanceId = currentInstanceId
+      local parentInstance = currentInstance
 
       -- Generate instance id
-      local prefix = parentComponentInstanceId and parentComponentInstanceId .. "-" or ""
+      local prefix = parentInstanceId and parentInstanceId .. "-" or ""
       local instanceId = prefix .. key
 
       -- Initialize component state if missing (initial render)
-      if not componentInstances[instanceId] then
-        componentInstances[instanceId] = {
+      if not instances[instanceId] then
+        instances[instanceId] = {
           hooks = {},
           hookIndex = 1
         }
       end
 
       -- Update current component context
-      currentComponentInstanceId = instanceId
-      currentComponentInstance = componentInstances[instanceId]
-      currentComponentInstance.hookIndex = 1
-      currentComponentInstance.lastRenderFrame = frame
+      currentInstanceId = instanceId
+      currentInstance = instances[instanceId]
+      currentInstance.hookIndex = 1
+      currentInstance.lastRenderFrame = frame
 
       -- Run component with remaining args
-      func(...)
+      local elements = func(...)
 
-      printh("Rendering " .. currentComponentInstanceId)
+      printh("Rendering " .. currentInstanceId)
 
       -- Restore parent component context
-      currentComponentInstanceId = parentComponentInstanceId
-      currentComponentInstance = parentComponentInstance
+      currentInstanceId = parentInstanceId
+      currentInstance = parentInstance
     end
   end
 
@@ -67,12 +67,12 @@ function __initComponents()
   -- Along with the state, the function returns a setState function to enable updates to non-table types, or complete overrides of tables.
   -- Tables can largely ignore the setState function by updating table properties directly.
   local function useState(initialValue)
-    assert(currentComponentInstance != nil, "hooks can only be called inside components")
+    assert(currentInstance != nil, "hooks can only be called inside components")
 
     -- TODO: Support setter function argument
 
-    local hooks = currentComponentInstance.hooks
-    local hookIndex = currentComponentInstance.hookIndex
+    local hooks = currentInstance.hooks
+    local hookIndex = currentInstance.hookIndex
 
     if (hooks[hookIndex] == nil) then
       hooks[hookIndex] = initialValue
@@ -83,7 +83,7 @@ function __initComponents()
       return newValue
     end
 
-    currentComponentInstance.hookIndex += 1
+    currentInstance.hookIndex += 1
     return hooks[hookIndex], setState
   end
 
@@ -91,10 +91,10 @@ function __initComponents()
     rootComponent("__components_root")
 
     -- Clean up any unmounted component instances
-    for k, componentInstance in pairs(componentInstances) do
+    for k, instance in pairs(instances) do
       -- If component wasn't rendered this frame, remove it completely
-      if componentInstance.lastRenderFrame != frame then
-        componentInstances[k] = nil
+      if instance.lastRenderFrame != frame then
+        instances[k] = nil
       end
     end
 
