@@ -62,35 +62,29 @@ function __initComponents()
     end
   end
 
-  local stateMetatable = {
-    __index = function(t)
-      return t.current
-    end,
-    __newindex = function(t, k, v)
-      if k == "current" then
-        rawset(t, k, v)
-      else
-        t.current = v
-      end
-    end
-  }
-  -- useState's name is inspired by useState from React, but functions more like useRef, as it is mutable.
-  -- In contrast to useRef, it hides its `.current` implementation from the user.
+  -- useState is inspired by useState from React.
+  -- In contrast to React's useState, it is mutable, as this library doesn't rerender on state changes.
+  -- Along with the state, the function returns a setState function to enable updates to non-table types, or complete overrides of tables.
+  -- Tables can largely ignore the setState function by updating table properties directly.
   local function useState(initialValue)
     assert(currentComponentInstance != nil, "hooks can only be called inside components")
+
+    -- TODO: Support setter function argument
 
     local hooks = currentComponentInstance.hooks
     local hookIndex = currentComponentInstance.hookIndex
 
     if (hooks[hookIndex] == nil) then
-      -- Initial render
-      local state = { current = initialValue }
-      setmetatable(state, stateMetatable)
-      hooks[hookIndex] = state
+      hooks[hookIndex] = initialValue
+    end
+
+    local function setState(newValue)
+      hooks[hookIndex] = newValue
+      return newValue
     end
 
     currentComponentInstance.hookIndex += 1
-    return hooks[hookIndex]
+    return hooks[hookIndex], setState
   end
 
   local function renderRoot(rootComponent)
