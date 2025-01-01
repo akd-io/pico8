@@ -1,8 +1,6 @@
 -- Components library
 
 -- TODO: Turn __initComponents into an immediately invoked anonymous function expression
--- TODO: Make renderRoot() not pass a key prop, to remove "root-" from instance IDs.
---       - Maybe it's possible to check in the internal render function if we're in the root, and skip the key check in that case.
 -- TODO: Re-add key prop as optional. What API to specify kep prop has the nicest DX?
 --       - Maybe we can implement custom component keys by supporting element[1] == "number" as a test for keyed component elements of the form { 23, MyComponent, ...props }
 -- TODO: Should we implement component wrappings for the different drawing operations?
@@ -122,8 +120,8 @@ function __initComponents()
     return hooks[hookIndex], setState
   end
 
-  local function renderRoot(component)
-    component("root")
+  local function renderRoot(internalRenderFunc)
+    internalRenderFunc("1")
 
     -- Clean up any unmounted component instances
     for instanceId, instance in pairs(instances) do
