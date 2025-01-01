@@ -121,7 +121,7 @@ end
 -- Improved division operation
 function bi_divide(a, b)
   if #b.digits == 1 and b.digits[1] == 0 then
-    error("division by zero")
+    error("division by zero") -- TODO: replace with assert
   end
 
   -- Check if a < b
