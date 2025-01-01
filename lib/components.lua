@@ -1,13 +1,42 @@
 -- Components library
 
--- Future TODOs:
 -- TODO: Turn __initComponents into an immediately invoked anonymous function expression
 --[[
-  TODO: Add support for conditional component renders by specifying children in an array.
-  - Component instances should then use their position in the children array to generate their instance id.
-  - This way, child component instances will keep their ids between renders, even when some are rendered conditionally.
-      (That is when specifying nil instead of a component in the children array.)
-  - In turn, make the key prop optional. What API to specify kep prop has the nicest DX?
+  TODO: Re-add key prop as optional. What API to specify kep prop has the nicest DX?
+    - Maybe we can implement custom component keys by supporting element[1] == "number" as a test for keyed component elements of the form { 23, MyComponent, ...props }
+]]
+--[[
+  TODO: Should we implement component wrappings for the different drawing operations?
+    - Like the HTML elements in react-dom, we could provide components like Circle, Rect, Line, Text, etc..
+]]
+-- TODO: Should we provide a createLayoutComponent or something, that provides a default inset for drawing ops of child components? I have a feeling this could be made third party if useContext was supported. Maybe other hacks could make it work too.
+
+--[[
+  FYI, one might think, why aren't we just calling component render functions inside other component render functions directly.
+  We return and render elements instead, as calling render functions directly can make children render before their parents.
+  Imagine the following rendering implementation:
+  Function calls:
+  Container(
+    Header(),
+    Body(
+      Paragraph("Hello world"),
+      Paragraph("Goodbye world")
+    )
+  )
+  Here, the Paragraph components would run before being passed to Body.
+  And Header and Body would run before being passed to Container.
+  This is problematic if, for example, Body is painting a background to be displays behind the Paragraphs.
+  It is possible to implement a developer experience like the above, where we call components as functions.
+  But the Container, Header, Body and Paragraph functions wouldn't be a render function but instead a small element creator function.
+  And we would still need this renderElements function. The element syntax would just be hidden from users.
+  Function calls:                   Resulting elements:
+  Container({                       { Container, {
+    Header(),                         { Header },
+    Body({                            { Body, {
+      Paragraph("Hello world"),         { Paragraph, "Hello world" },
+      Paragraph("Goodbye world")        { Paragraph, "Goodbye world" }
+    })                                }
+  })                                }
 ]]
 
 function __initComponents()
@@ -22,7 +51,7 @@ function __initComponents()
   local currentInstanceId = nil
   local frame = 0
 
-  local function createComponent(func)
+  local function createComponent(externalComponentRenderFunc)
     local componentId = componentCreationCounter
     componentCreationCounter += 1
 
@@ -37,6 +66,8 @@ function __initComponents()
       local prefix = parentInstanceId and parentInstanceId .. "-" or ""
       local instanceId = prefix .. key
 
+      printh("Rendering " .. instanceId)
+
       -- Initialize component state if missing (initial render)
       if not instances[instanceId] then
         instances[instanceId] = { hooks = {} }
@@ -48,10 +79,20 @@ function __initComponents()
       currentInstance.hookIndex = 1
       currentInstance.lastRenderFrame = frame
 
-      -- Run component with remaining args
-      local elements = func(...)
+      -- Render component with remaining args
+      local elements = externalComponentRenderFunc(...)
+      if elements != nil then
+        assert(type(elements) == "table", "Elements must be tables. Got type " .. type(elements) .. ".")
 
-      printh("Rendering " .. currentInstanceId)
+        -- Render elements
+        -- An element is a table whose first value is an internal render function, and whose remaining values are component props.
+        for elementKey, element in pairs(elements) do
+          local internalComponentRenderFunc = element[1]
+          local renderFuncType = type(internalComponentRenderFunc)
+          assert(renderFuncType == "function", "Elements must be tables with a function as the first element. Got Type " .. renderFuncType .. ".")
+          internalComponentRenderFunc(elementKey, select(2, unpack(element)))
+        end
+      end
 
       -- Restore parent component context
       currentInstanceId = parentInstanceId
@@ -60,13 +101,12 @@ function __initComponents()
   end
 
   -- useState is inspired by useState from React.
-  -- In contrast to React's useState, it is mutable, as this library doesn't rerender on state changes.
+  -- In contrast to React's useState, it embraces mutability, as this library neither tracks nor rerenders on state changes.
   -- Along with the state, the function returns a setState function to enable updates to non-table types, or complete overrides of tables.
   -- Tables can largely ignore the setState function by updating table properties directly.
+  -- TODO: Support setter function argument?
   local function useState(initialValue)
     assert(currentInstance != nil, "hooks can only be called inside components")
-
-    -- TODO: Support setter function argument
 
     local hooks = currentInstance.hooks
     local hookIndex = currentInstance.hookIndex
@@ -84,18 +124,17 @@ function __initComponents()
     return hooks[hookIndex], setState
   end
 
-  local function renderRoot(rootComponent)
-    rootComponent("__components_root")
+  local function renderRoot(component)
+    component("root")
 
     -- Clean up any unmounted component instances
-    for k, instance in pairs(instances) do
+    for instanceId, instance in pairs(instances) do
       -- If component wasn't rendered this frame, remove it completely
       if instance.lastRenderFrame != frame then
-        instances[k] = nil
+        instances[instanceId] = nil
       end
     end
 
-    -- Increment frame counter
     frame += 1
   end
 
