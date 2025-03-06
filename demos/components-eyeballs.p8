@@ -9,12 +9,13 @@ local circleComponent = createComponent(function(x, y, r, col)
   circfill(x, y, r, col)
 end)
 
+local getRandomCoord = function() return rnd() * 128 end
 local eyeballComponent = createComponent(function()
-  local x, setX = useState(rnd() * 128)
-  local y, setY = useState(rnd() * 128)
+  local x, setX = useState(getRandomCoord)
+  local y, setY = useState(getRandomCoord)
 
-  setX((x + 1) % 128)
-  setY((y + 1) % 128)
+  x = setX((x + 1) % 128)
+  y = setY((y + 1) % 128)
 
   return {
     { circleComponent, x, y, 10, 7 },
@@ -30,7 +31,7 @@ local containerComponent = createComponent(function()
   -- Eyeballs 1-3 are not conditional, and their state is correctly persisted forever.
 
   local eyeballs = 3
-  if (rnd() < 0.99) then
+  if (rnd() < 0.9) then
     eyeballs += 1
   end
 

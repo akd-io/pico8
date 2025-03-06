@@ -2,7 +2,7 @@
 
 -- TODO: Turn __initComponents into an immediately invoked anonymous function expression
 -- TODO: Re-add key prop as optional. What API to specify kep prop has the nicest DX?
---       - Maybe we can implement custom component keys by supporting element[1] == "number" as a test for keyed component elements of the form { 23, MyComponent, ...props }
+--       - Maybe we can implement custom element keys by supporting element[1] == "number" as a test for keyed elements of the form { 23, MyComponent, ...props }
 -- TODO: Should we implement component wrappings for the different drawing operations?
 --       - Like the HTML elements in react-dom, we could provide components like Circle, Rect, Line, Text, etc..
 -- TODO: Should we provide a createLayoutComponent or something, that provides a default inset for drawing ops of child components? I have a feeling this could be made third party if useContext was supported. Maybe other hacks could make it work too.
@@ -24,7 +24,7 @@
   This is problematic if, for example, Body is painting a background to be displays behind the Paragraphs.
   It is possible to implement a developer experience like the above, where we call components as functions.
   But the Container, Header, Body and Paragraph functions wouldn't be a render function but instead a small element creator function.
-  And we would still need this renderElements function. The element syntax would just be hidden from users.
+  The element syntax would just be hidden from users.
   Function calls:                   Resulting elements:
   Container({                       { Container, {
     Header(),                         { Header },
@@ -99,8 +99,9 @@ function __initComponents()
   -- useState is inspired by useState from React.
   -- In contrast to React's useState, it embraces mutability, as this library neither tracks nor rerenders on state changes.
   -- Along with the state, the function returns a setState function to enable updates to non-table types, or complete overrides of tables.
-  -- Tables can largely ignore the setState function by updating table properties directly.
-  -- TODO: Support setter function argument?
+  -- Table states can largely ignore the setState function by updating table properties directly.
+  -- useState can be called with a non-function value or a setter function.
+  -- Storing functions can be achieved by wrapping the function in a table, or by returning the function from a setter function.
   local function useState(initialValue)
     assert(currentInstance != nil, "hooks can only be called inside components")
 
@@ -108,7 +109,7 @@ function __initComponents()
     local hookIndex = currentInstance.hookIndex
 
     if (hooks[hookIndex] == nil) then
-      hooks[hookIndex] = initialValue
+      hooks[hookIndex] = type(initialValue) == "function" and initialValue() or initialValue
     end
 
     local function setState(newValue)
