@@ -1,8 +1,6 @@
 -- Components library
 
 -- TODO: Turn __initComponents into an immediately invoked anonymous function expression
--- TODO: Re-add key prop as optional. What API to specify kep prop has the nicest DX?
---       - Maybe we can implement custom element keys by supporting element[1] == "number" as a test for keyed elements of the form { 23, MyComponent, ...props }
 -- TODO: Should we implement component wrappings for the different drawing operations?
 --       - Like the HTML elements in react-dom, we could provide components like Circle, Rect, Line, Text, etc..
 -- TODO: Should we provide a createLayoutComponent or something, that provides a default inset for drawing ops of child components? I have a feeling this could be made third party if useContext was supported. Maybe other hacks could make it work too.
