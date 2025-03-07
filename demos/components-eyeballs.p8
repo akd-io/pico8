@@ -12,12 +12,12 @@ local darkGray = 5
 local lightGray = 6
 local white = 7
 
-local circleComponent = createComponent(function(x, y, r, col)
+local circleComponent = function(x, y, r, col)
   circfill(x, y, r, col)
-end)
+end
 
 local getRandomCoord = function() return rnd() * 128 end
-local eyeballComponent = createComponent(function(eyeColor, _x, _y)
+local eyeballComponent = function(eyeColor, _x, _y)
   local x, setX = useState(getRandomCoord)
   local y, setY = useState(getRandomCoord)
 
@@ -28,9 +28,9 @@ local eyeballComponent = createComponent(function(eyeColor, _x, _y)
     { circleComponent, _x or x, _y or y, 6, eyeColor },
     { circleComponent, _x or x, _y or y, 2, black }
   }
-end)
+end
 
-local containerComponent = createComponent(function()
+local containerComponent = function()
   cls(15)
 
   -- Because the last eyeball is only rendered 99% of the time, it will sometimes not be rendered and unmount.
@@ -70,7 +70,7 @@ local containerComponent = createComponent(function()
     ),
     { eyeballComponent, lightGray }
   }
-end)
+end
 
 local function _update60() end
 local function _draw()

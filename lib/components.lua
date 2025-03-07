@@ -1,5 +1,7 @@
 -- Components library
 
+-- TODO: Hide element syntax by wrapping the returned internal render function in a createElement function that takes the same arguments as the external component render function, but returns the element syntax for internal use.
+--       - I think this will require a change to the keyed element syntax; from {key,component,prop1,prop2,...} to {key,{component,prop1,prop2,...}}
 -- TODO: Turn __initComponents into an immediately invoked anonymous function expression
 -- TODO: Should we implement component wrappings for the different drawing operations?
 --       - Like the HTML elements in react-dom, we could provide components like Circle, Rect, Line, Text, etc..
@@ -37,82 +39,73 @@ function __initComponents()
   -- Holds the state of component instances
   local instances = {}
 
-  -- Used to generate component IDs during component creation
-  local componentCreationCounter = 0
-
   -- Used during render
   local currentInstance = nil
   local currentInstanceId = nil
   local frame = 0
 
-  local function createComponent(externalComponentRenderFunc)
-    local componentId = componentCreationCounter
-    componentCreationCounter += 1
+  local function internalRenderFunction(key, externalFunctionComponent, ...)
+    assert(key != nil, "key must be provided")
 
-    -- return internal render function
-    return function(key, ...)
-      assert(key != nil, "key must be provided")
+    -- Save parent/previous component instance and id
+    local parentInstance = currentInstance
+    local parentInstanceId = currentInstanceId
 
-      -- Save parent/previous component instance and id
-      local parentInstance = currentInstance
-      local parentInstanceId = currentInstanceId
+    -- Generate instance id
+    local prefix = parentInstanceId and parentInstanceId .. "-" or ""
+    local instanceId = prefix .. key
 
-      -- Generate instance id
-      local prefix = parentInstanceId and parentInstanceId .. "-" or ""
-      local instanceId = prefix .. key
+    printh("Rendering " .. instanceId)
 
-      printh("Rendering " .. instanceId)
+    -- Initialize component state if missing (initial render)
+    if not instances[instanceId] then
+      instances[instanceId] = { hooks = {} }
+    end
 
-      -- Initialize component state if missing (initial render)
-      if not instances[instanceId] then
-        instances[instanceId] = { hooks = {} }
-      end
+    -- Update current component context
+    currentInstanceId = instanceId
+    currentInstance = instances[instanceId]
+    currentInstance.hookIndex = 1
+    currentInstance.lastRenderFrame = frame
 
-      -- Update current component context
-      currentInstanceId = instanceId
-      currentInstance = instances[instanceId]
-      currentInstance.hookIndex = 1
-      currentInstance.lastRenderFrame = frame
+    -- Render component with remaining args
+    local elements = externalFunctionComponent(...)
+    if elements != nil then
+      assert(type(elements) == "table", "Elements array must be a table. Got " .. type(elements) .. ".")
 
-      -- Render component with remaining args
-      local elements = externalComponentRenderFunc(...)
-      if elements != nil then
-        assert(type(elements) == "table", "Elements array must be a table. Got " .. type(elements) .. ".")
+      local function renderElements(elements, prefix)
+        -- An element is a table whose first value is an internal render function, and whose remaining values are component props.
+        for index, element in pairs(elements) do
+          assert(type(element) == "table", "Element must be a table. Got " .. type(element) .. ".")
+          local firstValue = element[1]
+          local firstValueType = type(firstValue)
 
-        local function renderElements(elements, prefix)
-          -- An element is a table whose first value is an internal render function, and whose remaining values are component props.
-          for index, element in pairs(elements) do
-            assert(type(element) == "table", "Element must be a table. Got " .. type(element) .. ".")
-            local firstValue = element[1]
-            local firstValueType = type(firstValue)
+          assert(firstValueType == "table" or firstValueType == "number" or firstValueType == "string" or firstValueType == "function", "First value of an element must be a key (number or string), a render function, or another element when it is a fragment (array of elements). Got " .. firstValueType .. ".")
 
-            assert(firstValueType == "table" or firstValueType == "number" or firstValueType == "string" or firstValueType == "function", "First value of an element must be a key (number or string), a render function, or another element when it is a fragment (array of elements). Got " .. firstValueType .. ".")
+          if (firstValueType == "table") then
+            -- If firstValueType == "table" then element is a fragment (array of elements)
+            -- and should have all its elements rendered
+            -- Their keys will be prefixed with the index of the fragment
+            renderElements(element, index .. "-")
+          else
+            local isKeyedElement = firstValueType == "number" or firstValueType == "string"
+            local key = isKeyedElement and firstValue or index
+            local externalFunctionComponent = isKeyedElement and element[2] or firstValue
 
-            if (firstValueType == "table") then
-              -- If firstValueType == "table" then element is a fragment (array of elements)
-              -- and should have all its elements rendered
-              -- Their keys will be prefixed with the index of the fragment
-              renderElements(element, index .. "-")
-            else
-              local isKeyedElement = firstValueType == "number" or firstValueType == "string"
-              local key = isKeyedElement and firstValue or index
-              local internalComponentRenderFunc = isKeyedElement and element[2] or firstValue
-
-              local renderFuncType = type(internalComponentRenderFunc)
-              assert(renderFuncType == "function", "Elements must be tables with a function as the first element. Got Type " .. renderFuncType .. ".")
-              local indexOfFirstProp = isKeyedElement and 3 or 2
-              internalComponentRenderFunc((prefix or "") .. key, select(indexOfFirstProp, unpack(element)))
-            end
+            local renderFuncType = type(externalFunctionComponent)
+            assert(renderFuncType == "function", "Elements must be tables with a function as the first element. Got Type " .. renderFuncType .. ".")
+            local indexOfFirstProp = isKeyedElement and 3 or 2
+            internalRenderFunction((prefix or "") .. key, externalFunctionComponent, select(indexOfFirstProp, unpack(element)))
           end
         end
-
-        renderElements(elements)
       end
 
-      -- Restore parent component context
-      currentInstanceId = parentInstanceId
-      currentInstance = parentInstance
+      renderElements(elements)
     end
+
+    -- Restore parent component context
+    currentInstanceId = parentInstanceId
+    currentInstance = parentInstance
   end
 
   -- useState is inspired by useState from React.
@@ -140,8 +133,8 @@ function __initComponents()
     return hooks[hookIndex], setState
   end
 
-  local function renderRoot(internalRenderFunc)
-    internalRenderFunc("1")
+  local function renderRoot(externalFunctionComponent)
+    internalRenderFunction("1", externalFunctionComponent)
 
     -- Clean up any unmounted component instances
     for instanceId, instance in pairs(instances) do
