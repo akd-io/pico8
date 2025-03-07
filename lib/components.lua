@@ -1,17 +1,21 @@
 -- Components library
 
--- TODO: Hide element syntax by wrapping the returned internal render function in a createElement function that takes the same arguments as the external component render function, but returns the element syntax for internal use.
---       - I think this will require a change to the keyed element syntax; from {key,component,prop1,prop2,...} to {key,{component,prop1,prop2,...}}
--- TODO: Turn __initComponents into an immediately invoked anonymous function expression
--- TODO: Should we implement component wrappings for the different drawing operations?
---       - Like the HTML elements in react-dom, we could provide components like Circle, Rect, Line, Text, etc..
--- TODO: Should we provide a createLayoutComponent or something, that provides a default inset for drawing ops of child components? I have a feeling this could be made third party if useContext was supported. Maybe other hacks could make it work too.
-
 --[[
-  FYI, one might think, why aren't we just calling component render functions inside other component render functions directly.
-  We return and render elements instead, as calling render functions directly can make children render before their parents.
-  Imagine the following rendering implementation:
-  Function calls:
+  TODOs:
+  - Should we implement component wrappings for the different drawing operations?
+    - Like the HTML elements in react-dom, we could provide components like Circle, Rect, Line, Text, etc..
+  - Should we provide a createLayoutComponent or something, that provides a default inset for drawing ops of child components? I have a feeling this could be made third party if useContext was supported. Maybe other hacks could make it work too.
+  - Benchmark library
+  - Optimizations for minified production version:
+    - Turn __initComponents into an immediately invoked anonymous function expression
+    - Delete comments
+    - Delete assertions
+    - Save `local` tokens by initializing multiple variables on the same line
+
+  One might think; Why aren't we just calling our function components directly?
+  The reason we don't call function components directly, is because that would make children render before their parents.
+  Imagine the following example:
+
   Container(
     Header(),
     Body(
@@ -19,13 +23,13 @@
       Paragraph("Goodbye world")
     )
   )
+
   Here, the Paragraph components would run before being passed to Body.
   And Header and Body would run before being passed to Container.
   This is problematic if, for example, Body is painting a background to be displays behind the Paragraphs.
-  It is possible to implement a developer experience like the above, where we call components as functions.
-  But the Container, Header, Body and Paragraph functions wouldn't be a render function but instead a small element creator function.
-  The element syntax would just be hidden from users.
-  Function calls:                   Resulting elements:
+  Therefore, we use the element syntax below.
+
+  Function syntax:                  Element syntax:
   Container({                       { Container, {
     Header(),                         { Header },
     Body({                            { Body, {
@@ -33,6 +37,11 @@
       Paragraph("Goodbye world")        { Paragraph, "Goodbye world" }
     })                                }
   })                                }
+
+  It is possible to implement a developer experience like the function syntax above, where we seemingly call our function components directly.
+  But this would require us to declare function components using a `createComponent()` wrapper function.
+  The wrapper function would return simply return the element syntax hidden to the user.
+  For now, I have chosen to embrace the simplicity and token/cpu savings of the element syntax.
 ]]
 
 function __initComponents()
@@ -70,12 +79,14 @@ function __initComponents()
 
     -- Render component with remaining args
     local elements = externalFunctionComponent(...)
+    -- TODO: Consider not only accepting a fragment here, but also the different element types supported in renderElements
     if elements != nil then
       assert(type(elements) == "table", "Elements array must be a table. Got " .. type(elements) .. ".")
 
       local function renderElements(elements, prefix)
         -- An element is a table whose first value is an internal render function, and whose remaining values are component props.
         for index, element in pairs(elements) do
+          -- TODO: Consider accepting type(element) == "table" in the case of a propless unkeyed components
           assert(type(element) == "table", "Element must be a table. Got " .. type(element) .. ".")
           local firstValue = element[1]
           local firstValueType = type(firstValue)
@@ -147,7 +158,7 @@ function __initComponents()
     frame += 1
   end
 
-  return createComponent, renderRoot, useState
+  return renderRoot, useState
 end
 
-local createComponent, renderRoot, useState = __initComponents()
+local renderRoot, useState = __initComponents()
