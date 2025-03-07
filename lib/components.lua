@@ -51,12 +51,13 @@ function __initComponents()
     local componentId = componentCreationCounter
     componentCreationCounter += 1
 
+    -- return internal render function
     return function(key, ...)
       assert(key != nil, "key must be provided")
 
       -- Save parent/previous component instance and id
-      local parentInstanceId = currentInstanceId
       local parentInstance = currentInstance
+      local parentInstanceId = currentInstanceId
 
       -- Generate instance id
       local prefix = parentInstanceId and parentInstanceId .. "-" or ""
@@ -78,16 +79,36 @@ function __initComponents()
       -- Render component with remaining args
       local elements = externalComponentRenderFunc(...)
       if elements != nil then
-        assert(type(elements) == "table", "Elements must be tables. Got type " .. type(elements) .. ".")
+        assert(type(elements) == "table", "Elements array must be a table. Got " .. type(elements) .. ".")
 
-        -- Render elements
-        -- An element is a table whose first value is an internal render function, and whose remaining values are component props.
-        for elementKey, element in pairs(elements) do
-          local internalComponentRenderFunc = element[1]
-          local renderFuncType = type(internalComponentRenderFunc)
-          assert(renderFuncType == "function", "Elements must be tables with a function as the first element. Got Type " .. renderFuncType .. ".")
-          internalComponentRenderFunc(elementKey, select(2, unpack(element)))
+        local function renderElements(elements, prefix)
+          -- An element is a table whose first value is an internal render function, and whose remaining values are component props.
+          for index, element in pairs(elements) do
+            assert(type(element) == "table", "Element must be a table. Got " .. type(element) .. ".")
+            local firstValue = element[1]
+            local firstValueType = type(firstValue)
+
+            assert(firstValueType == "table" or firstValueType == "number" or firstValueType == "string" or firstValueType == "function", "First value of an element must be a key (number or string), a render function, or another element when it is a fragment (array of elements). Got " .. firstValueType .. ".")
+
+            if (firstValueType == "table") then
+              -- If firstValueType == "table" then element is a fragment (array of elements)
+              -- and should have all its elements rendered
+              -- Their keys will be prefixed with the index of the fragment
+              renderElements(element, index .. "-")
+            else
+              local isKeyedElement = firstValueType == "number" or firstValueType == "string"
+              local key = isKeyedElement and firstValue or index
+              local internalComponentRenderFunc = isKeyedElement and element[2] or firstValue
+
+              local renderFuncType = type(internalComponentRenderFunc)
+              assert(renderFuncType == "function", "Elements must be tables with a function as the first element. Got Type " .. renderFuncType .. ".")
+              local indexOfFirstProp = isKeyedElement and 3 or 2
+              internalComponentRenderFunc((prefix or "") .. key, select(indexOfFirstProp, unpack(element)))
+            end
+          end
         end
+
+        renderElements(elements)
       end
 
       -- Restore parent component context
