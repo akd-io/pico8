@@ -49,7 +49,6 @@ function __initComponents()
   local instances = {}
 
   -- Used during render
-  local currentInstance = nil
   local currentInstanceId = nil
   local frame = 0
 
@@ -57,7 +56,6 @@ function __initComponents()
     assert(key != nil, "key must be provided")
 
     -- Save parent/previous component instance and id
-    local parentInstance = currentInstance
     local parentInstanceId = currentInstanceId
 
     -- Generate instance id
@@ -73,9 +71,8 @@ function __initComponents()
 
     -- Update current component context
     currentInstanceId = instanceId
-    currentInstance = instances[instanceId]
-    currentInstance.hookIndex = 1
-    currentInstance.lastRenderFrame = frame
+    instances[instanceId].hookIndex = 1
+    instances[instanceId].lastRenderFrame = frame
 
     -- Render component with remaining args
     local elements = externalFunctionComponent(...)
@@ -116,7 +113,6 @@ function __initComponents()
 
     -- Restore parent component context
     currentInstanceId = parentInstanceId
-    currentInstance = parentInstance
   end
 
   -- useState is inspired by useState from React.
@@ -126,8 +122,9 @@ function __initComponents()
   -- useState can be called with a non-function value or a setter function.
   -- Storing functions can be achieved by wrapping the function in a table, or by returning the function from a setter function.
   local function useState(initialValue)
-    assert(currentInstance != nil, "hooks can only be called inside components")
+    assert(currentInstanceId != nil, "hooks can only be called inside components")
 
+    local currentInstance = instances[currentInstanceId]
     local hooks = currentInstance.hooks
     local hookIndex = currentInstance.hookIndex
 
