@@ -44,6 +44,33 @@
   For now, I have chosen to embrace the simplicity and token/cpu savings of the element syntax.
 ]]
 
+--[[
+  JSX output example for reference:
+
+  Input:
+  <div>
+    <h1>Using Context and useReducer</h1>
+    {state}
+    {state % 2 == 0 && <Counter />}
+    {state % 2 == 1 && <Counter />}
+  </div>
+
+  Output:
+  /*#__PURE__*/_jsxs(
+    "div",
+    {
+      children: [
+        /*#__PURE__*/_jsx("h1", {
+          children: "Using Context and useReducer"
+        }),
+        state,
+        state % 2 == 0 && /*#__PURE__*/_jsx(Counter, {}),
+        state % 2 == 1 && /*#__PURE__*/_jsx(Counter, {})
+      ]
+    }
+  );
+]]
+
 function __initComponents()
   -- Holds the state of component instances
   local instances = {}
