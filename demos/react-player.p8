@@ -1,7 +1,7 @@
 pico-8 cartridge // http://www.pico-8.com
 version 42
 __lua__
-#include ../lib/components.lua
+#include ../lib/react.lua
 
 local function getRandomCoord()
   return rnd() * 128
