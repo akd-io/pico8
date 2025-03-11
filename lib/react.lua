@@ -7,6 +7,8 @@
 
 --[[
   TODOs:
+  - Support useContext
+  - Support useMemo
   - Should we implement component wrappings for the different drawing operations?
     - Like the HTML elements in react-dom, we could provide components like Circle, Rect, Line, Text, etc..
     - What value would that provide though? Unless we do the next idea, and the component wrappings would provide these insets automatically.
@@ -20,7 +22,9 @@
     - Delete comments
     - Delete assertions
     - Save `local` tokens by initializing multiple variables on the same line
+]]
 
+--[[
   One might think; Why aren't we just calling our function components directly?
   The reason we don't call function components directly, is because that would make children render before their parents.
   Imagine the following example:
