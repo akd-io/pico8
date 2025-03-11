@@ -10,4 +10,5 @@ local function myFunc() end
 printh(myFunc) -- [function]
 printh(tostr(myFunc)) -- [function]
 printh(tostr(myFunc, 0x1)) -- function: 0x30604e8c
+printh(tostring(myFunc)) -- function: 0x30604e8c
 printh(type(myFunc)) -- function
