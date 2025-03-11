@@ -12,69 +12,73 @@ local darkGray = 5
 local lightGray = 6
 local white = 7
 
-local circleComponent = function(x, y, r, col)
+local CircleComponent = function(x, y, r, col)
+  -- Draw
   circfill(x, y, r, col)
 end
 
 local getRandomCoord = function() return rnd() * 128 end
-local eyeballComponent = function(eyeColor, _x, _y)
+local EyeballComponent = function(eyeColor, _x, _y)
+  -- Update
   local x, setX = useState(getRandomCoord)
   local y, setY = useState(getRandomCoord)
 
   y = setY((y + 0.25) % 128)
 
+  -- Returned child components will be rendered top-to-bottom
   return {
-    { circleComponent, _x or x, _y or y, 10, white },
-    { circleComponent, _x or x, _y or y, 6, eyeColor },
-    { circleComponent, _x or x, _y or y, 2, black }
+    { CircleComponent, _x or x, _y or y, 10, white },
+    { CircleComponent, _x or x, _y or y, 6, eyeColor },
+    { CircleComponent, _x or x, _y or y, 2, black }
   }
 end
 
-local containerComponent = function()
+local AppComponent = function()
+  -- Update
   cls(15)
 
-  -- Because the last eyeball is only rendered 99% of the time, it will sometimes not be rendered and unmount.
-  -- This will result in the last eyeball's getting cleaned up and be given a new initial position when re-mounted.
-  -- Eyeballs 1-3 are not conditional, and their state is correctly persisted forever.
-
-  local numEyeballs = 3
-  if (rnd() < 0.99) then
-    numEyeballs += 1
-  end
-
+  -- Conditionally render the center eyeball based on the ❎ button
   local shouldRenderCenterEyeball = btn(❎)
 
-  local threeEyeballs = {
-    { eyeballComponent, brown },
-    { eyeballComponent, brown },
-    { eyeballComponent, brown }
+  -- Because the last eyeball is only rendered 99% of the time, it will sometimes not be rendered and unmount.
+  -- This will result in the last eyeball's state getting cleaned up and be given a new initial position when re-mounted.
+  -- Eyeballs 1-3 are not conditional, and their state is correctly persisted forever.
+  local numEyeballs = (rnd() < 0.99) and 4 or 3
+
+  -- Define a static array of components to render
+  local twoStaticBrownEyeballs = {
+    { EyeballComponent, brown },
+    { EyeballComponent, brown }
   }
 
+  -- Returned child components will be rendered top-to-bottom
   return {
     -- To render a component conditionally without affecting subsequent component keys,
     -- render nil for the negative case, to keep occupying the array index, and thereby key.
     shouldRenderCenterEyeball
-        and { eyeballComponent, darkBlue, 64, 64 }
+        and { EyeballComponent, darkBlue, 64, 64 }
         or nil,
     -- To render a static array of components, simply add the array to the return array.
-    threeEyeballs,
-    -- To render a dynamic array of variable size, components must specify a key for identification.
+    twoStaticBrownEyeballs,
+    -- To render a dynamic array of variable size, components should specify a key for identification.
+    -- Otherwise, the array index will be used as key, which can lead to unexpected behavior.
     -- You can utilize an array map method to generate component arrays from data.
     -- Do NOT use unpack() to spread the array into the return array,
     -- as that would bump keys of subsequent components.
     arrayMap(
       range(numEyeballs), function(value)
         local key = value
-        return { key, eyeballComponent, darkGray }
+        return { key, EyeballComponent, darkGray }
       end
     ),
-    { eyeballComponent, lightGray }
+    -- This last component is rendered to show the previous component array doesn't affect this component.
+    { EyeballComponent, lightGray }
   }
 end
 
 local function _update60() end
 local function _draw()
-  renderRoot(containerComponent)
+  renderRoot(AppComponent)
 
   print("mem: " .. stat(0), 0, 10)
 end
