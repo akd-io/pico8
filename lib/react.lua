@@ -4,8 +4,12 @@
   TODOs:
   - Should we implement component wrappings for the different drawing operations?
     - Like the HTML elements in react-dom, we could provide components like Circle, Rect, Line, Text, etc..
-  - Should we provide a createLayoutComponent or something, that provides a default inset for drawing ops of child components? I have a feeling this could be made third party if useContext was supported. Maybe other hacks could make it work too.
+    - What value would that provide though? Unless we do the next idea, and the component wrappings would provide these insets automatically.
+    - Should we provide a createLayoutComponent or something, that provides a default inset for drawing ops of child components? I have a feeling this could be made third party if useContext was supported. Maybe other hacks could make it work too.
   - Benchmark library
+  - Consider refactoring `instances` to be a tree.
+    - This way, instance IDs won't balloon in size. Just 3 levels gives an ID of `0x1cf83f4c_1-0x1cf592cc_3-4-0x1cf591dc_3`
+    - I imagine instance ID size becomming a problem rather quickly. Imagine 100 components rendered at level 10. That's 12*100*10 = 12000 characters.
   - Optimizations for minified production version:
     - Turn __initComponents into an immediately invoked anonymous function expression
     - Delete comments
@@ -29,14 +33,14 @@
   This is problematic if, for example, Body is painting a background to be displays behind the Paragraphs.
   Therefore, we use the element syntax below.
 
-  Function syntax:                  Element syntax:
-  Container({                       { Container, {
-    Header(),                         { Header },
-    Body({                            { Body, {
-      Paragraph("Hello world"),         { Paragraph, "Hello world" },
-      Paragraph("Goodbye world")        { Paragraph, "Goodbye world" }
-    })                                }
-  })                                }
+  React.js/JSX:                               Function syntax:                  Element syntax:
+  <Container>                                 Container({                       { Container, {
+    <Header />                                  Header(),                         { Header },
+    <Body>                                      Body({                            { Body, {
+      <Paragraph>Hello world</Paragraph>          Paragraph("Hello world"),         { Paragraph, "Hello world" },
+      <Paragraph>Goodbye world</Paragraph>        Paragraph("Goodbye world")        { Paragraph, "Goodbye world" }
+    </Body>                                     })                                }
+  </Container>                                })                                }
 
   It is possible to implement a developer experience like the function syntax above, where we seemingly call our function components directly.
   But this would require us to declare function components using a `createComponent()` wrapper function.
@@ -71,7 +75,7 @@
   );
 ]]
 
-function __initComponents()
+function __initReact()
   -- Holds the state of component instances
   local instances = {}
 
@@ -86,8 +90,10 @@ function __initComponents()
     local parentInstanceId = currentInstanceId
 
     -- Generate instance id
+    -- We use tostring(func) to add the address of the external render function to the instance id.
+    -- This is important to support conditionals like `condition and { ComponentA } or { ComponentB }`
     local prefix = parentInstanceId and parentInstanceId .. "-" or ""
-    local instanceId = prefix .. key
+    local instanceId = prefix .. sub(tostring(externalFunctionComponent), 13) .. "_" .. key
 
     printh("Rendering " .. instanceId)
 
@@ -110,7 +116,7 @@ function __initComponents()
       local function renderElements(elements, prefix)
         -- An element is a table whose first value is an internal render function, and whose remaining values are component props.
         for index, element in pairs(elements) do
-          -- TODO: Consider accepting type(element) == "table" in the case of a propless unkeyed components
+          -- TODO: Consider accepting type(element) == "function" in the case of a propless unkeyed components
           assert(type(element) == "table", "Element must be a table. Got " .. type(element) .. ".")
           local firstValue = element[1]
           local firstValueType = type(firstValue)
@@ -185,4 +191,4 @@ function __initComponents()
   return renderRoot, useState
 end
 
-local renderRoot, useState = __initComponents()
+local renderRoot, useState = __initReact()

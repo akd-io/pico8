@@ -5,7 +5,7 @@ local renderRoot, useState = (function()
   local function internalRenderFunction(key, externalFunctionComponent, ...)
     local parentInstanceId = currentInstanceId
     local prefix = parentInstanceId and parentInstanceId .. "-" or ""
-    local instanceId = prefix .. key
+    local instanceId = prefix .. sub(tostring(externalFunctionComponent), 13) .. "_" .. key
     if not instances[instanceId] then
       instances[instanceId] = { hooks = {} }
     end
