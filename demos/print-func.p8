@@ -4,9 +4,10 @@ __lua__
 -- Print func
 -- by akd
 
-function myFunc() end
+local function myFunc() end
 
 -- printh("myFunc: " .. myFunc) -- Error: attempt to concatenate global 'myFunc' (a function value)
 printh(myFunc) -- [function]
 printh(tostr(myFunc)) -- [function]
+printh(tostr(myFunc, 0x1)) -- function: 0x30604e8c
 printh(type(myFunc)) -- function
