@@ -1,4 +1,9 @@
--- Components library
+--[[
+  React.p8
+  This library tries to implement the most relevant features of the React.js library for Pico-8.
+  See the original library here: https://react.dev/
+  Note that regular rules of hooks apply. Check them out here: https://react.dev/reference/rules/rules-of-hooks
+]]
 
 --[[
   TODOs:
@@ -9,7 +14,7 @@
   - Benchmark library
   - Consider refactoring `instances` to be a tree.
     - This way, instance IDs won't balloon in size. Just 3 levels gives an ID of `0x1cf83f4c_1-0x1cf592cc_3-4-0x1cf591dc_3`
-    - I imagine instance ID size becomming a problem rather quickly. Imagine 100 components rendered at level 10. That's 12*100*10 = 12000 characters.
+    - I imagine instance ID size becoming a problem rather quickly. Imagine 100 components rendered at level 10. That's 12*100*10 = 12000 characters.
   - Optimizations for minified production version:
     - Turn __initComponents into an immediately invoked anonymous function expression
     - Delete comments
