@@ -7,7 +7,6 @@
 
 --[[
   TODOs:
-  - Support useContext
   - Support useMemo
   - Should we implement component wrappings for the different drawing operations?
     - Like the HTML elements in react-dom, we could provide components like Circle, Rect, Line, Text, etc..
@@ -91,6 +90,7 @@ function __initReact()
   -- Used during render
   local currentInstanceId = nil
   local frame = 0
+  local currentContextValues = {}
 
   local function internalRenderFunction(key, externalFunctionComponent, ...)
     assert(key != nil, "key must be provided")
@@ -127,16 +127,29 @@ function __initReact()
         for index, element in pairs(elements) do
           -- TODO: Consider accepting type(element) == "function" in the case of a propless unkeyed components
           assert(type(element) == "table", "Element must be a table. Got " .. type(element) .. ".")
+
           local firstValue = element[1]
           local firstValueType = type(firstValue)
 
-          assert(firstValueType == "table" or firstValueType == "number" or firstValueType == "string" or firstValueType == "function", "First value of an element must be a key (number or string), a render function, or another element when it is a fragment (array of elements). Got " .. firstValueType .. ".")
+          assert(firstValueType == "table" or firstValueType == "number" or firstValueType == "string" or firstValueType == "function", "First value of an element must be a key (number or string), a render function, or another element when it is a fragment (array of elements). Got " .. firstValueType .. ". Container element type: " .. type(element))
 
           if (firstValueType == "table") then
-            -- If firstValueType == "table" then element is a fragment (array of elements)
-            -- and should have all its elements rendered
-            -- Their keys will be prefixed with the index of the fragment
-            renderElements(element, index .. "-")
+            if (firstValue.type == "provider") then
+              -- element[1] is a provider
+              local value = element[2]
+              local children = element[3]
+              local context = firstValue.context
+              local previousValue = currentContextValues[context]
+              currentContextValues[context] = value
+              renderElements(children, index .. "-")
+              currentContextValues[context] = previousValue
+            else
+              -- If firstValueType == "table" and the element is not a context
+              -- provider, the element is a fragment (array of elements) and
+              -- should have all its elements rendered.
+              -- Their keys will be prefixed with the index of the fragment
+              renderElements(element, index .. "-")
+            end
           else
             local isKeyedElement = firstValueType == "number" or firstValueType == "string"
             local key = isKeyedElement and firstValue or index
@@ -164,7 +177,7 @@ function __initReact()
   -- useState can be called with a non-function value or a setter function.
   -- Storing functions can be achieved by wrapping the function in a table, or by returning the function from a setter function.
   local function useState(initialValue)
-    assert(currentInstanceId != nil, "hooks can only be called inside components")
+    assert(currentInstanceId != nil, "useState must be called inside of components")
 
     local currentInstance = instances[currentInstanceId]
     local hooks = currentInstance.hooks
@@ -183,6 +196,19 @@ function __initReact()
     return hooks[hookIndex], setState
   end
 
+  local function createContext(defaultValue)
+    assert(currentInstanceId == nil, "createContext must be called outside of components")
+    local context = {}
+    currentContextValues[context] = defaultValue
+    context.Provider = { type = "provider", context = context }
+    return context
+  end
+
+  local function useContext(context)
+    assert(currentInstanceId != nil, "useContext must be called inside of components")
+    return currentContextValues[context]
+  end
+
   local function renderRoot(externalFunctionComponent)
     internalRenderFunction("1", externalFunctionComponent)
 
@@ -197,7 +223,7 @@ function __initReact()
     frame += 1
   end
 
-  return renderRoot, useState
+  return renderRoot, useState, createContext, useContext
 end
 
-local renderRoot, useState = __initReact()
+local renderRoot, useState, createContext, useContext = __initReact()
