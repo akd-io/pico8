@@ -104,7 +104,7 @@ function __initReact()
     local prefix = parentInstanceId and parentInstanceId .. "-" or ""
     local instanceId = prefix .. sub(tostring(externalFunctionComponent), 13) .. "_" .. key
 
-    printh("Rendering " .. instanceId)
+    -- printh("Rendering " .. instanceId)
 
     -- Initialize component state if missing (initial render)
     if not instances[instanceId] then
@@ -184,16 +184,55 @@ function __initReact()
     local hookIndex = currentInstance.hookIndex
 
     if (hooks[hookIndex] == nil) then
-      hooks[hookIndex] = type(initialValue) == "function" and initialValue() or initialValue
+      hooks[hookIndex] = {
+        -- TODO: Possibly add type="useState", and assert it in subsequent renders?
+        value = type(initialValue) == "function" and initialValue() or initialValue
+      }
     end
 
     local function setState(newValue)
-      hooks[hookIndex] = newValue
+      hooks[hookIndex].value = newValue
       return newValue
     end
 
     currentInstance.hookIndex += 1
-    return hooks[hookIndex], setState
+    return hooks[hookIndex].value, setState
+  end
+
+  local function didDepsChange(prevDeps, newDeps)
+    assert(#prevDeps == #newDeps, "dependency arrays must be the same length between renders. Got " .. #prevDeps .. " and " .. #newDeps .. ".")
+    if (#newDeps == 0) then
+      return false
+    end
+    for i = 1, #newDeps do
+      if (prevDeps[i] != newDeps[i]) then
+        return true
+      end
+    end
+    return false
+  end
+
+  local function useMemo(calculateValue, dependencies)
+    assert(currentInstanceId != nil, "useMemo must be called inside of components")
+    assert(type(calculateValue) == "function", "useMemo must receive a calculateValue function")
+    assert(type(dependencies) == "table", "useMemo must receive a dependency array")
+
+    local currentInstance = instances[currentInstanceId]
+    local hooks = currentInstance.hooks
+    local hookIndex = currentInstance.hookIndex
+
+    if (hooks[hookIndex] == nil
+          or didDepsChange(hooks[hookIndex].dependencies, dependencies)) then
+      -- If initial render OR dependencies have changed
+      hooks[hookIndex] = {
+        -- TODO: Possibly add type="useMemo", and assert it in subsequent renders?
+        value = calculateValue(),
+        dependencies = dependencies
+      }
+    end
+
+    currentInstance.hookIndex += 1
+    return hooks[hookIndex].value
   end
 
   local function createContext(defaultValue)
@@ -223,7 +262,7 @@ function __initReact()
     frame += 1
   end
 
-  return renderRoot, useState, createContext, useContext
+  return renderRoot, useState, createContext, useContext, useMemo
 end
 
-local renderRoot, useState, createContext, useContext = __initReact()
+local renderRoot, useState, createContext, useContext, useMemo = __initReact()
