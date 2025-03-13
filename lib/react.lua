@@ -8,6 +8,16 @@
 --[[
   TODOs:
   - Support useMemo
+  - Remove mentions of "Fragment". Upon review, we have implemented support for arrays, which is also available in React.js. Fragments are a JSX-specific construct.
+    - To emphasize this; As per https://stackoverflow.com/a/55236980, none of the pros of fragments apply to our array support:
+      > Using array notation has has some confusing differences from normal JSX:
+      > 1. Children in an array must be separated by commas.
+      > 2. Children in an array must have a key to prevent React’s key warning.
+      > 3. Strings must be wrapped in quotes.
+      To summarize,
+      1. As we have no compile step, unlike JSX, we can't do away with commas.
+      2. As we have no warnings specific to arrays, this is not an issue for the array syntax.
+      3. Back to 1; as we have no compile step, unlike JSX, we can't do away with quotes.
   - Should we implement component wrappings for the different drawing operations?
     - Like the HTML elements in react-dom, we could provide components like Circle, Rect, Line, Text, etc..
     - What value would that provide though? Unless we do the next idea, and the component wrappings would provide these insets automatically.
