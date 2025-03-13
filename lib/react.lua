@@ -184,6 +184,7 @@ function __initReact()
     local hookIndex = currentInstance.hookIndex
 
     if (hooks[hookIndex] == nil) then
+      -- If initial render, initialize state
       hooks[hookIndex] = {
         -- TODO: Possibly add type="useState", and assert it in subsequent renders?
         value = type(initialValue) == "function" and initialValue() or initialValue
@@ -223,7 +224,7 @@ function __initReact()
 
     if (hooks[hookIndex] == nil
           or didDepsChange(hooks[hookIndex].dependencies, dependencies)) then
-      -- If initial render OR dependencies have changed
+      -- If initial render OR dependencies have changed, update hook value and deps
       hooks[hookIndex] = {
         -- TODO: Possibly add type="useMemo", and assert it in subsequent renders?
         value = calculateValue(),
