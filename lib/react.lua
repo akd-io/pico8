@@ -7,7 +7,6 @@
 
 --[[
   TODOs:
-  - Support useMemo
   - Remove mentions of "Fragment". Upon review, we have implemented support for arrays, which is also available in React.js. Fragments are a JSX-specific construct.
     - To emphasize this; As per https://stackoverflow.com/a/55236980, none of the pros of fragments apply to our array support:
       > Using array notation has has some confusing differences from normal JSX:
