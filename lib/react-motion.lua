@@ -51,8 +51,55 @@
 ]]
 
 function __initMotion()
-  local function useSpring()
-    assert(false, "useSpring is not implemented yet.")
+  local SpringConfigContext = createContext({
+    stiffness = 100,
+    damping = 10,
+    mass = 1
+  })
+
+  -- Helper function to calculate the next state of the spring
+  local function calculateSpringState(stiffness, damping, mass, target, position, velocity, dt)
+    local displacement = position - target
+    local acceleration = (-stiffness * displacement - damping * velocity) / mass
+    local newVelocity = velocity + acceleration * dt
+    local newPosition = position + newVelocity * dt
+    return newPosition, newVelocity
+  end
+
+  local function useSpring(animate)
+    -- TODO: Rename to useSprings
+    -- TODO: support single animate number argument for singluar spring, or add useSpring alongside useSprings.
+    assert(type(animate) == "table", "animate must be an array of function arguments.")
+
+    local state = useState(function()
+      return {
+        targetPositions = animate,
+        currentPositions = animate,
+        currentVelocities = {}
+      }
+    end)
+
+    assert(#state.currentPositions == #animate, "animate must have the same length as the current state.")
+
+    state.targetPositions = animate
+
+    local springConfig = useContext(SpringConfigContext)
+
+    for i, targetPosition in ipairs(state.targetPositions) do
+      local newPos, newVel = calculateSpringState(
+        springConfig.stiffness,
+        springConfig.damping,
+        springConfig.mass,
+        targetPosition,
+        state.currentPositions[i],
+        state.currentVelocities[i] or 0,
+        1 / 60
+      )
+      state.currentPositions[i] = newPos
+      state.currentVelocities[i] = newVel
+    end
+
+    return state.currentPositions, state.currentVelocities
   end
 
   local function useTransition()
@@ -63,8 +110,13 @@ function __initMotion()
     assert(false, "AnimatePresence is not implemented yet.")
   end
 
-  local function Motion()
-    assert(false, "Motion is not implemented yet.")
+  local function Motion(drawFunc, animate)
+    assert(type(drawFunc) == "function", "drawFunc must be a function.")
+    assert(type(animate) == "table", "animate must be an array of function arguments.")
+
+    local currentArgs = useSpring(animate)
+
+    drawFunc(unpack(currentArgs))
   end
 
   return useSpring, useTransition, AnimatePresence, Motion
