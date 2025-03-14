@@ -133,7 +133,7 @@ function __initReact()
 
       local function renderElements(elements, prefix)
         -- An element is a table whose first value is an internal render function, and whose remaining values are component props.
-        for index, element in pairs(elements) do
+        for index, element in ipairs(elements) do
           -- TODO: Consider accepting type(element) == "function" in the case of a propless unkeyed components
           assert(type(element) == "table", "Element must be a table. Got " .. type(element) .. ".")
 
