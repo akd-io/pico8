@@ -1,8 +1,8 @@
 local function useIsInitialRender()
-  local isInitialRender, set = useState(1)
-  if (isInitialRender == 0) then
+  local state, setState = useState(1)
+  if (state == 0) then
     return false
   end
-  set(0)
+  setState(0)
   return true
 end
