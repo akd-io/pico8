@@ -1,6 +1,8 @@
 pico-8 cartridge // http://www.pico-8.com
 version 42
 __lua__
+-- React Eyeballs
+-- by akd
 #include ../lib/react.lua
 #include ../lib/array_methods.lua
 #include ../lib/range.lua

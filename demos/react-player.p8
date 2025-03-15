@@ -1,6 +1,8 @@
 pico-8 cartridge // http://www.pico-8.com
 version 42
 __lua__
+-- React Player
+-- by akd
 #include ../lib/react.lua
 
 local function getRandomCoord()

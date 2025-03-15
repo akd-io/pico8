@@ -1,9 +1,9 @@
 pico-8 cartridge // http://www.pico-8.com
 version 42
 __lua__
+-- React Context Test
+-- by akd
 --[[
-  React Context Test
-
   Prints:
     Layer1 context value: Default context value
     Layer4 context value: Default context value

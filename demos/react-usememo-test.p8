@@ -1,9 +1,9 @@
 pico-8 cartridge // http://www.pico-8.com
 version 42
 __lua__
+-- React useMemo Test
+-- by akd
 --[[
-  React useMemo Test
-
   Prints:
     useMemo: Calculated doubleFlooredCount: 0
     App: Count: 0.3 FlooredCount: 0 DoubleFlooredCount: 0
