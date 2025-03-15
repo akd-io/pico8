@@ -66,15 +66,15 @@ function __initMotion()
     return newPosition, newVelocity
   end
 
-  local function useSpring(animate)
+  local function useSpring(animate, initial)
     -- TODO: Rename to useSprings
-    -- TODO: support single animate number argument for singluar spring, or add useSpring alongside useSprings.
+    -- TODO: support single animate number argument for singular spring, or add useSpring alongside useSprings.
     assert(type(animate) == "table", "animate must be an array of function arguments.")
 
     local state = useState(function()
       return {
         targetPositions = animate,
-        currentPositions = animate,
+        currentPositions = initial or animate,
         currentVelocities = {}
       }
     end)
@@ -110,11 +110,11 @@ function __initMotion()
     assert(false, "AnimatePresence is not implemented yet.")
   end
 
-  local function Motion(drawFunc, animate)
+  local function Motion(drawFunc, animate, initial)
     assert(type(drawFunc) == "function", "drawFunc must be a function.")
     assert(type(animate) == "table", "animate must be an array of function arguments.")
 
-    local currentArgs = useSpring(animate)
+    local currentArgs = useSpring(animate, initial)
 
     drawFunc(unpack(currentArgs))
   end
