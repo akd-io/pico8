@@ -1,3 +1,17 @@
+-- isArray returns true if the value is a table and all keys are consecutive numbers.
+function isArray(value)
+  if (type(value) != "table") then
+    return false
+  end
+  local arrayLength = #value
+  for k in pairs(value) do
+    if (type(k) != "number" or k > arrayLength) then
+      return false
+    end
+  end
+  return true
+end
+
 function map(table, callback, iterator)
   local newTable = {}
   for i, v in iterator(table) do
@@ -187,20 +201,6 @@ end
 function arrayFrom(iterator)
   assert(false, "arrayFrom is not implemented")
   -- TODO: Find out how to use iterators in lua. https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from
-end
-
--- isArray returns true if the value is a table and all keys are consecutive numbers.
-function isArray(value)
-  if (type(value) != "table") then
-    return false
-  end
-  local arrayLength = #value
-  for k in pairs(value) do
-    if (type(k) != "number" or k > arrayLength) then
-      return false
-    end
-  end
-  return true
 end
 
 function arraySlice(array, start, end_)
