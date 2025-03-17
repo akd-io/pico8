@@ -8,9 +8,7 @@
 
 --[[
   TODOs:
-  - Support `useSpring`. Like `useSpring(0, { stiffness: 300 })`
-    - See https://motion.dev/docs/react-use-spring#transition
-    - See https://motion.dev/docs/react-transitions#spring
+  - Support adding config to `useSpring`?. Like `useSpring(0, { stiffness: 300 })`
   - Support `useTransition`. Linear?, bezier?, frame-by-frame value array?
   - Support AnimatePresence.
   - Like Motion.Div, etc., support Motion wrappers for drawing functions.
@@ -57,19 +55,9 @@ function __initMotion()
     mass = 1
   })
 
-  -- Helper function to calculate the next state of the spring
-  local function calculateSpringState(stiffness, damping, mass, target, position, velocity, dt)
-    local displacement = position - target
-    local acceleration = (-stiffness * displacement - damping * velocity) / mass
-    local newVelocity = velocity + acceleration * dt
-    local newPosition = position + newVelocity * dt
-    return newPosition, newVelocity
-  end
-
-  local function useSpring(animate, initial)
-    -- TODO: Rename to useSprings
-    -- TODO: support single animate number argument for singular spring, or add useSpring alongside useSprings.
-    assert(type(animate) == "table", "animate must be an array of function arguments.")
+  local function useSprings(animate, initial)
+    assert(type(animate) == "table", "animate must be an array of numbers.")
+    assert(type(initial) == "nil" or (type(initial) == "table" and type(initial[1]) == "number"), "initial must be nil or an array of numbers.")
 
     local state = useState(function()
       return {
@@ -79,27 +67,32 @@ function __initMotion()
       }
     end)
 
-    assert(#state.currentPositions == #animate, "animate must have the same length as the current state.")
+    assert(#state.currentPositions == #animate, "The length of animate must be constant.")
 
     state.targetPositions = animate
 
     local springConfig = useContext(SpringConfigContext)
 
+    local dt = 1 / 60
     for i, targetPosition in ipairs(state.targetPositions) do
-      local newPos, newVel = calculateSpringState(
-        springConfig.stiffness,
-        springConfig.damping,
-        springConfig.mass,
-        targetPosition,
-        state.currentPositions[i],
-        state.currentVelocities[i] or 0,
-        1 / 60
-      )
-      state.currentPositions[i] = newPos
-      state.currentVelocities[i] = newVel
+      local position = state.currentPositions[i]
+      local velocity = state.currentVelocities[i] or 0
+      local displacement = position - targetPosition
+      local acceleration = (-springConfig.stiffness * displacement - springConfig.damping * velocity) / springConfig.mass
+      local newVelocity = velocity + acceleration * dt
+      state.currentVelocities[i] = newVelocity
+      state.currentPositions[i] = position + newVelocity * dt
     end
 
     return state.currentPositions, state.currentVelocities
+  end
+
+  local function useSpring(animate, initial)
+    assert(type(animate) == "table", "animate must be an array of function arguments.")
+    assert(type(initial) == "nil" or type(initial) == "number", "initial must be nil or a number.")
+    local initial = initial and { initial } or nil
+    local positions, velocities = useSprings({ animate }, initial)
+    return positions[1], velocities[1]
   end
 
   local function useTransition()
@@ -114,12 +107,18 @@ function __initMotion()
     assert(type(drawFunc) == "function", "drawFunc must be a function.")
     assert(type(animate) == "table", "animate must be an array of function arguments.")
 
-    local currentArgs = useSpring(animate, initial)
+    --[[
+      TODOs:
+      - Make it possible to pass non-animated props to the drawFunc.
+        - I think we might need to use props objects instead of props arrays here to achieve a nice API.
+    ]]
+
+    local currentArgs = useSprings(animate, initial)
 
     drawFunc(unpack(currentArgs))
   end
 
-  return useSpring, useTransition, AnimatePresence, Motion
+  return useSprings, useSpring, useTransition, AnimatePresence, Motion
 end
 
-local useSpring, useTransition, AnimatePresence, Motion = __initMotion()
+local useSprings, useSpring, useTransition, AnimatePresence, Motion = __initMotion()
