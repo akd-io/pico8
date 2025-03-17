@@ -92,6 +92,8 @@
   );
 ]]
 
+DEV = true
+
 function __initReact()
   -- Holds the state of component instances
   local instances = {}
@@ -101,8 +103,21 @@ function __initReact()
   local frame = 0
   local currentContextValues = {}
 
+  function isArray(value)
+    if (type(value) != "table") then
+      return false
+    end
+    local arrayLength = #value
+    for k in pairs(value) do
+      if (type(k) != "number" or k > arrayLength) then
+        return false
+      end
+    end
+    return true
+  end
+
   local function internalRenderFunction(key, externalFunctionComponent, ...)
-    assert(key != nil, "key must be provided")
+    if DEV then assert(key != nil, "key must be provided") end
 
     -- Save parent/previous component instance and id
     local parentInstanceId = currentInstanceId
@@ -126,25 +141,35 @@ function __initReact()
     instances[instanceId].lastRenderFrame = frame
 
     -- Render component with remaining args
-    local elements = externalFunctionComponent(...)
+    local elementArray = externalFunctionComponent(...)
     -- TODO: Consider not only accepting a fragment here, but also the different element types supported in renderElements
-    if elements != nil then
-      assert(type(elements) == "table", "Elements array must be a table. Got " .. type(elements) .. ".")
-
+    if elementArray != nil then
       local function renderElements(elements, prefix)
-        -- An element is a table whose first value is an internal render function, and whose remaining values are component props.
+        if DEV then
+          assert(type(elements) == "table", "Elements array was not an array. Got type " .. type(elements) .. ".")
+          assert(isArray(elements), "Elements array was a table, but not an array. Arrays are tables with consecutive number keys. And arrays can't contain nil values. Replace nils in element arrays with false to unmount components.")
+        end
+
         for index, element in ipairs(elements) do
-          -- TODO: Consider accepting type(element) == "function" in the case of a propless unkeyed components
-          assert(type(element) == "table", "Element must be a table. Got " .. type(element) .. ".")
+          if (type(element) == "boolean") then
+            goto continue
+          end
+
+          -- TODO: Consider accepting type(element) == "function" in the case of a propless unkeyed component
+          if DEV then assert(type(element) == "table", "Element must be a table or boolean. Got type " .. type(element) .. ".") end
 
           local firstValue = element[1]
           local firstValueType = type(firstValue)
 
-          assert(firstValueType == "table" or firstValueType == "number" or firstValueType == "string" or firstValueType == "function", "First value of an element must be a key (number or string), a render function, or another element when it is a fragment (array of elements). Got " .. firstValueType .. ". Container element type: " .. type(element))
+          if DEV then
+            assert(
+              firstValueType == "table" or firstValueType == "number" or firstValueType == "string" or firstValueType == "function" or firstValueType == "boolean",
+              "Unrecognized element syntax of the form { " .. firstValueType .. ", ... }."
+            )
+          end
 
           if (firstValueType == "table") then
             if (firstValue.type == "provider") then
-              -- element[1] is a provider
               local value = element[2]
               local children = element[3]
               local context = firstValue.context
@@ -154,25 +179,31 @@ function __initReact()
               currentContextValues[context] = previousValue
             else
               -- If firstValueType == "table" and the element is not a context
-              -- provider, the element is a fragment (array of elements) and
-              -- should have all its elements rendered.
+              -- provider, the element is an array of elements and should have
+              -- all its elements rendered.
               -- Their keys will be prefixed with the index of the fragment
               renderElements(element, index .. "-")
             end
+          elseif (firstValueType == "boolean") then
+            -- If firstValueType == "boolean", element[1] is a placeholder for
+            -- a conditionally rendered element, and element is an array of
+            -- elements.
+            renderElements(element, index .. "-")
           else
             local isKeyedElement = firstValueType == "number" or firstValueType == "string"
             local key = isKeyedElement and firstValue or index
             local externalFunctionComponent = isKeyedElement and element[2] or firstValue
 
             local renderFuncType = type(externalFunctionComponent)
-            assert(renderFuncType == "function", "Elements must be tables with a function as the first element. Got Type " .. renderFuncType .. ".")
+            if DEV then assert(renderFuncType == "function", "Elements must be tables with a function as the first element. Got type " .. renderFuncType .. ".") end
             local indexOfFirstProp = isKeyedElement and 3 or 2
             internalRenderFunction((prefix or "") .. key, externalFunctionComponent, select(indexOfFirstProp, unpack(element)))
           end
+
+          ::continue::
         end
       end
-
-      renderElements(elements)
+      renderElements(elementArray)
     end
 
     -- Restore parent component context
@@ -186,7 +217,7 @@ function __initReact()
   -- useState can be called with a non-function value or a setter function.
   -- Storing functions can be achieved by wrapping the function in a table, or by returning the function from a setter function.
   local function useState(initialValue)
-    assert(currentInstanceId != nil, "useState must be called inside of components")
+    if DEV then assert(currentInstanceId != nil, "useState must be called inside of components") end
 
     local currentInstance = instances[currentInstanceId]
     local hooks = currentInstance.hooks
@@ -210,7 +241,7 @@ function __initReact()
   end
 
   local function didDepsChange(prevDeps, newDeps)
-    assert(#prevDeps == #newDeps, "dependency arrays must be the same length between renders. Got " .. #prevDeps .. " and " .. #newDeps .. ".")
+    if DEV then assert(#prevDeps == #newDeps, "dependency arrays must be the same length between renders. Got lengths " .. #prevDeps .. " and " .. #newDeps .. ".") end
     if (#newDeps == 0) then
       return false
     end
@@ -223,9 +254,11 @@ function __initReact()
   end
 
   local function useMemo(calculateValue, dependencies)
-    assert(currentInstanceId != nil, "useMemo must be called inside of components")
-    assert(type(calculateValue) == "function", "useMemo must receive a calculateValue function")
-    assert(type(dependencies) == "table", "useMemo must receive a dependency array")
+    if DEV then
+      assert(currentInstanceId != nil, "useMemo must be called inside of components")
+      assert(type(calculateValue) == "function", "useMemo must receive a calculateValue function")
+      assert(type(dependencies) == "table", "useMemo must receive a dependency array")
+    end
 
     local currentInstance = instances[currentInstanceId]
     local hooks = currentInstance.hooks
@@ -246,7 +279,7 @@ function __initReact()
   end
 
   local function createContext(defaultValue)
-    assert(currentInstanceId == nil, "createContext must be called outside of components")
+    if DEV then assert(currentInstanceId == nil, "createContext must be called outside of components") end
     local context = {}
     currentContextValues[context] = defaultValue
     context.Provider = { type = "provider", context = context }
@@ -254,7 +287,7 @@ function __initReact()
   end
 
   local function useContext(context)
-    assert(currentInstanceId != nil, "useContext must be called inside of components")
+    if DEV then assert(currentInstanceId != nil, "useContext must be called inside of components") end
     return currentContextValues[context]
   end
 
