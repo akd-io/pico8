@@ -103,15 +103,12 @@ function __initReact()
   local frame = 0
   local currentContextValues = {}
 
-  function isArray(value)
-    if (type(value) != "table") then
-      return false
-    end
-    local arrayLength = #value
-    for k in pairs(value) do
-      if (type(k) != "number" or k > arrayLength) then
-        return false
-      end
+  local function isArray(table)
+    if (type(table) != "table") then return false end
+    local i = 1
+    for _ in pairs(table) do
+      if table[i] == nil then return false end
+      i += 1
     end
     return true
   end
@@ -155,7 +152,7 @@ function __initReact()
             goto continue
           end
 
-          -- TODO: Consider accepting type(element) == "function" in the case of a propless unkeyed component
+          -- TODO: Consider accepting type(element) == "function" in the case of a propless unkeyed component, or just a function to call. Enables an API to run code after render.
           if DEV then assert(type(element) == "table", "Element must be a table or boolean. Got type " .. type(element) .. ".") end
 
           local firstValue = element[1]

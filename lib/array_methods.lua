@@ -1,10 +1,9 @@
--- isArray returns true if the value is a table and all keys are consecutive numbers.
 local function isArray(table)
   if (type(table) != "table") then return false end
-  local i = 0
+  local i = 1
   for _ in pairs(table) do
-    i += 1
     if table[i] == nil then return false end
+    i += 1
   end
   return true
 end
