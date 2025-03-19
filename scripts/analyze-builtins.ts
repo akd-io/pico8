@@ -1,4 +1,8 @@
-import { shrinko8Builtins, picolsBuiltins } from "./builtins";
+import {
+  shrinko8Builtins,
+  picolsBuiltins,
+  fandomHeaderArticleSectionHeader3Builtins,
+} from "./builtins";
 
 // Find the builtins that are in shrinko8 but not in picols
 const shrinko8Only = shrinko8Builtins.filter(
@@ -12,6 +16,16 @@ const picolsOnly = picolsBuiltins.filter(
 );
 console.log("Picols only builtins:", picolsOnly);
 
+// Find the builtins that are in either shrinko8 or picols
+const either = [...new Set([...shrinko8Builtins, ...picolsBuiltins])];
+
+// Find the builtins that are on fandom only
+const fandomOnly = fandomHeaderArticleSectionHeader3Builtins.filter(
+  (builtin) =>
+    !shrinko8Builtins.includes(builtin) && !picolsBuiltins.includes(builtin)
+);
+console.log("Fandom only builtins:", fandomOnly);
+
 /*
 Output:
 Shrinko8 only builtins: [
@@ -20,4 +34,7 @@ Shrinko8 only builtins: [
   "_pausemenu", "set_draw_slice", "tostring"
 ]
 Picols only builtins: [ "info", "rawequals", "self", "coyield", "?" ]
+Fandom only builtins: [ "rand" ]
+
+Note: Fandom's "rand" is an error in the article. Should be "rnd".
 */
