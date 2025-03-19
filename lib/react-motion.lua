@@ -46,6 +46,11 @@
         - Might be more performant than a component?
   - Possibly implement useContext in react.p8, and use that to set default
     animation settings, like spring config.
+  - See if it's possible to release a pure Lua version and have this be a react
+    wrapper.
+    - I imagine we'll reach the fewest tokens in react-motion by baking not
+      relying on another external implementation.
+    - I should probably just release a `calcNextSpringPosition` function
 ]]
 
 function __initMotion()
