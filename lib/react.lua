@@ -92,6 +92,7 @@
   );
 ]]
 
+--[[const]]
 DEV = true
 
 function __initReact()
