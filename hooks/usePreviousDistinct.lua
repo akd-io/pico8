@@ -1,9 +1,9 @@
 --[[
+  usePreviousDistinct will return the previous distinct value.
+
   REQUIREMENTS:
   - react.lua
 ]]
-
--- usePreviousDistinct will return the last distinct value
 local function usePreviousDistinct(current)
   local state = useState({
     prev = nil,

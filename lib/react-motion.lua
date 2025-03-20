@@ -3,7 +3,9 @@
   This library tries to implement the most relevant features of the React
   Motion library for Pico-8.
   See the original library here: https://motion.dev/
-  The library assumes that the React library is already included.
+
+  REQUIREMENTS:
+  - react.lua
 ]]
 
 --[[

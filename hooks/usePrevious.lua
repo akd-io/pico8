@@ -1,9 +1,9 @@
 --[[
+  usePrevious will return the value from the previous render.
+
   REQUIREMENTS:
   - react.lua
 ]]
-
--- usePrevious will return the value from the previous render
 local function usePrevious(current)
   local state = useState({
     prev = nil,
