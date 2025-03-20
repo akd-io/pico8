@@ -4,9 +4,9 @@ __lua__
 -- folder
 -- by akd
 
-#include ../../lib/utils.lua
 #include ../../lib/react.lua
 #include ../../lib/react-motion.lua
+#include ../../lib/utils.lua
 #include ../../hooks/usePrevious.lua
 #include ../../hooks/useMouse.lua
 #include folder.lua
