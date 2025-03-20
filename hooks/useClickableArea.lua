@@ -8,10 +8,12 @@
 
 local function useClickableArea(x1, y1, x2, y2)
   local mouse = useMouse()
-  local isHovering = mouse.x >= x1 and mouse.x <= x2 and mouse.y >= y1 and mouse.y <= y2
+  local isHovering = x1 <= mouse.x and mouse.x <= x2 and y1 <= mouse.y and mouse.y <= y2
 
   return {
     isHovering = isHovering,
+    leftDown = isHovering and mouse.leftDown,
+    rightDown = isHovering and mouse.rightDown,
     leftClicked = isHovering and mouse.leftClicked,
     rightClicked = isHovering and mouse.rightClicked
   }

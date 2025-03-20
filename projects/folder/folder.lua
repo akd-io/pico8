@@ -2,7 +2,7 @@
 local extensionToSpriteMap = {
   ["/"] = 1,
   [".txt"] = 2,
-  [".p8l"] = 2, -- Log file from printh(text, filename) https://www.lexaloffle.com/dl/docs/pico-8_manual.html#PRINTH
+  [".p8l"] = 2, -- Log file from printh(text, fileName) https://www.lexaloffle.com/dl/docs/pico-8_manual.html#PRINTH
   [".p8"] = 3, -- Cartridge, text format https://www.lexaloffle.com/dl/docs/pico-8_manual.html#_Loading_and_Saving
   [".p8.png"] = 3, -- Cartridge, image format https://www.lexaloffle.com/dl/docs/pico-8_manual.html#_Loading_and_Saving
   [".p8.rom"] = 3, -- Cartridge, raw 32k binary format https://www.lexaloffle.com/dl/docs/pico-8_manual.html#_Loading_and_Saving
@@ -37,20 +37,61 @@ end
 
 local LsContext = createContext(sortedFileArray(ls()))
 
-local function getExtension(filename)
-  if endsWidth(filename, "/") then
+local function getExtension(fileName)
+  if endsWidth(fileName, "/") then
     return "/"
   end
-  local tokens = split(filename, ".")
+  local tokens = split(fileName, ".")
   return "." .. tokens[#tokens]
 end
 
-local function FileList(lsValue, x, y)
-  for i, item in ipairs(lsValue) do
-    local y = y + (i - 1) * 7
-    spr(extensionToSpriteMap[getExtension(item)], x, y)
-    print(item, x + 6, y, 6)
+local function File(fileName, x, y)
+  local fileNameX = x + 6
+  local iconWidth = 6
+  local fileNameTextWidth = print(fileName, 0, 256) - 1
+  local clickableArea = useClickableArea(
+    x,
+    y,
+    x + fileNameTextWidth + iconWidth,
+    y + 6
+  )
+
+  if clickableArea.leftClicked then
+    printh(fileName .. " clicked")
   end
+
+  if clickableArea.isHovering then
+    rectfill(
+      x - 1,
+      y - 1,
+      x + fileNameTextWidth + iconWidth,
+      y + 5,
+      13
+    )
+  end
+
+  if clickableArea.leftDown then
+    rectfill(
+      x - 1,
+      y - 1,
+      x + fileNameTextWidth + iconWidth,
+      y + 5,
+      12
+    )
+  end
+  spr(extensionToSpriteMap[getExtension(fileName)], x, y)
+  print(fileName, fileNameX, y, 6)
+end
+
+local function FileList(fileNames, x, y)
+  assert(type(x) == "number")
+  return {
+    arrayMap(
+      fileNames, function(fileName, i)
+        return { fileName, File, fileName, x + 6, y + (i - 1) * 7 }
+      end
+    )
+  }
 end
 
 local function MouseSelection()
@@ -72,10 +113,10 @@ end
 
 local function ListView()
   local cwd, setCwd = useState(nil)
-  local lsValue = useContext(LsContext)
+  local fileNames = useContext(LsContext)
 
   return {
-    { FileList, lsValue, 10, 10 }
+    { FileList, fileNames, 10, 10 }
   }
 end
 
