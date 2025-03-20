@@ -1,3 +1,16 @@
+-- sortedArray by Werxyz from https://discord.com/channels/215267007245975552/1168158710372241498/1168158710372241498
+local function sortedArray(array)
+  local sorted = {}
+  for d in all(array) do
+    local i = 1
+    while (sorted[i] and sorted[i] < d) do
+      i += 1
+    end
+    add(sorted, d, i)
+  end
+  return sorted
+end
+
 -- pad() takes a positive integer, a length, and optionally a symbol.
 -- It converts the integer to a string, and pads it with the specified symbol or 0s to match the specified length.
 local function pad(num, length, symbol)
