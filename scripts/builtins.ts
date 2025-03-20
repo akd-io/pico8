@@ -130,7 +130,7 @@ export const shrinko8Builtins = [
 ];
 
 /**
- * From https://github.com/akd-io/pico8-ls/blob/master/server/src/parser/builtins.ts#L9
+ * From https://github.com/japhib/pico8-ls/blob/master/server/src/parser/builtins.ts#L9
  */
 export const picolsBuiltins = [
   "circ",
