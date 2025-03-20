@@ -4,7 +4,7 @@ __lua__
 -- Number edge cases
 -- by akd
 
-#include ../lib/pad.lua
+#include ../lib/utils.lua
 
 function logHexStringStats(hex)
   local val = tonum(hex, 0x3)

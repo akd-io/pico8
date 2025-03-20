@@ -4,7 +4,7 @@ __lua__
 -- Stats
 -- by akd
 
-#include ../lib/pad.lua
+#include ../lib/utils.lua
 
 function _draw()
   cls()
