@@ -6,7 +6,7 @@ __lua__
 
 #include ../../../lib/round-rectfill.lua
 #include ../../../lib/get-text-width.lua
-#include ../../../lib/shallow-copy.lua
+#include ../../../lib/utils.lua
 #include ../lib/items.lua
 #include ../lib/generate-item.lua
 

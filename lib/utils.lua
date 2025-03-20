@@ -1,3 +1,11 @@
+function shallowCopy(sourceTable)
+  local destTable = {}
+  for k, v in pairs(sourceTable) do
+    destTable[k] = v
+  end
+  return destTable
+end
+
 -- sortedArray by Werxyz from https://discord.com/channels/215267007245975552/1168158710372241498/1168158710372241498
 local function sortedArray(array)
   local sorted = {}

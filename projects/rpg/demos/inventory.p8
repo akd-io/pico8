@@ -4,7 +4,6 @@ __lua__
 -- inventory demo
 -- by akd
 
-#include ../../../lib/shallow-copy.lua
 #include ../../../lib/round-rect.lua
 #include ../../../lib/round-rectfill.lua
 #include ../../../lib/get-text-width.lua
