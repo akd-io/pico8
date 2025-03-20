@@ -16,8 +16,6 @@ __lua__
 -- 5. Try using the spritesheet instead. This way we can generate sprites on the fly and get 1x1 size tiles instead of 8x8.
 --    The width of the spritesheet is only 16 tiles, so we might need to get creative mapping the 17x17 map coords to the 16x32 spritesheet coords.
 
-#include ../lib/join.lua
-#include ../lib/table_to_str.lua
 #include ../lib/with_temp_seed.lua
 #include ../lib/get_text_width.lua
 #include ../lib/overlay.lua

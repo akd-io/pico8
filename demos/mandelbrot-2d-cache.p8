@@ -8,13 +8,16 @@ __lua__
 #include ../lib/overlay.lua
 #include ../lib/draw_to_spritesheet.lua
 #include ../lib/mandelbrot.lua
-#include ../lib/join.lua
+#include ../lib/array_methods.lua
 
 local offsetX = 0
 local offsetY = 0
 local zoom = 1
 local iterations = 25
-local showHUD = false
+local showHUD = true
+
+-- TODO: Change controls so x is always the modifier for shortcuts.
+-- TODO: Chance controls so o being held shows the HUD.
 
 function drawFullSpritesheet()
   drawToSpritesheet(function()
