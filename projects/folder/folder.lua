@@ -15,6 +15,11 @@ local extensionToSpriteMap = {
   [".js"] = 6, -- Exported web app js https://www.lexaloffle.com/dl/docs/pico-8_manual.html#Web_Applications_
   [".bin"] = 3, -- Exported binary app https://www.lexaloffle.com/dl/docs/pico-8_manual.html#Binary_Applications_
   [".gif"] = 7 -- Exported video https://www.lexaloffle.com/dl/docs/pico-8_manual.html#Recording_GIFs
+  -- TODO:
+  -- .md -- Markdown
+  -- .zip -- Zip file
+  -- .xcf -- Gimp file
+  -- .sh/.bat/.make
 }
 
 local function sortedFileArray(dir)
@@ -44,12 +49,28 @@ local function FileList(lsValue, x, y)
   for i, item in ipairs(lsValue) do
     local y = y + (i - 1) * 7
     spr(extensionToSpriteMap[getExtension(item)], x, y)
-    print(item, x + 6, y)
+    print(item, x + 6, y, 6)
+  end
+end
+
+local function MouseSelection()
+  local mouse = useMouse()
+
+  if mouse.leftSelection then
+    color(3)
+    rectfill(unpack(mouse.leftSelection))
+    color(11)
+    rect(unpack(mouse.leftSelection))
+  end
+  if mouse.rightSelection then
+    color(13)
+    rectfill(unpack(mouse.rightSelection))
+    color(14)
+    rect(unpack(mouse.rightSelection))
   end
 end
 
 local function ListView()
-  cls(1)
   local cwd, setCwd = useState(nil)
   local lsValue = useContext(LsContext)
 
@@ -65,17 +86,29 @@ end
 local function App()
   local lsValue = sortedFileArray(ls())
   local mouse = useMouse()
+  cls(1)
   return {
+    { MouseSelection },
     {
       LsContext.Provider, lsValue, {
         { ListView }
       }
     },
-    { Mouse, mouse.x, mouse.y }
+    { Mouse, mouse.x - 1, mouse.y - 1 }
+  }
+end
+
+local function Providers()
+  return {
+    {
+      MouseProvider, {
+        { App }
+      }
+    }
   }
 end
 
 local function _update60() end
 local function _draw()
-  renderRoot(App)
+  renderRoot(Providers)
 end

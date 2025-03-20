@@ -5,17 +5,33 @@ __lua__
 -- by akd
 #include ../lib/react.lua
 #include ../lib/react-motion.lua
+#include ../hooks/usePrevious.lua
 #include ../hooks/useMouse.lua
 
-local function App()
+local function BlueSelectionRect()
   local mouse = useMouse()
 
-  cls()
-  if mouse.showLeftSelection then
-    rectfill(mouse.leftDragStart[1], mouse.leftDragStart[2], mouse.x, mouse.y, 1)
-    rect(mouse.leftDragStart[1], mouse.leftDragStart[2], mouse.x, mouse.y, 12)
+  if mouse.leftSelection then
+    color(1)
+    rectfill(unpack(mouse.leftSelection))
+    color(12)
+    rect(unpack(mouse.leftSelection))
   end
-  spr(17, mouse.x, mouse.y)
+
+  spr(17, mouse.x - 1, mouse.y - 1)
+end
+
+local function App()
+  cls()
+
+  return {
+    {
+      MouseProvider,
+      {
+        { BlueSelectionRect }
+      }
+    }
+  }
 end
 
 function _update60() end

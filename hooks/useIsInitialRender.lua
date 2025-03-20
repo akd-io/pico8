@@ -1,3 +1,8 @@
+--[[
+  REQUIREMENTS:
+  - react.lua
+]]
+
 local function useIsInitialRender()
   local state, setState = useState(1)
   if (state == 0) then
