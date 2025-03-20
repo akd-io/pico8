@@ -1,7 +1,7 @@
-function shallowCopy(source_table)
-  local dest_table = {}
-  for key, value in pairs(source_table) do
-    dest_table[key] = value
+function shallowCopy(sourceTable)
+  local destTable = {}
+  for k, v in pairs(sourceTable) do
+    destTable[k] = v
   end
-  return dest_table
+  return destTable
 end
