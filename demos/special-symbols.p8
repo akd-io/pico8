@@ -9,10 +9,10 @@ __lua__
 function _draw()
   cls()
   local fontHeight = 5
-  smart_print_center("HOLD ❎ TO SEE THE SPECIAL", 64 - fontHeight / 2 - 18)
-  smart_print_center("CHARACTERS WRITTEN WHEN HOLDING", 64 - fontHeight / 2 - 12)
-  smart_print_center("shift IN THE EDITOR", 64 - fontHeight / 2 - 6)
-  smart_print_center(btn(❎) and "…∧░➡️⧗▤⬆️☉🅾️◆" or "\^wqwertyuiop", 64 - fontHeight / 2 + 6)
-  smart_print_center(btn(❎) and "█★⬇️✽●♥웃⌂⬅️" or "\^wasdfghjkl", 64 - fontHeight / 2 + 12)
-  smart_print_center(btn(❎) and "▥❎🐱ˇ▒♪😐" or "\^wzxcvbnm", 64 - fontHeight / 2 + 18)
+  smartPrintCenter("HOLD ❎ TO SEE THE SPECIAL", 64 - fontHeight / 2 - 18)
+  smartPrintCenter("CHARACTERS WRITTEN WHEN HOLDING", 64 - fontHeight / 2 - 12)
+  smartPrintCenter("shift IN THE EDITOR", 64 - fontHeight / 2 - 6)
+  smartPrintCenter(btn(❎) and "…∧░➡️⧗▤⬆️☉🅾️◆" or "\^wqwertyuiop", 64 - fontHeight / 2 + 6)
+  smartPrintCenter(btn(❎) and "█★⬇️✽●♥웃⌂⬅️" or "\^wasdfghjkl", 64 - fontHeight / 2 + 12)
+  smartPrintCenter(btn(❎) and "▥❎🐱ˇ▒♪😐" or "\^wzxcvbnm", 64 - fontHeight / 2 + 18)
 end

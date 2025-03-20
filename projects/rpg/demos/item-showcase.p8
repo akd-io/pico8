@@ -8,7 +8,7 @@ __lua__
 #include ../../../lib/get-text-width.lua
 #include ../../../lib/shallow-copy.lua
 #include ../lib/items.lua
-#include ../lib/generate_item.lua
+#include ../lib/generate-item.lua
 
 local currentItem = generateItem()
 

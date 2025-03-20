@@ -11,7 +11,7 @@ local _os2d_grd = {
   5, -2, 2, -5,
   -5, -2, -2, -5
 }
-function os2d_noisefn(seed, width)
+function os2dNoiseFunc(seed, width)
   width = width or 256
   assert(
     width >= 1
@@ -129,7 +129,7 @@ function makeCachable(val)
   return flr(val * factor) / factor
 end
 
-local noiseFunc = os2d_noisefn(0, 128)
+local noiseFunc = os2dNoiseFunc(0, 128)
 
 function _draw()
   cls()

@@ -1,7 +1,6 @@
 pico-8 cartridge // http://www.pico-8.com
 version 42
 __lua__
-
 -- snake
 -- by akd
 
@@ -64,67 +63,67 @@ c_sprite_sand_plants_1 = 30
 c_sprite_sand_plants_2 = 31
 
 -- MAP
-map_width = 16
-map_height = 16
+mapWidth = 16
+mapHeight = 16
 
 function log(text)
   printh(text, "log.txt")
 end
 
 -- This function wraps a value within a range, uverflowing and underflowing as needed.
-function wrap_within_range(i, min_val, max_val)
-  local range_size = max_val - min_val + 1
-  return (i - min_val) % range_size + min_val
+function wrapWithinRange(i, minVal, maxVal)
+  local rangeSize = maxVal - minVal + 1
+  return (i - minVal) % rangeSize + minVal
 end
 
 -- This function takes two booles and returns a directional value.
-function bool_delta(boola, boolb)
+function boolDelta(boolA, boolB)
   local delta = 0
-  if boola then delta -= 1 end
-  if boolb then delta += 1 end
+  if boolA then delta -= 1 end
+  if boolB then delta += 1 end
   return delta
 end
 
-function generate_map()
-  local a_map = { {} }
-  for x = 1, map_width do
-    for y = 1, map_width do
-      local random_sprite = rnd({
+function generateMap()
+  local map = { {} }
+  for x = 1, mapWidth do
+    for y = 1, mapWidth do
+      local randomSprite = rnd({
         c_sprite_sand, c_sprite_sand, c_sprite_sand, c_sprite_sand, c_sprite_sand, c_sprite_sand,
         c_sprite_sand, c_sprite_sand, c_sprite_sand_spots_1, c_sprite_sand_spots_2,
         c_sprite_sand_spots_3, c_sprite_sand_plants_1, c_sprite_sand_plants_2
       })
-      if a_map[x] == nil then
-        a_map[x] = {}
+      if map[x] == nil then
+        map[x] = {}
       end
-      a_map[x][y] = random_sprite
+      map[x][y] = randomSprite
     end
   end
-  return a_map
+  return map
 end
 
 function _init()
   scene = c_scene_menu
 end
 
-current_map = {}
-function new_game()
+currentMap = {}
+function newGame()
   scene = c_scene_game
-  current_map = generate_map()
+  currentMap = generateMap()
 end
 
-selected_menu_option = 1
-menu_options = { "new game", "options", "quit" }
+selectedMenuOption = 1
+menuOptions = { "new game", "options", "quit" }
 function update_menu_scene()
-  local dy = bool_delta(btnp(⬆️), btnp(⬇️))
-  selected_menu_option = wrap_within_range(selected_menu_option + dy, 1, #menu_options)
+  local dy = boolDelta(btnp(⬆️), btnp(⬇️))
+  selectedMenuOption = wrapWithinRange(selectedMenuOption + dy, 1, #menuOptions)
 
   if btnp(❎) then
-    if selected_menu_option == 1 then
-      new_game()
-    elseif selected_menu_option == 2 then
+    if selectedMenuOption == 1 then
+      newGame()
+    elseif selectedMenuOption == 2 then
       log("Options")
-    elseif selected_menu_option == 3 then
+    elseif selectedMenuOption == 3 then
       extcmd("shutdown")
     end
   end
@@ -137,30 +136,30 @@ snake = {
   { x = 6, y = 8 },
   { x = 5, y = 8 }
 }
-function update_game_scene()
-  local controller_dx = bool_delta(btn(⬅️), btn(➡️))
-  local controller_dy = bool_delta(btn(⬆️), btn(⬇️))
+function updateGameScene()
+  local controllerDx = boolDelta(btn(⬅️), btn(➡️))
+  local controllerDy = boolDelta(btn(⬆️), btn(⬇️))
 
   -- If the player is trying to move diagonally, then ignore the input.
-  if controller_dx ~= 0 and controller_dy ~= 0 then
-    controller_dx = 0
-    conroller_dy = 0
+  if controllerDx ~= 0 and controllerDy ~= 0 then
+    controllerDx = 0
+    controllerDy = 0
   end
 
-  local snake_dx = snake[1].x - snake[2].x
-  local snake_dy = snake[1].y - snake[2].y
+  local snakeDx = snake[1].x - snake[2].x
+  local snakeDy = snake[1].y - snake[2].y
 
   -- If the player is trying to move in the opposite direction of the current direction,
   -- then ignore the input.
-  if controller_dx == -snake_dx then
-    controller_dx = 0
+  if controllerDx == -snakeDx then
+    controllerDx = 0
   end
-  if controller_dy == -snake_dy then
-    controller_dy = 0
+  if controllerDy == -snakeDy then
+    controllerDy = 0
   end
 
-  local dx = controller_dx == 0 and controller_dy == 0 and snake_dx or controller_dx
-  local dy = controller_dx == 0 and controller_dy == 0 and snake_dy or controller_dy
+  local dx = controllerDx == 0 and controllerDy == 0 and snakeDx or controllerDx
+  local dy = controllerDx == 0 and controllerDy == 0 and snakeDy or controllerDy
 
   -- Move the snake's body.
   for i = #snake, 2, -1 do
@@ -168,26 +167,26 @@ function update_game_scene()
     snake[i].y = snake[i - 1].y
   end
   -- Move the snake's head.
-  snake[1].x = wrap_within_range(snake[1].x + dx, 0, map_width - 1)
-  snake[1].y = wrap_within_range(snake[1].y + dy, 0, map_height - 1)
+  snake[1].x = wrapWithinRange(snake[1].x + dx, 0, mapWidth - 1)
+  snake[1].y = wrapWithinRange(snake[1].y + dy, 0, mapHeight - 1)
 end
 
 function _update()
   if scene == c_scene_menu then
     update_menu_scene()
   elseif scene == c_scene_game then
-    update_game_scene(current_map)
+    updateGameScene(currentMap)
   end
 end
 
-function render_menu_scene()
+function renderMenuScene()
   print("snake", 40, 20, 14)
-  for i = 1, #menu_options do
+  for i = 1, #menuOptions do
     local y = 20 + i * 8
-    local option = menu_options[i]
-    local color = i == selected_menu_option and c_color_pink or c_color_light_gray
+    local option = menuOptions[i]
+    local color = i == selectedMenuOption and c_color_pink or c_color_light_gray
     print(option, 40, y, color)
-    if i == selected_menu_option then
+    if i == selectedMenuOption then
       x1 = 32
       x2 = 32 + (3 + #option) * 4
       xDelta = ceil(2 * cos(time()) + 0.5)
@@ -197,29 +196,29 @@ function render_menu_scene()
   end
 end
 
-function render_game_scene()
-  render_map(current_map)
-  render_snake(snake)
+function renderGameScene()
+  renderMap(currentMap)
+  renderSnake(snake)
 end
 
 function _draw()
   cls()
   if scene == c_scene_menu then
-    render_menu_scene()
+    renderMenuScene()
   elseif scene == c_scene_game then
-    render_game_scene(current_map)
+    renderGameScene(currentMap)
   end
 end
 
-function render_map(sprite_map)
-  for x = 1, map_width do
-    for y = 1, map_height do
-      spr(sprite_map[x][y], (x - 1) * 8, (y - 1) * 8)
+function renderMap(spriteMap)
+  for x = 1, mapWidth do
+    for y = 1, mapHeight do
+      spr(spriteMap[x][y], (x - 1) * 8, (y - 1) * 8)
     end
   end
 end
 
-function render_snake(snake)
+function renderSnake(snake)
   for i = 1, #snake do
     local prev = snake[i + 1]
     local curr = snake[i]

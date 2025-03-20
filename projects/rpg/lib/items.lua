@@ -37,9 +37,9 @@ Affix ideas:
   - movement speed
 ]]
 
-local item_types = { "main-hand", "off-hand", "head", "neck", "body", "waist", "legs", "feet", "hands", "finger" }
-local affix_tiers = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }
-local affix_type_keys = {
+local itemTypes = { "main-hand", "off-hand", "head", "neck", "body", "waist", "legs", "feet", "hands", "finger" }
+local affixTiers = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16 }
+local affixTypeKeys = {
   "health",
   "flatDamage",
   "percentDamage",
@@ -57,9 +57,9 @@ local affix_type_keys = {
   "stat15",
   "stat16"
 }
-local num_affix_types = #affix_type_keys
-local max_affixes_per_item = 6
-local affix_types = {
+local numAffixTypes = #affixTypeKeys
+local maxAffixesPerItem = 6
+local affixTypes = {
   health = {
     shortName = function(tier) return "t" .. tier .. " hp" end,
     value = function(tier) return 5 * tier end,
@@ -172,7 +172,7 @@ function drawItem(item, x, y)
 end
 
 function drawItemLabel(item, x, y)
-  local text = "t" .. getTier(item) .. " " .. item.equipment_type
+  local text = "t" .. getTier(item) .. " " .. item.equipmentType
 
   local textWidth = getTextWidth(text)
   local textHeight = 5
@@ -183,10 +183,10 @@ function drawItemLabel(item, x, y)
 end
 
 function drawItemStats(item, x, y)
-  for affix_type, affix_tier in pairs(item.affixes) do
-    local affix_data = affix_types[affix_type]
-    local affix_value = affix_data.value(affix_tier)
-    print("t" .. affix_tier .. " " .. affix_data.str(affix_tier, affix_value), x, y)
+  for affixType, affixTier in pairs(item.affixes) do
+    local affixData = affixTypes[affixType]
+    local affixValue = affixData.value(affixTier)
+    print("t" .. affixTier .. " " .. affixData.str(affixTier, affixValue), x, y)
     y += 7
   end
 end

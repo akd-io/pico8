@@ -12,7 +12,7 @@ __lua__
 #include ../../../lib/find.lua
 #include ../../../lib/table-methods.lua
 #include ../lib/items.lua
-#include ../lib/generate_item.lua
+#include ../lib/generate-item.lua
 
 function makeInventory(rows)
   return {
@@ -61,7 +61,7 @@ function drawInventory(inventory, highlight, outerX, outerY, inventoryType)
         roundRect(x, y, x + cellWidth - 1, y + cellHeight - 1, getTier(item) \ 6)
 
         -- Draw item sprite
-        local spriteId = findi(item_types, item.equipment_type) - 1
+        local spriteId = findi(itemTypes, item.equipmentType) - 1
         spr(spriteId, x + 1, y + 1)
       elseif inventoryType == "equipment" then
         -- Draw item sprite
