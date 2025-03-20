@@ -11,7 +11,6 @@ __lua__
 
 #include ../lib/react.lua
 #include ../lib/utils.lua
-#include ../lib/range.lua
 
 local function pairsValues(table)
   local result = {}

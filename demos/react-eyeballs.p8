@@ -5,7 +5,6 @@ __lua__
 -- by akd
 #include ../lib/react.lua
 #include ../lib/utils.lua
-#include ../lib/range.lua
 
 local black = 0
 local darkBlue = 1

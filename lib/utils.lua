@@ -1,4 +1,14 @@
-function shallowCopy(sourceTable)
+-- TODO: Consider using iterator patterns instead for some of these? For example, why isn't range() an iterator?
+
+local function range(n)
+  local result = {}
+  for i = 1, n do
+    add(result, i)
+  end
+  return result
+end
+
+local function shallowCopy(sourceTable)
   local destTable = {}
   for k, v in pairs(sourceTable) do
     destTable[k] = v
