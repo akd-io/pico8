@@ -144,7 +144,7 @@ local function objectReduce(object, callback, initialValue)
   return __reduce(object, callback, initialValue, pairs)
 end
 
-local function find(table, callback, iterator)
+local function __find(table, callback, iterator)
   for i, v in iterator(table) do
     if callback(v, i) then
       return v, i
@@ -153,10 +153,10 @@ local function find(table, callback, iterator)
   return nil
 end
 local function arrayFind(array, callback)
-  return find(array, callback, ipairs)
+  return __find(array, callback, ipairs)
 end
 local function objectFind(object, callback)
-  return find(object, callback, pairs)
+  return __find(object, callback, pairs)
 end
 
 local function __findIndex(table, callback, iterator)

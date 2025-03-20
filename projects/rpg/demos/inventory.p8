@@ -8,7 +8,6 @@ __lua__
 #include ../../../lib/round-rectfill.lua
 #include ../../../lib/get-text-width.lua
 #include ../../../lib/simple-print-center.lua
-#include ../../../lib/find.lua
 #include ../../../lib/utils.lua
 #include ../lib/items.lua
 #include ../lib/generate-item.lua
@@ -60,7 +59,7 @@ function drawInventory(inventory, highlight, outerX, outerY, inventoryType)
         roundRect(x, y, x + cellWidth - 1, y + cellHeight - 1, getTier(item) \ 6)
 
         -- Draw item sprite
-        local spriteId = findi(itemTypes, item.equipmentType) - 1
+        local spriteId = arrayIndexOf(itemTypes, item.equipmentType) - 1
         spr(spriteId, x + 1, y + 1)
       elseif inventoryType == "equipment" then
         -- Draw item sprite
