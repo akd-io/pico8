@@ -127,7 +127,7 @@ local function filter(table, callback, iterator)
   local newTable = {}
   for i, v in iterator(table) do
     if callback(v, i) then
-      table.insert(newTable, v)
+      add(newTable, v)
     end
   end
   return newTable
@@ -256,7 +256,7 @@ end
 local function __keys(table, iterator)
   local keys = {}
   for k, _ in iterator(table) do
-    table.insert(keys, k)
+    add(keys, k)
   end
   return keys
 end
@@ -270,7 +270,7 @@ end
 local function __values(table, iterator)
   local values = {}
   for _, v in iterator(table) do
-    table.insert(values, v)
+    add(values, v)
   end
   return values
 end
@@ -284,7 +284,7 @@ end
 local function __entries(table, iterator)
   local entries = {}
   for k, v in iterator(table) do
-    table.insert(entries, { k, v })
+    add(entries, { k, v })
   end
   return entries
 end
@@ -307,7 +307,7 @@ end
 local function arraySplice(array, start, deleteCount, ...)
   local removed = {}
   for i = start, start + deleteCount - 1 do
-    array.insert(removed, array[i])
+    add(removed, array[i])
     array[i] = nil
   end
   for i = start, start + select("#", ...) - 1 do
