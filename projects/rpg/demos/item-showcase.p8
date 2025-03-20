@@ -4,9 +4,9 @@ __lua__
 -- item showcase
 -- by akd
 
-#include ../../../lib/round_rectfill.lua
-#include ../../../lib/get_text_width.lua
-#include ../../../lib/shallow_copy.lua
+#include ../../../lib/round-rectfill.lua
+#include ../../../lib/get-text-width.lua
+#include ../../../lib/shallow-copy.lua
 #include ../lib/items.lua
 #include ../lib/generate_item.lua
 

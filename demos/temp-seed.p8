@@ -4,7 +4,7 @@ __lua__
 -- Temp PRNG seed demo
 -- by akd
 
-#include ../lib/with_temp_seed.lua
+#include ../lib/with-temp-seed.lua
 
 local debug = true
 

@@ -4,9 +4,9 @@ __lua__
 -- mandelbrot 2d cache cpu threshold
 -- by akd
 
-#include ../lib/get_text_width.lua
+#include ../lib/get-text-width.lua
 #include ../lib/overlay.lua
-#include ../lib/draw_to_spritesheet.lua
+#include ../lib/draw-to-spritesheet.lua
 #include ../lib/mandelbrot.lua
 
 local UNRESOLVED_COLOR = 15 -- white, or pick another unused color

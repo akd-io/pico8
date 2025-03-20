@@ -5,7 +5,7 @@ __lua__
 -- by akd
 
 #include ../lib/pad.lua
-#include ../lib/smart_print_center.lua
+#include ../lib/smart-print-center.lua
 
 function _draw()
   cls()

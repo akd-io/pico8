@@ -4,7 +4,7 @@ __lua__
 -- Clock
 -- by akd
 
-#include ../lib/smart_print_center.lua
+#include ../lib/smart-print-center.lua
 
 function _draw()
   cls()

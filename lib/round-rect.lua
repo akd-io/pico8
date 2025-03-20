@@ -1,5 +1,6 @@
 -- roundRect() takes the same parameters as rect(), and draws a similar
--- rectangle, but without the pixels at the corners to simulate a rounded rectangle.
+-- rectangle, but without the pixels at the corners to simulate a rounded
+-- rectangle.
 function roundRect(x0, y0, x1, y1, col, drawInnerCorners)
   line(x0 + 1, y0, x1 - 1, y0, col)
   line(x0 + 1, y1, x1 - 1, y1, col)

@@ -4,9 +4,9 @@ __lua__
 -- mandelbrot 2d cache
 -- by akd
 
-#include ../lib/get_text_width.lua
+#include ../lib/get-text-width.lua
 #include ../lib/overlay.lua
-#include ../lib/draw_to_spritesheet.lua
+#include ../lib/draw-to-spritesheet.lua
 #include ../lib/mandelbrot.lua
 #include ../lib/table-methods.lua
 
