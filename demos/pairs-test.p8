@@ -13,7 +13,7 @@ local function pairsOrder(table)
   return result
 end
 
--- TODO: Consider using arrayToString from table-methods.lua instead.
+-- TODO: Consider using arrayToString from utils.lua instead.
 local function arrayToString(array)
   local result = ""
   for v in all(array) do

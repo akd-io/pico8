@@ -10,7 +10,7 @@ __lua__
 -- TODO: Try using extractIndicesUsingPairs and extractIndicesUsingFor from pairs-array-stress-test.p8 to see if that makes a difference.
 
 #include ../lib/react.lua
-#include ../lib/table-methods.lua
+#include ../lib/utils.lua
 #include ../lib/range.lua
 
 local function pairsValues(table)
@@ -22,7 +22,7 @@ local function pairsValues(table)
   return result
 end
 
--- TODO: Consider using arrayToString from table-methods.lua instead.
+-- TODO: Consider using arrayToString from utils.lua instead.
 local function arrayToString(array)
   local result = ""
   for v in all(array) do

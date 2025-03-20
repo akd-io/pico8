@@ -8,7 +8,7 @@ __lua__
 #include ../lib/overlay.lua
 #include ../lib/draw-to-spritesheet.lua
 #include ../lib/mandelbrot.lua
-#include ../lib/table-methods.lua
+#include ../lib/utils.lua
 
 local offsetX = 0
 local offsetY = 0

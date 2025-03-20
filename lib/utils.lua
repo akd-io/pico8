@@ -1,3 +1,7 @@
+local function endsWidth(str, suffix)
+  return sub(str, -#suffix) == suffix
+end
+
 local function isArray(table)
   if (type(table) != "table") then return false end
   local i = 1

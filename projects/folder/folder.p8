@@ -6,5 +6,5 @@ __lua__
 
 #include ../../lib/react.lua
 #include ../../lib/react-motion.lua
-#include ../../lib/table-methods.lua
+#include ../../lib/utils.lua
 #include folder.lua

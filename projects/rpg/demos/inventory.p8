@@ -10,7 +10,7 @@ __lua__
 #include ../../../lib/get-text-width.lua
 #include ../../../lib/simple-print-center.lua
 #include ../../../lib/find.lua
-#include ../../../lib/table-methods.lua
+#include ../../../lib/utils.lua
 #include ../lib/items.lua
 #include ../lib/generate-item.lua
 
