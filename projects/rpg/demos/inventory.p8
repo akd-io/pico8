@@ -4,15 +4,13 @@ __lua__
 -- inventory demo
 -- by akd
 
-#include ../../lib/shallow_copy.lua
-#include ../../lib/round_rect.lua
-#include ../../lib/round_rectfill.lua
-#include ../../lib/get_text_width.lua
-#include ../../lib/simple_print_center.lua
-#include ../../lib/find.lua
-#include ../../lib/join.lua
-#include ../../lib/table_to_str.lua
-#include ../../lib/array_methods.lua
+#include ../../../lib/shallow_copy.lua
+#include ../../../lib/round_rect.lua
+#include ../../../lib/round_rectfill.lua
+#include ../../../lib/get_text_width.lua
+#include ../../../lib/simple_print_center.lua
+#include ../../../lib/find.lua
+#include ../../../lib/array_methods.lua
 #include ../lib/items.lua
 #include ../lib/generate_item.lua
 
