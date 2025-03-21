@@ -16,6 +16,7 @@ local extensionToSpriteMap = {
   [".bin"] = 3, -- Exported binary app https://www.lexaloffle.com/dl/docs/pico-8_manual.html#Binary_Applications_
   [".gif"] = 7 -- Exported video https://www.lexaloffle.com/dl/docs/pico-8_manual.html#Recording_GIFs
   -- TODO:
+  -- .pod -- What is it? https://github.com/thisismypassport/shrinko8?tab=readme-ov-file#reading-and-writing-exported-formats
   -- .md -- Markdown
   -- .zip -- Zip file
   -- .xcf -- Gimp file
