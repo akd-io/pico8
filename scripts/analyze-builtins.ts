@@ -2,39 +2,53 @@ import {
   shrinko8Builtins,
   picolsBuiltins,
   fandomHeaderArticleSectionHeader3Builtins,
+  akdBuiltins,
 } from "./builtins";
 
-// Find the builtins that are in shrinko8 but not in picols
+/*
+Notes:
+"rand" from the pico-8 header is nil, and shouldn't be added.
+Picols's [ "rawequals", "self", "coyield", "?" ] all return nil when type()'d in pico8.
+
+Output:
+Shrinko8 only builtins: []
+Picols only builtins: [ "rawequals", "self", "coyield", "?" ]
+Fandom only builtins: [ "rand" ]
+AKD only builtins: [
+  "__flip", "__trace", "__type", "_menuitem", "backup", "bbsreq", "cd", "dir", "exit", "export", "folder",
+  "help", "import", "install_demos", "install_games", "keyconfig", "login", "logout", "mkdir", "radio",
+  "reboot", "save", "scoresub", "shutdown", "splore"
+]
+*/
+
 const shrinko8Only = shrinko8Builtins.filter(
-  (builtin) => !picolsBuiltins.includes(builtin)
+  (builtin) =>
+    !picolsBuiltins.includes(builtin) &&
+    !fandomHeaderArticleSectionHeader3Builtins.includes(builtin) &&
+    !akdBuiltins.includes(builtin)
 );
 console.log("Shrinko8 only builtins:", shrinko8Only);
 
-// Find the builtins that are in picols but not in shrinko8
 const picolsOnly = picolsBuiltins.filter(
-  (builtin) => !shrinko8Builtins.includes(builtin)
+  (builtin) =>
+    !shrinko8Builtins.includes(builtin) &&
+    !fandomHeaderArticleSectionHeader3Builtins.includes(builtin) &&
+    !akdBuiltins.includes(builtin)
 );
 console.log("Picols only builtins:", picolsOnly);
 
-// Find the builtins that are in either shrinko8 or picols
-const either = [...new Set([...shrinko8Builtins, ...picolsBuiltins])];
-
-// Find the builtins that are on fandom only
 const fandomOnly = fandomHeaderArticleSectionHeader3Builtins.filter(
   (builtin) =>
-    !shrinko8Builtins.includes(builtin) && !picolsBuiltins.includes(builtin)
+    !shrinko8Builtins.includes(builtin) &&
+    !picolsBuiltins.includes(builtin) &&
+    !akdBuiltins.includes(builtin)
 );
 console.log("Fandom only builtins:", fandomOnly);
 
-/*
-Output:
-Shrinko8 only builtins: [
-  "inext", "load", "ls", "rawequal", "holdframe", "_set_fps", "_update_buttons", "_mark_cpu", "_startframe",
-  "_update_framerate", "_set_mainloop_exists", "_map_display", "_get_menu_item_selected",
-  "_pausemenu", "set_draw_slice", "tostring"
-]
-Picols only builtins: [ "info", "rawequals", "self", "coyield", "?" ]
-Fandom only builtins: [ "rand" ]
-
-Note: Fandom's "rand" is an error in the article. Should be "rnd".
-*/
+const akdOnly = akdBuiltins.filter(
+  (builtin) =>
+    !shrinko8Builtins.includes(builtin) &&
+    !picolsBuiltins.includes(builtin) &&
+    !fandomHeaderArticleSectionHeader3Builtins.includes(builtin)
+);
+console.log("AKD only builtins:", akdOnly);
