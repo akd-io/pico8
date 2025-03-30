@@ -13,3 +13,11 @@ On my machine, `picotron_config.txt` was located at `/Users/akd/Library/Applicat
 
 mount / /Users/akd/workspace/pico/picotron/drive
 ```
+
+### Accessing root folder in host OS
+
+Because we have remapped the drive folder mount, we don't have easy access to the root Picotron folder (parent of the `drive` folder) when running the `folder` command in Picotron.
+
+The root folder can be accessed using:
+
+- `open "/Users/akd/Library/Application Support/Picotron"`
