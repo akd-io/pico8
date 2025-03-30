@@ -1,0 +1,49 @@
+{
+  "Lua.workspace.library": ["${addons}/pico8/module/library"],
+  "Lua.runtime.version": "LuaJIT",
+  "Lua.workspace.checkThirdParty": false,
+  "Lua.diagnostics.disable": [
+    "lowercase-global",
+    "undefined-doc-name",
+    "unused-function",
+    "unused-local",
+    "err-esc",
+    "exp-in-action",
+    "unknown-symbol",
+    "undefined-global",
+    "miss-exp"
+  ],
+  "Lua.runtime.nonstandardSymbol": [
+    "!=",
+    "+=",
+    "-=",
+    "*=",
+    "/=",
+    "%=",
+    "^=",
+    "|=",
+    "&=",
+    "<<=",
+    ">>=",
+    "//"
+  ],
+  "Lua.runtime.builtin": {
+    "basic": "enable",
+    "bit": "disable",
+    "bit32": "disable",
+    "builtin": "enable",
+    "coroutine": "enable",
+    "debug": "enable",
+    "ffi": "disable",
+    "io": "disable",
+    "jit": "disable",
+    "math": "enable",
+    "os": "disable",
+    "package": "disable",
+    "string": "enable",
+    "table": "enable",
+    "table.clear": "disable",
+    "table.new": "disable",
+    "utf8": "enable"
+  }
+}
