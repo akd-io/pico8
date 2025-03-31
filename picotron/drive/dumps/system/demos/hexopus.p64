@@ -7,7 +7,7 @@ b64$LS0gcGljb3Ryb24gb2JqZWN0IGRhdGEKe3tjcHJval9maWxlPSJtYWluLmx1YSIsd29ya3Nw
 YWNlX2luZGV4PTF9fQ==
 :: _meta/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTEyIDE4OjEzOjUzIixtb2RpZmllZD0iMjAyNS0w
-My0zMSAxOTo0MDoyMyIsc3RvcmVkPSIyMDI0LTAzLTEyIDE4OjEzOjUzIl1d
+My0zMSAyMDozMToyOCIsc3RvcmVkPSIyMDI0LTAzLTEyIDE4OjEzOjUzIl1d
 :: main.lua
 -- flexing hexopus
 -- by zep
@@ -56,5 +56,5 @@ function _draw()
 end
 :: .info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTEyIDE4OjEzOjUzIixtb2RpZmllZD0iMjAyNS0w
-My0zMSAxOTo0MDoyMyIsc3RvcmVkPSIyMDI0LTAzLTEyIDE4OjEzOjUzIl1d
+My0zMSAyMDozMToyOCIsc3RvcmVkPSIyMDI0LTAzLTEyIDE4OjEzOjUzIl1d
 :: [eoc]
