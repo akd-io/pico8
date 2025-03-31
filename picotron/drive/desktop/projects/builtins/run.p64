@@ -1,0 +1,11 @@
+picotron cartridge // www.picotron.net
+version 2
+
+:: main.lua
+--[[pod_format="raw",created="2025-03-30 21:11:20",modified="2025-03-31 00:13:18",revision=20]]
+include("/desktop/projects/builtins/main.lua")
+:: .info.pod
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI1LTAzLTMwIDIxOjEwOjU3Iixtb2RpZmllZD0iMjAyNS0w
+My0zMCAyMzo1MDoyNCIscnVudGltZT0xMix3b3Jrc3BhY2VzPXt7bG9jYXRpb249Im1haW4ubHVh
+IzEiLHdvcmtzcGFjZV9pbmRleD0xfX1dXQ==
+:: [eoc]
