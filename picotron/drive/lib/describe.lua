@@ -112,13 +112,15 @@ local function describeTable(table)
   end
 end
 
+---@param value string
+---@return string
 describeFn = function(value)
   if (type(value) == "function") then
     return describeFunction(value)
   elseif (type(value) == "table") then
     return describeTable(value)
   elseif (type(value) == "string") then
-    return '"' .. value .. '"'
+    return '"' .. value:gsub("\n", "\\n") .. '"'
   else
     return tostring(value)
   end
