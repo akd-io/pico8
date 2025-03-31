@@ -1,5 +1,5 @@
 {
-  "Lua.workspace.library": ["${addons}/pico8/module/library"],
+  "Lua.workspace.library": ["${addons}/picotron/module/library"],
   "Lua.runtime.version": "LuaJIT",
   "Lua.workspace.checkThirdParty": false,
   "Lua.diagnostics.disable": [
