@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-12 18:17:15",modified="2024-09-14 20:26:44",revision=2]]
+--[[pod_format="raw",created="2024-03-12 18:17:15",modified="2024-12-07 09:31:55",revision=3]]
 --[[
 
 	wrangle.lua
@@ -28,7 +28,9 @@ local last_known_meta      = nil
 local stale_filename       = nil
 
 local _env = env
-
+local _send_message = _send_message
+local split = split
+local create_process = create_process
 
 function pwf()
 	return current_filename
@@ -92,14 +94,14 @@ local function update_menu_items()
 			id = "save_file",
 			label = "\f6\^:7f4141417f616500 Save File (auto)",
 			shortcut = "CTRL-S", -- ctrl-s is handled by window manager
-			action = function() send_message(pid(), {event = "save_file"}) return true end -- still save just in case!
+			action = function() _send_message(pid(), {event = "save_file"}) return true end -- still save just in case!
 		}
 	else
 		menuitem{
 			id = "save_file",
 			label = "\^:7f4141417f616500 Save File",
 			shortcut = "CTRL-S", -- ctrl-s is handled by window manager
-			action = function() send_message(pid(), {event = "save_file"}) end
+			action = function() _send_message(pid(), {event = "save_file"}) end
 		}
 	end
 
@@ -136,7 +138,12 @@ end
 
 
 
+--[[
+	wrangle_working_file() // the user-facing api
 
+	untitled_filename is also used to specifiy default extension (foo.pal -> auto appends .pal on save)
+
+]]
 function wrangle_working_file(save_state, load_state, untitled_filename, get_hlocation, set_hlocation)
 
 	local w = {
@@ -145,7 +152,11 @@ function wrangle_working_file(save_state, load_state, untitled_filename, get_hlo
 			local content, meta = save_state()
 			if (not meta) meta = {}
 
-			local meta1 = store(current_filename, content, meta)
+			local err = store(current_filename, content, meta)
+
+			if (err) then
+				return err
+			end
 
 			-- use callback to modify current_filename with new location suffix (e.g. foo.lua#23 line number changes)
 
@@ -155,7 +166,7 @@ function wrangle_working_file(save_state, load_state, untitled_filename, get_hlo
 
 
 			last_known_filename = current_filename
-			last_known_meta = unpod(pod(meta1))
+			last_known_meta = fetch_metadata(current_filename)
 
 		end,
 
@@ -199,21 +210,36 @@ function wrangle_working_file(save_state, load_state, untitled_filename, get_hlo
 	
 	cd(_env().path)
 
-	current_filename = (_env().argv and _env().argv[1]) or untitled_filename
-	current_filename = fullpath(current_filename)
+	-- look for current filename first in environment (location) and then on commandline
 
+	current_filename = untitled_filename
 
-	-- load (or create) current working file
-	-- to do: what happens if it is a folder?
-	if (fstat(current_filename)) then
-		-- to do: check error
-		w:load()
-	else
-		w:load() -- initialise state
-		w:save() -- create
+	if not fullpath(current_filename) then
+		-- can't resolve: use /appdata. happens when e.g. /ram/cart is not available because sandboxed
+		current_filename = "/appdata/"..untitled_filename:basename()
 	end
 
-	
+
+	if (_env().location) then
+		current_filename = _env().location
+	elseif (_env().argv and _env().argv[1]) then
+		current_filename = _env().argv[1]
+	end
+
+	current_filename = fullpath(current_filename)
+
+	local current_file_exists = fstat(current_filename)
+
+	-- when file doesn't exist, w:load() also serves to init state by calling load_state(nil, ..)
+	-- to do: can this fail?
+	w:load()
+
+	-- create
+	if (not current_file_exists) then
+		w:save() -- don't care about result
+	end
+
+
 	-- tell window manager working file
 	-- ** [currently] needs to happen after creating window **
 
@@ -240,10 +266,13 @@ function wrangle_working_file(save_state, load_state, untitled_filename, get_hlo
 			return
 		end
 
-		w:save()
+		local err = w:save()
 		
+		if (err) then
+			notify(err)
+	
 		-- show message only when NOT auto-saving /ram/cart files
-		if (sub(current_filename, 1, 10) ~= "/ram/cart/") then
+		elseif (sub(current_filename, 1, 10) ~= "/ram/cart/") then
 
 			if (fullpath(current_filename):sub(1,8) == "/system/") then
 				notify("saved "..current_filename.." ** warning: changes to /system/ not written to disk **")
@@ -285,8 +314,12 @@ function wrangle_working_file(save_state, load_state, untitled_filename, get_hlo
 				set_current_filename(current_filename.."."..untitled_filename:ext())
 			end
 
-			w:save()			
-			notify("saved as "..current_filename) -- show message even if cart file
+			local err = w:save()
+			if (err) then
+				notify(err)			
+			else
+				notify("saved as "..current_filename) -- show message even if cart file
+			end
 		end
 		
 	end)

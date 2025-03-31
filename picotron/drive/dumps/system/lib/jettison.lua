@@ -17,8 +17,8 @@ if (pid() > 3) then
 end
 
 -- sandboxed programs can not use the Debug library for now
--- (needs security review -- probably can be partially available at most)
-if (env().sandboxed) then
+-- (needs security review -- probably can be partially available at least)
+if (env().sandbox) then
 	Debug = nil
 end
 

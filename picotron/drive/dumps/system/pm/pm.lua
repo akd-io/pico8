@@ -18,6 +18,7 @@ function _update()
 	if (stat(315) > 0 and #_get_process_list() <= 3) _signal(33)
 
 	-- exported player: shutdown when no userland processes remaining
+	-- to do: this test no longer works
 	if (stat(317) > 0 and #_get_process_list() <= 3) _signal(33)
 
 end
@@ -30,10 +31,11 @@ local file_subscribers = {}
 -- to do: periodically sweep dead process ids from file_subscribers 
 on_event("_subscribe_to_file",
 	function(msg)
-		local fn = msg.filename -- if filename is garbage, will just never be triggered
-		if (not fn) return
+		local fn = msg.filename_kernal -- if filename is garbage, will just never be triggered		
+		if (type(fn) ~= "string" or type(msg.filename_userland) ~= "string") return
+		--printh("_subscribe_to_file "..pod{msg})
 		file_subscribers[fn] = file_subscribers[fn] or {}
-		add(file_subscribers[fn], msg._from)
+		add(file_subscribers[fn], {proc_id = msg._from, filename_userland = msg.filename_userland})
 	end
 )
 
@@ -43,9 +45,11 @@ on_event("_file_stored",
 		local subscribers = file_subscribers[msg.filename]
 		if (not subscribers) return
 		for i=1, #subscribers do
-			send_message(subscribers[i], {
-				event = "modified:"..msg.filename,
-				filename = msg.filename,
+			-- printh("sending to subscriber "..pod(subscribers[i]))
+			send_message(subscribers[i].proc_id,
+			{
+				event = "modified:"..subscribers[i].filename_userland,
+				filename = subscribers[i].filename_userland,
 				proc_id = msg.proc_id
 			})
 		end
@@ -122,6 +126,41 @@ on_event("mount_host_desktop",
 	end
 )
 
+on_event("export",
+
+	function(msg)
+		-- cart info in a format exporter can read easily
+
+		if ((msg._flags & 0x1) == 0) return -- invoked by a trusted system app (/system/tools/export.lua)
+
+		memset(0,0,4096)
+
+		poke(0x000, ord(msg.shortname, 1, min(#msg.shortname,255)))
+		poke(0x100, ord(msg.outfile, 1, min(#msg.outfile,255)))
+		poke(0x200, ord(msg.cartfile, 1, min(#msg.cartfile,255)))
+		if (type(msg.export_home) == "string") then
+			poke(0x300, ord(msg.export_home, 1, min(#msg.export_home,255)))
+		end
+
+		-- current active palette for icon: use wm palette
+		for i=0,255 do
+			poke(0x400+i, _ppeek(3,0x5000+i))
+		end
+
+		if (msg.icon) then 
+			-- icon width, height
+			poke(0x500, msg.icon:width(), msg.icon:height()) -- only 16x16 supported in 0.2 though
+			poke(0x800, msg.icon:get(0,0,256))			
+		else
+			-- to do: default icon here
+			
+		end
+
+		_signal(42)
+
+	end
+
+)
 
 
 

@@ -11,7 +11,7 @@ VwoDHwCcASM-AAcAngH-SVVnAAcQNwQAP2fwAUEAHzU3EAcEAA5BAA-kAA8PMQD-------------
 ------------------------------------------_AUG09OH19
 :: gfx/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTAxLTI0IDE5OjAxOjU2Iixtb2RpZmllZD0iMjAyNS0w
-My0zMSAyMDozMToyOCIsc3RvcmVkPSIyMDIzLTAxLTI0IDE5OjAxOjU2Il1d
+My0zMSAyMDo0NzoxNiIsc3RvcmVkPSIyMDIzLTAxLTI0IDE5OjAxOjU2Il1d
 :: map/
 :: map/0.map
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTI1IDA3OjQ3OjUwIixtb2RpZmllZD0iMjAyNC0w
@@ -20,11 +20,11 @@ KCJpMTYiLDMyAwAvIjABAP--------------------vxCCIpLGhpZGRlbj1mYWxzZSxwYW5feD0w
 CADSeT0wLHRpbGVfaD0xNgoAEHcKAIB6b29tPTF9fQ==
 :: map/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTAxLTI0IDE5OjAxOjU2Iixtb2RpZmllZD0iMjAyNS0w
-My0zMSAyMDozMToyOCIsc3RvcmVkPSIyMDIzLTAxLTI0IDE5OjAxOjU2Il1d
+My0zMSAyMDo0NzoxNiIsc3RvcmVkPSIyMDIzLTAxLTI0IDE5OjAxOjU2Il1d
 :: sfx/
 :: sfx/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTAxLTI0IDE5OjAxOjU2Iixtb2RpZmllZD0iMjAyNS0w
-My0zMSAyMDozMToyOCIsc3RvcmVkPSIyMDIzLTAxLTI0IDE5OjAxOjU2Il1d
+My0zMSAyMDo0NzoxNiIsc3RvcmVkPSIyMDIzLTAxLTI0IDE5OjAxOjU2Il1d
 :: main.lua
 --[[pod_format="raw",created="2023-02-24 19:02:00",modified="2024-06-06 06:13:11",revision=330]]
 local ce
@@ -51,6 +51,9 @@ function apply_settings()
 		fetch("/system/fonts/lil_mono.font") or		
 		fetch("/system/fonts/lil.font")
 	))
+
+	-- poke(0x4000,get(fetch"/system/fonts/pug3.font")) -- test  // result: so unreadable
+
 	
 	-- update menu items
 	menuitem{id="monospace", label = sdat.monospace and
@@ -107,8 +110,9 @@ function _init()
 		has_search=true,
 		bgcol = sdat.bgcol,
 		curcol = sdat.curcol,
-		selcol = sdat.selcol	,
-		lncol = sdat.lncol
+		selcol = sdat.selcol,
+		lncol = sdat.lncol,
+		squash_to_clip = true
 	})
 
 	ce:attach_scrollbars()
@@ -192,18 +196,18 @@ on_event("modified:/appdata/system/code.pod",
 --[[pod_format="raw",created="2024-08-14 03:13:06",modified="2024-08-14 03:13:06",revision=0]]
 
 :: .info.pod
-b64$LS1bW3BvZCxtb2RpZmllZD0iMjAyNS0wMy0zMSAyMDozMToyOCIsY3JlYXRlZD0iMjAyNC0w
-NS0zMSAwNjoxOToxNCIsYXV0aG9yPSJsZXhhbG9mZmxlIixpY29uPXVzZXJkYXRhKCJ1OCIsMTYs
-MTYsIjAwMDAwMDAxMDEwMTAxMDEwMTAxMDEwMTAxMDAwMDAwMDAwMDAxMDcwNzA3MDcwNzA3MDcw
-NzA3MDcwMTAwMDAwMDAxMDcwZDBkMGQwZDBkMGQwZDBkMGQwZDA3MDEwMDAxMDcwZDBkMGQwZDBk
-MGQwZDBkMGQwZDBkMGQwNzAxMDEwNzBkMGQwZDA3MDcwZDBkMDcwNzBkMGQwZDA3MDEwMTA3MGQw
-ZDA3MDcwZDBkMGQwZDA3MDcwZDBkMDcwMTAxMDcwZDBkMDcwNzBkMGQwZDBkMDcwNzBkMGQwNzAx
-MDEwNzBkMGQwNzA3MGQwZDBkMGQwNzA3MGQwZDA3MDEwMTA3MGQwZDA3MDcwZDBkMGQwZDA3MDcw
-ZDBkMDcwMTAxMDcwZDBkMGQwNzA3MGQwZDA3MDcwZDBkMGQwNzAxMDEwNzBkMGQwZDBkMGQwZDBk
-MGQwZDBkMGQwZDA3MDEwMTA2MDcwZDBkMGQwZDBkMGQwZDBkMGQwZDA3MDYwMTAxMDYwNjA3MDcw
-NzA3MDcwNzA3MDcwNzA3MDYwNjAxMDAwMTA2MDYwNjA2MDYwNjA2MDYwNjA2MDYwNjAxMDAwMDAw
-MDEwNjA2MDYwNjA2MDYwNjA2MDYwNjAxMDAwMDAwMDAwMDAxMDEwMTAxMDEwMTAxMDEwMTAxMDAw
-MDAwIiksbm90ZXM9IiIscnVudGltZT04LHN0b3JlZD0iMjAyMy01NC0xMiAxMDo1NDowNiIsdGl0
+b64$LS1bW3BvZCxhdXRob3I9ImxleGFsb2ZmbGUiLGNyZWF0ZWQ9IjIwMjQtMDUtMzEgMDY6MTk6
+MTQiLGljb249dXNlcmRhdGEoInU4IiwxNiwxNiwiMDAwMDAwMDEwMTAxMDEwMTAxMDEwMTAxMDEw
+MDAwMDAwMDAwMDEwNzA3MDcwNzA3MDcwNzA3MDcwNzAxMDAwMDAwMDEwNzEwMTAxMDEwMTAxMDEw
+MTAxMDEwMDcwMTAwMDEwNzEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDA3MDEwMTA3MTAxMDEwMDcw
+NzEwMTAwNzA3MTAxMDEwMDcwMTAxMDcxMDEwMDcwNzEwMTAxMDEwMDcwNzEwMTAwNzAxMDEwNzEw
+MTAwNzA3MTAxMDEwMTAwNzA3MTAxMDA3MDEwMTA3MTAxMDA3MDcxMDEwMTAxMDA3MDcxMDEwMDcw
+MTAxMDcxMDEwMDcwNzEwMTAxMDEwMDcwNzEwMTAwNzAxMDEwNzEwMTAxMDA3MDcxMDEwMDcwNzEw
+MTAxMDA3MDEwMTA3MTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMDcwMTAxMGMwNzEwMTAxMDEwMTAx
+MDEwMTAxMDEwMDcwYzAxMDEwYzBjMDcwNzA3MDcwNzA3MDcwNzA3MDcwYzBjMDEwMDAxMGMwYzBj
+MGMwYzBjMGMwYzBjMGMwYzBjMDEwMDAwMDAwMTBjMGMwYzBjMGMwYzBjMGMwYzBjMDEwMDAwMDAw
+MDAwMDEwMTAxMDEwMTAxMDEwMTAxMDEwMDAwMDAiKSxtb2RpZmllZD0iMjAyNS0wMy0zMSAyMDo0
+NzoxNiIsbm90ZXM9IiIscnVudGltZT04LHN0b3JlZD0iMjAyMy01NC0xMiAxMDo1NDowNiIsdGl0
 bGU9IlBpY290cm9uIENvZGUgRWRpdG9yIix2ZXJzaW9uPSIwLjEiLHdvcmtzcGFjZXM9e3tsb2Nh
 dGlvbj0ibWFpbi5sdWEjNjAiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249ImdmeC8wLmdm
 eCIsd29ya3NwYWNlX2luZGV4PTJ9LHtsb2NhdGlvbj0ibWFwLzAubWFwIix3b3Jrc3BhY2VfaW5k

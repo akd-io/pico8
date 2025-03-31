@@ -9,11 +9,20 @@ cd(env().path)
 local argv = env().argv
 if (#argv < 1) then
 	print("\f6usage: load filename -- can be file or directory")
+	print("-u to load unsandboxed")
 	exit(1)
 end
 
+local filename = nil
+local unsandbox = false
 
-filename = argv[1]
+for i=1,#argv do
+	if (argv[i][1] == "-") then
+		if (argv[i] == "-u") unsandbox = true
+	elseif not filename then
+		filename = argv[i]
+	end
+end
 
 
 -- load an earlier version of cartridge via anywhen
@@ -61,13 +70,18 @@ if (filename:find("@")) then
 end
 
 
--- bbs cart?
+-- bbs cart: "load #foo" is shorthand for "load bbs://foo.p64"
 
 if (filename:sub(1,1) == "#") then
+	filename = "bbs://"..filename:sub(2)..".p64"
+end
+
+--[[
+if (filename:sub(1,1) == "#") then
 	-- print("downloading..")
-	local cart_id = filename:sub(2)
-	local cart_png, err = fetch("https://www.lexaloffle.com/bbs/get_cart.php?cat=8&lid="..cart_id)  -- ***** this is not a public api! [yet?] *****
-	--local cart_png = fetch("http://localhost/bbs/get_cart.php?cat=8&lid="..cart_id)
+	local bbs_id = filename:sub(2)
+	local cart_png, err = fetch("https://www.lexaloffle.com/bbs/get_cart.php?cat=8&lid="..bbs_id)  -- ***** this is not a public api! [yet?] *****
+	--local cart_png = fetch("http://localhost/bbs/get_cart.php?cat=8&lid="..bbs_id)
 
 	if (err) print(err)
 
@@ -83,6 +97,7 @@ if (filename:sub(1,1) == "#") then
 		exit(0)
 	end
 end
+]]
 
 
 attrib = fstat(filename)
@@ -174,5 +189,21 @@ if (type(dat) == "table") then
 end
 
 print("\f6loaded "..filename.." into /ram/cart")
+
+if (filename:prot() == "bbs") then
+	local bbs_id = split(filename:basename(),"-.",false)[1]
+
+	if (unsandbox) then
+		print("\feunsandboxed -> cart has read/write access to /*")
+		store_metadata("/ram/cart", {sandbox = false})
+	else
+		print("\fcsandboxed to /appdata/bbs/"..bbs_id)
+		print("\fd// to load unsandboxed: load #"..split(filename:basename(),".",false)[1].." -u")  -- -u at end so that easy to add
+	end
+--	print("\fesandboxed to /appdata/bbs/"..split(filename:basename(),"-.",false)[1].." \fd-- to unsandbox, type: about")
+end
+
+
+
 
 

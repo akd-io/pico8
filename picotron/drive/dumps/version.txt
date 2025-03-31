@@ -1,11 +1,2 @@
---[[pod_format="raw",created="2025-03-31 20:31:36",modified="2025-03-31 20:31:36",revision=0]]
-{
-  "author" = "lexaloffle",
-  "created" = "2024-10-16 10:49:20",
-  "modified" = "2025-03-31 19:45:47",
-  "notes" = "(c) 2022-24 Lexaloffle Games LLP\n",
-  "stored" = "2024-03-30 15:36:43",
-  "title" = "Picotron Workstation OS",
-  "version" = "0.1.1d",
-  "icon" = userdata: 0x2b44e9e8,
-}
+--[[pod_format="raw",created="2025-03-31 20:47:24",modified="2025-03-31 20:47:24",revision=0]]
+nil

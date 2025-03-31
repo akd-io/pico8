@@ -23,28 +23,25 @@ local function _autoload_resources()
 		fn = "gfx/"..fn
 		if (num and num >= 0 and num <= 63) then
 
-			--printh("fetchin' "..fn)
 			local gfx_dat = fetch(fn)
 			if (type(gfx_dat) == "userdata") then
-				local w,h = fstat(gfx_dat)
 
+				-- item is a single spritesheet assumed to be 16x16 even tiles
+				-- to do: make loading pngs easier? (currently always load as raw i32 userdata)
+				
+				local w,h = gfx_dat:width(), gfx_dat:height()
 				w = w // 16
 				h = h // 16
-
-				--printh("cel w "..w)
 
 				-- load sprite bank from gfx_dat
 				for y=0,15 do
 					for x=0,15 do
 						local sprite = userdata("u8",w,h)
 						blit(gfx_dat, sprite, x*w, y*h, 0, 0, w, h)
-
-						--printh("## found "..found.." pixels")
-
-						--set(sprite,2,2,14) -- test pixel
-						set_spr(x + y * 16 + num * 256, sprite); --> hrrm
+						set_spr(x + y * 16 + num * 256, sprite, 0); -- no flags
 					end
 				end
+
 
 			elseif (type(gfx_dat) == "table" and gfx_dat[0] and gfx_dat[0].bmp) then
 

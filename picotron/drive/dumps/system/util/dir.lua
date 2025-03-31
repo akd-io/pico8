@@ -35,6 +35,10 @@ if (res) then
 	-- to do: pick cols that will fit display width
 	-- easiest method: just start at and decrease until fits (or increase until doesn't fit)
 	local cols = 2
+
+	-- to do: ahh.. how to get terminal width?
+	--printh("target width: "..(get_draw_target() and get_draw_target():width() or 0))
+
 	for i=1,#res,cols do
 		local str=""
 		for j=0, cols-1 do
@@ -56,10 +60,12 @@ if (res) then
 					if (mount_point) col = "b"
 				end
 
+				-- to do: find out width of neighbour and adjust precisely
 				str = str .. "\f"..col..res[i+j]
 				for k=0,(20 - #res[i+j]) do
 					str = str .. " "
 				end
+				str ..= " " -- make sure there is at least one space between columns
 
 			end
 		end
