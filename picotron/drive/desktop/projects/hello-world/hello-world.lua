@@ -13,3 +13,6 @@ function _draw()
   cls()
   print("Hello world")
 end
+
+-- Run picotron from the command line to access printh logs
+printh("Hello world") -- [<PID>] Hello world
