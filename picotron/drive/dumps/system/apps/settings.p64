@@ -3,19 +3,19 @@ version 2
 
 :: gfx/
 :: gfx/0.gfx
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTAyIDA2OjQ0OjUyIixtb2RpZmllZD0iMjAyNC0w
-Ni0wNyAwNzoxMjo0MCIscmV2aXNpb249NjAzXV1sejQAbQAAAAUxAADzFHtbMF09e2JtcD1weHUA
-QyAQEATw8CxmbGFncz0wLHBhbl94CADPeT0wLHpvb209OH0sMQD-------------------------
----------------------------------------nUG09OH19
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTAyIDA2OjQ0OjUyIixtb2RpZmllZD0iMjAyNS0w
+My0yNyAwMDoxNzo0MCIscmV2aXNpb249MTEzMl1dbHo0AG0AAAAFMQAA8xR7WzBdPXtibXA9cHh1
+AEMgEBAE8PAsZmxhZ3M9MCxwYW5feAgAz3k9MCx6b29tPTh9LDEA------------------------
+----------------------------------------51BtPTh9fQ==
 :: gfx/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTAyIDA2OjQ0OjIwIixtb2RpZmllZD0iMjAyNS0w
-My0zMSAyMDozMToyOCIsc3RvcmVkPSIyMDIzLTQ0LTAyIDA2OjQ0OjIwIl1d
+NC0wMSAwNzozNTozMiIsc3RvcmVkPSIyMDIzLTQ0LTAyIDA2OjQ0OjIwIl1d
 :: map/
 :: map/0.map
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTAyIDA2OjQ0OjUyIixtb2RpZmllZD0iMjAyNC0w
-Ni0wNyAwNzoxMjo0MCIscmV2aXNpb249NTk4XV1sejQAaAAAAFgQAADwCHt7Ym1wPXVzZXJkYXRh
-KCJpMTYiLDMyAwAvIjABAP--------------------vxCCIpLGhpZGRlbj1mYWxzZSxwYW5feD0w
-CADSeT0wLHRpbGVfaD0xNgoAEHcKAIB6b29tPTF9fQ==
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTAyIDA2OjQ0OjUyIixtb2RpZmllZD0iMjAyNS0w
+My0yNyAwMDoxNzo0MCIscmV2aXNpb249MTEyNV1dbHo0AGgAAABYEAAA8Ah7e2JtcD11c2VyZGF0
+YSgiaTE2IiwzMgMALyIwAQD--------------------78QgiKSxoaWRkZW49ZmFsc2UscGFuX3g9
+MAgA0nk9MCx0aWxlX2g9MTYKABB3CgCAem9vbT0xfX0=
 :: map/map0.map
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTQ4LTA0IDE2OjQ4OjAxIixtb2RpZmllZD0iMjAyNC00
 OC0wNCAxNjo0ODowMSIscmV2aXNpb249MF1dbHo0AGkAAACjCAAA8BN7bGF5ZXI9e1swXT17Ym1w
@@ -23,13 +23,13 @@ PXVzZXJkYXRhKCJpMTYiLDE2AwAvIjABAP---__hIikscGFuX3g9MAgA8gZ5PTAsc2NhbGU9MSx0
 aWxlX2g9MTYKAG93PTE2fSxLBP----84UDE2fX19
 :: map/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTAyIDA2OjQ0OjIwIixtb2RpZmllZD0iMjAyNS0w
-My0zMSAyMDozMToyOCIsc3RvcmVkPSIyMDIzLTQ0LTAyIDA2OjQ0OjIwIl1d
+NC0wMSAwNzozNTozMiIsc3RvcmVkPSIyMDIzLTQ0LTAyIDA2OjQ0OjIwIl1d
 :: sfx/
 :: sfx/0.sfx
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTAyIDA2OjQ0OjUyIixtb2RpZmllZD0iMjAyNC0w
-Ni0wNyAwNzoxMjo0MCIscmV2aXNpb249NTU0XV1sejQAcAAAAO4HAADfcHh1AAMoAAAEAATw-wEA
-7P8n8QEQBg8gEAEgASAB8AACEAIOEAEgDyEgATAPQPDDDygP--DGD-gKD-8PgA-3Dw0B8AkBEAYO
-MAD-OR--AQDcz-gPQAAPEED--7DwcAsA--_jH-8BAP_ZUP----8g
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTAyIDA2OjQ0OjUyIixtb2RpZmllZD0iMjAyNS0w
+My0yNyAwMDoxNzo0MCIscmV2aXNpb249MTA4MV1dbHo0AHAAAADuBwAA33B4dQADKAAABAAE8P8B
+AOz-J-EBEAYPIBABIAEgAfAAAhACDhABIA8hIAEwD0Dwww8oD--wxg-4Cg--D4AP9w8NAfAJARAG
+DjAA-zkf-wEA3M-4D0AADxBA--_w8HALAP--ox--AQD-mVD-----IA==
 :: sfx/sfx0.sfx
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTQ4LTA0IDE2OjQ4OjAxIixtb2RpZmllZD0iMjAyNC00
 OC0wNCAxNjo0ODowMSIscmV2aXNpb249MF1dbHo0ABABAABRBwAA8CdweHUAAygAAAMABA9AEAIO
@@ -40,11 +40,11 @@ IAEgAfAAAhACDBABIA8hIAEwD0Dwww8oD--wxg-4Cg--D4AP9w8NAfAJARAGDDAA-zkf-wEA3L-4
 D0AADUD--7DwcAoA--9kH-8BAJdQ-----x8=
 :: sfx/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTAyIDA2OjQ0OjIwIixtb2RpZmllZD0iMjAyNS0w
-My0zMSAyMDozMToyOCIsc3RvcmVkPSIyMDIzLTQ0LTAyIDA2OjQ0OjIwIl1d
+NC0wMSAwNzozNTozMiIsc3RvcmVkPSIyMDIzLTQ0LTAyIDA2OjQ0OjIwIl1d
 :: main.lua
---[[pod_format="raw",created="2023-10-02 06:44:52",modified="2024-06-07 07:12:40",revision=877]]
+--[[pod_format="raw",created="2023-10-02 06:44:52",modified="2025-03-27 00:17:40",revision=1562]]
 -- picotron settings
--- to do: keyboard control
+-- a8: tabbed
 
 page = 1
 sdat = {}
@@ -74,20 +74,24 @@ function create_checkbox(x, y, label, key)
 	return el
 end
 
-function create_chooser(x, y, key, path)
+function create_chooser(parent, x, y, key, path)
 
-	local el = gui:attach{
+	local el = parent:attach{
 		x = x, y = y,
-		width = 90,
-		height=50,
+		width = 96,
+		height=60,
 		key=key,
-		path=path
+		path=path,
+		squash_to_clip=true
 	}
 	
 	local item_h = 12
 	
 	function el:draw()
 		rectfill(0,0,self.width-1, self.height-1,1)
+		local rect = {clip()}
+		print("\014\^i "..self.key.." ",1,-6,13)
+		clip(unpack(rect))
 	end
 
 	local path1 = path
@@ -172,83 +176,97 @@ function create_chooser(x, y, key, path)
 	end
 	
 	
-	el:attach_scrollbars()
+	el:attach_scrollbars{autohide=true}
 
+	return el
+end
+
+function create_tab_button(el)
+	el.width = #el.label * 5 + 8
+	el.height = 11
+	el.cursor = "pointer"
+	function el:draw(msg)
+		local yy = (msg.has_pointer and msg.mb > 0) and 1 or 0
+		rectfill(0,yy+1,self.width-1,self.height-1,page == el.page and 7 or 6)
+		rectfill(1,yy+0,self.width-2,self.height-1,page == el.page and 7 or 6)
+		
+		print(el.label,4,yy+2,1)
+	end
+	function el:tap()
+		page = self.page
+		generate_gui()
+	end
 	return el
 end
 
 function generate_gui()
 	gui = create_gui()
 	
+	local x = 2
+	local spacing = 2
+	x += gui:attach(create_tab_button{label="Desktop",page=1,x=x,y=1}).width + spacing
+--	x += gui:attach(create_tab_button{label="Screensaver",page=2,x=x,y=1}).width + spacing
+	x += gui:attach(create_tab_button{label="Audio",page=3,x=x,y=1}).width + spacing
+	x += gui:attach(create_tab_button{label="Video",page=4,x=x,y=1}).width + spacing
+	x += gui:attach(create_tab_button{label="System",page=5,x=x,y=1}).width + spacing
+	
+	local x, y = 6,10
+	local y0 = y
+	local x2 = 108
 	local line_h = 12
 	
-	-- page toggle
+	local container = gui:attach{
+		x=0,y=12,
+		width_rel=1.0,
+		height_rel=1.0,height_add=-12
+	}
+	local pane = container:attach{
+		x=0,y=0,
+		width_rel=1.0,height=300
+	}
+--	container:attach_scrollbars()
 
-	gui:attach{
-		x=170,y=4, width=35, height=9,
-		cursor="pointer",
-		draw=function(self, msg)
-			rectfill(0,0,self.width,self.height, msg.has_pointer and 14 or 13)
-			print("\014page "..page.."/2",2,2,7)
-		end,
-		tap=function(self)
-			page = page == 1 and 2 or 1
-			generate_gui()
-		end
-	}
+	-- desktop
+	if (page == 1) then
+		pane:attach(create_checkbox(x,y, "Squishy Windows", "squishy_windows")) y += line_h
+		pane:attach(create_checkbox(x, y, "Sparkles",       "sparkles")) y += line_h
+		
+		x=106 y=y0
+		pane:attach(create_checkbox(x, y, "Low-Colour Icons", "lowcol_icons")) y += line_h
+		pane:attach(create_checkbox(x, y, "RSHIFT Magnify", "rshift_magnify")) y += line_h
+		
+		create_chooser(pane, 6, 60, "theme", "/system/themes")
+		create_chooser(pane, 108, 60, "wallpaper", "/system/wallpapers")
+	end
 	
-if (page == 1) then
-	local x, y = 10,20
-	gui:attach(create_checkbox(x, y, "Fullscreen", "fullscreen")) y += line_h
-	gui:attach(create_checkbox(x, y, "Pixel Perfect", "pixel_perfect")) y += line_h
-	gui:attach(create_checkbox(x, y, "Stretch", "stretch")) y += line_h
 	
-	local x, y = 105,20
+	-- audio
+	if (page == 3) then
+		pane:attach(create_checkbox(x, y, "Mute", "mute_audio")) y += line_h
+		pane:attach(create_checkbox(x, y, "Swap Stereo", "swap_stereo")) y += line_h
+	end
 	
-	--gui:attach(create_checkbox(x, y, "Volume", "system_volume")) y += line_h
-	gui:attach(create_checkbox(x, y, "Mute", "mute_audio")) y += line_h
-	gui:attach(create_checkbox(x, y, "Swap Stereo", "swap_stereo")) y += line_h
+	-- video
+	if (page == 4) then
+		pane:attach(create_checkbox(x, y, "Fullscreen", "fullscreen")) y += line_h
+		pane:attach(create_checkbox(x, y, "Pixel Perfect", "pixel_perfect")) y += line_h
+		pane:attach(create_checkbox(x, y, "Stretch", "stretch")) y += line_h
+		x=106 y=y0
+		pane:attach(create_checkbox(x, y, "Allow High DPI", "allow_highdpi")) y += line_h
+		pane:attach(create_checkbox(x, y, "Fullscreen:Window", "fullscreen_window")) y += line_h
+		
+		create_chooser(pane, 6, 60, "screensaver", "/system/screensavers")
+	end
 	
-	gui:attach(create_chooser(10, 80, "theme", "/system/themes"))
-	gui:attach(create_chooser(105, 80, "wallpaper", "/system/wallpapers"))
+	if (page == 5) then
+		pane:attach(create_checkbox(x, y, "Network", "network_access")) y += line_h
+		pane:attach(create_checkbox(x, y, "Battery Saver", "battery_saver")) y += line_h
+		pane:attach(create_checkbox(x, y, "Anywhen", "anywhen")) y += line_h
+		pane:attach(create_checkbox(x, y, "CTRL-Q Shutdown", "fastquit")) y += line_h
 	
-else
-	-- page 2
-	local x, y = 10,20
-	gui:attach(create_checkbox(x, y, "Network", "network_access")) y += line_h
-	gui:attach(create_checkbox(x, y, "Battery Saver", "battery_saver")) y += line_h
-	
-	gui:attach(create_checkbox(x,y, "Squishy Windows", "squishy_windows")) y += line_h
-	
-	y = 20
-	gui:attach(create_checkbox(105, y, "RSHIFT Magnify", "rshift_magnify")) y += line_h
-	gui:attach(create_checkbox(105, y, "Sparkles",       "sparkles")) y += line_h
-	gui:attach(create_checkbox(105, y, "CTRL-Q Shutdown", "fastquit")) y += line_h
-	
-	y = 80
-	gui:attach(create_checkbox(105, y, "Anywhen", "anywhen")) y += line_h
-	gui:attach(create_checkbox(105, y, "Allow High DPI", "allow_highdpi")) y += line_h
-	gui:attach(create_checkbox(105, y, "Fullscreen:Window", "fullscreen_window")) y += line_h
-	
-	-- choosers
-	gui:attach(create_chooser(x, 80, "screensaver", "/system/screensavers"))
-end
-	
---[[
-	-- don't need -- just double click
-	gui:attach{
-		x=256,y=66,width=19,height=9,
-		draw=function(self,msg)
-			rectfill(0,0,self.width-1, self.height-1, 3)
-			print("\014test",2,2,1)
-		end,
-		tap=function(self,msg)
-			--printh(sdat.screensaver)
-			--create_process(sdat.screensaver)
-			send_message(3, {event="test_screensaver"})
-		end		
-	}
-]]
+	end
+
+
 	
 end
 
@@ -262,6 +280,8 @@ function _init()
 	window{
 		width=210,
 		height=140,
+		max_width=220,
+		max_height=160,
 		title="System Settings",
 		resizeable = true
 	}
@@ -274,9 +294,12 @@ function _init()
 end
 
 function _draw()
-	cls(7)
+	cls(13)
 	color(5)
 	
+	rectfill(0,12,1000,1000,7)
+	
+--[[
 	local yy = 67
 	local prefix = ""--"\128\-j"
 	
@@ -284,21 +307,14 @@ function _draw()
 		print("Video",10,5)
 		print("Audio",105,5)
 		
-		
 		print(prefix.."Theme",10,yy)
 		print(prefix.."Wallpaper",105,yy)
 	else
 		print("System",10,5)
-		--print("Desktop",105,5)
-		
-		--line(10,60,280,60,6)
-	
-		--
-	
 		print(prefix.."Screensaver",10,yy)
 		print(prefix.."Experimental",105,yy)
-		
 	end
+]]
 	
 	gui:draw_all()
 end
@@ -314,20 +330,20 @@ end)
 
 
 :: .info.pod
-b64$LS1bW3BvZCxtb2RpZmllZD0iMjAyNS0wMy0zMSAyMDozMToyOCIsY3JlYXRlZD0iMjAyNC0w
-NC0xMiAwMjoxNjowNyIsYXV0aG9yPSJ6ZXAiLGljb249dXNlcmRhdGEoInU4IiwxNiwxNiwiMDAw
-MDAwMDEwMTAxMDEwMTAxMDEwMTAxMDEwMDAwMDAwMDAwMDEwNzA3MDcwNzA3MDcwNzA3MDcwNzAx
-MDAwMDAwMDEwNzBkMGQwZDBkMGQwZDBkMGQwZDBkMDcwMTAwMDEwNzBkMGQwZDBkMGQwZDBkMGQw
-ZDBkMGQwZDA3MDEwMTA3MGQwZDBkMGQwZDBkMGQwNzA3MGQwZDBkMDcwMTAxMDcwZDBkMDEwMTAx
-MDEwMTA3MDcwMTBkMGQwNzAxMDEwNzBkMGQwZDBkMGQwZDBkMDcwNzBkMGQwZDA3MDEwMTA3MGQw
-ZDBkMDcwNzBkMGQwZDBkMGQwZDBkMDcwMTAxMDcwZDBkMDEwNzA3MDEwMTAxMDEwMTBkMGQwNzAx
-MDEwNzBkMGQwZDA3MDcwZDBkMGQwZDBkMGQwZDA3MDEwMTA3MGQwZDBkMGQwZDBkMGQwZDBkMGQw
-ZDBkMDcwMTAxMDYwNzBkMGQwZDBkMGQwZDBkMGQwZDBkMDcwNjAxMDEwNjA2MDcwNzA3MDcwNzA3
-MDcwNzA3MDcwNjA2MDEwMDAxMDYwNjA2MDYwNjA2MDYwNjA2MDYwNjA2MDEwMDAwMDAwMTA2MDYw
-NjA2MDYwNjA2MDYwNjA2MDEwMDAwMDAwMDAwMDEwMTAxMDEwMTAxMDEwMTAxMDEwMDAwMDAiKSxu
-b3Rlcz0iIixydW50aW1lPTgsc3RvcmVkPSIyMDI0LTAzLTIzIDE4OjM2OjA4Iix0aXRsZT0iUGlj
-b3Ryb24gU2V0dGluZ3MiLHZlcnNpb249IiIsd29ya3NwYWNlcz17e2xvY2F0aW9uPSJtYWluLmx1
-YSMxMSIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0iZ2Z4LzAuZ2Z4Iix3b3Jrc3BhY2Vf
-aW5kZXg9Mn0se2xvY2F0aW9uPSJtYXAvMC5tYXAiLHdvcmtzcGFjZV9pbmRleD0zfSx7bG9jYXRp
-b249InNmeC8wLnNmeCIsd29ya3NwYWNlX2luZGV4PTR9fV1d
+b64$LS1bW3BvZCxhdXRob3I9InplcCIsY3JlYXRlZD0iMjAyNC0wNC0xMiAwMjoxNjowNyIsaWNv
+bj11c2VyZGF0YSgidTgiLDE2LDE2LCIwMDAwMDAwMTAxMDEwMTAxMDEwMTAxMDEwMTAwMDAwMDAw
+MDAwMTA3MDcwNzA3MDcwNzA3MDcwNzA3MDEwMDAwMDAwMTA3MTExMTExMTExMTExMTExMTExMTEw
+NzAxMDAwMTA3MTExMTExMTExMTExMTExMTExMTExMTExMDcwMTAxMDcxMTExMTExMTExMTExMTA3
+MDcxMTExMTEwNzAxMDEwNzExMTEwMTAxMDEwMTAxMDcwNzAxMTExMTA3MDEwMTA3MTExMTExMTEx
+MTExMTEwNzA3MTExMTExMDcwMTAxMDcxMTExMTEwNzA3MTExMTExMTExMTExMTEwNzAxMDEwNzEx
+MTEwMTA3MDcwMTAxMDEwMTAxMTExMTA3MDEwMTA3MTExMTExMDcwNzExMTExMTExMTExMTExMDcw
+MTAxMDcxMTExMTExMTExMTExMTExMTExMTExMTEwNzAxMDEwNjA3MTExMTExMTExMTExMTExMTEx
+MTEwNzA2MDEwMTA2MDYwNzA3MDcwNzA3MDcwNzA3MDcwNzA2MDYwMTAwMDEwNjA2MDYwNjA2MDYw
+NjA2MDYwNjA2MDYwMTAwMDAwMDAxMDYwNjA2MDYwNjA2MDYwNjA2MDYwMTAwMDAwMDAwMDAwMTAx
+MDEwMTAxMDEwMTAxMDEwMTAwMDAwMCIpLG1vZGlmaWVkPSIyMDI1LTA0LTAxIDA3OjM1OjMyIixu
+b3Rlcz0iIixydW50aW1lPTE2LHN0b3JlZD0iMjAyNC0wMy0yMyAxODozNjowOCIsdGl0bGU9IlBp
+Y290cm9uIFNldHRpbmdzIix2ZXJzaW9uPSIiLHdvcmtzcGFjZXM9e3tsb2NhdGlvbj0ibWFpbi5s
+dWEjMTg4Iix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJnZngvMC5nZngiLHdvcmtzcGFj
+ZV9pbmRleD0yfSx7bG9jYXRpb249Im1hcC8wLm1hcCIsd29ya3NwYWNlX2luZGV4PTN9LHtsb2Nh
+dGlvbj0ic2Z4LzAuc2Z4Iix3b3Jrc3BhY2VfaW5kZXg9NH19XV0=
 :: [eoc]

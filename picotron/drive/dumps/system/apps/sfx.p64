@@ -3,8 +3,8 @@ version 2
 
 :: gfx/
 :: gfx/0.gfx
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTIyIDA3OjMwOjA0Iixtb2RpZmllZD0iMjAyNC0w
-OS0xMiAxNjo1ODo1NiIscmV2aXNpb249MTIxMDMsc3RvcmVkPSIyMDIzLTM2LTI5IDA0OjM2OjQw
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTIyIDA3OjMwOjA0Iixtb2RpZmllZD0iMjAyNS0w
+MS0yOSAwNTo1OTozNyIscmV2aXNpb249MTI0MTQsc3RvcmVkPSIyMDIzLTM2LTI5IDA0OjM2OjQw
 Il1dbHo0APAFAACbNgAA8Qp7WzBdPXtibXA9cHh1AEMgBQUEIAcwBwBHBgDxASxmbGFncz0wLHBh
 bl94PTYIANp5PS00LHpvb209OH0sOwBXJwAXAAcEAB8nQQAdvwcANzAHIAcwNwAHOwAdMBAHIH8A
 TycgB0A7AB9-MAeABzAHEDkAGlsQEATw8DIAEzAyAB8wMQAFcBEXEBcgJ0DkAPADFzAnEBcQJ-AE
@@ -34,17 +34,17 @@ gAfUAH8AVxAXUAegPwAdM3BHEAIAH3A7AA0PugEv-wM0F9A3sFeQd3B3cFeQN7AX8DpCAB4pd3AC
 AC-wND4CHg8xAP-----------------------------------------------7xQbT04fX0=
 :: gfx/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTA0LTA5IDAyOjM2OjAxIixtb2RpZmllZD0iMjAyNS0w
-My0zMSAyMDozMToyOCIscmV2aXNpb249MF1d
+NC0wMSAwNzozNTozMiIscmV2aXNpb249MF1d
 :: map/
 :: map/0.map
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTIyIDA3OjMwOjA0Iixtb2RpZmllZD0iMjAyNC0w
-OS0xMiAxNjo1ODo1NiIscmV2aXNpb249OTAxNyxzdG9yZWQ9IjIwMjMtMzYtMjkgMDQ6MzY6NDAi
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTIyIDA3OjMwOjA0Iixtb2RpZmllZD0iMjAyNS0w
+MS0yOSAwNTo1OTozNyIscmV2aXNpb249OTMyOCxzdG9yZWQ9IjIwMjMtMzYtMjkgMDQ6MzY6NDAi
 XV1sejQAcAAAAF8QAADwCHt7Ym1wPXVzZXJkYXRhKCJpMTYiLDMyAwAvIjABAP--------------
 ------vxESIpLGhpZGRlbj1mYWxzZSxuYW1lPSJmIixwYW5feD0wCADCeT0wLHRpbGVfaD01CQDA
 dz01LHpvb209MX19
 :: map/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTA0LTA5IDAyOjM2OjAxIixtb2RpZmllZD0iMjAyNS0w
-My0zMSAyMDozMToyOCIscmV2aXNpb249MF1d
+NC0wMSAwNzozNTozMiIscmV2aXNpb249MF1d
 :: amp.lua
 --[[pod_format="raw",created="2023-29-17 13:29:48",revision=257,stored="2023-27-19 23:27:17"]]
 -- amp filter
@@ -123,7 +123,7 @@ My0zMSAyMDozMToyOCIscmV2aXNpb249MF1d
 
 
 :: data.lua
---[[pod_format="raw",created="2023-10-24 00:36:58",modified="2024-09-12 16:58:56",revision=11004,stored="2023-36-29 04:36:40"]]
+--[[pod_format="raw",created="2023-10-24 00:36:58",modified="2025-01-29 05:59:37",revision=11328,stored="2023-36-29 04:36:40"]]
 
 function init_track(addr)
 --	printh("init_track "..addr)
@@ -329,11 +329,13 @@ function draw_mudo_state(x,y)
 		
 	end
 	print(string.format("cpu:%3.3f", stat(1)),x,y+52,13)
-	print(tostr(something_is_playing),x+50,y+52,14)
+	print((something_is_playing and "p" or "-"),x+50,y+52,14)
+	print((following_playback and "f" or "-"),x+60,y+52,14)
+
 end
 
 :: env.lua
---[[pod_format="raw",created="2023-10-08 03:32:58",modified="2024-09-12 16:58:56",revision=7901,stored="2023-36-29 04:36:40"]]
+--[[pod_format="raw",created="2023-10-08 03:32:58",modified="2025-01-29 05:59:37",revision=8229,stored="2023-36-29 04:36:40"]]
 
 -- flags: lerp, random start position
 -- used by DATA envelope
@@ -456,6 +458,18 @@ function create_tiny_knob(label,addr,x,y,has_knob)
 	-- turn mouse locking on while dragging
 	function el:click(msg)
 		mouselock(0x4|0x8, 0.5, 0.05) -- 0x4 lock 0x8 auto-release, event speed, move speed 
+	end
+	
+	-- doesn't work unless require mb > 0 because use to scroll 
+	-- env panel until hit tiny knob by accident ._.
+	function el:mousewheel(msg)
+		local mag = key"ctrl" and 8 or 1
+		
+		--self:drag({mb=msg.mb>0 and msg.mb or 1,dx=0,dy=-msg.wheel_y * mag})
+		if (msg.mb > 0) then
+			self:drag({mb=msg.mb,dx=0,dy=-msg.wheel_y * mag})
+			return true -- don't scroll instrument panel
+		end
 	end
 	
 	function el:drag(msg)
@@ -712,7 +726,7 @@ end
 
 
 :: gui.lua
---[[pod_format="raw",created="2023-10-22 07:32:11",modified="2024-09-12 16:58:56",revision=15444,stored="2023-36-29 04:36:40"]]
+--[[pod_format="raw",created="2023-10-22 07:32:11",modified="2025-01-29 05:59:37",revision=15800,stored="2023-36-29 04:36:40"]]
 
 function create_pane(title, x, y, w, h, col, ontap)
 
@@ -1475,30 +1489,50 @@ end
 function create_play_button()
 	local el = gui:attach{
 		x=2,y=3,
-		width=26,height=17,
+		width=26,height=18,
 		cursor="pointer"
 	}
 	
-	function el:draw()
-		rectfill(1,0,self.width-2,self.height-1,13)
-		rectfill(0,1,self.width-1,self.height-2,13)
-		spr(something_is_playing and 63 or 62,5,1)
+	function el:draw(msg)
+		local yy = (msg.has_pointer and msg.mb > 0) and 1 or 0
+		rectfill(1,yy,self.width-2,self.height-2+yy,13)
+		rectfill(0,yy+1,self.width-1,self.height-3+yy,13)
+		spr(something_is_playing and 63 or 62, 5, yy + 1)
 	end
 	
-	-- use tap so that following_playback is not cancelled by click
+	-- control playback for track and pattern using
+	-- tap so that following_playback is not cancelled by click
 	function el:tap()
+		if (mode == "instrument") return -- handled by click below
 		if something_is_playing then
 			note()
-		elseif mode == "instrument" then
-			-- play insturment on channel 8
-			-- will be release in _update()
-			note(coct*12,ci,cvol,0,0, 8, true)
 		elseif mode == "track" then
-			sfx(ct)
+			sfx(ct, 9)
 		elseif mode == "pattern" then
 			music(cp) following_playback = true
 		end
 	end
+	
+	-- in instrument mode, can hold down as if holding
+	-- down a note key
+	function el:click()
+		if (mode ~= "instrument") return
+		if (something_is_playing) then
+			note()
+		else
+			note(coct*12,ci,cvol,0,0, 8, true)
+		end
+	end
+	
+	-- redundant; is handled in update (search: "release note")
+	--[[
+	function el:release()
+		-- stop playing instrument
+		if mode == "instrument" then
+			note(0xff, 0xff, 0xff, 0xff, 0xff, 8)
+		end
+	end
+	]]
 	
 end
 
@@ -1767,7 +1801,7 @@ end
 
 
 :: inst.lua
---[[pod_format="raw",created="2023-10-27 18:16:38",modified="2024-09-12 16:58:56",revision=9459]]
+--[[pod_format="raw",created="2023-10-27 18:16:38",modified="2025-01-29 05:59:37",revision=9821]]
 
 function get_inst_name(i)
 	local inst_addr = 0x40000 + i*0x200
@@ -1840,6 +1874,17 @@ function create_mval_knob(label,node_type,mval_index,addr,x,y)
 	function el:update(msg)
 		if (not (msg.mx and msg.my)) return -- to do: should that ever happen?
 		self.cursor = (msg.mx < 18) and "dial" or "pointer"
+		
+		if (label == "tune") then
+			-- signed range can change depending on multiply mode
+			if (peek(self.addr) & 0x3) == 2 then -- flags
+				el.v0, el.v1 = 0, 255
+			else
+				el.v0, el.v1 = -128, 127
+			end
+			
+		end
+	
 	end
 	
 	function el:draw(msg)
@@ -1853,8 +1898,7 @@ function create_mval_knob(label,node_type,mval_index,addr,x,y)
 		
 		-- draw mval	
 		local flags,val1,val0,env = peek(addr,4)
-		local num = 1 + val1 % 16
-		local den = 1 + val1 \ 16
+		
 		
 		
 		if (el.v1 < 128) then -- signed int8's
@@ -1879,16 +1923,7 @@ function create_mval_knob(label,node_type,mval_index,addr,x,y)
 		-- show range (to do: decide on flags for that)
 		color (peek(self.addr) & 0x4 > 0 and 12 or 14)
 		
-		-- ** to do: optimise **
-		if (false) then  
-			for k=0,1,1/(abs(a1-a0)*32) do
-				local aa = a1+(a0-a1)*k
-				line(xx,yy,xx+cos(aa)*6, yy+sin(aa)*6)
-			end
-		end
-		
-		-- dotty arc version
-
+		-- arc from angle val0 -> val1
 		local aa0,aa1 = a0, a1
 		if (aa0 > aa1) aa0,aa1 = aa1,aa0
 		for aa = -.25, .75, 1/32 do
@@ -1970,6 +2005,10 @@ function create_mval_knob(label,node_type,mval_index,addr,x,y)
 		if (flags & 0x3 == 2 and label=="tune") then
 			-- multiply by ratio
 			-- only makes sense for pitch
+			local rval = (msg.mb == 2 and msg.has_pointer) and val0 or val1
+			local num = 1 + rval % 16
+			local den = 1 + rval \ 16
+		
 			str = num.."/"..den
 		end
 		
@@ -1987,32 +2026,38 @@ function create_mval_knob(label,node_type,mval_index,addr,x,y)
 		mouselock(0x4|0x8, 0.5, 0.05) -- 0x4 lock 0x8 auto-release, event speed, move speed 
 		checkpoint()
 	end
+
+	-- doesn't work unless require mb > 0 because use to scroll 
+	-- instrument panel until hit mval field by accident ._.
+	function el:mousewheel(msg)
+		local mag = key"ctrl" and 8 or 1
+		
+		--self:drag({mb=msg.mb>0 and msg.mb or 1,dx=0,dy=-msg.wheel_y * mag})
+		if (msg.mb > 0) then
+			self:drag({mb=msg.mb,dx=0,dy=-msg.wheel_y * mag})
+			return true -- don't scroll instrument panel
+		end
+	end
 	
 	function el:drag(msg)
 		local flags,val1,val0,env = peek(addr,4)
 	
 		local dval = (msg.dx - msg.dy)
 		
-		if (self.label=="tune" and (flags & 3) == 2) then
-			-- special case: use u8 for integer fraction mode
-			val1 = mid(0, val1 + dval, 255)
-		else
-			-- signed int8 behaviour
-			if (el.v1 < 128) then 
-				if (val0>=128) val0 -= 256
-				if (val1>=128) val1 -= 256
-			end
-			
-			if (msg.mb > 1) then
-				-- drag val0 (start of range)
-				val0 = mid(self.v0, val0 + dval, self.v1)
-			else
-				-- regular white needle dragging
-				val1 = mid(self.v0, val1 + dval, self.v1)
-			end	
-		
+		-- signed int8 behaviour
+		if (el.v1 < 128) then 
+			if (val0>=128) val0 -= 256
+			if (val1>=128) val1 -= 256
 		end
 		
+		if (msg.mb > 1) then
+			-- drag val0 (start of range)
+			val0 = mid(self.v0, val0 + dval, self.v1)
+		else
+			-- regular white needle dragging
+			val1 = mid(self.v0, val1 + dval, self.v1)
+		end	
+	
 		poke(addr+1,val1)
 		poke(addr+2,val0)
 		return 1 -- don't drag the node content
@@ -2270,7 +2315,7 @@ function create_scope(addr, node_index, x, y, w, h)
 			
 			--------- live output ----------
 			
-			ci_channel = 8 -- ** assume channel 0
+			ci_channel = 8 -- to do: search for instrument on channel 9 / in music channels
 			
 			if (ci_channel < 0) return -- don't know which channel [yet?] -- skip
 			
@@ -2805,7 +2850,7 @@ end
 
 
 :: main.lua
---[[pod_format="raw",created="2023-10-22 07:30:04",modified="2024-09-12 16:58:56",revision=14222,stored="2023-36-29 04:36:40"]]
+--[[pod_format="raw",created="2023-10-22 07:30:04",modified="2025-01-29 05:59:37",revision=14553,stored="2023-36-29 04:36:40"]]
 --[[
 	Picotron Tracker
 	(c) Lexaloffle Games LLP
@@ -2980,7 +3025,7 @@ end
 
 
 :: track.lua
---[[pod_format="raw",created="2023-10-27 18:49:18",modified="2024-09-12 17:23:50",revision=10368]]
+--[[pod_format="raw",created="2023-10-27 18:49:18",modified="2025-01-29 05:59:37",revision=10697]]
 --[[
 
 	track editor
@@ -3023,6 +3068,11 @@ function create_tiny_num_field(label,addr,x,y,  vmin, vmax)
 		mouselock(0x4|0x8, 0.25, 0.05) -- 0x4 lock 0x8 auto-release, event speed, move speed 
 	end
 	
+	function el:mousewheel(msg)
+		local mag = key"ctrl" and 8 or 1
+		self:drag({mb=msg.mb,dx=0,dy=-msg.wheel_y * mag})
+		return true -- safety (currently no situation where that is needed)
+	end
 	
 	function el:drag(msg)
 		local val=peek(self.addr)
@@ -3112,7 +3162,7 @@ function playing_row(sfx_index)
 
 	if (stat(464)==0) return nil -- nothing playing
 	
-	for i=0,7 do
+	for i=0,15 do
 		if (stat(400 + i, 12) == sfx_index) then
 			--printh("playing_row for sfx "..sfx_index..": "..stat(400 + i, 9))
 			return stat(400 + i, 9)
@@ -3446,8 +3496,8 @@ function update_track_editor()
 				if (cur_y > row0_addr) start_row = (cur_y-row0_addr) & ~0x7
 			end
 			
-			-- play on channel 0
-			sfx(ct, 0, start_row, 0)
+			-- play on channel 9
+			sfx(ct, 9, start_row, 0)
 			
 		end
 	end
@@ -3681,7 +3731,7 @@ function update_track_editor()
 				if (peek(cur_y+q*2) == 0xff) poke(cur_y + q*2, cvol) -- set volume
 				
 				-- play the track from that note
-				sfx(ct, 0, cur_y-row0_addr, 1)
+				sfx(ct, 9, cur_y-row0_addr, 1)
 				cur_y += 1
 			end
 		end
@@ -3890,7 +3940,7 @@ function update_pattern_editor()
 end
 
 :: undo.lua
---[[pod_format="raw",created="2024-03-30 19:03:19",modified="2024-09-12 16:58:56",revision=2205]]
+--[[pod_format="raw",created="2024-03-30 19:03:19",modified="2025-01-29 05:59:37",revision=2546]]
 --[[
 
 	single undo stack for whole .sfx file
@@ -3933,7 +3983,7 @@ function redo()
 	refresh_gui = true
 end
 :: update.lua
---[[pod_format="raw",created="2023-10-22 07:32:11",modified="2024-09-12 16:58:56",revision=14024,stored="2023-36-29 04:36:40"]]
+--[[pod_format="raw",created="2023-10-22 07:32:11",modified="2025-01-29 05:59:37",revision=14366,stored="2023-36-29 04:36:40"]]
 global_t = 0
 
 -- map keyboard letters to pitches
@@ -3995,13 +4045,15 @@ function _update()
 	end
 	
 	-- or if there is [recently] some global output (e.g. echo or rogue node)
+	-- within last 0.1 seconds (want to respond quite quickly, at the cost
+	-- of not working very well for stocatto sounds that are mostly 0)
 	len = stat(465,0,0xe0000)
-	local found_signal
+	local found_signal = false
 	for i=0,len-7,8 do
 		if (peek8(0xe0000+i) != 0) found_signal = true
 	end
 	if (found_signal) last_found_signal_t = t()
-	if (last_found_signal_t and last_found_signal_t > t()-0.1) then
+	if (last_found_signal_t and last_found_signal_t > t() - 0.1) then
 		something_is_playing = true
 	end
 	
@@ -4022,10 +4074,12 @@ function _update()
 		-- inst mode only -- track / pat has own handling
 		if mode == "instrument" then
 			if (something_is_playing) then
-				note() -- kill all channels
+				-- kill all channels
+				-- (includes playing an instrumnet that is still generating non-zero signal)
+				note() 
 			else
-				-- play current sfx / track
-				if (last_mode == "track") sfx(ct)
+				-- play current sfx / track, always on channel 9
+				if (last_mode == "track") sfx(ct, 9)
 				if (last_mode == "pattern") music(cp)
 			end
 		end
@@ -4051,12 +4105,14 @@ function _update()
 				false  -- don't force retrigger (retrigger when pitch/inst changes)		
 				)
 		else
-			-- release
+			-- release note when there is no note key held..
+			
 			local mx,my,mb = mouse()
-			if (mb == 0 or mx > 80) -- not holding play button w/ mouse
+			if (mb == 0 or mx > 80) -- .. and not holding play button w/ mouse
 			then
 				note(0xff, 0xff, 0xff, 0xff, 0xff, 8)
 			end
+			
 		end
 		
 		last_pitch = pitch
@@ -4115,26 +4171,26 @@ end
 
 
 :: .info.pod
-b64$LS1bW3BvZCxtb2RpZmllZD0iMjAyNS0wMy0zMSAyMDozMToyOCIsY3JlYXRlZD0iMjAyMy0x
-MC0xOSAxNjo1MDowNyIsYXV0aG9yPSJ6ZXAiLGljb249dXNlcmRhdGEoInU4IiwxNiwxNiwiMDAw
-MDAwMDEwMTAxMDEwMTAxMDEwMTAxMDEwMDAwMDAwMDAwMDEwNzA3MDcwNzA3MDcwNzA3MDcwNzAx
-MDAwMDAwMDEwNzBkMGQwZDBkMGQwZDBkMGQwZDBkMDcwMTAwMDEwNzBkMGQwZDBkMGQwZDBkMGQw
-ZDBkMGQwZDA3MDEwMTA3MGQwNzA3MDcwNzBkMGQwZDBkMGQwZDBkMDcwMTAxMDcwZDA3MDcwNzA3
-MGQwZDBkMGQwZDBkMGQwNzAxMDEwNzBkMDcwZDA3MDcwNzA3MDcwZDBkMGQwNzA3MDEwMTA3MGQw
-NzA3MDcwNzBkMGQwZDBkMDcwZDA3MDcwMTAxMDcwZDA3MDcwZDBkMDcwZDBkMGQwNzBkMDcwNzAx
-MDEwNzBkMDcwNzBkMGQwZDA3MGQwZDBkMGQwZDA3MDEwMTA3MGQwZDBkMGQwZDBkMGQwZDBkMGQw
-ZDBkMDcwMTAxMDYwNzBkMGQwZDBkMGQwZDBkMGQwZDBkMDcwNjAxMDEwNjA2MDcwNzA3MDcwNzA3
-MDcwNzA3MDcwNjA2MDEwMDAxMDYwNjA2MDYwNjA2MDYwNjA2MDYwNjA2MDEwMDAwMDAwMTA2MDYw
-NjA2MDYwNjA2MDYwNjA2MDEwMDAwMDAwMDAwMDEwMTAxMDEwMTAxMDEwMTAxMDEwMDAwMDAiKSxu
-b3Rlcz0iKGMpIExleGFsb2ZmbGUgR2FtZXMgTExQIixyZXZpc2lvbj0wLHJ1bnRpbWU9MTAsdGl0
-bGU9IlBpY290cm9uIFRyYWNrZXIiLHZlcnNpb249IjAuMWgiLHdvcmtzcGFjZXM9e3tsb2NhdGlv
-bj0ibWFpbi5sdWEjMTQ4Iix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJndWkubHVhIzU1
-NyIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0iaW5zdC5sdWEjMjc2Iix3b3Jrc3BhY2Vf
-aW5kZXg9MX0se2xvY2F0aW9uPSJlbnYubHVhIzIzNCIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2Nh
-dGlvbj0idHJhY2subHVhIzEzNiIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0idXBkYXRl
-Lmx1YSM1NiIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0iZGF0YS5sdWEjNzYiLHdvcmtz
-cGFjZV9pbmRleD0xfSx7bG9jYXRpb249InVuZG8ubHVhIzQiLHdvcmtzcGFjZV9pbmRleD0xfSx7
-bG9jYXRpb249ImdmeC8wLmdmeCIsd29ya3NwYWNlX2luZGV4PTJ9LHtsb2NhdGlvbj0ibWFwLzAu
-bWFwIix3b3Jrc3BhY2VfaW5kZXg9M30se2xvY2F0aW9uPSJzZngvMC5zZngiLHdvcmtzcGFjZV9p
-bmRleD00fSx7bG9jYXRpb249InNmeC8wLnNmeCIsd29ya3NwYWNlX2luZGV4PTd9fV1d
+b64$LS1bW3BvZCxhdXRob3I9InplcCIsY3JlYXRlZD0iMjAyMy0xMC0xOSAxNjo1MDowNyIsaWNv
+bj11c2VyZGF0YSgidTgiLDE2LDE2LCIwMDAwMDAwMTAxMDEwMTAxMDEwMTAxMDEwMTAwMDAwMDAw
+MDAwMTA3MDcwNzA3MDcwNzA3MDcwNzA3MDEwMDAwMDAwMTA3MDgwODA4MDgwODA4MDgwODA4MDgw
+NzAxMDAwMTA3MDgwODA4MDgwODA4MDgwODA4MDgwODA4MDcwMTAxMDcwODA3MDcwNzA3MDgwODA4
+MDgwODA4MDgwNzAxMDEwNzA4MDcwNzA3MDcwODA4MDgwODA4MDgwODA3MDEwMTA3MDgwNzA4MDcw
+NzA3MDcwNzA4MDgwODA3MDcwMTAxMDcwODA3MDcwNzA3MDgwODA4MDgwNzA4MDcwNzAxMDEwNzA4
+MDcwNzA4MDgwNzA4MDgwODA3MDgwNzA3MDEwMTA3MDgwNzA3MDgwODA4MDcwODA4MDgwODA4MDcw
+MTAxMDcwODA4MDgwODA4MDgwODA4MDgwODA4MDgwNzAxMDExNzA3MDgwODA4MDgwODA4MDgwODA4
+MDgwNzE3MDEwMTE3MTcwNzA3MDcwNzA3MDcwNzA3MDcwNzE3MTcwMTAwMDExNzE3MTcxNzE3MTcx
+NzE3MTcxNzE3MTcwMTAwMDAwMDAxMTcxNzE3MTcxNzE3MTcxNzE3MTcwMTAwMDAwMDAwMDAwMTAx
+MDEwMTAxMDEwMTAxMDEwMTAwMDAwMCIpLG1vZGlmaWVkPSIyMDI1LTA0LTAxIDA3OjM1OjMyIixu
+b3Rlcz0iKGMpIExleGFsb2ZmbGUgR2FtZXMgTExQIixyZXZpc2lvbj0wLHJ1bnRpbWU9MTMsdGl0
+bGU9IlBpY290cm9uIFRyYWNrZXIiLHZlcnNpb249IjAuMS4xZSIsd29ya3NwYWNlcz17e2xvY2F0
+aW9uPSJtYWluLmx1YSMxNjgiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249Imd1aS5sdWEj
+MSIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0iaW5zdC5sdWEjMSIsd29ya3NwYWNlX2lu
+ZGV4PTF9LHtsb2NhdGlvbj0iZW52Lmx1YSMxIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9u
+PSJ0cmFjay5sdWEjMSIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0idXBkYXRlLmx1YSMx
+Iix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJkYXRhLmx1YSMxIix3b3Jrc3BhY2VfaW5k
+ZXg9MX0se2xvY2F0aW9uPSJ1bmRvLmx1YSMxIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9u
+PSJnZngvMC5nZngiLHdvcmtzcGFjZV9pbmRleD0yfSx7bG9jYXRpb249Im1hcC8wLm1hcCIsd29y
+a3NwYWNlX2luZGV4PTN9LHtsb2NhdGlvbj0ic2Z4LzAuc2Z4Iix3b3Jrc3BhY2VfaW5kZXg9NH0s
+e2xvY2F0aW9uPSJzZngvMC5zZngiLHdvcmtzcGFjZV9pbmRleD03fX1dXQ==
 :: [eoc]

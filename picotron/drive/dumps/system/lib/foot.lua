@@ -6,7 +6,7 @@
 
 -- init first; might set window inside _init
 -- only problem: no visual feedback while _init does a lot of work. maybe need to spin the picotron button gfx!
-if (_init) then _init() end
+if (_init) _init() 
 
 
 --[[
