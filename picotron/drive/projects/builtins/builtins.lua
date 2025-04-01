@@ -2,7 +2,7 @@
 
 include("/lib/describe.lua")
 
-local defaultDest = "/desktop/projects/builtins/builtins.txt"
+local defaultDest = "/projects/builtins/builtins.txt"
 local dest = env().argv[1]
 if (dest == nil) then
   print("No destination specified. Saving to default path: " .. defaultDest)
