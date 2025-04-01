@@ -1,17 +1,55 @@
+// PICO-8:
+// {
+//   "Lua.runtime.version": "LuaJIT",
+//   "Lua.workspace.checkThirdParty": false,
+//   "Lua.diagnostics.disable": [
+//     "lowercase-global",
+//     "undefined-doc-name",
+//     "err-esc"
+//   ],
+//   "Lua.runtime.nonstandardSymbol": [
+//     "!=",
+//     "+=",
+//     "-=",
+//     "*=",
+//     "/=",
+//     "%=",
+//     "^=",
+//     "|=",
+//     "&=",
+//     "<<=",
+//     ">>=",
+//     "//"
+//   ],
+//   "Lua.runtime.builtin": {
+//     "basic": "disable",
+//     "bit": "disable",
+//     "bit32": "disable",
+//     "builtin": "disable",
+//     "coroutine": "disable",
+//     "debug": "disable",
+//     "ffi": "disable",
+//     "io": "disable",
+//     "jit": "disable",
+//     "math": "disable",
+//     "os": "disable",
+//     "package": "disable",
+//     "string": "disable",
+//     "table": "disable",
+//     "table.clear": "disable",
+//     "table.new": "disable",
+//     "utf8": "disable"
+//   }
+// }
+
+// Picotron:
 {
-  "Lua.workspace.library": ["${addons}/picotron/module/library"],
-  "Lua.runtime.version": "LuaJIT",
+  "Lua.runtime.version": "Lua 5.4",
   "Lua.workspace.checkThirdParty": false,
   "Lua.diagnostics.disable": [
     "lowercase-global",
     "undefined-doc-name",
-    "unused-function",
-    "unused-local",
-    "err-esc",
-    "exp-in-action",
-    "unknown-symbol",
-    "undefined-global",
-    "miss-exp"
+    "err-esc"
   ],
   "Lua.runtime.nonstandardSymbol": [
     "!=",
@@ -28,22 +66,22 @@
     "//"
   ],
   "Lua.runtime.builtin": {
-    "basic": "enable",
+    "basic": "disable",
     "bit": "disable",
     "bit32": "disable",
-    "builtin": "enable",
-    "coroutine": "enable",
-    "debug": "enable",
+    "builtin": "disable",
+    "coroutine": "disable",
+    "debug": "disable",
     "ffi": "disable",
     "io": "disable",
     "jit": "disable",
-    "math": "enable",
+    "math": "disable",
     "os": "disable",
     "package": "disable",
-    "string": "enable",
-    "table": "enable",
+    "string": "disable",
+    "table": "disable",
     "table.clear": "disable",
     "table.new": "disable",
-    "utf8": "enable"
+    "utf8": "disable"
   }
 }
