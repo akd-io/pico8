@@ -109,7 +109,7 @@ local function objectToString(object, indent)
   return join(strings, "")
 end
 
-local function map(table, callback, iterator)
+local function __map(table, callback, iterator)
   local newTable = {}
   for i, v in iterator(table) do
     newTable[i] = callback(v, i)
@@ -117,10 +117,10 @@ local function map(table, callback, iterator)
   return newTable
 end
 local function arrayMap(array, callback)
-  return map(array, callback, ipairs)
+  return __map(array, callback, ipairs)
 end
 local function objectMap(object, callback)
-  return map(object, callback, pairs)
+  return __map(object, callback, pairs)
 end
 
 local function filter(table, callback, iterator)
