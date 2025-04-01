@@ -1,4 +1,4 @@
-// PICO-8:
+// PICO-8: https://github.com/ahai64/pico8/blob/main/config.json
 // {
 //   "Lua.runtime.version": "LuaJIT",
 //   "Lua.workspace.checkThirdParty": false,
@@ -42,7 +42,7 @@
 //   }
 // }
 
-// Picotron:
+// Picotron: https://github.com/ahai64/picotron/blob/main/config.json
 {
   "Lua.runtime.version": "Lua 5.4",
   "Lua.workspace.checkThirdParty": false,
