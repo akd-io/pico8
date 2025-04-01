@@ -2,10 +2,6 @@
 
 include("/lib/describe.lua")
 
--- TODO: Remove these prinths when it's clear whether create_process in new version of picotron still overrides the whole argv object, including argv[0].
-printh("builtins.lua argv:")
-printh(describe(env().argv))
-
 local defaultDest = "/desktop/projects/builtins/builtins.txt"
 local dest = env().argv[1]
 if (dest == nil) then

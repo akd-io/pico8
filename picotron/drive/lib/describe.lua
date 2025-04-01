@@ -112,7 +112,7 @@ local function describeTable(table)
   end
 end
 
----@param value string
+---@param value any
 ---@return string
 describeFn = function(value)
   if (type(value) == "function") then
