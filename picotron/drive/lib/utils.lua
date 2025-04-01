@@ -109,6 +109,13 @@ function objectToString(object, indent)
   return join(strings, "")
 end
 
+arrayForeach = foreach
+function objectForeach(object, callback)
+  for i, v in pairs(table) do
+    callback(v, i)
+  end
+end
+
 function __map(table, callback, iterator)
   local newTable = {}
   for i, v in iterator(table) do
