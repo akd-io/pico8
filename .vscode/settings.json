@@ -1,5 +1,7 @@
 // PICO-8: https://github.com/ahai64/pico8/blob/main/config.json
+//! IMPORTANT: Don't just copy paste the config.json. It doesn't include "Lua.workspace.library": ["${addons}/pico8/module/library"]
 // {
+//   "Lua.workspace.library": ["${addons}/pico8/module/library"],
 //   "Lua.runtime.version": "LuaJIT",
 //   "Lua.workspace.checkThirdParty": false,
 //   "Lua.diagnostics.disable": [
@@ -43,7 +45,9 @@
 // }
 
 // Picotron: https://github.com/ahai64/picotron/blob/main/config.json
+//! IMPORTANT: Don't just copy paste the config.json. It doesn't include "Lua.workspace.library": ["${addons}/picotron/module/library"]
 {
+  "Lua.workspace.library": ["${addons}/picotron/module/library"],
   "Lua.runtime.version": "Lua 5.4",
   "Lua.workspace.checkThirdParty": false,
   "Lua.diagnostics.disable": [
