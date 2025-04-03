@@ -55,16 +55,10 @@ function isArray(table)
   return true
 end
 
+---@deprecated Use table.concat() instead.
 function join(elements, separator)
-  separator = separator or ", "
-  local result = ""
-  for k, v in ipairs(elements) do
-    if (k > 1) then result ..= separator end
-    result ..= tostr(v)
-  end
-  return result
+  assert(false, "Use table.concat() instead.")
 end
-
 
 arrayForeach = foreach
 function objectForeach(object, callback)
