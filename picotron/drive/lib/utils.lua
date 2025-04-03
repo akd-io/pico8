@@ -287,8 +287,8 @@ function arrayFrom(iterator)
   -- TODO: Find out how to use iterators in lua. https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from
 end
 
-function arraySlice(array, start, end_)
-  assert(false, "Use sub() instead.")
+function arraySlice()
+  -- TODO: Implement
 end
 
 function arraySplice(array, start, deleteCount, ...)
