@@ -30,6 +30,19 @@ See [`/system`](drive/dumps/system) folder for a dump of all files in Picotron's
 
 ## Feedback
 
+### `print()` or `_update()` doesn't run in `.lua` file run from terminal
+
+The following script runs well when hitting `CTRL+R` in the editor.
+
+But it shows no logs in the Picotron terminal, or host terminal, when run from the Picotron terminal.
+
+```lua
+function _update()
+  print("update")
+  printh("update")
+end
+```
+
 ### Present working directory
 
 Contrary to expectation, `pwd()` points to script location, while `env().path` points to the directory from which the script was run.
