@@ -16,7 +16,16 @@ window({
   title = tostr(pid())
 })
 
-local processAttributes = { "id", "prog", "pwd", "cpu", "priority", "memory", "name" }
+local processAttributes = { "id", "name", "cpu", "memory", "pwd", "prog", "priority" }
+local formatMap = {
+  id = "%2d", -- TODO: Doesn't update to %3d at PID 100. Consider dynamically calculating based on highest PID.
+  name = "%s",
+  cpu = "%0.3f",
+  memory = "%d",
+  pwd = "%s",
+  prog = "%s",
+  priority = "%d",
+}
 
 function _init()
   local processes = fetch "/ram/system/processes.pod"
@@ -36,7 +45,8 @@ function _draw()
   foreach(processAttributes, function(key)
     local keyWidth = print(key, 0, -1000)
     for process in all(processes) do
-      keyWidth = max(keyWidth, print(process[key], 0, -1000))
+      local valueString = string.format(formatMap[key], process[key])
+      keyWidth = max(keyWidth, print(valueString, 0, -1000))
     end
     columnWidth[key] = keyWidth
   end)
@@ -51,9 +61,10 @@ function _draw()
 
   for process in all(processes) do
     x = 0
-    y += 8
+    y += 9
     for key in all(processAttributes) do
-      print(tostr(process[key]), x, y)
+      local valueString = string.format(formatMap[key], process[key])
+      print(valueString, x, y)
       x += columnWidth[key] + xPadding
     end
     -- print(string.format(" %4d %-" .. keyWidth .. "s %0.3f  %0.0fk", process.id, process.name, process.cpu, process.memory / 1024))
