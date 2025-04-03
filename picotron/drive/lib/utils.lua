@@ -330,3 +330,30 @@ function arrayShift(array)
   array[#array] = nil
   return value
 end
+
+function arrayEqualsShallow(arrayA, arrayB)
+  if #arrayA != #arrayB then
+    return false
+  end
+  for i = 1, #arrayA do
+    if arrayA[i] != arrayB[i] then
+      return false
+    end
+  end
+  return true
+end
+
+function objectEqualsShallow(objectA, objectB)
+  -- We can't use table length to avoid looping through both tables here, as length isn't defined for objects.
+  for k, v in pairs(objectA) do
+    if objectB[k] != v then
+      return false
+    end
+  end
+  for k, v in pairs(objectB) do
+    if objectA[k] != v then
+      return false
+    end
+  end
+  return true
+end
