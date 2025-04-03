@@ -116,6 +116,7 @@ function __initReact()
 
   local function internalRenderFunction(key, externalFunctionComponent, ...)
     if DEV then assert(key != nil, "key must be provided") end
+    -- TODO: assert key is string/number?
 
     -- Save parent/previous component instance and id
     local parentInstanceId = currentInstanceId
