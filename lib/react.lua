@@ -145,7 +145,8 @@ function __initReact()
       local function renderElements(elements, prefix)
         if DEV then
           assert(type(elements) == "table", "Elements array was not an array. Got type " .. type(elements) .. ".")
-          assert(isArray(elements), "Elements array was a table, but not an array. Arrays are tables with consecutive number keys. And arrays can't contain nil values. Replace nils in element arrays with false to unmount components.")
+          assert(isArray(elements),
+            "Elements array was a table, but not an array. Arrays are tables with consecutive number keys. And arrays can't contain nil values. Replace nils in element arrays with false to unmount components.")
         end
 
         for index, element in ipairs(elements) do
@@ -154,14 +155,18 @@ function __initReact()
           end
 
           -- TODO: Consider accepting type(element) == "function" in the case of a propless unkeyed component, or just a function to call. Enables an API to run code after render.
-          if DEV then assert(type(element) == "table", "Element must be a table or boolean. Got type " .. type(element) .. ".") end
+          if DEV then
+            assert(type(element) == "table",
+              "Element must be a table or boolean. Got type " .. type(element) .. ".")
+          end
 
           local firstValue = element[1]
           local firstValueType = type(firstValue)
 
           if DEV then
             assert(
-              firstValueType == "table" or firstValueType == "number" or firstValueType == "string" or firstValueType == "function" or firstValueType == "boolean",
+              firstValueType == "table" or firstValueType == "number" or firstValueType == "string" or
+              firstValueType == "function" or firstValueType == "boolean",
               "Unrecognized element syntax of the form { " .. firstValueType .. ", ... }."
             )
           end
@@ -193,9 +198,13 @@ function __initReact()
             local externalFunctionComponent = isKeyedElement and element[2] or firstValue
 
             local renderFuncType = type(externalFunctionComponent)
-            if DEV then assert(renderFuncType == "function", "Elements must be tables with a function as the first element. Got type " .. renderFuncType .. ".") end
+            if DEV then
+              assert(renderFuncType == "function",
+                "Elements must be tables with a function as the first element. Got type " .. renderFuncType .. ".")
+            end
             local indexOfFirstProp = isKeyedElement and 3 or 2
-            internalRenderFunction((prefix or "") .. key, externalFunctionComponent, select(indexOfFirstProp, unpack(element)))
+            internalRenderFunction((prefix or "") .. key, externalFunctionComponent,
+              select(indexOfFirstProp, unpack(element)))
           end
 
           ::continue::
@@ -239,7 +248,11 @@ function __initReact()
   end
 
   local function didDepsChange(prevDeps, newDeps)
-    if DEV then assert(#prevDeps == #newDeps, "dependency arrays must be the same length between renders. Got lengths " .. #prevDeps .. " and " .. #newDeps .. ".") end
+    if DEV then
+      assert(#prevDeps == #newDeps,
+        "dependency arrays must be the same length between renders. Got lengths " ..
+        #prevDeps .. " and " .. #newDeps .. ".")
+    end
     if (#newDeps == 0) then
       return false
     end
