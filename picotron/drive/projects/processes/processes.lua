@@ -37,7 +37,16 @@ function _init()
   end
 end
 
+local scrollY = 0
+local scrollX = 0
+
 function _draw()
+  local _, _, _, wheelX, wheelY = mouse()
+  scrollX -= 2 * wheelX
+  scrollY -= 2 * wheelY
+
+  camera(scrollX, scrollY)
+
   cls(0)
   local processes = fetch "/ram/system/processes.pod"
 
