@@ -42,7 +42,7 @@ function pad(num, length, symbol)
 end
 
 function endsWidth(str, suffix)
-  return sub(str, -#suffix) == suffix
+  return sub(str, - #suffix) == suffix
 end
 
 function isArray(table)
@@ -80,9 +80,11 @@ function __map(table, callback, iterator)
   end
   return newTable
 end
+
 function arrayMap(array, callback)
   return __map(array, callback, ipairs)
 end
+
 function objectMap(object, callback)
   return __map(object, callback, pairs)
 end
@@ -96,9 +98,11 @@ function filter(table, callback, iterator)
   end
   return newTable
 end
+
 function arrayFilter(array, callback)
   return filter(array, callback, ipairs)
 end
+
 function objectFilter(object, callback)
   return filter(object, callback, pairs)
 end
@@ -110,6 +114,7 @@ function __reduce(table, callback, initialValue, iterator)
   end
   return accumulator
 end
+
 function arrayReduce(array, callback, initialValue)
   return __reduce(array, callback, initialValue, ipairs)
 end
@@ -126,9 +131,11 @@ function __find(table, callback, iterator)
   end
   return nil
 end
+
 function arrayFind(array, callback)
   return __find(array, callback, ipairs)
 end
+
 function objectFind(object, callback)
   return __find(object, callback, pairs)
 end
@@ -141,9 +148,11 @@ function __findIndex(table, callback, iterator)
   end
   return nil
 end
+
 function arrayFindIndex(array, callback)
   return __findIndex(array, callback, ipairs)
 end
+
 function objectFindIndex(object, callback)
   return __findIndex(object, callback, pairs)
 end
@@ -156,9 +165,11 @@ function __every(table, callback, iterator)
   end
   return true
 end
+
 function arrayEvery(array, callback)
   return __every(array, callback, ipairs)
 end
+
 function objectEvery(object, callback)
   return __every(object, callback, pairs)
 end
@@ -171,9 +182,11 @@ function __some(table, callback, iterator)
   end
   return false
 end
+
 function arraySome(array, callback)
   return __some(array, callback, ipairs)
 end
+
 function objectSome(object, callback)
   return __some(object, callback, pairs)
 end
@@ -186,9 +199,11 @@ function __includes(table, value, iterator)
   end
   return false
 end
+
 function arrayIncludes(array, value)
   return __includes(array, value, ipairs)
 end
+
 function objectIncludes(object, value)
   return __includes(object, value, pairs)
 end
@@ -201,9 +216,11 @@ function __indexOf(table, value, iterator)
   end
   return -1
 end
+
 function arrayIndexOf(array, value)
   return __indexOf(array, value, ipairs)
 end
+
 function objectIndexOf(object, value)
   return __indexOf(object, value, pairs)
 end
@@ -224,9 +241,11 @@ function __keys(table, iterator)
   end
   return keys
 end
+
 function arrayKeys(array)
   return __keys(array, ipairs)
 end
+
 function objectKeys(object)
   return __keys(object, pairs)
 end
@@ -238,9 +257,11 @@ function __values(table, iterator)
   end
   return values
 end
+
 function arrayValues(array)
   return __values(array, ipairs)
 end
+
 function objectValues(object)
   return __values(object, pairs)
 end
@@ -252,9 +273,11 @@ function __entries(table, iterator)
   end
   return entries
 end
+
 function arrayEntries(array)
   return __entries(array, ipairs)
 end
+
 function objectEntries(object)
   return __entries(object, pairs)
 end
