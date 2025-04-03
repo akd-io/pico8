@@ -1,5 +1,16 @@
 # Picotron findings
 
+Stat:
+
+- `stat(307) & 0x1` seems to be `1` for "trusted system apps"
+
+Misc:
+
+- `_update` runs at 60 fps. `_update60` is not a thing in Picotron.
+- Contrary to expectation, `pwd` points to script location while `env().path` points to the directory from which the script was run.
+- @soundsdotzip on Discord mentioned `store("screenshot.png",get_display())` to save a screenshot.
+- @_maxine_ mentioned `store("/desktop/trash.loc", {location="/ram/compost"})`
+
 ## Builtins/Environment
 
 Using the [builtins script](drive/desktop/projects/builtins/main.lua) yields:
