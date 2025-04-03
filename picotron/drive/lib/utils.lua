@@ -56,7 +56,7 @@ function isArray(table)
 end
 
 ---@deprecated Use table.concat() instead.
-function join(elements, separator)
+function join()
   assert(false, "Use table.concat() instead.")
 end
 
