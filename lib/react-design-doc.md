@@ -218,3 +218,5 @@ Example using [Function syntax](#212-function-syntax), [Key element wrappers](#2
 ```
 
 When adding keys, it becomes apparent, that the [Key in props](#222-key-in-props) approach helps the Named props approach achieve significantly nicer syntax than the Unnamed props approach.
+
+TODO: In summary: unnamed props is a subset of named props. If we support unnamed props, named props are also supported. Let's use key-in-props. If we encounter a function element whose first argument is of the form `{ key = "string" }`, a table with a single key property on it ONLY, then we remove that whole first param before forwarding params to the component render function. If users don't like it props-object, they can just use the `{ key = "string" }` first param. We will also still support the base element syntax for perf/token optimization.
