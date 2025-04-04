@@ -186,7 +186,7 @@ function objectSome(object, callback)
 end
 
 function __includes(table, value, iterator)
-  for i, v in iterator(table) do
+  for _, v in iterator(table) do
     if v == value then
       return true
     end
