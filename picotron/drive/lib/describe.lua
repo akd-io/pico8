@@ -23,7 +23,7 @@ local function sortedArray(array)
   return sorted
 end
 
-local describeFn
+local describeInner
 
 local function describeFunction(func)
   assert(type(func) == "function")
@@ -43,7 +43,7 @@ local function describeArray(array)
   local result = "["
   for k, v in ipairs(array) do
     if (k > 1) then result = result .. ", " end
-    result = result .. describeFn(v)
+    result = result .. describeInner(v)
   end
   return result .. "]"
 end
@@ -87,7 +87,7 @@ local function describeObject(object)
   indentation += 2
   for k in all(keys) do
     local v = object[k]
-    result = result .. string.rep(" ", indentation) .. describeFn(k) .. " = " .. describeFn(v) .. ",\n"
+    result = result .. string.rep(" ", indentation) .. describeInner(k) .. " = " .. describeInner(v) .. ",\n"
   end
   indentation -= 2
   return result .. string.rep(" ", indentation) .. "}"
@@ -114,7 +114,7 @@ end
 
 ---@param value any
 ---@return string
-describeFn = function(value)
+describeInner = function(value)
   if (type(value) == "function") then
     return describeFunction(value)
   elseif (type(value) == "table") then
@@ -126,4 +126,7 @@ describeFn = function(value)
   end
 end
 
-describe = describeFn
+function describe(value)
+  seenTables = {}
+  return describeInner(value)
+end
