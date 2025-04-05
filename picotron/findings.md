@@ -38,7 +38,7 @@ See [`/system`](drive/dumps/system) folder for a dump of all files in Picotron's
 
 ## Feedback
 
-### `print()` or `_update()` doesn't run in `.lua` file run from terminal
+### (Reported) `print()` or `_update()` doesn't run in `.lua` file run from terminal
 
 The following script runs well when hitting `CTRL+R` in the editor.
 
@@ -51,7 +51,7 @@ function _update()
 end
 ```
 
-### Present working directory
+### (Reported) Present working directory
 
 Contrary to expectation, `pwd()` points to script location, while `env().path` points to the directory from which the script was run.
 
@@ -59,7 +59,7 @@ However, `/system/util/pwd.lua` interprets present working directory to mean the
 
 `/ram/system/processes.pod` also interprets present working directory to mean the directory from which the script was run, and uses the value equivalent to `env().path` for the `pwd` property.
 
-### `mkdir()`
+### (Reported) `mkdir()`
 
 Current behavior:
 
