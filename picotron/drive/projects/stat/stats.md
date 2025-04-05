@@ -1,4 +1,6 @@
-# Stat() docs
+# `stat()` documentaion
+
+This file attempts to document all `stat()` codes, enriching the official documentation with its hidden features.
 
 ## TODO
 
@@ -6,6 +8,31 @@
 - Try logging state below 0.
 - Try logging several return values from stat(), as some stats are known to return multiple values.
   - Try logging `#pack(stat(i))`, to get number of returned values.
+
+## Table of Contents
+
+- [Results](#results)
+- [Official `stat()` documentation](#official-stat-documentation)
+  - [`stat()` section](#stat-section)
+  - [HTML Export Size Limit section](#html-export-size-limit-section)
+  - [Mixer state section](#mixer-state-section)
+- [Undocumented stats gathered from `stat.lua` script](#undocumented-stats-gathered-from-statlua-script)
+- [Source search](#source-search)
+  - [All unique `stat()` calls](#all-unique-stat-calls)
+  - [Undocumented unique `stat()` calls](#undocumented-unique-stat-calls)
+  - [Code searches](#code-searches)
+    - [301 Search](#301-search)
+    - [302 Search](#302-search)
+    - [307 Search](#307-search)
+    - [315 Search](#315-search)
+    - [316 Search](#316-search)
+    - [317 Search](#317-search)
+    - [318 Search](#318-search)
+    - [320 Search](#320-search)
+    - [321 Search](#321-search)
+    - [330 Search](#330-search)
+    - [987 Search](#987-search)
+    - [988 Search](#988-search)
 
 ## Results
 
@@ -96,7 +123,7 @@
 
 ## Official `stat()` documentation
 
-### `Stat()` section
+### `stat()` section
 
 From https://www.lexaloffle.com/dl/docs/picotron_manual.html#stat
 
@@ -183,15 +210,21 @@ The following list contains stats gathered from [stat.lua](stat.lua), with docum
 
 But it seems there are 16 instead of the expected 8. Might just be because of stereo.
 
-## Dump search
+## Source search
 
-A search through a dump of `/ram` and `/system` yielded the results found in [search.md](search.md).
+A search through a dump of `/ram` and `/system` using a VSCode Search Editor with the below settings yielded the results found in [search.txt](search.txt).
+
+Search regex: `[^f]stat\(`
+
+Files to include: `picotron/drive/dumps/`
+
+Context lines: `1`
 
 ### All unique `stat()` calls
 
-Extracting stats with `/stat\(.*?\)/gm` on [regex101](https://regex101.com/), [all-stat-calls.txt](all-stat-calls.txt) was generated.
+Pasting [search.txt](search.txt) into [regex101](https://regex101.com/), using regex `/stat\(.*?\)/gm`, can exporting the matches as plain text, [all-stat-calls.txt](all-stat-calls.txt) was generated.
 
-By running VSCode's `> Delete Duplicate Lines` and `> Sort lines (natural)` the following list of all unique `stat()` calls was compiled:
+Running VSCode's `> Delete Duplicate Lines` and `> Sort lines (natural)` on [all-stat-calls.txt](all-stat-calls.txt), gave the following list of all unique `stat()` calls:
 
 ```
 stat()
@@ -255,7 +288,9 @@ stat(987)
 stat(988)
 ```
 
-### 301 Search
+### Code searches
+
+#### 301 Search
 
 Search regex: `[^f]stat\(301`
 
@@ -311,7 +346,7 @@ picotron/drive/dumps/system/boot.lua:
   255
 ```
 
-### 302 Search
+#### 302 Search
 
 Search regex: `[^f]stat\(302`
 
@@ -333,7 +368,7 @@ picotron/drive/dumps/system/lib/events.lua:
   153  		if (mapped_name and mapped_name ~= "") then
 ```
 
-### 307 Search
+#### 307 Search
 
 Search regex: `[^f]stat\(307`
 
@@ -391,7 +426,7 @@ picotron/drive/dumps/system/lib/head.lua:
   1066  		proc_id == 3 or                               -- can always send message to wm
 ```
 
-### 315 Search
+#### 315 Search
 
 Search regex: `[^f]stat\(315`
 
@@ -443,7 +478,7 @@ picotron/drive/dumps/system/pm/pm.lua:
   19
 ```
 
-### 316 Search
+#### 316 Search
 
 Search regex: `[^f]stat\(316`
 
@@ -465,7 +500,7 @@ picotron/drive/dumps/system/startup.lua:
   63  	return
 ```
 
-### 317 Search
+#### 317 Search
 
 Search regex: `[^f]stat\(317`
 
@@ -639,7 +674,7 @@ picotron/drive/dumps/system/wm/wm.lua:
   3941  		-- to do: cartridges should launch splore (doubles as Favourites). Naming matches "Files" -- the objects you want to look through
 ```
 
-### 318 Search
+#### 318 Search
 
 Search regex: `[^f]stat\(318`
 
@@ -705,7 +740,7 @@ picotron/drive/dumps/system/wm/wm.lua:
   3980
 ```
 
-### 320 Search
+#### 320 Search
 
 Search regex: `[^f]stat\(320`
 
@@ -743,7 +778,7 @@ picotron/drive/dumps/system/wm/wm.lua:
   3920  		add(item, {"\^:06ff81b5b181ff00 End Recording", function() _signal(19) end})
 ```
 
-### 321 Search
+#### 321 Search
 
 Search regex: `[^f]stat\(321`
 
@@ -789,7 +824,7 @@ picotron/drive/dumps/system/wm/wm.lua:
   2719  			_signal(19)
 ```
 
-### 330 Search
+#### 330 Search
 
 Search regex: `[^f]stat\(330`
 
@@ -811,7 +846,7 @@ picotron/drive/dumps/system/wm/wm.lua:
   2290
 ```
 
-### 987 Search
+#### 987 Search
 
 Search regex: `[^f]stat\(987`
 
@@ -833,7 +868,7 @@ picotron/drive/dumps/system/boot.lua:
   172  		played_boot_sound = true
 ```
 
-### 988 Search
+#### 988 Search
 
 Search regex: `[^f]stat\(988`
 
