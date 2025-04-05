@@ -26,10 +26,10 @@ These CLI arguments were suspected to work, as Pico-8 supports them, but were te
 - `-volume n`
   - Boot sound still plays at `-volume 0`
 - `-run <path>`
-  - Not tested with `.p54`.
+  - Not tested with `.p64`.
   - `.lua` files don't seem to work. Boots to desktop as normal
 - `-p`
-  - Not tested with `.p54`.
+  - Not tested with `.p64`.
   - Doesn't seem to work with `-x`
     - These all yield a normal `env()`:
       - `picotron -x projects/env/env.lua -p test`
