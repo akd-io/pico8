@@ -66,8 +66,7 @@
     "|=",
     "&=",
     "<<=",
-    ">>=",
-    "//"
+    ">>="
   ],
   "Lua.runtime.builtin": {
     "basic": "disable",
