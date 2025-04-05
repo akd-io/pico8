@@ -1,3 +1,5 @@
+// Comment/uncomment the platform you are working on
+
 // PICO-8: https://github.com/ahai64/pico8/blob/main/config.json
 //! IMPORTANT: Don't just copy paste the config.json. It doesn't include "Lua.workspace.library": ["${addons}/pico8/module/library"]
 // Use `LuaJIT` runtime for `0b010101` binary notation support
