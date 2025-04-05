@@ -1,4 +1,4 @@
-# `stat()` documentaion
+# `stat()` Documentation
 
 This file attempts to document all `stat()` codes, enriching the official documentation with its hidden features.
 
