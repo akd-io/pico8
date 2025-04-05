@@ -1,5 +1,14 @@
 # Picotron findings
 
+## Command line arguments
+
+Picotron CLI arguments:
+
+- `picotron -x <path/to/my/script.lua>`
+  - Run the specified file in headless mode
+  - The path is relative to your host OS's current working directory
+  - Found with the help of `@_maxine_` on discord
+
 ## `stat()`
 
 See [`stats.md`](drive/projects/stat/stats.md).
