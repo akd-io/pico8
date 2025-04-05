@@ -1,13 +1,13 @@
 # Picotron findings
 
-## Stat
+## `stat()`
 
-- `stat(307) & 0x1` seems to be `1` for "trusted system apps"
+See [`stats.md`](drive/projects/stat/stats.md).
 
 ## Docs
 
 - Many builtins not documented in the official manual.
-  - `_VERSION`, `kernal_path`, `kpath`, `cocreate`, `collectgarbage`, `costatus`, `error`, `getmetatable`, `ipairs`, `next`, `norm`, `pack`, `pcall`, `pid`, `rawequal`, `rawget`, `rawlen`, `rawset`, `select`, `setmetatable`, `sgn`, `stat`, `tokenoid`, `tonum`, `tonumber`, `tostring`, `unpack`, `warn`, `yield`, `USERDATA`, `_G`, `coroutine`, `debug`, `math`, `string`, `table`, `utf8`
+  - `_VERSION`, `kernal_path`, `kpath`, `cocreate`, `collectgarbage`, `costatus`, `error`, `getmetatable`, `ipairs`, `next`, `norm`, `pack`, `pcall`, `pid`, `rawequal`, `rawget`, `rawlen`, `rawset`, `select`, `setmetatable`, `sgn`, `tokenoid`, `tonum`, `tonumber`, `tostring`, `unpack`, `warn`, `yield`, `USERDATA`, `_G`, `coroutine`, `debug`, `math`, `string`, `table`, `utf8`
 - Correct interface for `window()` is `window(width,height,attribs)`
 - `window()` supports `x` and `y` to set position, and `dx` and `dy` to move the window by an offset.
 

@@ -2,7 +2,6 @@
 
 ## TODO
 
-- Do similar research into `_signal(`.
 - Try logging stats above 0..1000.
 - Try logging state below 0.
 - Try logging several return values from stat(), as some stats are known to return multiple values.
@@ -10,10 +9,94 @@
 
 ## Results
 
-TODO: Copy every known stat here.
-TODO: Add descriptions to the ones we understand. Leave rest with empty description to be filled out.
+- `stat(0)` memory usage (triggers a garbage collection)
+- `stat(1)` cpu usage (try to stay under ~0.9 to maintain 60fps)
+- `stat(2)` reserved
+- `stat(3)` raw mememory usage (no GC, so value jumps around)
+- `stat(5)` runtime, system version
+- `stat(7)` operating fps (60,30,20,15)
+- `stat(86)` epoch time
+- `stat(87)` timezone delta in seconds
+- `stat(101)` web: player cart id (when playing a bbs cart; nil otherwise)
+- `stat(150)` web: window.location.href
+- `stat(151)` web: stat(150) up to the end of the window.location.pathname
+- `stat(152)` web: window.location.host
+- `stat(153)` web: window.location.hash
+- `stat(301)` (undocumented)
+  - See [code references](#301-search)
+- `stat(302, i)` (undocumented)
+  - See [code references](#302-search)
+- `stat(307)` (undocumented)
+  - `stat(307) & 0x1` seems to indicate `307` is a bitfield and
+    - `0b1` is code for "trusted system apps"
+  - See [code references](#307-search)
+- `stat(308)` (undocumented)
+  - Found to have value `1973.0` in `stat.lua` output.
+  - No code references.
+- `stat(309)` (undocumented)
+  - Found to have value `60531740.0` in `stat.lua` output.
+  - No code references.
+- `stat(310)` (undocumented)
+  - Found to have value `551.0` in `stat.lua` output.
+  - No code references.
+- `stat(311)` (undocumented)
+  - Found to have value `15833.0` in `stat.lua` output.
+  - No code references.
+- `stat(312)` (undocumented)
+  - Found to have value `4096.0` in `stat.lua` output.
+  - No code references.
+- `stat(313)` (undocumented)
+  - Found to have value `626688.0` in `stat.lua` output.
+  - No code references.
+- `stat(314)` (undocumented)
+  - Found to have value `3.1415926535898` in `stat.lua` output.
+  - No code references.
+- `stat(315)` (undocumented)
+  - See [code references](#315-search)
+- `stat(316)` (undocumented)
+  - See [code references](#316-search)
+- `stat(317)` (undocumented)
+  - See [code references](#317-search)
+- `stat(318)` (undocumented)
+  - See [code references](#318-search)
+- `stat(320)` (undocumented)
+  - See [code references](#320-search)
+- `stat(321)` (undocumented)
+  - See [code references](#321-search)
+- `stat(330)` (undocumented)
+  - See [code references](#330-search)
+- `stat(400 + c, 0)` note is held (0 false 1 true)
+- `stat(400 + c, 1)` channel instrument
+- `stat(400 + c, 2)` channel vol
+- `stat(400 + c, 3)` channel pan
+- `stat(400 + c, 4)` channel pitch
+- `stat(400 + c, 5)` channel bend
+- `stat(400 + c, 6)` channel effect
+- `stat(400 + c, 7)` channel effect_p
+- `stat(400 + c, 8)` channel tick len
+- `stat(400 + c, 9)` channel row
+- `stat(400 + c, 10)` channel row tick
+- `stat(400 + c, 11)` channel sfx tick
+- `stat(400 + c, 12)` channel sfx index (-1 if none finished)
+- `stat(400 + c, 13)` channel last played sfx index
+- `stat(400 + c, 19, addr)` fetch stereo output buffer (returns number of samples)
+- `stat(400 + c, 20 + n, addr)` fetch mono output buffer for a node n (0..7)
+- `stat(464)` bitfield indicating which channels are playing a track (sfx)
+- `stat(465, addr)` copy last mixer stereo output buffer output is written as int16's to addr. returns number of samples written.
+- `stat(466)` which pattern is playing (-1 for no music)
+- `stat(467)` return the index of the left-most non-looping music channel
+- `stat(985)` (undocumented)
+  - Found to have value `1.0` in `stat.lua` output.
+  - No code references.
+- `stat(987)` (undocumented)
+  - Found to have value `201225.0` in `stat.lua` output.
+  - See [code references](#987-search)
+- `stat(988)` (undocumented)
+  - See [code references](#988-search)
 
-## Official `Stat()` docs
+## Official `stat()` documentation
+
+### `Stat()` section
 
 From https://www.lexaloffle.com/dl/docs/picotron_manual.html#stat
 
@@ -35,13 +118,17 @@ From https://www.lexaloffle.com/dl/docs/picotron_manual.html#stat
 > 153  web: window.location.hash
 > ```
 
-## HTML Export Size Limit
+### HTML Export Size Limit section
+
+The HTML Export Size Limit section of the docs mention `stat(151)`, but its purpose it already documented in the `Stat()` section.
+
+Included here for completeness.
 
 From https://www.lexaloffle.com/dl/docs/picotron_manual.html#HTML_Export_Size_Limit
 
 > The html exporter can handle carts that are up to 8MB in .p64.rom format (use "info" command to check). Beyond that size, fetch() can be used to download more data as needed using stat(151) to prepend the host and path the page is being served from: fetch(stat(151).."level2.pod").
 
-## Mixer state
+### Mixer state section
 
 From https://www.lexaloffle.com/dl/docs/picotron_manual.html#Querying_Mixer_State
 
@@ -76,7 +163,9 @@ From https://www.lexaloffle.com/dl/docs/picotron_manual.html#Querying_Mixer_Stat
 > stat(400 + c, 20 + n, addr) -- fetch mono output buffer for a node n (0..7)
 > ```
 
-## Unknown stats gathered from stat.txt
+## Undocumented stats gathered from `stat.lua` script
+
+The following list contains stats gathered from [stat.lua](stat.lua), with documented stats removed.
 
 ```
 308 = 1973.0,
@@ -96,30 +185,83 @@ But it seems there are 16 instead of the expected 8. Might just be because of st
 
 ## Dump search
 
-See initial search results in [search.md](search.md)
+A search through a dump of `/ram` and `/system` yielded the results found in [search.md](search.md).
 
-### Unknown stats gathered from Search
+### All unique `stat()` calls
 
-Using `stat\(\d+` on regex101, deleting known stats and duplicates, I found the following stats:
+Extracting stats with `/stat\(.*?\)/gm` on [regex101](https://regex101.com/), [all-stat-calls.txt](all-stat-calls.txt) was generated.
 
-- 301
-- 302
-- 307
-- 315
-- 316
-- 317
-- 318
-- 320
-- 321
-- 330
-- 987
-- 988
+By running VSCode's `> Delete Duplicate Lines` and `> Sort lines (natural)` the following list of all unique `stat()` calls was compiled:
+
+```
+stat()
+stat(0)
+stat(1)
+stat(5)
+stat(7)
+stat(87)
+stat(101)
+stat(152)
+stat(301)
+stat(302, i)
+stat(307)
+stat(315)
+stat(316)
+stat(317)
+stat(318)
+stat(320)
+stat(321)
+stat(330)
+stat(400 + ci_channel, 8)
+stat(400 + ci_channel, 20 + node_index, tick_addr)
+stat(400 + i, 9)
+stat(400 + i, 12)
+stat(400 + stat(467)
+stat(400+i,1 )
+stat(400+i,1)
+stat(400+i,9 )
+stat(400+i,12)
+stat(400+i,19,0x90000)
+stat(464)
+stat(465,0,0xe0000)
+stat(466)
+stat(987)
+stat(988)
+stat(wallpaper)
+```
+
+Note:
+
+- `stat()` was from a comment, and irrelevant.
+- `stat(400 + stat(467)` was cut short. Full call from source is `stat(400 + stat(467), 9)`
+- `stat(wallpaper)`'s full source is `fstat(wallpaper)`, and irrelevant.
+
+### Undocumented unique `stat()` calls
+
+This list takes the previous list, and removed officially documented ones.
+
+```
+stat(301)
+stat(302, i)
+stat(307)
+stat(315)
+stat(316)
+stat(317)
+stat(318)
+stat(320)
+stat(321)
+stat(330)
+stat(987)
+stat(988)
+```
 
 ### 301 Search
 
 Search regex: `[^f]stat\(301`
+
 Files to include: `picotron/drive/dumps/`
-Context lines: 1
+
+Context lines: `1`
 
 ```
 12 results - 2 files
@@ -172,8 +314,10 @@ picotron/drive/dumps/system/boot.lua:
 ### 302 Search
 
 Search regex: `[^f]stat\(302`
+
 Files to include: `picotron/drive/dumps/`
-Context lines: 1
+
+Context lines: `1`
 
 ```
 2 results - 2 files
@@ -192,8 +336,10 @@ picotron/drive/dumps/system/lib/events.lua:
 ### 307 Search
 
 Search regex: `[^f]stat\(307`
+
 Files to include: `picotron/drive/dumps/`
-Context lines: 1
+
+Context lines: `1`
 
 ```
 14 results - 6 files
@@ -248,8 +394,10 @@ picotron/drive/dumps/system/lib/head.lua:
 ### 315 Search
 
 Search regex: `[^f]stat\(315`
+
 Files to include: `picotron/drive/dumps/`
-Context lines: 1
+
+Context lines: `1`
 
 ```
 8 results - 8 files
@@ -298,8 +446,10 @@ picotron/drive/dumps/system/pm/pm.lua:
 ### 316 Search
 
 Search regex: `[^f]stat\(316`
+
 Files to include: `picotron/drive/dumps/`
-Context lines: 1
+
+Context lines: `1`
 
 ```
 2 results - 2 files
@@ -318,8 +468,10 @@ picotron/drive/dumps/system/startup.lua:
 ### 317 Search
 
 Search regex: `[^f]stat\(317`
+
 Files to include: `picotron/drive/dumps/`
-Context lines: 1
+
+Context lines: `1`
 
 ```
 40 results - 8 files
@@ -490,8 +642,10 @@ picotron/drive/dumps/system/wm/wm.lua:
 ### 318 Search
 
 Search regex: `[^f]stat\(318`
+
 Files to include: `picotron/drive/dumps/`
-Context lines: 1
+
+Context lines: `1`
 
 ```
 12 results - 6 files
@@ -554,8 +708,10 @@ picotron/drive/dumps/system/wm/wm.lua:
 ### 320 Search
 
 Search regex: `[^f]stat\(320`
+
 Files to include: `picotron/drive/dumps/`
-Context lines: 1
+
+Context lines: `1`
 
 ```
 6 results - 2 files
@@ -590,8 +746,10 @@ picotron/drive/dumps/system/wm/wm.lua:
 ### 321 Search
 
 Search regex: `[^f]stat\(321`
+
 Files to include: `picotron/drive/dumps/`
-Context lines: 1
+
+Context lines: `1`
 
 ```
 8 results - 2 files
@@ -634,8 +792,10 @@ picotron/drive/dumps/system/wm/wm.lua:
 ### 330 Search
 
 Search regex: `[^f]stat\(330`
+
 Files to include: `picotron/drive/dumps/`
-Context lines: 1
+
+Context lines: `1`
 
 ```
 2 results - 2 files
@@ -654,8 +814,10 @@ picotron/drive/dumps/system/wm/wm.lua:
 ### 987 Search
 
 Search regex: `[^f]stat\(987`
+
 Files to include: `picotron/drive/dumps/`
-Context lines: 1
+
+Context lines: `1`
 
 ```
 2 results - 2 files
@@ -674,8 +836,10 @@ picotron/drive/dumps/system/boot.lua:
 ### 988 Search
 
 Search regex: `[^f]stat\(988`
+
 Files to include: `picotron/drive/dumps/`
-Context lines: 1
+
+Context lines: `1`
 
 ```
 2 results - 2 files
