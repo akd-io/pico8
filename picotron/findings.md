@@ -4,11 +4,19 @@
 
 - `stat(307) & 0x1` seems to be `1` for "trusted system apps"
 
+## Docs
+
+- Many builtins not documented in the official manual.
+  - `_VERSION`, `kernal_path`, `kpath`, `cocreate`, `collectgarbage`, `costatus`, `error`, `getmetatable`, `ipairs`, `next`, `norm`, `pack`, `pcall`, `pid`, `rawequal`, `rawget`, `rawlen`, `rawset`, `select`, `setmetatable`, `sgn`, `stat`, `tokenoid`, `tonum`, `tonumber`, `tostring`, `unpack`, `warn`, `yield`, `USERDATA`, `_G`, `coroutine`, `debug`, `math`, `string`, `table`, `utf8`
+- Correct interface for `window()` is `window(width,height,attribs)`
+- `window()` supports `x` and `y` to set position, and `dx` and `dy` to move the window by an offset.
+
 ## Misc
 
 - `_update` runs at 60 fps. `_update60` is not a thing in Picotron.
 - @soundsdotzip on Discord mentioned `store("screenshot.png",get_display())` to save a screenshot.
 - @_maxine_ mentioned `store("/desktop/trash.loc", {location="/ram/compost"})`
+- No `//` comments
 
 ## Dumps
 
