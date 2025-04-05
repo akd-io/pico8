@@ -71,7 +71,9 @@
     "&=",
     "<<=",
     ">>="
-    // No `//` symbols on Picotron!
+    // Don't specify the `//` symbol here.
+    // The Lua extension assumes that `//` is a comment symbol.
+    // In Picotron, `//` is an integer division operator.
   ],
   "Lua.runtime.builtin": {
     "basic": "disable",
