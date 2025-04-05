@@ -76,6 +76,7 @@ This file attempts to document all `stat()` codes, enriching the official docume
   - Found to have value `626688.0` in `stat.lua` output.
   - No code references.
 - `stat(314)` (undocumented)
+  - Returns the value of pi, the mathematical constant.
   - Found to have value `3.1415926535898` in `stat.lua` output.
   - No code references.
 - `stat(315)` (undocumented)
