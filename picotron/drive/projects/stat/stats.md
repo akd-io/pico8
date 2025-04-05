@@ -80,8 +80,12 @@ This file attempts to document all `stat()` codes, enriching the official docume
   - Found to have value `3.1415926535898` in `stat.lua` output.
   - No code references.
 - `stat(315)` (undocumented)
+  - Presence of the `-x` CLI argument when running headless using `picotron -x <path/to/my/script.lua>`.
+  - Found with the help of `@_maxine_` on discord
   - See [code references](#315-search)
 - `stat(316)` (undocumented)
+  - The path specified when running headless using `picotron -x <path/to/my/script.lua>`.
+  - Found with the help of `@_maxine_` on discord
   - See [code references](#316-search)
 - `stat(317)` (undocumented)
   - See [code references](#317-search)
