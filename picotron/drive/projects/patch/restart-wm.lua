@@ -15,6 +15,7 @@
       `1962,27: 		if (time() > 3) print("[no workspaces found] "..#workspace,20,20,13)`
       - Maybe try getting more info by replacing that print statement with a
         print of all procceses to see what's running?
+        - Print a trace too?
 ]]
 
 send_message(2, { event = "restart_process", proc_id = 3 })
