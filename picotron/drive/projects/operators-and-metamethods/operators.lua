@@ -1,5 +1,7 @@
 --[[pod_format="raw",created="2025-04-05 23:35:09",modified="2025-04-06 01:11:08",revision=2]]
 
+local test = 0b10101
+
 local a, b = 3, 2
 
 -- ARITHMETIC OPERATORS
@@ -98,6 +100,8 @@ printh("Unary bitwise operators:")
 a = 0x3
 printh("a = " .. tostr(a,true))
 printh("~a = " .. tostr(~a,true))
+printh("!a is not supported.")
+--printh("!a = " .. tostr(!a)) -- Uncomment and run in Picotron for syntax error.
 
 
 -- RELATIONAL OPERATORS
