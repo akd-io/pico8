@@ -25,6 +25,135 @@ See [`stats.md`](drive/projects/stat/stats.md).
 
 See [`signal.md`](drive/projects/signal/signal.md)
 
+## Operators, shorthand assignment operators, and metamethods
+
+### Official Picotron Shorthand documentation
+
+The [official docs](https://www.lexaloffle.com/dl/docs/picotron_manual.html#Picotron_Shorthand) includes:
+
+- [Short `if`/`while` statements](https://www.lexaloffle.com/dl/docs/picotron_manual.html#Shorthand_If_)
+
+  > `if .. then .. end` statements, and `while .. then .. end` can be written on a single line:
+  > `if (not b) i=1 j=2`
+  > Is equivalent to:
+  > `if not b then i=1 j=2 end`
+  > Note that brackets around the short-hand condition are required, unlike the expanded version.
+
+- [Shorthand assignment operators](https://www.lexaloffle.com/dl/docs/picotron_manual.html#Shorthand_Assignment_Operators)
+
+  > Shorthand assignment operators can also be used if the whole statement is on one line. They can be constructed by appending a '=' to any binary operator, including arithmetic (+=, -= ..), bitwise (&=, |= ..) or the string concatenation operator (..=)
+  > a += 2 -- equivalent to: a = a + 2
+
+- [`!=` operator](https://www.lexaloffle.com/dl/docs/picotron_manual.html#!=operator:~:text=%E2%96%A0-,!%3D%20operator,-Not%20shorthand%2C%20but)
+  > Not shorthand, but Picotron also accepts `!=` instead of `~=` for "not equal to"
+  >
+  > ```
+  > print(1 != 2) -- true
+  > print("foo" == "foo") -- true (string are interned)
+  > ```
+
+### All know operators
+
+This section covers all known operators in Picotron.
+
+In the texts below, the term "shorthand" is itself short for "shorthand assignment operator", and are non-standard operators implemented by Picotron.
+
+Most of this documentation is also covered in the [3.4 Expressions](https://www.lua.org/manual/5.4/manual.html#3.4) and [Metatables and Metamethods](https://www.lua.org/manual/5.4/manual.html#2.4) sections of the Lua 5.4 manual.
+
+#### Arithmetic operators
+
+##### Binary arithmetic operators
+
+| Name           | Operator    | Shorthand | Metamethod |
+| -------------- | ----------- | --------- | ---------- |
+| Addition       | `+`         | `+=`      | `__add`    |
+| Subtraction    | `-`         | `-=`      | `__sub`    |
+| Multiplication | `*`         | `*=`      | `__mul`    |
+| Division       | `/`         | `/=`      | `__div`    |
+| Floor division | `//` or `\` | `\=`      | `__idiv`   |
+| Exponentiation | `^`         | `^=`      | `__pow`    |
+| Modulus        | `%`         | `%=`      | `__mod`    |
+
+Note: Together with shorthands, operator `\` is non-standard.
+
+##### Unary arithmetic operators
+
+| Name  | Operator | Metamethod |
+| ----- | -------- | ---------- |
+| Minus | `-`      | `__unm`    |
+
+#### Bitwise operators
+
+##### Binary bitwise operators
+
+| Name        | Operator    | Shorthand | Metamethod |
+| ----------- | ----------- | --------- | ---------- |
+| And         | `&`         | `&=`      | `__band`   |
+| Or          | `\|`        | `\|=`     | `__bor`    |
+| Xor         | `~` or `^^` | `^^=`     | `__bxor`   |
+| Right shift | `>>`        | `>>=`     | `__shr`    |
+| Left shift  | `<<`        | `<<=`     | `__shl`    |
+
+Note:
+
+- Together with shorthands, `^^` is non-standard.
+- Picotron uses `^^=` instead of `~=` for the xor shorthand assignment operator, as `~=` would overlap with the "not equal" relational operator.
+- Picotron does not support the following Pico-8 bitwise operators:
+  - `>>>`: Short for `LSHR(X, N)`, logical right shift (zeros comes in from the left)
+  - `<<>`: Short for `ROTL(X, N)`, rotate all bits in x left by n places
+  - `>><`: Short for `ROTR(X, N)`, rotate all bits in x right by n places
+
+##### Unary bitwise operators
+
+| Name | Operator | Metamethod |
+| ---- | -------- | ---------- |
+| Not  | `~`      | `__bnot`   |
+
+#### Relational operators
+
+| Name             | Operator     | Metamethod                   |
+| ---------------- | ------------ | ---------------------------- |
+| Less than        | `<`          | `__lt`                       |
+| Greater than     | `>`          | ? - Not listed in lua manual |
+| Less or equal    | `<=`         | `__le`                       |
+| Greater or equal | `>=`         | ? - Not listed in lua manual |
+| Not equal        | `~=` or `!=` | ? - not listed in lua manual |
+| Equal            | `==`         | `__eq`                       |
+
+Note: Operator `!=` is non-standard.
+
+#### Logical operators
+
+| Name | Operator |
+| ---- | -------- |
+| And  | `and`    |
+| Or   | `or`     |
+| Not  | `not`    |
+
+#### Concatenation operator
+
+| Name                 | Operator | Shorthand | Metamethod |
+| -------------------- | -------- | --------- | ---------- |
+| String concatenation | `..`     | `..=`     | `__concat` |
+
+Note: Shorthand `..=` is non-standard.
+
+#### Length operator
+
+[3.4.7 – The Length Operator](https://www.lua.org/manual/5.4/manual.html#3.4.7)
+
+| Name            | Operator | Metamethod |
+| --------------- | -------- | ---------- |
+| Length operator | `#`      | `__len`    |
+
+### Other metamethods
+
+Metamethods not mentioned above are listed below.
+
+- `__index`: The indexing access operation `table[key]`.
+- `__newindex`: The indexing assignment `table[key] = value`.
+- `__call`: The call operation `func(args)`.
+
 ## Miscellaneous findings
 
 - Correct interface for `window()` is `window(width,height,attribs)`
