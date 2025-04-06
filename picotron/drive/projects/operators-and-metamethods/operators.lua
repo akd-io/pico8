@@ -131,6 +131,14 @@ a, b = "hello", "world"
 printh("a = \"" .. tostr(a) .. "\" | b = \"" .. tostr(b).."\"")
 printh("a .. b = \"" .. (a .. b).. "\"")
 
+printh("")
+printh("Concatenation shorthand assignment operator:")
+a, b = "hello", "world"
+printh("a = \"" .. tostr(a) .. "\" | b = \"" .. tostr(b).."\"")
+printh("a ..= b")
+a ..= b
+printh("a = \"" .. tostr(a) .. "\" | b = \"" .. tostr(b).."\"")
+
 
 -- LENGTH OPERATOR
 printh("")
