@@ -34,7 +34,9 @@ See [`signal.md`](drive/projects/signal/signal.md)
 - @_maxine_ mentioned `store("/desktop/trash.loc", {location="/ram/compost"})`
   1. `.loc` files are shortcuts, and you can make your own.
   2. `/ram/compost` is the location used by `/system/apps/filenav.p64`'s `delete_selected_files()` function.
-- No `//` comment syntax. Only `--` comments.
+- No `//` comment syntax as in Pico-8. Only `--` comments.
+  - In Lua 5.4, and Picotron, `//` is the floor division operator.
+- Binary notation, `0b010101`, is supported.
 
 ## Data dumps
 
