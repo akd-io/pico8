@@ -24,7 +24,7 @@
 //     "&=",
 //     "<<=",
 //     ">>=",
-//     "//"
+//     "//" // Pico-8 supports the non-standard comment symbol.
 //   ],
 //   "Lua.runtime.builtin": {
 //     "basic": "disable",
@@ -52,7 +52,7 @@
 // Use `LuaJIT` runtime for `0b010101` binary notation support
 {
   "Lua.workspace.library": ["${addons}/pico8/module/library"],
-  "Lua.runtime.version": "LuaJIT",
+  "Lua.runtime.version": "Lua 5.4",
   "Lua.workspace.checkThirdParty": false,
   "Lua.diagnostics.disable": [
     "lowercase-global",
@@ -72,8 +72,8 @@
     "<<=",
     ">>="
     // Don't specify the `//` symbol here.
-    // The Lua extension assumes that `//` is a comment symbol.
-    // In Picotron, `//` is an integer division operator.
+    // The non-standard `//` symbol is a comment symbol.
+    // In Lua 5.4, and Picotron, `//` is the floor division operator.
   ],
   "Lua.runtime.builtin": {
     "basic": "disable",
