@@ -51,7 +51,7 @@
 //! IMPORTANT: Don't just copy paste the config.json. It doesn't include "Lua.workspace.library": ["${addons}/picotron/module/library"]
 // Use `LuaJIT` runtime for `0b010101` binary notation support
 {
-  "Lua.workspace.library": ["${addons}/pico8/module/library"],
+  "Lua.workspace.library": ["${addons}/picotron/module/library"],
   "Lua.runtime.version": "Lua 5.4",
   "Lua.workspace.checkThirdParty": false,
   "Lua.diagnostics.disable": [
