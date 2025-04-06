@@ -62,6 +62,8 @@ Most of this documentation is also covered in the [3.4 Expressions](https://www.
 
 #### Arithmetic operators
 
+[3.4.1 – Arithmetic Operators](https://www.lua.org/manual/5.4/manual.html#3.4.1)
+
 ##### Binary arithmetic operators
 
 | Name           | Operator    | Shorthand | Metamethod |
@@ -83,6 +85,8 @@ Note: Together with shorthands, operator `\` is non-standard.
 | Minus | `-`      | `__unm`    |
 
 #### Bitwise operators
+
+[3.4.2 – Bitwise Operators](https://www.lua.org/manual/5.4/manual.html#3.4.2)
 
 ##### Binary bitwise operators
 
@@ -111,6 +115,8 @@ Note:
 
 #### Relational operators
 
+[3.4.4 – Relational Operators](https://www.lua.org/manual/5.4/manual.html#3.4.4)
+
 | Name             | Operator     | Metamethod                   |
 | ---------------- | ------------ | ---------------------------- |
 | Less than        | `<`          | `__lt`                       |
@@ -124,13 +130,17 @@ Note: Operator `!=` is non-standard.
 
 #### Logical operators
 
+[3.4.5 – Logical Operators](https://www.lua.org/manual/5.4/manual.html#3.4.5)
+
 | Name | Operator |
 | ---- | -------- |
 | And  | `and`    |
 | Or   | `or`     |
 | Not  | `not`    |
 
-#### Concatenation operator
+#### String concatenation operator
+
+[3.4.6 – Concatenation](https://www.lua.org/manual/5.4/manual.html#3.4.6)
 
 | Name                 | Operator | Shorthand | Metamethod |
 | -------------------- | -------- | --------- | ---------- |
@@ -148,7 +158,9 @@ Note: Shorthand `..=` is non-standard.
 
 ### Other metamethods
 
-Metamethods not mentioned above are listed below.
+[2.4 – Metatables and Metamethods](https://www.lua.org/manual/5.4/manual.html#2.4)
+
+Metamethods not mentioned in the operator sections above are listed below here:
 
 - `__index`: The indexing access operation `table[key]`.
 - `__newindex`: The indexing assignment `table[key] = value`.
