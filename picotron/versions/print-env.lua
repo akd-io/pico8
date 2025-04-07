@@ -126,9 +126,9 @@ describeInner = function(value)
   end
 end
 
-function describe(value)
+local function describe(value)
   seenTables = {}
   return describeInner(value)
 end
 
-printh(describe(_ENV))
+print(describe(_ENV))
