@@ -82,11 +82,11 @@ This file attempts to document all `stat()` codes, enriching the official docume
   - No code references.
 - `stat(315)` (undocumented)
   - Presence of the `-x` CLI argument when running headless using `picotron -x <path/to/my/script.lua>`.
-  - Found with the help of `@_maxine_` on discord
+  - Found with the help of `@_maxine_` on Discord.
   - See [code references](#315-search)
 - `stat(316)` (undocumented)
   - The path specified when running headless using `picotron -x <path/to/my/script.lua>`.
-  - Found with the help of `@_maxine_` on discord
+  - Found with the help of `@_maxine_` on Discord.
   - See [code references](#316-search)
 - `stat(317)` (undocumented)
   - See [code references](#317-search)
@@ -129,6 +129,8 @@ This file attempts to document all `stat()` codes, enriching the official docume
   - Observed value `201225.0` and `40211391.0` in `stat.lua` output.
   - See [code references](#987-search)
 - `stat(988)` (undocumented)
+  - Returns `1.0` if both left and right control keys are held down, and `0.0` otherwise.
+  - Found by `@kutuptilkisi` on Discord.
   - See [code references](#988-search)
 
 ## Official `stat()` documentation
