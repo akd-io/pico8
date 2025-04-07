@@ -46,7 +46,7 @@ for (const folderName of folders) {
   console.log("Running in ", folderName);
   let output = null;
   try {
-    output = await $`${picotronBinaryPath} -x print-env.lua`;
+    output = await $`${picotronBinaryPath} -x print-env.lua`; // TODO: Time out after 3 seconds, so we don't have to close the window for every version not supporting -x?
   } catch (err) {
     console.log("Error running picotron: ", err);
     continue;
