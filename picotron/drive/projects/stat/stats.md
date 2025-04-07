@@ -50,7 +50,8 @@ This file attempts to document all `stat()` codes, enriching the official docume
 - `stat(152)` web: window.location.host
 - `stat(153)` web: window.location.hash
 - `stat(301)` (undocumented)
-  - Observed value `0.55184178528002` in `stat.lua` output.
+  - Seems to indicate CPU usage, across processes, since some event.
+  - Maybe since the `flip()` in `boot.lua`'s main loop?
   - See [code references](#301-search)
 - `stat(302, i)` (undocumented)
   - See [code references](#302-search)
