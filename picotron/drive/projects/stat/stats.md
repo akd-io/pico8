@@ -50,6 +50,7 @@ This file attempts to document all `stat()` codes, enriching the official docume
 - `stat(152)` web: window.location.host
 - `stat(153)` web: window.location.hash
 - `stat(301)` (undocumented)
+  - Observed value `0.55184178528002` in `stat.lua` output.
   - See [code references](#301-search)
 - `stat(302, i)` (undocumented)
   - See [code references](#302-search)
@@ -58,26 +59,26 @@ This file attempts to document all `stat()` codes, enriching the official docume
     - `0b1` is code for "trusted system apps"
   - See [code references](#307-search)
 - `stat(308)` (undocumented)
-  - Found to have value `1973.0` in `stat.lua` output.
+  - Observed value `1973.0` and `2334.0` in `stat.lua` output.
   - No code references.
 - `stat(309)` (undocumented)
-  - Found to have value `60531740.0` in `stat.lua` output.
+  - Observed value `60531740.0` and `63912031.0` in `stat.lua` output.
   - No code references.
 - `stat(310)` (undocumented)
-  - Found to have value `551.0` in `stat.lua` output.
+  - Observed value `551.0` and `565.0` in `stat.lua` output.
   - No code references.
 - `stat(311)` (undocumented)
-  - Found to have value `15833.0` in `stat.lua` output.
+  - Observed value `15833.0` and `15819.0` in `stat.lua` output.
   - No code references.
 - `stat(312)` (undocumented)
-  - Found to have value `4096.0` in `stat.lua` output.
+  - Observed value `4096.0` in `stat.lua` output.
   - No code references.
 - `stat(313)` (undocumented)
-  - Found to have value `626688.0` in `stat.lua` output.
+  - Observed value `626688.0` in `stat.lua` output.
   - No code references.
 - `stat(314)` (undocumented)
   - Returns the value of pi, the mathematical constant.
-  - Found to have value `3.1415926535898` in `stat.lua` output.
+  - Observed value `3.1415926535898` in `stat.lua` output.
   - No code references.
 - `stat(315)` (undocumented)
   - Presence of the `-x` CLI argument when running headless using `picotron -x <path/to/my/script.lua>`.
@@ -122,10 +123,10 @@ This file attempts to document all `stat()` codes, enriching the official docume
 - `stat(466)` which pattern is playing (-1 for no music)
 - `stat(467)` return the index of the left-most non-looping music channel
 - `stat(985)` (undocumented)
-  - Found to have value `1.0` in `stat.lua` output.
+  - Observed value `1.0` in `stat.lua` output.
   - No code references.
 - `stat(987)` (undocumented)
-  - Found to have value `201225.0` in `stat.lua` output.
+  - Observed value `201225.0` and `40211391.0` in `stat.lua` output.
   - See [code references](#987-search)
 - `stat(988)` (undocumented)
   - See [code references](#988-search)
