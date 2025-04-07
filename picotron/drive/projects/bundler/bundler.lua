@@ -3,8 +3,8 @@
 
   TODOs:
   - Process:
-    - Takes a Lua file
-    - creates a .p64 cart
+    - (Done) Takes a Lua file
+    - (Done) Creates a .p64 cart
     - recursively finds all includes
     - copies all dependencies to cart
   - I believe include statements just need to have leading `/` removed if files
@@ -27,3 +27,70 @@
           - Or maybe it's not weird that the package manager just calls an
             install script? Too unsafe?
 ]]
+
+
+local function printPrint(str)
+  print(str)
+  printh(str)
+end
+
+local function printPrintUsage()
+  printPrint("Usage: bundler.lua <path/to/input.lua> [path/to/output.p64]")
+end
+
+local argv = env().argv
+
+if argv[1] == "-h" or argv[1] == "--help" or argv[1] == "-help" then
+  printPrintUsage()
+  exit(0)
+end
+
+cd(env().path)
+local rawInputPath = argv[1]
+local rawOutputPath = argv[2]
+local inputPath = fullpath(rawInputPath)
+local outputPath = fullpath(rawOutputPath)
+
+-- Validate input
+if inputPath == nil then
+  printPrintUsage()
+  exit(0)
+end
+if inputPath:ext() == nil then
+  inputPath = inputPath .. ".lua"
+end
+if inputPath:ext() != "lua" then
+  printPrint("Input file must be a .lua file.")
+  printPrint("Got: " .. rawInputPath)
+  printPrintUsage()
+  exit(1)
+end
+
+-- Validate output
+if outputPath == nil then
+  outputPath = inputPath:gsub("%.lua", ".p64")
+end
+if outputPath:ext() == nil then
+  outputPath = outputPath .. ".p64"
+end
+if outputPath:ext() != "p64" then
+  printPrint("Output file must be a .p64 file.")
+  printPrint("Got: " .. rawOutputPath)
+  printPrintUsage()
+  exit(2)
+end
+
+-- Ensure input file exists
+if fstat(inputPath) != "file" then
+  printPrint("Input file does not exist.")
+  printPrint("Got: " .. inputPath)
+  printPrintUsage()
+  exit(3)
+end
+
+-- Make cartridge
+mkdir(outputPath)
+-- Add the input file to the cartridge
+cp(inputPath, outputPath .. "/main.lua")
+
+printPrint("Created cartridge: " .. outputPath)
