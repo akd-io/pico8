@@ -23,15 +23,30 @@ List of all `_signal()` calls found in the source code.
 - `_signal(33)`
   - Shuts down Picotron.
 - `_signal(34)`
+  - Reboots Picotron.
 - `_signal(35)`
 - `_signal(36)`
 - `_signal(37)`
+  - Unknown functionality
+  - Dubbed "presentable signal" in `wm.lua`.
 - `_signal(38)`
+  - Used in `head.lua` to
+    > start of userland code (for memory accounting)
 - `_signal(39)`
+  - Disable mounting.
 - `_signal(40)`
+  - Lock flushing.
 - `_signal(41)`
+  - Unlock flushing.
+  - Lock and unlock is done before and after Picotron file system operations in
+    `fs.lua`. I assume Picotron holds its file system in memory, and "flushing"
+    means writing it to disk. Flushing is locked during file system operations
+    to prevent corruption.
 - `_signal(42)`
+  - Export cartridge.
+  - No guardrails. Consider using the `export` command instead.
 - `_signal(65)`
+  - Mounts host desktop.
 
 ## Code search
 
