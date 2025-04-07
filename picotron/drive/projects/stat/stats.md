@@ -92,10 +92,16 @@ This file attempts to document all `stat()` codes, enriching the official docume
 - `stat(318)` (undocumented)
   - See [code references](#318-search)
 - `stat(320)` (undocumented)
+  - Returns `1.0` during video capture, and `0.0` otherwise.
   - See [code references](#320-search)
 - `stat(321)` (undocumented)
+  - Returns length of video capture in frames while recording, and `0.0` otherwise.
   - See [code references](#321-search)
 - `stat(330)` (undocumented)
+  - Assumed to returns `1.0` when host OS is in battery saver mode, and `0.0` otherwise.
+  - Per `wm.lua`:
+    > show when battery saver is being applied
+  - Tested without success on MacOS.
   - See [code references](#330-search)
 - `stat(400 + c, 0)` note is held (0 false 1 true)
 - `stat(400 + c, 1)` channel instrument
