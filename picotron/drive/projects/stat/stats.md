@@ -98,10 +98,8 @@ This file attempts to document all `stat()` codes, enriching the official docume
   - Returns length of video capture in frames while recording, and `0.0` otherwise.
   - See [code references](#321-search)
 - `stat(330)` (undocumented)
-  - Assumed to returns `1.0` when host OS is in battery saver mode, and `0.0` otherwise.
-  - Per `wm.lua`:
-    > show when battery saver is being applied
-  - Tested without success on MacOS.
+  - Returns `1.0` when Picotron's battery saver is active, and `0.0` otherwise.
+  - It does not simply reflect the `battery_saver` property of the system settings file at `appdata/system/settings.pod`. Rather, it seems to reflects whether the actual functionality of the battery saver feature is currently active.
   - See [code references](#330-search)
 - `stat(400 + c, 0)` note is held (0 false 1 true)
 - `stat(400 + c, 1)` channel instrument
