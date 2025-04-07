@@ -1,7 +1,7 @@
---[[pod_format="raw",created="2025-04-01 07:35:39",modified="2025-04-01 07:35:39",revision=0]]
+--[[pod_format="raw",created="2025-04-07 20:23:28",modified="2025-04-07 20:23:28",revision=0]]
 {
   "_VERSION" = "Lua 5.4",
-  "kernal_path" = "/desktop/projects/builtins/gfx",
+  "kernal_path" = "/projects/builtins/gfx",
   "kpath" = "/lib/describe.lua",
   "__process_event_messages" = function (),
   "abs" = function (...),
@@ -39,7 +39,6 @@
   "date" = function (...),
   "del" = function (...),
   "deli" = function (...),
-  "describe" = function (value),
   "env" = function (),
   "error" = function (...),
   "eval_menuitem" = function (item),

@@ -10,7 +10,8 @@ local dest = env().argv[1]
 if (dest == nil) then
   print("No destination specified. Saving to default path: " .. defaultDest)
 end
-
-local result = describe(_ENV)
+local localDescribe = describe
+_ENV.describe = nil
+local result = localDescribe(_ENV)
 store(dest, result)
 print(result)
