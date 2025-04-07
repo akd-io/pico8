@@ -120,7 +120,7 @@ describeInner = function(value)
     return describeTable(value)
   elseif (type(value) == "string") then
     -- Escape newlines and remove control characters
-    return '"' .. value:gsub("\n", "\\n") .. '"'
+    return '"' .. value:gsub("\n", "\\n"):gsub("%c", "") .. '"'
   else
     return tostring(value)
   end
