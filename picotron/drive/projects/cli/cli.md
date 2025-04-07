@@ -10,6 +10,19 @@ This file attempts to document all CLI arguments, enriching the official documen
   - Run the specified file in headless mode
   - The path is relative to your host OS's current working directory
   - Found with the help of `@_maxine_` on discord
+  - Your code will be copied to and run from `/ram/host_argv.lua`
+  - `pwd()` of a headless script returns `/ram`.
+  - `env()` of a headless script returns:
+    ```
+    {
+      "parent_pid" = 1,
+      "argv" = {
+        0 = "/ram/host_argv.lua",
+      },
+      "fileview" = [],
+    }
+    ```
+  - We still don't know how to pass arguments to headless scripts
 
 ## Unimplemented CLI arguments
 
