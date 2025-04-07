@@ -225,3 +225,4 @@ dist
 
 # Custom Picotron ignores
 picotron/drive/dumps/ram/mount/
+picotron/versions/out/
