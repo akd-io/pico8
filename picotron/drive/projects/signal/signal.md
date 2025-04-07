@@ -15,19 +15,33 @@ List of all `_signal()` calls found in the source code.
 - `_signal(16)`
   - Labeled `placeholder mechanism` in comment in relation to audio capture.
 - `_signal(18)`
+  - Starts video capture.
 - `_signal(19)`
-  - Finishes video capture.
+  - Ends video capture.
 - `_signal(21)`
+  - Capture screenshot.
 - `_signal(22)`
+  - Functionality unknown.
+  - The `_signal(22)` call in `wm.lua` is commented "stay awake", in relation to battery saver.
 - `_signal(23)`
+  - Block buttons until released.
 - `_signal(33)`
   - Shuts down Picotron.
 - `_signal(34)`
   - Reboots Picotron.
 - `_signal(35)`
+  - Relates to booting to a minimal terminal setup.
+  - The minimal terminal setup acts as a safe boot mode, and is used to recover from a borked `/appdata/system/startup.lua`.
+  - `_signal(35)` seems to signal to the C code that `startup.lua` is booting to secure mode.
+  - It is unknown though, what exact side-effect this has. That is, when the presumed flag set by `_signal(35)` is checked.
+    - Calling `_signal(35)` from un-jettisoned userland code does not reboot the system for example.
+  - It is used in `startup.lua` to secure boot when both control keys are held down.
+  - Found with the help of `@kutuptilkisi` on Discord.
 - `_signal(36)`
+  - Functionality unknown.
+  - Described to "finish loading core processes" in `wm.lua`.
 - `_signal(37)`
-  - Unknown functionality
+  - Functionality unknown.
   - Dubbed "presentable signal" in `wm.lua`.
 - `_signal(38)`
   - Used in `head.lua` to
