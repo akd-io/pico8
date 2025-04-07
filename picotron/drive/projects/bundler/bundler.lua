@@ -29,10 +29,7 @@
 ]]
 
 
-local function printPrint(str)
-  print(str)
-  printh(str)
-end
+include("/lib/printPrint.lua")
 
 local function printPrintUsage()
   printPrint("Usage: bundler.lua <path/to/input.lua> [path/to/output.p64]")
