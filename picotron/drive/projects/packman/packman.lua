@@ -1,0 +1,39 @@
+--[[
+  Packman
+  - Package manager
+  - GUI and CLI to manage packages.
+  - Also allows managing apps, clis, daemons, etc.
+    - Toggle sandbox.
+    - Toggle jail break.
+    - Toggle individual permission.
+    - Toggle apps/etc. (destination folder created or deleted)
+  - Package carts always saved in /packages
+  - Package.pod specifies apps, daemons, libs, cli commands and patches to be installed in their respective folders:
+    - app: /apps (optionally runs on boot)
+    - daemon: /daemons (optionally runs on boot)
+    - cli: /appdata/system/utils
+      - aliases too?
+    - lib: /lib
+    - patch: /patches
+    - wallpapers: ?
+    - screen savers: ?
+    - TODO: Shouldn't there just be a way to specify fullpath destinations for cart-path files?
+  - On install, ask users if they want to add a desktop shortcut. (If these run carts instead of opening them in Filenav)
+  - package.pod:
+    - Name
+    - Author
+    - Date
+    - Version
+    - Type (app/daemon/cli/lib/patch)
+    - Dependencies
+      - auto-installed deps will allow users to make packs of their favorite packages.
+    - Unsandbox (Required/Optional/Unnecessary)
+    - Permissions
+      - read/write filesystem whitelist?
+      - remote fetch?
+      - Bbs fetch?
+      - List of C-function app wants access to?
+        - Required/Optional/Unnecessary for each permission here too?
+    - IMPORTANT: Each app/cli/daemon/... can specify these properties. Ones not set are inherited from the root package config.
+    - Does BBS allow carts in carts??
+]]
