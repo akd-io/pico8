@@ -22,4 +22,38 @@
     - Support selecting patches to apply on startup
   - GUI for enabling/disabling individual patches
     - Just adds/removes the patches to /appdata/
+
+  - Patcher
+    - Should look through bbs carts for patcher_config.json
+      - sample config of bbs cart #test-patches:
+      - patches:
+        - my_patch:
+          - Name: My Patch
+          - Description: This patch does A.
+          - Supported versions: [...]
+          - Mods:
+            - Hide:
+              - Count: 2
+              - Pattern/Literal: ...
+            - Replace:
+              - Count: 1
+              - Pattern: A
+              - Pattern: B
+          - Before: #another-cart/patch-5
+          - Requires: #another-cart/patch-5
+        - my_patch_2:
+          - Name: My Patch 2
+          - Description: This patch does B.
+          - Supported versions: [...]
+          - File:
+            - Count: 1
+            - Pattern/Literal: "/system/test.lua"
+          - Mods:
+            - Add:
+              - Count: 2
+              - Literal/Pattern: ...
+              - After: literal/pattern
+          - After: #test-patches/my_patch
+    - Should we really take count for a param?
+      - What about min count or max count?
 ]]
