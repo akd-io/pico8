@@ -85,6 +85,9 @@ if fstat(inputPath) != "file" then
   exit(3)
 end
 
+-- TODO: Check output path does not exist?
+-- TODO: Ask user to confirm overwrite?
+
 -- Make cartridge
 mkdir(outputPath)
 -- Add the input file to the cartridge
