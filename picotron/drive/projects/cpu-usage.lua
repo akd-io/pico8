@@ -2,7 +2,7 @@
 
 window({
   width = 140,
-  height = 80,
+  height = 100,
   resizeable = true,
   moveable = true,
   has_frame = true,
