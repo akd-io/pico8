@@ -1,6 +1,6 @@
 -- imageData, channels, colorSpace = qoi.decode( dataString )
 -- Returns nil and a message on error.
-function qoi.decode(s)
+function qoiDecode(s)
   assert(type(s) == "string")
 
   local pos = 1
@@ -130,6 +130,8 @@ function qoi.decode(s)
       prevB = b
     end
 
+    -- TODO: Use cached function to map RGBA to 8bit Picotron color index.
+    -- TODO: Use a Userdata instead for imageData?
     imageData[pixelIz]     = r
     imageData[pixelIz + 1] = g
     imageData[pixelIz + 2] = b
