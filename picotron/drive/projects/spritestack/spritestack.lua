@@ -1,0 +1,11 @@
+--[[
+  - Sprite stacking
+    - Rediscover method.
+    - Naive implementation.
+    - Batch `tline()`
+    - Batch `sspr()`: Make a renderer that caches every sprite in maybe 24 rotations.
+    - Benchmark. Can we make a hack and slash with this rendering technique?
+    - Calculate memory usage.
+      - Estimate mem usage with 20 different models, in 24 rotations, with 8 animation frames.
+  - Make a 3D voxel editor tailored to spritestacking?
+]]
