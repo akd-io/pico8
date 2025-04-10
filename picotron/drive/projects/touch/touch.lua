@@ -6,21 +6,27 @@ end
 
 cd(env().path)
 local rawInputPath = env().argv[1]
-local inputPath = fullpath(rawInputPath)
+local fullInputPath = fullpath(rawInputPath)
 
-if inputPath == nil then
+if fullInputPath == nil then
   printPrintUsage()
-  exit(0)
-end
-
-local fileType = fstat(inputPath)
-if fileType != nil then
-  local prettyFileType = fileType == "folder" and "directory" or fileType
-  printPrint(prettyFileType .. " already exists")
   exit(1)
 end
 
--- TODO: Handle missing directories in path. Currently just fails while pretending it made the file.
+local fileType = fstat(fullInputPath)
+if fileType != nil then
+  local prettyFileType = fileType == "folder" and "directory" or fileType
+  printPrint(prettyFileType .. " already exists")
+  exit(2)
+end
 
-store(inputPath, "")
+local segments = split(fullInputPath, "/")
+local fileName = segments[#segments]
+local parentDir = fullInputPath:sub(1, #fullInputPath - #fileName)
+if (fstat(parentDir) == nil) then
+  printPrint("Directory " .. parentDir .. " does not exist")
+  exit(3)
+end
+
+store(fullInputPath, "")
 print("Made file: " .. rawInputPath)
