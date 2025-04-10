@@ -37,16 +37,17 @@ function qoi.decode(s)
   if colorSpace > 1 then
     return nil, "Invalid color space value."
   end
-  colorSpace             = (colorSpace == 0 and "srgb" or "linear")
-  pos                    = pos + 1
+  colorSpace      = (colorSpace == 0 and "srgb" or "linear")
+  pos             = pos + 1
 
   --
   -- Data stream.
   --
-  local imageData        = require "love.image".newImageData(w, h, "rgba8")
-  local imageDataPointer = require "ffi".cast("uint8_t*", imageData:getFFIPointer())
+  --Removed: local imageData        = require "love.image".newImageData(w, h, "rgba8")
+  --Removed: local imageDataPointer = require "ffi".cast("uint8_t*", imageData:getFFIPointer())
+  local imageData = {}
 
-  local seen             = {
+  local seen      = {
     -- 64 RGBA pixels.
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -54,21 +55,21 @@ function qoi.decode(s)
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   }
 
-  local prevR            = 0 -- Note: All these color values are treated as signed bytes.
-  local prevG            = 0
-  local prevB            = 0
+  local prevR     = 0 -- Note: All these color values are treated as signed bytes.
+  local prevG     = 0
+  local prevB     = 0
   -- prevA not needed.
 
-  local r                = 0
-  local g                = 0
-  local b                = 0
-  local a                = -1
+  local r         = 0
+  local g         = 0
+  local b         = 0
+  local a         = -1
 
-  local run              = 0
+  local run       = 0
 
-  local band             = require "bit".band
-  local rshift           = require "bit".rshift
-  local lshift           = require "bit".lshift
+  local band      = function(a, b) return a & b end  --Removed: require "bit".band
+  local rshift    = function(a, b) return a >> b end --Removed: require "bit".rshift
+  local lshift    = function(a, b) return a << b end --Removed: require "bit".lshift
 
   for pixelIz = 0, 4 * w * h - 1, 4 do
     if run > 0 then
@@ -129,16 +130,16 @@ function qoi.decode(s)
       prevB = b
     end
 
-    imageDataPointer[pixelIz]   = r
-    imageDataPointer[pixelIz + 1] = g
-    imageDataPointer[pixelIz + 2] = b
-    imageDataPointer[pixelIz + 3] = a
+    imageData[pixelIz]     = r
+    imageData[pixelIz + 1] = g
+    imageData[pixelIz + 2] = b
+    imageData[pixelIz + 3] = a
 
-    local hash4                 = lshift(band(r * 3 + g * 5 + b * 7 + a * 11, 63 --[[00111111]]), 2)
-    seen[hash4 + 1]             = r
-    seen[hash4 + 2]             = g
-    seen[hash4 + 3]             = b
-    seen[hash4 + 4]             = a
+    local hash4            = lshift(band(r * 3 + g * 5 + b * 7 + a * 11, 63 --[[00111111]]), 2)
+    seen[hash4 + 1]        = r
+    seen[hash4 + 2]        = g
+    seen[hash4 + 3]        = b
+    seen[hash4 + 4]        = a
   end
 
   if run > 0 then
