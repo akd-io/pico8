@@ -4,7 +4,9 @@ local qoiString = fetch("/desktop/label.qoi")
 
 printh(qoiString:sub(1, 4))
 
-local imageData = qoiDecode(qoiString) --! Note: Result is 0-indexed!
-local imageString = imageData[0] .. "," .. table.concat(imageData, ",")
+local imageUserdata = qoiDecode(qoiString)
 
-store("/desktop/label.txt", imageString)
+function _draw()
+  cls()
+  spr(imageUserdata, 0, 0)
+end
