@@ -1,6 +1,6 @@
 include("/lib/react.lua")
 renderRoot, useState, createContext, useContext, useMemo = __initReact()
-include("/hooks/useLs.lua")
+include("/hooks/useDir.lua")
 
 window({
   width = 240,
@@ -22,7 +22,7 @@ function App()
         or "bbs://new/0"
   end
 
-  local dir = useLs(state.path)
+  local dir = useDir(state.path)
 
   cls()
   print("frame: " .. f)

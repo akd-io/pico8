@@ -1,6 +1,6 @@
 include("/lib/describe.lua")
 
-function useLs(url)
+function useDirs(path)
   local privateState = useState({
     workerID = nil
   })
@@ -8,12 +8,12 @@ function useLs(url)
 
   useMemo(function()
     on_event(
-      "ls_result",
+      "dir_result",
       function(msg)
         printh(describe(msg))
-        local packedLsResult = msg.packedLsResult
-        printh(describe(packedLsResult))
-        local a, b, c = unpack(packedLsResult, 1, 3)
+        local packedDirResult = msg.packedDirResult
+        printh(describe(packedDirResult))
+        local a, b, c = unpack(packedDirResult, 1, 3)
         printh("a: " .. tostr(a))
         printh("b: " .. tostr(b))
         printh("c: " .. tostr(c))
@@ -36,9 +36,13 @@ function useLs(url)
       printh("Killing worker")
       send_message(2, { event = "kill_process", proc_id = privateState.workerID })
     end
-    privateState.workerID = create_process("useLsWorker.lua", { argv = { url } })
+    privateState.workerID = create_process("useDirWorker.lua", { argv = { path } })
     printh("workerID: " .. tostr(privateState.workerID))
-  end, { url })
+  end, { path })
 
   return state
+end
+
+function useDir(path)
+  return useDirs({ path })[1]
 end
