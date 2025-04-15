@@ -1,0 +1,38 @@
+include("/lib/react.lua")
+renderRoot, useState, createContext, useContext, useMemo = __initReact()
+include("/hooks/useLs.lua")
+
+window({
+  width = 240,
+  height = 70,
+})
+
+local f = 0
+function App()
+  f += 1
+
+  local state = useState({
+    path = "bbs://new/0"
+  })
+
+  if (keyp("x")) then
+    state.path =
+        state.path == "bbs://new/0"
+        and "bbs://new/1"
+        or "bbs://new/0"
+  end
+
+  local dir = useLs(state.path)
+
+  cls()
+  print("frame: " .. f)
+  print("path: " .. tostr(state.path))
+  print("result: " .. tostr(dir.result))
+  print("meta: " .. tostr(dir.meta))
+  print("error: " .. tostr(dir.error))
+  print("loading: " .. tostr(dir.loading))
+end
+
+function _draw()
+  renderRoot(App)
+end
