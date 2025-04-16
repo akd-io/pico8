@@ -4,6 +4,8 @@ include("/lib/describe.lua")
 -- TODO: Return an invalidate() function that can be used to invalidate all paths.
 -- TODO: Return an invalidate(path) function that can be used to invalidate a single path.
 -- TODO: More inspiration from useQuery?
+-- TODO: useDirs should return an array not an object?
+-- TODO: placeholderData?
 
 function useDirs(paths)
   --- Path to PID map
@@ -18,14 +20,14 @@ function useDirs(paths)
     on_event(
       "dir_result",
       function(msg)
-        printh(describe(msg))
+        --printh(describe(msg))
         local path = msg.path
         local packedLsResult = msg.packedLsResult
-        printh(describe(packedLsResult))
+        --printh(describe(packedLsResult))
         local a, b, c = unpack(packedLsResult, 1, packedLsResult.n)
-        printh("a: " .. tostr(a))
-        printh("b: " .. tostr(b))
-        printh("c: " .. tostr(c))
+        --printh("a: " .. tostr(a))
+        --printh("b: " .. tostr(b))
+        --printh("c: " .. tostr(c))
         states[path].result = a
         states[path].loading = false
         workerIDs[path] = nil
@@ -47,11 +49,11 @@ function useDirs(paths)
 
       if (workerIDs[path] != nil) then
         -- Kill worker
-        printh("Killing worker for path " .. path)
+        --printh("Killing worker for path " .. path)
         send_message(2, { event = "kill_process", proc_id = workerIDs[path] })
       end
       workerIDs[path] = create_process("useDirWorker.lua", { argv = { path } })
-      printh("workerID: " .. tostr(workerIDs[path]))
+      --printh("workerID: " .. tostr(workerIDs[path]))
     end
   end, { paths })
 

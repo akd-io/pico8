@@ -4,6 +4,8 @@
 -- TODO: Return an invalidate() function that can be used to invalidate all queries.
 -- TODO: Return an invalidate(path) function that can be used to invalidate a single query.
 -- TODO: More inspiration from useQuery?
+-- TODO: useQueries should return an array not an object?
+-- TODO: placeholderData?
 
 --include("/lib/describe.lua")
 
