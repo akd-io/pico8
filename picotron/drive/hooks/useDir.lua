@@ -1,5 +1,10 @@
 include("/lib/describe.lua")
 
+-- TODO: Implement timeout option that invalidates cache items X seconds old.
+-- TODO: Return an invalidate() function that can be used to invalidate all paths.
+-- TODO: Return an invalidate(path) function that can be used to invalidate a single path.
+-- TODO: More inspiration from useQuery?
+
 function useDirs(paths)
   --- Path to PID map
   ---@type { [string]: number? }
@@ -30,6 +35,8 @@ function useDirs(paths)
 
   useMemo(function()
     -- TODO: Traverse workerIDs instead of paths to kill workers that are no longer needed
+    -- TODO: Also remove states of irrelevant paths, unless a specific cache option is set?
+
     for path in all(paths) do
       if (states[path] == nil) then
         states[path] = {

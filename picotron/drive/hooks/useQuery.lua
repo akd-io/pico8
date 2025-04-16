@@ -1,5 +1,9 @@
 -- TODO: Replace processes with coroutines, once fetch yields again.
 -- TODO: Implement `useQueries`, and make `useQuery` simply wrap it
+-- TODO: Implement timeout option that invalidates cache items X seconds old.
+-- TODO: Return an invalidate() function that can be used to invalidate all queries.
+-- TODO: Return an invalidate(path) function that can be used to invalidate a single query.
+-- TODO: More inspiration from useQuery?
 
 --include("/lib/describe.lua")
 
