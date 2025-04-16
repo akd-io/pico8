@@ -28,8 +28,6 @@ function App()
   print("frame: " .. f)
   print("path: " .. tostr(state.path))
   print("result: " .. tostr(dir.result))
-  print("meta: " .. tostr(dir.meta))
-  print("error: " .. tostr(dir.error))
   print("loading: " .. tostr(dir.loading))
 end
 
