@@ -149,9 +149,13 @@ function __initReact()
 
     if (hooks[hookIndex] == nil) then
       -- If initial render, initialize state
+      if (type(initialValue) == "function") then
+        -- We need an if statement here, because `a and b or c` doesn't work well with nils.
+        initialValue = initialValue()
+      end
       hooks[hookIndex] = {
-        -- TODO: Possibly add type="useState", and assert it in subsequent renders?
-        value = type(initialValue) == "function" and initialValue() or initialValue
+        -- TODO: Possibly add type="useState", and assert it in subsequent renders in DEV?
+        value = initialValue
       }
     end
 
@@ -161,6 +165,7 @@ function __initReact()
     end
 
     currentInstance.hookIndex += 1
+    printh("Returning " .. tostr(hooks[hookIndex].value) .. " and " .. tostr(setState) .. "from useState")
     return hooks[hookIndex].value, setState
   end
 
