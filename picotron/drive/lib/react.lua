@@ -165,7 +165,6 @@ function __initReact()
     end
 
     currentInstance.hookIndex += 1
-    printh("Returning " .. tostr(hooks[hookIndex].value) .. " and " .. tostr(setState) .. "from useState")
     return hooks[hookIndex].value, setState
   end
 
