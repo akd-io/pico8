@@ -1,5 +1,6 @@
 local e = env()
 local path = e.argv[1]
+local hookInstanceId = e.argv[2]
 
 -- TODO: Refactor into a general purpose worker.
 -- TODO: Worker takes `funcName` string, `args` array, and `return` boolean.
@@ -13,5 +14,6 @@ local path = e.argv[1]
 send_message(e.parent_pid, {
   event = "dir_result",
   path = path,
-  packedLsResult = pack(ls(path))
+  packedLsResult = pack(ls(path)),
+  hookInstanceId = hookInstanceId
 })

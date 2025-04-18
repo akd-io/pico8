@@ -8,32 +8,16 @@ include("/lib/describe.lua")
 -- TODO: placeholderData?
 
 function useDirs(paths)
+  local hookInstanceId = tostring(useState({}))
+  printh("hookInstanceId: " .. hookInstanceId)
+
   --- Path to PID map
   ---@type { [string]: number? }
   local workerIDs = useState({})
 
   --- Path to {result, loading} map
   ---@type { [string]: { result?: table, loading: boolean } }
-  local states = useState({})
-
-  useMemo(function()
-    on_event(
-      "dir_result",
-      function(msg)
-        --printh(describe(msg))
-        local path = msg.path
-        local packedLsResult = msg.packedLsResult
-        --printh(describe(packedLsResult))
-        local a, b, c = unpack(packedLsResult, 1, packedLsResult.n)
-        --printh("a: " .. tostr(a))
-        --printh("b: " .. tostr(b))
-        --printh("c: " .. tostr(c))
-        states[path].result = a
-        states[path].loading = false
-        workerIDs[path] = nil
-      end
-    )
-  end, {})
+  local states, setStates = useState({})
 
   useMemo(function()
     -- TODO: Traverse workerIDs instead of paths to kill workers that are no longer needed
@@ -52,10 +36,40 @@ function useDirs(paths)
         --printh("Killing worker for path " .. path)
         send_message(2, { event = "kill_process", proc_id = workerIDs[path] })
       end
-      workerIDs[path] = create_process("useDirWorker.lua", { argv = { path } })
-      --printh("workerID: " .. tostr(workerIDs[path]))
+      workerIDs[path] = create_process("/hooks/useDirWorker.lua", { argv = { path, hookInstanceId } })
+      printh("Spawned worker: " .. tostr(workerIDs[path]))
     end
   end, { paths })
+
+  useMemo(function()
+    on_event(
+      "dir_result",
+      function(msg)
+        if (hookInstanceId != msg.hookInstanceId) then
+          -- TODO: Is it possible to only call on_event once per application, while keeping the closure???
+          -- TODO: So we don't have to do this?
+          --printh("Wrong hook instance. Am " .. hookInstanceId .. " but got " .. msg.hookInstanceId)
+          return
+        end
+        --printh("Received dir_result"
+        --printh(describe(msg))
+        local path = msg.path
+        local packedLsResult = msg.packedLsResult
+        --printh(describe(packedLsResult))
+        local a, b, c = unpack(packedLsResult, 1, packedLsResult.n)
+        --printh("a: " .. tostr(a))
+        --printh("b: " .. tostr(b))
+        --printh("c: " .. tostr(c))
+
+        local newStates = shallowCopy(states)
+        newStates[path].result = a
+        newStates[path].loading = false
+        states = setStates(newStates)
+
+        workerIDs[path] = nil
+      end
+    )
+  end, {})
 
   return states
 end
