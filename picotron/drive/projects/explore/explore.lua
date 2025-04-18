@@ -14,7 +14,7 @@ include("/hooks/useDir.lua")
 local width = 480 / 2
 local height = 270 / 2
 
--- TODO: Remove. We want full screen.
+-- TODO: Remove when ready for fullscreen.
 window(width, height)
 
 function _init()
@@ -25,12 +25,34 @@ function _update()
 
 end
 
+local cachePodDirPath = "/ram/explore-cache"
+local cachePodFilePath = cachePodDirPath .. "/allCartPaths.pod"
+
 local categoryPaths = {
   "bbs://new",
   "bbs://featured",
   "bbs://wip"
 }
 local function useCartPaths()
+  local cache = useState(function()
+    if (fstat(cachePodFilePath)) then
+      local cache = fetch(cachePodFilePath)
+      -- TODO: Check against cache schema. Refresh if invalid.
+      -- TODO: Refresh if stale.
+      return cache
+    end
+    return nil
+  end)
+
+  if cache then
+    -- TODO: At some point we should implement refresh functionality,
+    -- TODO: and this early return will become problematic, because
+    -- TODO: not returning here will cause hooks call count to change.
+    assert(type(cache) == "table", "cache should be a table, got " .. type(cache))
+    -- TODO: Check against cache schema. Refresh if invalid.
+    return cache
+  end
+
   local categoryDirs = useDirs(categoryPaths)
   --printh("useCartPaths: Count categoryDirs: " .. #categoryDirs)
   --printh("useCartPaths: categoryDirs: " .. describe(categoryDirs))
@@ -109,6 +131,10 @@ local function useCartPaths()
 
     printh("allCartPaths:")
     printh(describe(allCartPaths))
+
+    mkdirr(cachePodDirPath)
+    store(cachePodFilePath, allCartPaths)
+
     return allCartPaths
   end, { pageDirsLoaded })
 
@@ -189,7 +215,7 @@ function App()
   }
   --local labels = useLabels(drawnCartPaths, cachePath)
 
-  cls() -- TODO: Probably don't need when rendering on whole screen.
+  cls() -- TODO: Probably don't need this later, when rendering on every part of the screen anyway.
   return {
     { Wrap, clip,  0,                                                0, width * 1 / 10,  height },
     --{ Wrap, spr,     labels[1], },
@@ -204,11 +230,12 @@ function App()
     { Wrap, clip,  0,                                                0, width,           height },
 
     { Wrap, print, "frame: " .. frame,                               0, 0,               12 },
-    { Wrap, print, "selectedCartIndex: " .. state.selectedCartIndex, 0, 0 + 10,          12 },
-    { Wrap, print, "selectedCartPath: " .. tostr(selectedCartPath),  0, 0 + 20,          12 },
+    { Wrap, print, "fps: " .. stat(7),                               12 },
+    { Wrap, print, "selectedCartIndex: " .. state.selectedCartIndex, 12 },
+    { Wrap, print, "selectedCartPath: " .. tostr(selectedCartPath),  12 },
 
     arrayMap(drawnCartPaths, function(cartPath, i)
-      return { Wrap, print, cartPath, 0, 0 + 30 + i * 10, 12 }
+      return { Wrap, print, cartPath, 12 }
     end)
   }
 end
