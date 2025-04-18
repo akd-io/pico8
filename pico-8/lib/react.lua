@@ -114,7 +114,79 @@ function __initReact()
     return true
   end
 
-  local function internalRenderFunction(key, externalFunctionComponent, ...)
+  local internalRenderFunction
+
+  local function renderElements(elements, prefix)
+    if DEV then
+      assert(type(elements) == "table", "Elements array was not an array. Got type " .. type(elements) .. ".")
+      assert(isArray(elements),
+        "Elements array was a table, but not an array. Arrays are tables with consecutive number keys. And arrays can't contain nil values. Replace nils in element arrays with false to unmount components.")
+    end
+
+    for index, element in ipairs(elements) do
+      local elementType = type(element)
+      if elementType == "boolean" or (elementType == "table" and #element == 0) then
+        goto continue
+      end
+
+      -- TODO: Consider accepting elementType == "function" in the case of a propless unkeyed component, or just a function to call. Enables an API to run code after render.
+      if DEV then
+        assert(elementType == "table",
+          "Element must be a table or boolean. Got type " .. elementType .. ".")
+      end
+
+      local firstValue = element[1]
+      local firstValueType = type(firstValue)
+
+      if DEV then
+        assert(
+          firstValueType == "table" or firstValueType == "number" or firstValueType == "string" or
+          firstValueType == "function" or firstValueType == "boolean",
+          "Unrecognized element syntax of the form { " .. firstValueType .. ", ... }."
+        )
+      end
+
+      if (firstValueType == "table") then
+        if (firstValue.type == "provider") then
+          local value = element[2]
+          local children = element[3]
+          local context = firstValue.context
+          local previousValue = currentContextValues[context]
+          currentContextValues[context] = value
+          renderElements(children, index .. "-")
+          currentContextValues[context] = previousValue
+        else
+          -- If firstValueType == "table" and the element is not a context
+          -- provider, the element is an array of elements and should have
+          -- all its elements rendered.
+          -- Their keys will be prefixed with the index of the fragment
+          renderElements(element, index .. "-")
+        end
+      elseif (firstValueType == "boolean") then
+        -- If firstValueType == "boolean", element[1] is a placeholder for
+        -- a conditionally rendered element, and element is an array of
+        -- elements.
+        renderElements(element, index .. "-")
+      else
+        local isKeyedElement = firstValueType == "number" or firstValueType == "string"
+        local key = isKeyedElement and firstValue or index
+        local externalFunctionComponent = isKeyedElement and element[2] or firstValue
+
+        local renderFuncType = type(externalFunctionComponent)
+        if DEV then
+          assert(renderFuncType == "function",
+            "Elements must be tables with a function as the first element. Got type " .. renderFuncType .. ".")
+        end
+        local indexOfFirstProp = isKeyedElement and 3 or 2
+        internalRenderFunction((prefix or "") .. key, externalFunctionComponent,
+          select(indexOfFirstProp, unpack(element)))
+      end
+
+      ::continue::
+    end
+  end
+
+  internalRenderFunction = function(key, externalFunctionComponent, ...)
     if DEV then assert(key != nil, "key must be provided") end
     -- TODO: assert key is string/number?
 
@@ -143,75 +215,6 @@ function __initReact()
     local elementArray = externalFunctionComponent(...)
     -- TODO: Consider not only accepting a fragment here, but also the different element types supported in renderElements
     if elementArray != nil then
-      local function renderElements(elements, prefix)
-        if DEV then
-          assert(type(elements) == "table", "Elements array was not an array. Got type " .. type(elements) .. ".")
-          assert(isArray(elements),
-            "Elements array was a table, but not an array. Arrays are tables with consecutive number keys. And arrays can't contain nil values. Replace nils in element arrays with false to unmount components.")
-        end
-
-        for index, element in ipairs(elements) do
-          local elementType = type(element)
-          if elementType == "boolean" or (elementType == "table" and #element == 0) then
-            goto continue
-          end
-
-          -- TODO: Consider accepting elementType == "function" in the case of a propless unkeyed component, or just a function to call. Enables an API to run code after render.
-          if DEV then
-            assert(elementType == "table",
-              "Element must be a table or boolean. Got type " .. elementType .. ".")
-          end
-
-          local firstValue = element[1]
-          local firstValueType = type(firstValue)
-
-          if DEV then
-            assert(
-              firstValueType == "table" or firstValueType == "number" or firstValueType == "string" or
-              firstValueType == "function" or firstValueType == "boolean",
-              "Unrecognized element syntax of the form { " .. firstValueType .. ", ... }."
-            )
-          end
-
-          if (firstValueType == "table") then
-            if (firstValue.type == "provider") then
-              local value = element[2]
-              local children = element[3]
-              local context = firstValue.context
-              local previousValue = currentContextValues[context]
-              currentContextValues[context] = value
-              renderElements(children, index .. "-")
-              currentContextValues[context] = previousValue
-            else
-              -- If firstValueType == "table" and the element is not a context
-              -- provider, the element is an array of elements and should have
-              -- all its elements rendered.
-              -- Their keys will be prefixed with the index of the fragment
-              renderElements(element, index .. "-")
-            end
-          elseif (firstValueType == "boolean") then
-            -- If firstValueType == "boolean", element[1] is a placeholder for
-            -- a conditionally rendered element, and element is an array of
-            -- elements.
-            renderElements(element, index .. "-")
-          else
-            local isKeyedElement = firstValueType == "number" or firstValueType == "string"
-            local key = isKeyedElement and firstValue or index
-            local externalFunctionComponent = isKeyedElement and element[2] or firstValue
-
-            local renderFuncType = type(externalFunctionComponent)
-            if DEV then
-              assert(renderFuncType == "function",
-                "Elements must be tables with a function as the first element. Got type " .. renderFuncType .. ".")
-            end
-            local indexOfFirstProp = isKeyedElement and 3 or 2
-            internalRenderFunction((prefix or "") .. key, externalFunctionComponent,
-              select(indexOfFirstProp, unpack(element)))
-          end
-
-          ::continue::
-        end
-      end
       renderElements(elementArray)
     end
 
