@@ -9,7 +9,7 @@ include("/lib/describe.lua")
 
 function useDirs(paths)
   local hookInstanceId = tostring(useState({}))
-  printh("hookInstanceId: " .. hookInstanceId)
+  --printh("hookInstanceId: " .. hookInstanceId)
 
   --- Path to PID map
   ---@type { [string]: number? }
@@ -20,6 +20,7 @@ function useDirs(paths)
   local states, setStates = useState({})
 
   useMemo(function()
+    --printh("useDirs: paths param changed!")
     -- TODO: Traverse workerIDs instead of paths to kill workers that are no longer needed
     -- TODO: Also remove states of irrelevant paths, unless a specific cache option is set?
 
@@ -42,6 +43,7 @@ function useDirs(paths)
   end, { paths })
 
   useMemo(function()
+    --printh("useDirs: Initial render: Setting up on_event.")
     on_event(
       "dir_result",
       function(msg)
@@ -51,7 +53,7 @@ function useDirs(paths)
           --printh("Wrong hook instance. Am " .. hookInstanceId .. " but got " .. msg.hookInstanceId)
           return
         end
-        --printh("Received dir_result"
+        --printh("Received dir_result:"
         --printh(describe(msg))
         local path = msg.path
         local packedLsResult = msg.packedLsResult
