@@ -151,14 +151,15 @@ function __initReact()
         end
 
         for index, element in ipairs(elements) do
-          if (type(element) == "boolean") then
+          local elementType = type(element)
+          if elementType == "boolean" or (elementType == "table" and #element == 0) then
             goto continue
           end
 
-          -- TODO: Consider accepting type(element) == "function" in the case of a propless unkeyed component, or just a function to call. Enables an API to run code after render.
+          -- TODO: Consider accepting elementType == "function" in the case of a propless unkeyed component, or just a function to call. Enables an API to run code after render.
           if DEV then
-            assert(type(element) == "table",
-              "Element must be a table or boolean. Got type " .. type(element) .. ".")
+            assert(elementType == "table",
+              "Element must be a table or boolean. Got type " .. elementType .. ".")
           end
 
           local firstValue = element[1]

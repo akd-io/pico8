@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2025-04-09 22:01:52",modified="2025-04-09 22:09:41",revision=12]]
+--[[pod_format="raw",created="2025-04-09 22:01:52",modified="2025-04-18 15:30:57",revision=16]]
 -- See pico8 react for docs/comments.
 -- This is a temporary copy until pico8 react syntax has been finialized.
 
@@ -33,8 +33,11 @@ function __initReact()
         "Elements array was a table, but not an array. Arrays are tables with consecutive number keys. And arrays can't contain nil values. Replace nils in element arrays with false to unmount components.")
     end
 
+
     for index, element in ipairs(elements) do
-      if (type(element) == "boolean") then
+      local isBoolean = type(element) == "boolean"
+      local isEmptyArray = type(element) == "table" and #element == 0
+      if isBoolean or isEmptyArray then
         goto continue
       end
 
