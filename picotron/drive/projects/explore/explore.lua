@@ -88,20 +88,7 @@ function App()
 
   local labels = useLabels(drawnCartPaths, labelCachePodFilePath)
 
-  useMemo(function()
-    printh(labels[2])
-    printh(labels[3])
-    printh(labels[4])
-    printh(labels[5])
-    printh(labels[6])
-    printh(drawnCartPaths[2])
-    printh(drawnCartPaths[3])
-    printh(drawnCartPaths[4])
-    printh(drawnCartPaths[5])
-    printh(drawnCartPaths[6])
-  end, {})
-
-  cls() -- TODO: Probably don't need this later, when rendering on every part of the screen anyway.
+  cls() -- TODO: Probably don't need cls() later, when rendering on every part of the screen anyway.
   return {
     labels[2] and { drawnCartPaths[2], Label, labels[2], 1, width, height } or false,
     labels[3] and { drawnCartPaths[3], Label, labels[3], 2, width, height } or false,

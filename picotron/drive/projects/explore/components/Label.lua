@@ -9,8 +9,9 @@ function Label(labelUserdata, index, width, height)
     width * 10 / 10
   }
 
-  local x1 = useSpring(xTargets[index])
-  local x2 = useSpring(xTargets[index + 1])
+  local halfPixelOffset = 0.5 -- Used to prevent spring position oscillating around pixel boundary.
+  local x1 = useSpring(xTargets[index] + halfPixelOffset)
+  local x2 = useSpring(xTargets[index + 1] + halfPixelOffset)
 
   palt(0) -- Treat all colors as opaque.
   clip(x1, 0, x2, height)

@@ -13,7 +13,7 @@
 function __initMotion()
   local SpringConfigContext = createContext({
     stiffness = 100,
-    damping = 10,
+    damping = 16.75, -- Prevents overshoot (at least with a half-pixel offset to prevent pixel-boundary oscillation)
     mass = 1
   })
 
