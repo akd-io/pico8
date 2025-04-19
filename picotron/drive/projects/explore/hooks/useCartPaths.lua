@@ -104,6 +104,7 @@ function useCartPaths(categoryPaths, cartCachePodFilePath)
 
     store(cartCachePodFilePath, allCartPaths)
 
+    -- TODO: Return {"loading", loaded, total} instead of {category1:{},category2={},category3={}} while pending?
     return allCartPaths
   end, { pageDirsLoaded })
 
