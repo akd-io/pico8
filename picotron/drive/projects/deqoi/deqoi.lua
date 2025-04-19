@@ -68,7 +68,7 @@ end
 -- imageData, channels, colorSpace = qoi.decode( dataString )
 -- Returns nil and a message on error.
 function qoiDecode(s)
-  assert(type(s) == "string")
+  assert(type(s) == "string", "Expected string, got " .. type(s))
 
   local pos = 1
 
