@@ -90,21 +90,22 @@ function App()
 
   cls() -- TODO: Probably don't need cls() later, when rendering on every part of the screen anyway.
   return {
-    labels[2] and { drawnCartPaths[2], Label, labels[2], 1, width, height } or false,
-    labels[3] and { drawnCartPaths[3], Label, labels[3], 2, width, height } or false,
-    labels[4] and { drawnCartPaths[4], Label, labels[4], 3, width, height } or false,
-    labels[5] and { drawnCartPaths[5], Label, labels[5], 4, width, height } or false,
-    labels[6] and { drawnCartPaths[6], Label, labels[6], 5, width, height } or false,
+    labels[1] and { drawnCartPaths[1], Label, labels[1], 1, width, height } or false,
+    labels[2] and { drawnCartPaths[2], Label, labels[2], 2, width, height } or false,
+    labels[3] and { drawnCartPaths[3], Label, labels[3], 3, width, height } or false,
+    labels[4] and { drawnCartPaths[4], Label, labels[4], 4, width, height } or false,
+    labels[5] and { drawnCartPaths[5], Label, labels[5], 5, width, height } or false,
+    labels[6] and { drawnCartPaths[6], Label, labels[6], 6, width, height } or false,
+    labels[7] and { drawnCartPaths[7], Label, labels[7], 7, width, height } or false,
 
     { Wrap, clip },
-    { Wrap, print, "frame: " .. frame,                               0, 0,      12 },
-    { Wrap, print, "fps: " .. stat(7),                               0, 0 + 10, 12 },
-    { Wrap, print, "selectedCartIndex: " .. state.selectedCartIndex, 0, 0 + 20, 12 },
-    { Wrap, print, "selectedCartPath: " .. tostr(selectedCartPath),  0, 0 + 30, 12 },
-
-    arrayMap(drawnCartPaths, function(cartPath, i)
-      return { Wrap, print, cartPath, 0, 0 + 40 + i * 10, 12 }
-    end),
+    { Wrap, print, "Frame: " .. frame,                               0, 0,      12 },
+    { Wrap, print, "MEM: " .. stat(0),                               0, 0 + 10, 12 },
+    { Wrap, print, "CPU: " .. stat(1),                               0, 0 + 20, 12 },
+    { Wrap, print, "FPS: " .. stat(7),                               0, 0 + 30, 12 },
+    { Wrap, print, "selectedCategoryPath: " .. selectedCategoryPath, 0, 0 + 40, 12 },
+    { Wrap, print, "selectedCartIndex: " .. state.selectedCartIndex, 0, 0 + 50, 12 },
+    { Wrap, print, "selectedCartPath: " .. tostr(selectedCartPath),  0, 0 + 60, 12 },
   }
 end
 

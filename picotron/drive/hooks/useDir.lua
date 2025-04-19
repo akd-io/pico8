@@ -38,7 +38,7 @@ function useDirs(paths)
         send_message(2, { event = "kill_process", proc_id = workerIDs[path] })
       end
       workerIDs[path] = create_process("/hooks/useDirWorker.lua", { argv = { path, hookInstanceId } })
-      printh("Spawned worker: " .. tostr(workerIDs[path]))
+      --printh("Spawned worker: " .. tostr(workerIDs[path]))
     end
   end, { paths })
 

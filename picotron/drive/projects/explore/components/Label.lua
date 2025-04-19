@@ -2,18 +2,29 @@
 function Label(labelUserdata, index, width, height)
   local xTargets = {
     0,
+    0,
     width * 0.5 / 10,
     width * 1.5 / 10,
     width * 8.5 / 10,
     width * 9.5 / 10,
+    width * 10 / 10,
     width * 10 / 10
   }
 
-  local halfPixelOffset = 0.5 -- Used to prevent spring position oscillating around pixel boundary.
-  local x1 = useSpring(xTargets[index] + halfPixelOffset)
-  local x2 = useSpring(xTargets[index + 1] + halfPixelOffset)
+  local targetX1 = xTargets[index]
+  local targetX2 = xTargets[index + 1]
+  local x1 = useSpring(targetX1)
+  local x2 = useSpring(targetX2)
 
-  palt(0) -- Treat all colors as opaque.
-  clip(x1, 0, x2, height)
-  spr(labelUserdata, 0, 0)
+  --local centerIndexDiff = (index - 4)
+  --local spriteTargetOffsetX = 50 * centerIndexDiff
+  local spriteTargetOffsetX = (-width / 2) + x1 + ((x2 - x1) / 2)
+  --local spriteOffsetX = useSpring(spriteTargetOffsetX)
+  local spriteOffsetX = spriteTargetOffsetX
+
+  local halfPixelOffset = 0.5 -- Used to prevent spring positions oscillating around pixel boundaries.
+
+  palt(0)                     -- Treat all colors as opaque.
+  clip(x1 + halfPixelOffset, 0, x2 + halfPixelOffset, height)
+  spr(labelUserdata, spriteOffsetX + halfPixelOffset, 0)
 end
