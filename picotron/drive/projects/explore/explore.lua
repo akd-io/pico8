@@ -3,6 +3,8 @@ include("/lib/describe.lua")
 include("/lib/utils.lua")
 include("/lib/react.lua")
 renderRoot, useState, createContext, useContext, useMemo = __initReact()
+include("/lib/react-motion.lua")
+useSprings, useSpring, useTransition, AnimatePresence, Motion = __initMotion()
 include("/hooks/usePrevious.lua")
 include("/hooks/useMouse.lua")
 MouseProvider, useMouse = __initMouseProvider()
@@ -11,11 +13,13 @@ include("/projects/deqoi/deqoi.lua")
 include("/lib/mkdirr.lua")
 include("/hooks/useDir.lua")
 
-local width = 480 / 2
-local height = 270 / 2
+include("components/Wrap.lua")
+include("components/Label.lua")
+include("hooks/useLabels.lua")
+include("hooks/useCartPaths.lua")
 
--- TODO: Remove when ready for fullscreen.
-window(width, height)
+local width = 480
+local height = 270
 
 function _init()
 
@@ -25,154 +29,20 @@ function _update()
 
 end
 
-local cachePodDirPath = "/ram/explore-cache"
-local cachePodFilePath = cachePodDirPath .. "/allCartPaths.pod"
+local ramExploreCacheDirPath = "/ram/explore-cache"
+local cartCachePodFilePath = ramExploreCacheDirPath .. "/allCartPaths.pod"
 
 local categoryPaths = {
   "bbs://new",
   "bbs://featured",
   "bbs://wip"
 }
-local function useCartPaths()
-  local cache = useState(function()
-    if (fstat(cachePodFilePath)) then
-      local cache = fetch(cachePodFilePath)
-      -- TODO: Check against cache schema. Refresh if invalid.
-      -- TODO: Refresh if stale.
-      return cache
-    end
-    return nil
-  end)
 
-  if cache then
-    -- TODO: At some point we should implement refresh functionality,
-    -- TODO: and this early return will become problematic, because
-    -- TODO: not returning here will cause hooks call count to change.
-    assert(type(cache) == "table", "cache should be a table, got " .. type(cache))
-    -- TODO: Check against cache schema. Refresh if invalid.
-    return cache
-  end
-
-  local categoryDirs = useDirs(categoryPaths)
-  --printh("useCartPaths: Count categoryDirs: " .. #categoryDirs)
-  --printh("useCartPaths: categoryDirs: " .. describe(categoryDirs))
-
-  local categoryDirsLoaded = useMemo(function()
-    printh("useCartPaths: categoryDirs changed!")
-    return objectEvery(categoryDirs, function(categoryDir)
-      return categoryDir.loading == false
-    end)
-  end, { categoryDirs })
-
-  local categoryPagePaths = useMemo(function()
-    printh("useCartPaths: categoryDirsLoaded changed!")
-    printh("useCartPaths: categoryDirsLoaded = " .. tostr(categoryDirsLoaded))
-    local categoryPagePaths = {}
-    for categoryPath in all(categoryPaths) do
-      categoryPagePaths[categoryPath] = {}
-    end
-
-    if not categoryDirsLoaded then
-      return categoryPagePaths
-    end
-
-    for categoryPath in all(categoryPaths) do
-      local categoryDir = categoryDirs[categoryPath]
-      for categoryPageName in all(categoryDir.result) do
-        local pagePath = categoryPath .. "/" .. categoryPageName
-        add(categoryPagePaths[categoryPath], pagePath)
-      end
-    end
-    return categoryPagePaths
-  end, { categoryDirsLoaded })
-
-  local categoryPageDirs = {}
-  local categoryPageDirsDep = {}
-  for categoryPath in all(categoryPaths) do
-    local pagePaths = categoryPagePaths[categoryPath]
-    categoryPageDirs[categoryPath] = useDirs(pagePaths)
-    add(categoryPageDirsDep, categoryPageDirs[categoryPath])
-  end
-
-  local pageDirsLoaded = useMemo(function()
-    printh("useCartPaths: categoryPageDirs changed!")
-    printh("useCartPaths: categoryPageDirs = " .. tostr(categoryPageDirs))
-    if not categoryDirsLoaded then return false end
-    return objectEvery(categoryPaths, function(categoryPath)
-      local pageDirs = categoryPageDirs[categoryPath]
-      return objectEvery(pageDirs, function(pageDir)
-        return pageDir.loading == false
-      end)
-    end)
-  end, categoryPageDirsDep) -- TODO: `categoryPageDirsDep` is not wrapped on purpose. But is this a safe deps array in edge cases too? That is, is it impossible to for its length to change.
-
-  local allCartPaths = useMemo(function()
-    printh("useCartPaths: pageDirsLoaded changed!")
-    printh("useCartPaths: pageDirsLoaded = " .. tostr(pageDirsLoaded))
-    local allCartPaths = {}
-    for categoryPath in all(categoryPaths) do
-      allCartPaths[categoryPath] = {}
-    end
-
-    if not pageDirsLoaded then
-      return allCartPaths
-    end
-
-    for categoryPath in all(categoryPaths) do
-      local pagePaths = categoryPagePaths[categoryPath]
-      for pagePath in all(pagePaths) do
-        local pageDir = categoryPageDirs[categoryPath][pagePath]
-        for cartFile in all(pageDir.result) do
-          local cartPath = pagePath .. "/" .. cartFile
-          add(allCartPaths[categoryPath], cartPath)
-        end
-      end
-    end
-
-    printh("allCartPaths:")
-    printh(describe(allCartPaths))
-
-    mkdirr(cachePodDirPath)
-    store(cachePodFilePath, allCartPaths)
-
-    return allCartPaths
-  end, { pageDirsLoaded })
-
-  return allCartPaths
-end
-
-local memLabelCache = {}
--- TODO: Remove labels from cache when off screen and not to be displayed in a prev/next press or two.
-function useLabels(cartIDs, cachePath)
-  return useMemo(function()
-    local labels = {}
-    -- TODO: Refactor to use useQueries.
-    for cartID in all(cartIDs) do
-      if not memLabelCache[cartID] then
-        local labelQoiString = fetch(cachePath .. "/" .. cartID .. "/label.qoi")
-        -- TODO: labelQoiString will be nil until cart caching code is finished copying carts to the cache directory.
-        -- TODO: What do we do about this? Implement fake await using polling?
-        memLabelCache[cartID] = qoiDecode(labelQoiString)
-      end
-      labels[cartID] = memLabelCache[cartID]
-    end
-    return labels
-  end, cartIDs)
-end
-
----Wrap is a component that simply takes a function and arguments and runs the function on render.
----This is useful for calling builtin functions like clip() at a specific point in the render tree,
----as it's not possible to specify a function like clip as a component in the render tree,
----as its return value is not a valid react element.
-function Wrap(func, ...)
-  func(...)
-  -- Do not return func's return value, as it is not a valid react element.
-end
+local labelCachePodFilePath = ramExploreCacheDirPath .. "/labels.pod"
 
 local frame = 0
 function App()
-  local cachePath = "/appdata/explore/cartCache"
-  mkdirr(cachePath)
+  mkdirr(ramExploreCacheDirPath)
 
   local state = useState({
     categoryIndex = 1,
@@ -188,7 +58,7 @@ function App()
     return ((currentIndex + offset - 1) % length) + 1
   end
 
-  local allCartPaths = useCartPaths()
+  local allCartPaths = useCartPaths(categoryPaths, cartCachePodFilePath)
   --printh("allCartPaths:")
   --printh(describe(allCartPaths))
 
@@ -204,39 +74,50 @@ function App()
 
   local selectedCartPath = categoryCartPaths[state.selectedCartIndex]
 
-  local drawnCartPaths = {
-    categoryCartPaths[getOffsetIndex(state.selectedCartIndex, -3, #categoryCartPaths)],
-    categoryCartPaths[getOffsetIndex(state.selectedCartIndex, -2, #categoryCartPaths)],
-    categoryCartPaths[getOffsetIndex(state.selectedCartIndex, -1, #categoryCartPaths)],
-    categoryCartPaths[state.selectedCartIndex],
-    categoryCartPaths[getOffsetIndex(state.selectedCartIndex, 1, #categoryCartPaths)],
-    categoryCartPaths[getOffsetIndex(state.selectedCartIndex, 2, #categoryCartPaths)],
-    categoryCartPaths[getOffsetIndex(state.selectedCartIndex, 3, #categoryCartPaths)],
-  }
-  --local labels = useLabels(drawnCartPaths, cachePath)
+  local drawnCartPaths = useMemo(function()
+    return {
+      categoryCartPaths[getOffsetIndex(state.selectedCartIndex, -3, #categoryCartPaths)],
+      categoryCartPaths[getOffsetIndex(state.selectedCartIndex, -2, #categoryCartPaths)],
+      categoryCartPaths[getOffsetIndex(state.selectedCartIndex, -1, #categoryCartPaths)],
+      categoryCartPaths[state.selectedCartIndex],
+      categoryCartPaths[getOffsetIndex(state.selectedCartIndex, 1, #categoryCartPaths)],
+      categoryCartPaths[getOffsetIndex(state.selectedCartIndex, 2, #categoryCartPaths)],
+      categoryCartPaths[getOffsetIndex(state.selectedCartIndex, 3, #categoryCartPaths)],
+    }
+  end, { state.selectedCartIndex, categoryCartPaths })
+
+  local labels = useLabels(drawnCartPaths, labelCachePodFilePath)
+
+  useMemo(function()
+    printh(labels[2])
+    printh(labels[3])
+    printh(labels[4])
+    printh(labels[5])
+    printh(labels[6])
+    printh(drawnCartPaths[2])
+    printh(drawnCartPaths[3])
+    printh(drawnCartPaths[4])
+    printh(drawnCartPaths[5])
+    printh(drawnCartPaths[6])
+  end, {})
 
   cls() -- TODO: Probably don't need this later, when rendering on every part of the screen anyway.
   return {
-    { Wrap, clip,  0,                                                0, width * 1 / 10,  height },
-    --{ Wrap, spr,     labels[1], },
-    { Wrap, clip,  width * 1 / 10,                                   0, width * 3 / 10,  height },
-    --{ Wrap, spr,     labels[2] },
-    { Wrap, clip,  width * 3 / 10,                                   0, width * 7 / 10,  height },
-    --{ Wrap, spr,     labels[3] },
-    { Wrap, clip,  width * 7 / 10,                                   0, width * 9 / 10,  height },
-    --{ Wrap, spr,     labels[4] },
-    { Wrap, clip,  width * 9 / 10,                                   0, width * 10 / 10, height },
-    --{ Wrap, spr,     labels[5] },
-    { Wrap, clip,  0,                                                0, width,           height },
+    labels[2] and { drawnCartPaths[2], Label, labels[2], 1, width, height } or false,
+    labels[3] and { drawnCartPaths[3], Label, labels[3], 2, width, height } or false,
+    labels[4] and { drawnCartPaths[4], Label, labels[4], 3, width, height } or false,
+    labels[5] and { drawnCartPaths[5], Label, labels[5], 4, width, height } or false,
+    labels[6] and { drawnCartPaths[6], Label, labels[6], 5, width, height } or false,
 
-    { Wrap, print, "frame: " .. frame,                               0, 0,               12 },
-    { Wrap, print, "fps: " .. stat(7),                               12 },
-    { Wrap, print, "selectedCartIndex: " .. state.selectedCartIndex, 12 },
-    { Wrap, print, "selectedCartPath: " .. tostr(selectedCartPath),  12 },
+    { Wrap, clip },
+    { Wrap, print, "frame: " .. frame,                               0, 0,      12 },
+    { Wrap, print, "fps: " .. stat(7),                               0, 0 + 10, 12 },
+    { Wrap, print, "selectedCartIndex: " .. state.selectedCartIndex, 0, 0 + 20, 12 },
+    { Wrap, print, "selectedCartPath: " .. tostr(selectedCartPath),  0, 0 + 30, 12 },
 
     arrayMap(drawnCartPaths, function(cartPath, i)
-      return { Wrap, print, cartPath, 12 }
-    end)
+      return { Wrap, print, cartPath, 0, 0 + 40 + i * 10, 12 }
+    end),
   }
 end
 
