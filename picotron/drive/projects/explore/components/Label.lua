@@ -9,11 +9,6 @@ function Label(labelUserdata, index, width, height)
     width * 10 / 10
   }
 
-  useMemo(function()
-    printh(xTargets[index])
-    printh(xTargets[index + 1])
-  end, {})
-
   local x1 = useSpring(xTargets[index])
   local x2 = useSpring(xTargets[index + 1])
 
