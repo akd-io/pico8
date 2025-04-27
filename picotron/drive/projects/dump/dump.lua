@@ -16,11 +16,9 @@ cp("/system", "/dumps/system")
 rm("/dumps/ram")
 cp("/ram", "/dumps/ram")
 
--- Dump version of Picotron
-rm("/dumps/version.txt")
-
-local metadata = fetch_metadata("/system")
-
-store("/dumps/version.txt", describe(metadata))
+-- Dump system metadata
+rm("/dumps/system-metadata.txt")
+local systemMetadata = fetch_metadata("/system")
+store("/dumps/system-metadata.txt", describe(systemMetadata))
 
 print("Done.")
