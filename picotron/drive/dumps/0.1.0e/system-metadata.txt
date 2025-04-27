@@ -1,0 +1,9 @@
+--[[pod_format="raw",created="2025-04-27 16:48:00",modified="2025-04-27 16:48:00",revision=0]]
+{
+  "author" = "lexaloffle",
+  "notes" = "(c) 2022-24 Lexaloffle Games LLP\n",
+  "stored" = "2024-03-30 15:36:43",
+  "title" = "Picotron Workstation OS",
+  "version" = "0.1.0e",
+  "icon" = userdata: 0x275877d0,
+}
