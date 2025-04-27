@@ -58,4 +58,4 @@ local builtinsJailbrokenPath = targetDir .. "/builtins-jailbroken.txt"
 rm(builtinsJailbrokenPath)
 create_process("/projects/builtins/builtins.lua", { argv = { builtinsJailbrokenPath } })
 
-print("Done.")
+print("Done.") -- Note that this doesn't mean async processes are finished.
