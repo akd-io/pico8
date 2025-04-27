@@ -4,21 +4,29 @@ include("/lib/describe.lua")
 
 print("Dumping...")
 
-rm("/dumps/builtins.txt")
-create_process("/projects/builtins/builtins.lua", { argv = { "/dumps/builtins.txt" } })
+-- TODO: Suppoert version argument
 
-rm("/dumps/env.txt")
-create_process("/projects/env/env.lua", { argv = { "/dumps/env.txt" } })
+local targetDir = "/dumps/latest"
 
-rm("/dumps/system")
-cp("/system", "/dumps/system")
+-- Dump builtins (_ENV)
+rm(targetDir .. "/builtins.txt")
+create_process("/projects/builtins/builtins.lua", { argv = { targetDir .. "/builtins.txt" } })
 
-rm("/dumps/ram")
-cp("/ram", "/dumps/ram")
+-- Dump env()
+rm(targetDir .. "/env.txt")
+create_process("/projects/env/env.lua", { argv = { targetDir .. "/env.txt" } })
+
+-- Dump /system
+rm(targetDir .. "/system")
+cp("/system", targetDir .. "/system")
+
+-- Dump /ram
+rm(targetDir .. "/ram")
+cp("/ram", targetDir .. "/ram")
 
 -- Dump system metadata
-rm("/dumps/system-metadata.txt")
+rm(targetDir .. "/system-metadata.txt")
 local systemMetadata = fetch_metadata("/system")
-store("/dumps/system-metadata.txt", describe(systemMetadata))
+store(targetDir .. "/system-metadata.txt", describe(systemMetadata))
 
 print("Done.")
