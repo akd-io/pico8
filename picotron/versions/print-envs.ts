@@ -1,6 +1,8 @@
 /*
-For every picotron dir in the `out` dir:
-- Run `picotron -x print-env.lua` and save the output to a file in a new `builtins/<version>` dir.
+  For every picotron dir in the `out` dir:
+  - Run `picotron -x print-env.lua` and save the output to a file in a new `builtins/<version>` dir.
+
+  !NOTE: The `-x` CLI argument was first introduced in Picotron v0.1.1, so prior versions will not run the script.
 */
 
 import { $ } from "bun";
@@ -26,6 +28,8 @@ const folders = dirContents.filter(async (fileName) => {
 
 $.cwd(import.meta.dir);
 
+// TODO: Exclude versions prior to v.0.1.1, since they don't support the `-x` CLI argument.
+// TODO: Or, instead for old versions, output a TODO.md file with a TODO comment describing what code to run.
 for (const folderName of folders) {
   const folderPath = path.resolve(outDir, folderName);
 
