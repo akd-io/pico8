@@ -3,9 +3,14 @@
 include("/lib/describe.lua")
 include("/lib/literal.lua")
 
--- TODO:
--- - Fix error for versions prior to 0.1.1:
---   - `builtins:3: bad argument #2 to 'load' (string expected, got table)`
+--[[
+  !IMPORTANT: Zep seems to have forgotten to bump the version number in `0.1.0c`
+    - This means `0.1.0c` writes to `0.1.0b`, and you have to manually override the target directory by passing `0.1.0c` as CLI argument.
+
+  TODO:
+  - Fix error for versions prior to 0.1.1:
+    - `builtins:3: bad argument #2 to 'load' (string expected, got table)`
+]]
 
 local destinationArg = env().argv[1]
 assert(destinationArg == nil or type(destinationArg) == "string", "Usage: dump [destination]")
