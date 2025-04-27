@@ -3,6 +3,10 @@
 include("/lib/describe.lua")
 include("/lib/literal.lua")
 
+-- TODO:
+-- - Fix error for versions prior to 0.1.1:
+--   - `builtins:3: bad argument #2 to 'load' (string expected, got table)`
+
 local destinationArg = env().argv[1]
 assert(destinationArg == nil or type(destinationArg) == "string", "Usage: dump [destination]")
 
