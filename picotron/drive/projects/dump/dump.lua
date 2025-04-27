@@ -2,11 +2,15 @@
 
 include("/lib/describe.lua")
 
+local destinationArg = env().argv[1]
+assert(destinationArg == nil or type(destinationArg) == "string", "Usage: dump [destination]")
+
 print("Dumping...")
 
--- TODO: Suppoert version argument
+local systemMetadata = fetch_metadata("/system")
+local systemVersion = systemMetadata.version
 
-local targetDir = "/dumps/latest"
+local targetDir = "/dumps/" .. (destinationArg or systemVersion)
 
 -- Dump builtins (_ENV)
 rm(targetDir .. "/builtins.txt")
@@ -26,7 +30,6 @@ cp("/ram", targetDir .. "/ram")
 
 -- Dump system metadata
 rm(targetDir .. "/system-metadata.txt")
-local systemMetadata = fetch_metadata("/system")
 store(targetDir .. "/system-metadata.txt", describe(systemMetadata))
 
 print("Done.")
