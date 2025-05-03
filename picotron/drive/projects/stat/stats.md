@@ -56,8 +56,12 @@ This file attempts to document all `stat()` codes, enriching the official docume
 - `stat(302, i)` (undocumented)
   - See [code references](#302-search)
 - `stat(307)` (undocumented)
-  - `stat(307) & 0x1` seems to indicate `307` is a bitfield and
-    - `0b1` is code for "trusted system apps"
+  - Returns `1.0` if filepath starts with `/system/`.
+  - Thanks to `@_maxine_`'s [message](https://discord.com/channels/1068899948592107540/1358151110917099785/1366825534167847013) on Discord.
+  - Used in `head.lua` to determine if a program is a "trusted system app".
+  - In my testing, `stat(307)` also returns `1.0` in user-made scripts located in `/system/`.
+  - The code in `head.lua` specifically checks `stat(307) & 0x1`, which might indicate `stat(307)` was a bitfield in past versions, and `0b1` was code for "trusted system apps".
+    - TODO: Find out if `stat(307)` was a bitfield in past versions.
   - See [code references](#307-search)
 - `stat(308)` (undocumented)
   - Observed value `1973.0` and `2334.0` in `stat.lua` output.
