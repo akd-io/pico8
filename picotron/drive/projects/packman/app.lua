@@ -1,31 +1,57 @@
---[[pod_format="raw",created="2025-04-09 22:01:06",modified="2025-04-09 22:12:56",revision=5]]
+--[[pod_format="raw",created="2025-04-09 22:01:06",modified="2025-04-10 15:15:04",revision=9]]
 include("/hooks/usePrevious.lua")
 include("/hooks/useMouse.lua")
 MouseProvider, useMouse = __initMouseProvider()
 include("/hooks/useClickableArea.lua")
 
+function CameraClip(x, y, w, h)
+  if not x or not y or not w or not h then
+    camera()
+    clip()
+    return
+  end
+  camera(-x, -y)
+  clip(x, y, w, h)
+end
+
+function Camera(x, y)
+  if not x or not y then
+    camera()
+    return
+  end
+  camera(-x, -y)
+end
+
+function Clip(x, y, w, h)
+  if not x or not y or not w or not h then
+    clip()
+    return
+  end
+  clip(x, y, w, h)
+end
+
 ---@param props { text: string, x: number, y: number, color: number }
 local function Text(props)
-  assert(type(props.text) == "string", "text must be a string, got " .. type(props.text))
-  assert(type(props.x) == "number", "x must be a number, got " .. type(props.x))
-  assert(type(props.y) == "number", "y must be a number, got " .. type(props.y))
-  assert(type(props.color) == "number", "color must be a number, got " .. type(props.color))
+  local text, x, y, color = props.text, props.x, props.y, props.color
+  assert(type(text) == "string", "text must be a string, got " .. type(text))
+  assert(type(x) == "number", "x must be a number, got " .. type(x))
+  assert(type(y) == "number", "y must be a number, got " .. type(y))
+  assert(type(color) == "number", "color must be a number, got " .. type(color))
 
-  print(props.text, props.x, props.y, props.color or 0)
+  print(text, x, y, color)
 end
 
 ---@param props { x1: number, y1: number, x2: number, y2: number, color: number, children?: table }
 local function Rectfill(props)
-  assert(type(props.x1) == "number", "x1 must be a number, got " .. type(props.x1))
-  assert(type(props.y1) == "number", "y1 must be a number, got " .. type(props.y1))
-  assert(type(props.x2) == "number", "x2 must be a number, got " .. type(props.x2))
-  assert(type(props.y2) == "number", "y2 must be a number, got " .. type(props.y2))
-  assert(type(props.color) == "number", "color must be a number, got " .. type(props.color))
+  local x1, y1, x2, y2, color, children = props.x1, props.y1, props.x2, props.y2, props.color, props.children
+  assert(type(x1) == "number", "x1 must be a number, got " .. type(x1))
+  assert(type(y1) == "number", "y1 must be a number, got " .. type(y1))
+  assert(type(x2) == "number", "x2 must be a number, got " .. type(x2))
+  assert(type(y2) == "number", "y2 must be a number, got " .. type(y2))
+  assert(type(color) == "number", "color must be a number, got " .. type(color))
 
-  rectfill(props.x1, props.y1, props.x2, props.y2, props.color)
-  return {
-    props.children
-  }
+  rectfill(x1, y1, x2, y2, color)
+  return { children }
 end
 
 local buttonXPadding = 4
@@ -67,15 +93,15 @@ local function Button(props)
   }
 end
 
----@param props { x:number, y:number, tabs: { name: string, content: string }[] }
+---@param props { x:number, y:number, width:number, tabs: { name: string, children: children }[] }
 local function Tabs(props)
-  local x, y, tabs, width = props.x, props.y, props.tabs, props.width, props.height
+  local x, y, tabs, width = props.x, props.y, props.tabs, props.width
   assert(type(x) == "number", "x must be a number, got " .. type(x))
   assert(type(y) == "number", "y must be a number, got " .. type(y))
   assert(type(props.tabs) == "table", "tabs must be a table, got " .. type(props.tabs))
   assert(#props.tabs > 0, "tabs must have at least one tab, got " .. #props.tabs)
   assert(type(props.tabs[1].name) == "string", "tab name must be a string, got " .. type(props.tabs[1].name))
-  assert(type(props.tabs[1].content) == "string", "tab content must be a string, got " .. type(props.tabs[1].content))
+  assert(type(props.tabs[1].children) == "table", "tab children must be a table, got " .. type(props.tabs[1].children))
   assert(type(width) == "number", "width must be a number, got " .. type(width))
 
   local state = useState({
@@ -114,55 +140,250 @@ local function Tabs(props)
 
     enrichedTabs,
 
-    { Text, {
-      text = tabs[state.selectedTabIndex].content,
-      x = x + 4,
-      y = y + height + 4,
-      color = 1
-    } }
+    tabs[state.selectedTabIndex].children,
   }
 end
 
-printh(describe(ls("bbs://new")))
-printh(describe(ls("bbs://new/0")))
+--[[
+  BBS caching:
+  `/appdata/packman/installed`:
+  - Holds downloaded/installed carts.
+  - These carts are managed from the "installed" tab.
 
-local function useCarts(url)
-  return useMemo(function()
-    local carts = {}
-    for _, pageDirectory in ipairs(ls(url)) do
-      for _, cart in ipairs(ls(pageDirectory)) do
-        add(carts, cart)
+  `/appdata/packman/bbsCartCache.pod`:
+  {
+    categories: [
+      "new": { -- bbs://new
+        "lastFetched": 1234567890, -- epoch seconds. Used to determine if the cache is stale.
+        "carts": [
+          {
+            "id": "test-0",
+          }
+        ]
+      },
+      "featured": { -- bbs://featured
+        "lastFetched": 1234567890, -- epoch seconds. Used to determine if the cache is stale.
+        "carts": [
+          {
+            "id": "test-0",
+          }
+        ]
+      },
+      "wip": { -- bbs://wip
+        "lastFetched": 1234567890, -- epoch seconds. Used to determine if the cache is stale.
+        "carts": [
+          {
+            "id": "test-0",
+          }
+        ]
+      },
+    ]
+  }
+]]
+local bbsCartCachePodPath = "/appdata/packman/bbsCartCache.pod"
+local bbsCartCache = fetch(bbsCartCachePodPath)
+
+--[[
+  State data structure:
+  {
+    selectedTabIndex: 1,
+    -- installed: ... -- Installed should not be saved, but derived from the filesystem.
+  }
+]]
+local statePodPath = "/appdata/packman/state.pod"
+local state = fetch(statePodPath)
+
+local function useCategoryCarts(categoryUrl)
+  return useMemo(
+    function()
+      local carts = {}
+
+      local categoryDir = ls(categoryUrl)
+      printh(categoryUrl .. ": " .. describe(categoryDir))
+      for _, pageName in ipairs(categoryDir) do
+        local pageUrl = categoryUrl .. "/" .. pageName
+        local pageDir = ls(pageUrl)
+        if (#pageDir == 0) then break end
+        printh(pageUrl .. ": " .. describe(pageDir))
+        for _, cart in ipairs(pageDir) do
+          add(carts, cart)
+        end
+        -- TODO: Remove break when proper caching is in place
+        break
       end
-    end
-    return carts
-  end, { url })
+
+      return carts
+    end,
+    { categoryUrl }
+  )
+end
+
+function ScrollView(props)
+  local x, y, width, height, children = props.x, props.y, props.width, props.height, props.children
+
+  local mouse = useMouse()
+  local wheel_y = mouse.wheel_y
+  local state = useState({
+    scroll_y = 0,
+  })
+
+  state.scroll_y = state.scroll_y + 2 * wheel_y
+
+  clip(x, y, width, height)
+  rectfill(x, y, x + width, y + height, 12)
+
+  return {
+    children,
+  }
+end
+
+---@param props { carts: string[], x: number, y: number, width: number, height: number }
+function CartList(props)
+  local carts, x, y, width, height = props.carts, props.x, props.y, props.width, props.height
+  return {
+    { ScrollView, {
+      x = x,
+      y = y,
+      width = width,
+      height = height,
+      children = {
+        { Text,
+          {
+            text = table.concat(carts, "\n"),
+            x = x + 4,
+            y = y + 4,
+            color = 1
+          }
+        }
+      }
+    } },
+    { CameraClip, x, y, width, height }
+  }
+end
+
+function Pane(x, y, width, height, color, children)
+  rectfill(x, y, x + width, y + height, color)
+  return {
+    { Camera, x, y },
+    { Clip,   x, y, width, height },
+    children,
+  }
 end
 
 function App()
   cls(7)
 
-  local new = useCarts("bbs://new")
-  local featured = useCarts("bbs://featured")
-  local wip = useCarts("bbs://wip")
+  local new = useCategoryCarts("bbs://new")
+  local featured = useCategoryCarts("bbs://featured")
+  local wip = useCategoryCarts("bbs://wip")
+  local all = {}
+  for _, cart in ipairs(new) do
+    add(all, cart)
+  end
+  for _, cart in ipairs(featured) do
+    add(all, cart)
+  end
+  for _, cart in ipairs(wip) do
+    add(all, cart)
+  end
 
+  local x, y = 0, 0
+  local tabTitleHeight = 14
 
   return {
     { MouseProvider, {
       { Tabs, {
-        x = 0,
-        y = 0,
+        x = x,
+        y = y,
         width = width,
         tabs = {
           {
+            name = "All",
+            children = { CartList,
+              {
+                carts = all,
+                x = x + 4,
+                y = y + tabTitleHeight + 4,
+                width = width - 8,
+                height = height - tabTitleHeight - 8
+              }
+            }
+          },
+          {
             name = "New",
-            content = "New carts go here",
+            children = { CartList,
+              {
+                carts = new,
+                x = x + 4,
+                y = y + tabTitleHeight + 4,
+                width = width - 8,
+                height = height - tabTitleHeight - 8
+              }
+            }
           },
           {
             name = "Featured",
-            content = "Featured carts go here",
-          }
+            children = { CartList,
+              {
+                carts = featured,
+                x = x + 4,
+                y = y + tabTitleHeight + 4,
+                width = width - 8,
+                height = height - tabTitleHeight - 8
+              }
+            }
+          },
+          {
+            name = "Work in progress",
+            children = { CartList,
+              {
+                carts = wip,
+                x = x + 4,
+                y = y + tabTitleHeight + 4,
+                width = width - 8,
+                height = height - tabTitleHeight - 8
+              }
+            }
+          },
+          {
+            name = "Installed",
+            children = { CartList,
+              {
+                carts = {},
+                x = x + 4,
+                y = y + tabTitleHeight + 4,
+                width = width - 8,
+                height = height - tabTitleHeight - 8
+              }
+            }
+          },
+          {
+            name = "Favorites",
+            children = { CartList,
+              {
+                carts = {},
+                x = x + 4,
+                y = y + tabTitleHeight + 4,
+                width = width - 8,
+                height = height - tabTitleHeight - 8
+              }
+            }
+          },
         }
       } },
+      { Pane, 50, 50, 100, 100, 8, {
+        { Text, {
+          text =
+          "Hello world hello world hello world\nHello world hello world hello world\nHello world hello world hello world\nHello world hello world hello world\nHello world hello world hello world\nHello world hello world hello world\n",
+          x = 0,
+          y = 0,
+          color = 1
+        } },
+        { Pane,       50, 50, 100, 100, 24 },
+        { CameraClip, 50, 50, 100, 100 },
+      } },
+      { Camera },
+      { Clip }
     } }
   }
 end
