@@ -5,6 +5,7 @@ version 2
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI1LTA1LTAzIDE5OjQ4OjE2Iixtb2RpZmllZD0iMjAyNS0w
 NS0wMyAxOTo0ODoxNiJdXQ==
 :: main.lua
+--[[pod_format="raw",created="2025-05-03 19:55:22",modified="2025-05-03 19:55:22",revision=0]]
 --[[
   Packman
   - Package manager
@@ -88,7 +89,7 @@ include("/lib/utils.lua")
 include("/lib/react.lua")
 renderRoot, useState, createContext, useContext, useMemo = __initReact()
 
-include("app.lua")
+include("../app.lua")
 
 local min_width = 200
 local min_height = 100
