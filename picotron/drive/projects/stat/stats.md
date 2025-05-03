@@ -100,6 +100,7 @@ This file attempts to document all `stat()` codes, enriching the official docume
 - `stat(317)` (undocumented)
   - See [code references](#317-search)
 - `stat(318)` (undocumented)
+  - Returns `1.0` when running as a web/`.html` export, and `0.0` otherwise.
   - See [code references](#318-search)
 - `stat(320)` (undocumented)
   - Returns `1.0` during video capture, and `0.0` otherwise.
