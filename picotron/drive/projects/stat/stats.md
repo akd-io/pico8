@@ -53,7 +53,11 @@ This file attempts to document all `stat()` codes, enriching the official docume
   - Seems to indicate CPU usage, across processes, since some event.
   - Maybe since the `flip()` in `boot.lua`'s main loop?
   - See [code references](#301-search)
-- `stat(302, i)` (undocumented)
+- `stat(302, keycode)` (undocumented)
+  - Returns a human-readable name for the given keycode.
+  - Seems to surface SDL's [GetKeyName](https://wiki.libsdl.org/SDL2/SDL_GetKeyName) function:
+    > Get a human-readable name for a key.
+  - Thanks to `@_maxine_`'s [message](https://discord.com/channels/1068899948592107540/1358151110917099785/1366167587209089045) on Discord.
   - See [code references](#302-search)
 - `stat(307)` (undocumented)
   - Returns `1.0` if filepath starts with `/system/`.
