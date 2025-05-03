@@ -28,8 +28,10 @@
             install script? Too unsafe?
 ]]
 
-
 include("/lib/printPrint.lua")
+
+-- TODO: Fix black label path. Should be relative, so it works for exported cart too.
+local blackLabelPath = "/projects/bundler/black-label.qoi"
 
 local function printPrintUsage()
   printPrint("Usage: bundler.lua <path/to/input.lua> [path/to/output.p64]")
@@ -86,11 +88,19 @@ if fstat(inputPath) != "file" then
 end
 
 -- TODO: Check output path does not exist?
--- TODO: Ask user to confirm overwrite?
+-- TODO: - If it exists:
+-- TODO:   - Ask user to confirm overwrite
+-- TODO:     - If overwrite, copy over existing label.qoi if it exists.
 
 -- Make cartridge
+print("Making .p64 directory...")
 mkdir(outputPath)
--- Add the input file to the cartridge
+
+-- Copy input file to the cartridge as main.lua
+print("Adding main.lua...")
 cp(inputPath, outputPath .. "/main.lua")
+
+print("Adding label.qoi...")
+cp(blackLabelPath, outputPath .. "/label.qoi")
 
 printPrint("Created cartridge: " .. outputPath)
