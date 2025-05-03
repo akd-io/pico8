@@ -5,12 +5,12 @@ This file attempts to document all CLI arguments, enriching the official documen
 ## Picotron CLI arguments:
 
 - `picotron`
-  - Run Picotron normally
+  - Run Picotron normally.
 - `picotron -x <path/to/my/script.lua>`
   - Added in `0.1.1`.
-  - Run the specified file in headless mode
-  - The path is relative to your host OS's current working directory
-  - Your code will be copied to and run from `/ram/host_argv.lua`
+  - Run the specified file in headless mode.
+  - The path is relative to your host OS's current working directory.
+  - Your code will be copied to and run from `/ram/host_argv.lua`.
   - `pwd()` of a headless script returns `/ram`.
   - `env()` of a headless script returns:
     ```
@@ -22,8 +22,8 @@ This file attempts to document all CLI arguments, enriching the official documen
       "fileview" = [],
     }
     ```
-  - We still don't know how to pass arguments to headless scripts
-  - Found with the help of `@_maxine_` on discord
+  - We still don't know how to pass arguments to headless scripts.
+  - Found with the help of `@_maxine_` on discord.
   - Later found to have been under `0.1.1` in the [changelog](https://www.lexaloffle.com/dl/docs/picotron_changelog.txt).
   - [Changelog](https://www.lexaloffle.com/dl/docs/picotron_changelog.txt):
     - `0.1.1`:
@@ -37,6 +37,20 @@ This file attempts to document all CLI arguments, enriching the official documen
       - `Added: picotron -home foo // to specify a home folder where config.txt / default drive is stored`
     - `0.1.1c`:
       - `Fixed: "picotron -home foo" host crashes when foo doesn't exist`
+- `picotron -gif_len n`
+  - Not tested yet.
+  - Presumably the length of recorded gifs.
+  - Unit of `n` is unknown.
+  - Found by `@_maxine_` on discord.
+  - Not mentioned in the [Changelog](https://www.lexaloffle.com/dl/docs/picotron_changelog.txt).
+  - It is currently unknown, when this argument was added.
+    - TODO: Analyze this using `strings` on the binaries in [`/picotron/versions/out/`](/picotron/versions/out/).
+- `picotron -use_system_rom`
+  - Functionality currently unknown.
+  - Found by `@_maxine_` on discord.
+  - Not mentioned in the [Changelog](https://www.lexaloffle.com/dl/docs/picotron_changelog.txt).
+  - It is currently unknown, when this argument was added.
+    - TODO: Analyze this using `strings` on the binaries in [`/picotron/versions/out/`](/picotron/versions/out/).
 
 ## Unimplemented CLI arguments
 
