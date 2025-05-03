@@ -1,0 +1,292 @@
+picotron cartridge // www.picotron.net
+version 2
+
+:: .info.pod
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI1LTA1LTAzIDIwOjQxOjE0Iixtb2RpZmllZD0iMjAyNS0w
+NS0wMyAyMDo0MToxNCJdXQ==
+:: main.lua
+--[[pod_format="raw",created="2025-04-09 22:01:52",modified="2025-04-18 15:30:57",revision=16]]
+-- See pico8 react for docs/comments.
+-- This is a temporary copy until pico8 react syntax has been finialized.
+
+--[[const]]
+DEV = true
+
+function __initReact()
+  -- Holds the state of component instances
+  local instances = {}
+
+  -- Used during render
+  local currentInstanceId = nil
+  local frame = 0
+  local currentContextValues = {}
+
+  local function isArray(table)
+    if (type(table) != "table") then return false end
+    local i = 1
+    for _ in pairs(table) do
+      if table[i] == nil then return false end
+      i += 1
+    end
+    return true
+  end
+
+  local internalRenderFunction
+
+  local function renderElements(elements, prefix)
+    if DEV then
+      assert(type(elements) == "table", "Elements array was not an array. Got type " .. type(elements) .. ".")
+      assert(isArray(elements),
+        "Elements array was a table, but not an array. Arrays are tables with consecutive number keys. And arrays can't contain nil values. Replace nils in element arrays with false to unmount components.")
+    end
+
+
+    for index, element in ipairs(elements) do
+      local isBoolean = type(element) == "boolean"
+      local isEmptyArray = type(element) == "table" and #element == 0
+      if isBoolean or isEmptyArray then
+        goto continue
+      end
+
+      -- TODO: Consider accepting type(element) == "function" in the case of a propless unkeyed component, or just a function to call. Enables an API to run code after render.
+      if DEV then
+        assert(type(element) == "table",
+          "Element must be a table or boolean. Got type " .. type(element) .. ".")
+      end
+
+      local firstValue = element[1]
+      local firstValueType = type(firstValue)
+
+      if DEV then
+        assert(
+          firstValueType == "table" or firstValueType == "number" or firstValueType == "string" or
+          firstValueType == "function" or firstValueType == "boolean",
+          "Unrecognized element syntax of the form { " .. firstValueType .. ", ... }."
+        )
+      end
+
+      if (firstValueType == "table") then
+        if (firstValue.type == "provider") then
+          local value = element[2]
+          local children = element[3]
+          local context = firstValue.context
+          local previousValue = currentContextValues[context]
+          currentContextValues[context] = value
+          renderElements(children, index .. "-")
+          currentContextValues[context] = previousValue
+        else
+          -- If firstValueType == "table" and the element is not a context
+          -- provider, the element is an array of elements and should have
+          -- all its elements rendered.
+          -- Their keys will be prefixed with the index of the fragment
+          renderElements(element, index .. "-")
+        end
+      elseif (firstValueType == "boolean") then
+        -- If firstValueType == "boolean", element[1] is a placeholder for
+        -- a conditionally rendered element, and element is an array of
+        -- elements.
+        renderElements(element, index .. "-")
+      else
+        local isKeyedElement = firstValueType == "number" or firstValueType == "string"
+        local key = isKeyedElement and firstValue or index
+        local externalFunctionComponent = isKeyedElement and element[2] or firstValue
+
+        local renderFuncType = type(externalFunctionComponent)
+        if DEV then
+          assert(renderFuncType == "function",
+            "Elements must be tables with a function as the first element. Got type " .. renderFuncType .. ".")
+        end
+        local indexOfFirstProp = isKeyedElement and 3 or 2
+        internalRenderFunction((prefix or "") .. key, externalFunctionComponent,
+          select(indexOfFirstProp, unpack(element)))
+      end
+
+      ::continue::
+    end
+  end
+
+  internalRenderFunction = function(key, externalFunctionComponent, ...)
+    if DEV then assert(key != nil, "key must be provided") end
+    -- TODO: assert key is string/number?
+
+    -- Save parent/previous component instance and id
+    local parentInstanceId = currentInstanceId
+
+    -- Generate instance id
+    -- We use tostring(func) to add the address of the external render function to the instance id.
+    -- This is important to support conditionals like `condition and { ComponentA } or { ComponentB }`
+    local prefix = parentInstanceId and parentInstanceId .. "-" or ""
+    local instanceId = prefix .. sub(tostring(externalFunctionComponent), 13) .. "_" .. key
+
+    -- printh("Rendering " .. instanceId)
+
+    -- Initialize component state if missing (initial render)
+    if not instances[instanceId] then
+      instances[instanceId] = { hooks = {} }
+    end
+
+    -- Update current component context
+    currentInstanceId = instanceId
+    instances[instanceId].hookIndex = 1
+    instances[instanceId].lastRenderFrame = frame
+
+    -- Render component with remaining args
+    local elementArray = externalFunctionComponent(...)
+    -- TODO: Consider not only accepting a fragment here, but also the different element types supported in renderElements
+    if elementArray != nil then
+      renderElements(elementArray)
+    end
+
+    -- Restore parent component context
+    currentInstanceId = parentInstanceId
+  end
+
+  -- useState is inspired by useState from React.
+  -- In contrast to React's useState, it embraces mutability, as this library neither tracks nor rerenders on state changes.
+  -- Along with the state, the function returns a setState function to enable updates to non-table types, or complete overrides of tables.
+  -- Table states can largely ignore the setState function by updating table properties directly.
+  -- useState can be called with a non-function value or a setter function.
+  -- Storing functions can be achieved by wrapping the function in a table, or by returning the function from a setter function.
+  local function useState(initialValue)
+    if DEV then assert(currentInstanceId != nil, "useState must be called inside of components") end
+
+    local currentInstance = instances[currentInstanceId]
+    local hooks = currentInstance.hooks
+    local hookIndex = currentInstance.hookIndex
+
+    if (hooks[hookIndex] == nil) then
+      -- If initial render, initialize state
+      if (type(initialValue) == "function") then
+        -- We need an if statement here, because `a and b or c` doesn't work well with nils.
+        initialValue = initialValue()
+      end
+      hooks[hookIndex] = {
+        -- TODO: Possibly add type="useState", and assert it in subsequent renders in DEV?
+        value = initialValue
+      }
+    end
+
+    local function setState(newValue)
+      hooks[hookIndex].value = newValue
+      return newValue
+    end
+
+    currentInstance.hookIndex += 1
+    return hooks[hookIndex].value, setState
+  end
+
+  local function didDepsChange(prevDeps, newDeps)
+    if DEV then
+      assert(#prevDeps == #newDeps,
+        "dependency arrays must be the same length between renders. Got lengths " ..
+        #prevDeps .. " and " .. #newDeps .. ".")
+    end
+    if (#newDeps == 0) then
+      return false
+    end
+    for i = 1, #newDeps do
+      if (prevDeps[i] != newDeps[i]) then
+        return true
+      end
+    end
+    return false
+  end
+
+  local function useMemo(calculateValue, dependencies)
+    if DEV then
+      assert(currentInstanceId != nil, "useMemo must be called inside of components")
+      assert(type(calculateValue) == "function", "useMemo must receive a calculateValue function")
+      assert(type(dependencies) == "table", "useMemo must receive a dependency array")
+    end
+
+    local currentInstance = instances[currentInstanceId]
+    local hooks = currentInstance.hooks
+    local hookIndex = currentInstance.hookIndex
+
+    if (hooks[hookIndex] == nil
+          or didDepsChange(hooks[hookIndex].dependencies, dependencies)) then
+      -- If initial render OR dependencies have changed, update hook value and deps
+      hooks[hookIndex] = {
+        -- TODO: Possibly add type="useMemo", and assert it in subsequent renders?
+        value = calculateValue(),
+        dependencies = dependencies
+      }
+    end
+
+    currentInstance.hookIndex += 1
+    return hooks[hookIndex].value
+  end
+
+  local function createContext(defaultValue)
+    if DEV then assert(currentInstanceId == nil, "createContext must be called outside of components") end
+    local context = {}
+    currentContextValues[context] = defaultValue
+    context.Provider = { type = "provider", context = context }
+    return context
+  end
+
+  local function useContext(context)
+    if DEV then assert(currentInstanceId != nil, "useContext must be called inside of components") end
+    return currentContextValues[context]
+  end
+
+  local function renderRoot(externalFunctionComponent)
+    internalRenderFunction("1", externalFunctionComponent)
+
+    -- Clean up any unmounted component instances
+    for instanceId, instance in pairs(instances) do
+      -- If component wasn't rendered this frame, remove it completely
+      if instance.lastRenderFrame != frame then
+        instances[instanceId] = nil
+      end
+    end
+
+    frame += 1
+  end
+
+  return renderRoot, useState, createContext, useContext, useMemo
+end
+
+-- Usage:
+-- local renderRoot, useState, createContext, useContext, useMemo = __initReact()
+
+:: label.qoi
+b64$cW9pZgAAAeAAAAEOBAH9-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39
+-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39
+-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39
+-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39
+-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39
+-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39
+-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39
+-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39
+-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39
+-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39
+-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39
+-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39
+-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39
+-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39
+-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39
+-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39
+-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39
+-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39
+-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39
+-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39
+-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39
+-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39
+-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39
+-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39
+-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39
+-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39
+-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39
+-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39
+-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39
+-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39
+-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39
+-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39
+-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39
+-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39
+-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39
+-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39
+-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-f39-dMA
+AAAAAAAAAQ==
+:: [eoc]
