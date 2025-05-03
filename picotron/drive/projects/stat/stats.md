@@ -107,6 +107,12 @@ This file attempts to document all `stat()` codes, enriching the official docume
 - `stat(321)` (undocumented)
   - Returns length of video capture in frames while recording, and `0.0` otherwise.
   - See [code references](#321-search)
+- `stat(322)` (undocumented)
+  - Returns `1.0` during audio capture, and `0.0` otherwise.
+  - Audio capture can be started and stopped with `CTRL+0`.
+  - Audio files are saved in an unknown format with a `.raw` extension however.
+  - Found by `@_maxine_` on Discord [here](https://discord.com/channels/1068899948592107540/1358151110917099785/1366298848590434376).
+  - See [code references](#321-search)
 - `stat(330)` (undocumented)
   - Returns `1.0` when Picotron's battery saver is active, and `0.0` otherwise.
   - It does not simply reflect the `battery_saver` property of the system settings file at `appdata/system/settings.pod`. Rather, it seems to reflects whether the actual functionality of the battery saver feature is currently active.
