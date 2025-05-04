@@ -31,7 +31,7 @@ local ff = ls("/desktop")
 if (not ff or #ff == 0 or stat(317) > 0) then
 	mkdir ("/desktop") -- just in case
 	cp("/system/misc/drive.loc", "/desktop/drive.loc")
-	cp("/system/misc/readme.txt", "/desktop/readme.txt")
+	if ((stat(317) & 0x2) == 0) cp("/system/misc/readme.txt", "/desktop/readme.txt") -- no readme for exports
 end
 
 -- mend drive shortcut (could save over it by accident in 0.1.0b)
@@ -62,6 +62,33 @@ if (stat(315) > 0) then
 	create_process(stat(316))
 	return
 end
+
+
+------------------------------------------------------------------------------------------------
+-- set host window icon
+------------------------------------------------------------------------------------------------
+
+
+
+if (stat(317) & 0x2) > 0 then
+	-- export
+	local meta = _fetch_metadata_from_file("/cart/.info.pod") or {}
+
+	-- matches preference in export.lua
+	local icon = meta.export_icon
+	if (type(icon) ~= "userdata" or icon:width() ~= 16 or icon:height() ~= 16) icon = meta.icon
+	if (type(icon) ~= "userdata" or icon:width() ~= 16 or icon:height() ~= 16) then
+		-- default: pink/purple cart icon
+		icon = unpod("b64:bHo0ADMAAAA-AAAA-gdweHUAQyAQEATwAPEB1xEHvxIHEQe_BADwCNcRF48OJxEXjRcNEbcNAQABvQEQwfAD")
+	end
+	_set_host_window_icon(icon)
+else
+	-- window icon shouldn't be too loud; competes with picotron menu button in ubuntu (icon shown top left, right above it)
+	-- so maybe default grey icon ramp isn't so bad
+	local meta = _fetch_metadata_from_file("/system/.info.pod") or {}
+	_set_host_window_icon(meta.icon)
+end
+
 
 ------------------------------------------------------------------------------------------------
 --   hold down lctrl + rctrl on boot to start with a minimal terminal setup
@@ -118,6 +145,7 @@ end
 
 local sdat = fetch"/appdata/system/settings.pod"
 local wallpaper = (sdat and sdat.wallpaper) or "/system/wallpapers/pattern.p64"
+if ((stat(317) & 0x1) ~= 0) wallpaper = nil -- placeholder: exports do not observe wallpaper to avoid exported runtime/cart mismatch in exp/shared
 if (not fstat(wallpaper)) wallpaper = "/system/wallpapers/pattern.p64"
 
 -- start in desktop workspace (so show_in_workspace = true)
@@ -143,11 +171,6 @@ end
 
 mount("/system/util/dir.lua","/system/util/ls.lua")   
 mount("/system/util/edit.lua","/system/util/open.lua") 
-
--- populate tooltray with widgets
-
-create_process("/system/misc/load_widgets.lua")
-
 
 
 if stat(317) > 0 then 
@@ -179,8 +202,10 @@ if stat(317) > 0 then
 
 elseif fstat("/appdata/system/startup.lua") then 
 
-	-- userland startup
+	-- populate tooltray with widgets
+	create_process("/system/misc/load_widgets.lua")
 
+	-- userland startup
 	create_process("/appdata/system/startup.lua")
 
 end

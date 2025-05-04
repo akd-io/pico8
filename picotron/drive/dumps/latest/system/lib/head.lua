@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2025-04-27 15:57:53",modified="2025-04-27 15:57:53",revision=0]]
+--[[pod_format="raw",created="2025-04-27 16:56:35",modified="2025-04-27 16:56:35",revision=0]]
 -- **** head.lua should not have any metadata; breaks load during bootstrapping // to do: why? ****
 --[[
 
@@ -264,7 +264,7 @@ function create_process(prog_name_p, env_patch, do_debug)
 
 	------------------------------------------ locate metadata ------------------------------------------
 
-	-- look for metadata inside p64 / folder
+	-- look for metadata inside p64 / folder  (never use metadata from a single .lua file in this context)
 	local metadata = _fetch_metadata_from_file(prog_name.."/.info.pod")
 
 	-- special case: co-running /ram/cart from terminal
@@ -273,7 +273,8 @@ function create_process(prog_name_p, env_patch, do_debug)
 		metadata = _fetch_metadata_from_file(fn2)
 	end
 	
-	-- maybe running main.lua directly inside a cart (or /ram/cart/main.lua)
+	-- running main.lua directly from inside a cart (including /ram/cart/main.lua on CTRL-R)
+	-- should also be given sandbox attributes of parent directory
 	if (not metadata and prog_name:basename() == "main.lua") then
 		metadata = _fetch_metadata_from_file(boot_file:dirname().."/.info.pod")
 	end
@@ -374,16 +375,17 @@ function create_process(prog_name_p, env_patch, do_debug)
 
 		-- essential read access
 		add(new_env.fileview, {location = "/system", mode = "R"}) -- read libraries and resources
-		add(new_env.fileview, {location = prog_name, mode = "R"}) -- cart/program can read itself (to do: allow running main.lua directly? probably no need)
-		add(new_env.fileview, {location = "/ram/shared", mode = "R"}) -- can always read /ram/shared
 
-		-- deleteme -- shouldn't need to read system settings
---		add(new_env.fileview, {location = "/appdata/system", mode = "R"}) -- read settings
+--		add(new_env.fileview, {location = prog_name, mode = "R"}) -- cart/program can read itself (deleteme -- replaced with more general boot_file:dirname() rule)
 
-		-- partial view of processes.pod
+		-- cart/program can read itself; includes running main.lua directly
+		-- note: this never happens for stand-alone .lua files as it is not possible to sandbox them separately 
+		-- (only parent .info.pod is observed in this context)
+		add(new_env.fileview, {location = boot_file:dirname(), mode = "R"}) 
+
+
+		-- partial view of processes.pod and /desktop metadata (only icon x,y available; ref: bbs://desktop_pet.p64)
 		add(new_env.fileview, {location = "/ram/system/processes.pod", mode = "X"})
-
-		-- partial view of /desktop metadata (only icon x,y available; ref: bbs://desktop_pet.p64)
 		add(new_env.fileview, {location = "/desktop/.info.pod", mode = "X"})
 		
 		-- can read/write /ram/cart 
@@ -396,14 +398,15 @@ function create_process(prog_name_p, env_patch, do_debug)
 		-- add(new_env.fileview, {location = "/ram/cart", mode = "RW"})
 
 		-- but can read it if running /ram/cart/main.lua (e.g. using bbs dummy id during dev)
-
-		if (running_pwc) add(new_env.fileview, {location = "/ram/cart", mode = "R"})
+		-- update: handled by {location = boot_file:dirname(), mode = "R"} above. deleteme
+		-- if (running_pwc) add(new_env.fileview, {location = "/ram/cart", mode = "R"})
 
 		-- (dev) read/write mounted bbs:// cart while sandboxed
 		-- deleteme -- only needed in kernal space in fs.lua
 		--add(new_env.fileview, {location = "/ram/bbs/"..new_env.bbs_id..".p64.png", mode = "RW"})
 
 		-- any carts can read/write /appdata/shared \m/
+		add(new_env.fileview, {location = "/ram/shared", mode = "R"})
 		add(new_env.fileview, {location = "/appdata/shared", mode = "RW"})
 
 		-- any other /appdata path should be mapped to /appdata/bbs/bbs_id
@@ -883,6 +886,8 @@ end
 	function include(filename)
 		local filename = fullpath(filename)
 		local src = fetch(filename)
+
+		if (not filename) return nil
 
 		-- temporary safety: each file can only be included up to 256 times
 		-- to do: why do recursive includes cause a system-level out of memory before a process memory error?

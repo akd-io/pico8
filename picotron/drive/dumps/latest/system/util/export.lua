@@ -25,6 +25,7 @@ end
 
 outfile = fullpath(outfile)
 
+
 ext = type(outfile) == "string" and outfile:ext() or ""
 
 supported_ext = {
@@ -33,7 +34,7 @@ supported_ext = {
 	["bin"] = true
 }
 
-if (not outfile or not supported_ext[ext]) then
+if (type(outfile) ~= "string" or not supported_ext[ext]) then
 	print("export usage: export [outfile]")
 	print("outfile format is depermined by extension:")
 	print("  .p64.png\t png cartridge (bbs format)")
@@ -41,6 +42,8 @@ if (not outfile or not supported_ext[ext]) then
 	print("  .bin    \t windows, linux and mac binaries")
 	exit()
 end
+
+
 
 -- export .p64.png -- just copy
 if (ext == "p64.png") then
@@ -51,15 +54,69 @@ if (ext == "p64.png") then
 end
 
 
+-- prepare cart for exporting
+
+
+local cartfile = "/ram/expcart.p64.rom" -- outfile.."/cart.p64.rom"
+
+if (ext == "bin" or ext == "html") then
+	rm(cartfile) -- safety; to do: shouldn't be necessary
+	-- save the cart to export in .rom format
+	cp(src_cart, cartfile)
+	-- strip metadata
+	store_metadata(cartfile, {sandbox=false})
+end
+
+
+-- export binary players
+if (ext == "bin") then
+	mkdir(outfile) -- foo.bin
+
+	local meta = fetch_metadata(src_cart) or {}
+
+	local icon = meta.export_icon
+	if (type(icon) ~= "userdata" or icon:width() ~= 16 or icon:height() ~= 16) icon = meta.icon
+	if (type(icon) ~= "userdata" or icon:width() ~= 16 or icon:height() ~= 16) then
+		-- default: pink/purple cart icon
+		icon = unpod("b64:bHo0ADMAAAA-AAAA-gdweHUAQyAQEATwAPEB1xEHvxIHEQe_BADwCNcRF48OJxEXjRcNEbcNAQABvQEQwfAD")
+	end
+
+	--[[
+		export_home is optional -- used when exported cartridge should have its own separate home directory, 
+		with separate drive (and thus a separate /desktop, /appdata/system/settings.pod etc).
+
+		export_home should contain only a-z,_ and be not too long. resulting home will be something like:
+			~/.lexaloffle/Picotron/exp/foo
+		when no export_home is given in the cart metadata, exports can read/write other exports' data at:
+			~/.lexaloffle/Picotron/exp/shared
+	]]
+
+	print("exporting "..outfile..".. ")
+	flip() -- show message; might take a few seconds to complete
+
+	send_message(2, {
+		event = "export",
+		cartfile = cartfile,
+		shortname = outfile:basename():sub(1,-5),
+		outfile = outfile,
+		icon = icon,
+		export_home = meta.export_home or ""
+	})
+
+	for i=1,60 do flip() end
+
+	print("ok") -- to do: is lie; have no idea what the result was / is going to be
+	
+	exit()
+end
+
+
 --- html
 
--- make sure it is .p64.rom
-rm("/ram/expcart.p64.rom") -- safety; to do: shouldn't be necessary
-cp(src_cart, "/ram/expcart.p64.rom")
 
-dat = fetch"/ram/expcart.p64.rom"
+dat = fetch(cartfile) -- .p64.rom raw data
 
-local shell_str = fetch("/system/exp/exp_html.p64.rom/shell.html")
+local shell_str = fetch("/ram/system/exp/exp_html.p64.rom/shell.html")
 
 -- grab metadata
 
@@ -107,7 +164,10 @@ end
 add(strs,"\"")
 add(strs,";\n")
 
-local player_str = fetch("/system/exp/exp_html.p64.rom/picotron_player.js")
+export_home = meta.export_home or ""
+add(strs, "export_home_str = \""..export_home.."\";\n")
+
+local player_str = fetch("/ram/system/exp/exp_html.p64.rom/picotron_player.js")
 add(strs, player_str)
 
 picotron_js = table.concat(strs)

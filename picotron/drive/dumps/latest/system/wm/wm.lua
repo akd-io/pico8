@@ -426,6 +426,7 @@ function _init()
 --	poke(0x4002, (@0x4002)+3)
 --	poke(0x4004, 1) -- offset_y
 
+
 	----------------------------------------------------------------------------------
 
 
@@ -2379,16 +2380,18 @@ function _update()
 	else
 		
 		-- 3 minutes; to do: store in settings.pod
-		if ((time() > last_input_activity_t + 180 or test_screensaver_t0) and not screensaver_proc_id) 
-		then
-			-- printh(pod(sdat))
-			if (sdat and sdat.screensaver) then
-				-- note: program doesn't need to know it is a screensaver; just kill process on activity event
-				screensaver_proc_id = create_process(sdat.screensaver, 
-					{screensaver = true, window_attribs = {workspace="current", autoclose = true}})
-				test_screensaver_t0 = time() -- abuse same mechanism to ignore interrupts for first half second
-			else
-				last_input_activity_t = time() -- don't check again for another 3 minutes
+		if (stat(317) & 0x1) == 0 then -- placeholder: no screensaver for exports / bbs player (older exported runtimes can end up running newer screensavers)
+			if ((time() > last_input_activity_t + 180 or test_screensaver_t0) and not screensaver_proc_id) 
+			then
+				-- printh(pod(sdat))
+				if (sdat and sdat.screensaver) then
+					-- note: program doesn't need to know it is a screensaver; just kill process on activity event
+					screensaver_proc_id = create_process(sdat.screensaver, 
+						{screensaver = true, window_attribs = {workspace="current", autoclose = true}})
+					test_screensaver_t0 = time() -- abuse same mechanism to ignore interrupts for first half second
+				else
+					last_input_activity_t = time() -- don't check again for another 3 minutes
+				end
 			end
 		end
 	end
@@ -2489,12 +2492,15 @@ function _update()
 	-- (so they can save their files to /ram/cart before the running program picks them up)
 	if (key("ctrl") and dkeyp("r")) then
 
-		if stat(317) > 0 and awin and (awin.player_cart) then
-			-- exported player or bbs player: reset cart
-			local win = get_active_window()
-			send_message(2, {event="restart_process", proc_id = win.proc_id})
-			win.paused = false
-			win.resetting = true -- don't kill process in win:update() while resetting
+		if stat(317) > 0 then
+			-- exported player or bbs player: reset cart if it is active
+			if awin and (awin.player_cart) then
+				local win = get_active_window()
+				send_message(2, {event="restart_process", proc_id = win.proc_id})
+				win.paused = false
+				win.resetting = true -- don't kill process in win:update() while resetting
+			end
+			-- otherwise nothing happens
 		else
 			-- run / reset pwc
 			run_pwc("", key("lshift"))
@@ -3335,7 +3341,13 @@ on_event("set_window", function(msg)
 	end
 
 	-- sign of life from process -- proof that finished resetting
-	win.resetting = nil
+	if (win.resetting) then
+		-- give back focus
+		last_active_window = nil
+		send_message(win.proc_id, {event="gained_focus"}) -- otherwise can e.g. lose controller input (see events, which keeps track of focus)
+		win.resetting = nil
+	end
+
 	
 	-- not here -- messes up dragging
 	--generate_head_gui()

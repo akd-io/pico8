@@ -126,6 +126,41 @@ on_event("mount_host_desktop",
 	end
 )
 
+on_event("export",
+
+	function(msg)
+		-- cart info in a format exporter can read easily
+
+		if ((msg._flags & 0x1) == 0) return -- invoked by a trusted system app (/system/tools/export.lua)
+
+		memset(0,0,4096)
+
+		poke(0x000, ord(msg.shortname, 1, min(#msg.shortname,255)))
+		poke(0x100, ord(msg.outfile, 1, min(#msg.outfile,255)))
+		poke(0x200, ord(msg.cartfile, 1, min(#msg.cartfile,255)))
+		if (type(msg.export_home) == "string") then
+			poke(0x300, ord(msg.export_home, 1, min(#msg.export_home,255)))
+		end
+
+		-- current active palette for icon: use wm palette
+		for i=0,255 do
+			poke(0x400+i, _ppeek(3,0x5000+i))
+		end
+
+		if (msg.icon) then 
+			-- icon width, height
+			poke(0x500, msg.icon:width(), msg.icon:height()) -- only 16x16 supported in 0.2 though
+			poke(0x800, msg.icon:get(0,0,256))			
+		else
+			-- to do: default icon here
+			
+		end
+
+		_signal(42)
+
+	end
+
+)
 
 
 
