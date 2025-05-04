@@ -90,11 +90,13 @@ do
 	
 	local function get_bbs_host()
 		-- bbs web player
---		if ((stat(317) & 0x3) == 0x1) return "http://localhost" -- dev test
-		if ((stat(317) & 0x3) == 0x1) return "https://www.lexaloffle.com" 
+		if ((stat(317) & 0x3) == 0x1) then
+			if (stat(152) == "localhost") return "http://localhost" -- dev
+			return "https://www.lexaloffle.com"
+		end
 
 		-- any other exports: bbs:// is not supported (to do: explicit error codepath -- just disable bbs:// ? )		
-		if (stat(317) > 0) return "" 
+		if ((stat(317) & 0x1) > 0) return ""
 
 		-- binaries: main server
 		return "https://www.lexaloffle.com"

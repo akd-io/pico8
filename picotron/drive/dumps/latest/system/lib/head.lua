@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2025-04-27 16:56:35",modified="2025-04-27 16:56:35",revision=0]]
+--[[pod_format="raw",created="2025-04-27 16:59:00",modified="2025-04-27 16:59:00",revision=0]]
 -- **** head.lua should not have any metadata; breaks load during bootstrapping // to do: why? ****
 --[[
 
@@ -939,7 +939,8 @@ end
 	-- ** this is the only way to release mapped userdata for collection **
 	-- ** e.g. memmapping a userdata over an old one is not sufficient to free it for collection **
 	function unmap(ud, addr, len)
-		if _unmap_ram(ud, addr, len) then
+		if _unmap_ram(ud, addr, len) -- len defaults to full userdata length
+		then
 			-- nothing left pointing into Lua object -> can release reference and be garbage collected 	
 			userdata_ref[ud] = nil
 		end

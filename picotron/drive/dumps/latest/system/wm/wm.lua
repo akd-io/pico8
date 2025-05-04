@@ -153,7 +153,8 @@ function generate_head_gui()
 			show_toolbar, show_infobar = false, false
 		end
 
-
+		-- never show toolbar when export is locked in fullscreen mode
+		if (is_locked_in_fullscreen()) show_toolbar = false
 
 		if (show_toolbar) then
 			toolbar_y_target = max(toolbar_y_target, 0)
@@ -802,6 +803,7 @@ on_event("toggle_pause_menu", function(msg)
 		send_message(win.proc_id, {event = "unpause"})
 	else
 		win.paused = true
+		win.pmenu_mode = nil 
 		generate_paused_menu(win)
 		send_message(win.proc_id, {event = "pause"})
 	end
@@ -811,15 +813,65 @@ on_event("close_pause_menu", function(msg)
 	local win = get_active_window()
 	if (win.paused) then -- only happens for fullscreen apps
 		win.paused = false
+		win.pmenu_mode = nil 
 		send_message(win.proc_id, {event = "unpause"})
 		send_message(win.proc_id, {event = "update_menu_labels"}) -- might as well; sometimes labels change as a result of selected item
 	end
 end)
 
+--[[
+	fullscreen binary exports:
+		- have an Exit option in pause menu that quits to Host OS
+		- can not navigate away from the fullscreen workspace they are running in
+		-> users who know how can't sneak into desktop and view source code etc
+
+	// to disable this behaviour for exports, set the window's can_escape_fullscreen attribute:
+	window{can_escape_fullscreen = true}
+
+]]
+
+function is_fullscreen_export(win)
+	local win = win or get_active_window()
+	if (not win) return false
+	return win.fullscreen and win.player_cart and (stat(317)&0x3) == 0x3 and not win.can_escape_fullscreen
+end
+
+function is_locked_in_fullscreen()
+	return is_fullscreen_export(get_active_window())
+end
+
 
 
 function generate_paused_menu(win)
 	win.pmenu = {}
+
+	_signal(23) -- block buttons
+
+	if (win.pmenu_mode == "options") then
+
+		add(win.pmenu,{
+			label  = function(self) return (sdat.mute_audio and "Sound: Off" or "Sound: On") end,
+			action = function(b) send_message(pid(), {event = "toggle_mute"}) end
+		})
+
+		add(win.pmenu,{
+			label  = function(self) return (sdat.fullscreen and "Fullscreen: On" or "Fullscreen: Off") end,
+			action = function(b)  
+				sdat.fullscreen = not sdat.fullscreen
+				store("/appdata/system/settings.pod", sdat)
+			end
+		})
+
+		add(win.pmenu,{
+			label = "Back",
+			action = function() win.pmenu_mode = nil generate_paused_menu(win) end
+		})
+
+		win.pmenu.ii = 1
+
+		return
+	end
+
 
 	-- let app know it should update menu items (the ones that are functions)
 	-- to do: how to get results back in time to display menu? see last value for a moment
@@ -856,12 +908,27 @@ function generate_paused_menu(win)
 	}) 
 ]]
 
+
+	add(win.pmenu,{
+			label = "Options",
+			action = function() win.pmenu_mode = "options" generate_paused_menu(win) end
+		})
+
+--[[
 	-- to do: options menu. for now, just sound
 	add(win.pmenu,{
 		label  = function(self) return (sdat.mute_audio and "Sound: Off" or "Sound: On") end,
 		action = function(b) send_message(pid(), {event = "toggle_mute"}) end
 	})
 
+	add(win.pmenu,{
+		label  = function(self) return (sdat.fullscreen and "Fullscreen: On" or "Fullscreen: Off") end,
+		action = function(b)  
+			sdat.fullscreen = not sdat.fullscreen
+			store("/appdata/system/settings.pod", sdat)
+		end
+	})
+]]
 	add(win.pmenu, {label = "Reset Cartridge", action = function() 
 
 		if (haltable_proc_id == win.proc_id) then
@@ -885,13 +952,17 @@ function generate_paused_menu(win)
 	-- to do: can the process that launched a process have a say in its pause menu?
 	-- add(win.pmenu, {label = "Exit to Splore", action = function() end})
 
-	-- useful when running locally -- often just want to close the whole workspace when done running a fullscreen cart
-	-- (doesn't happen for carts running via ctrl+r (just press ESC), exported carts, or carts running on bbs html player
-	if haltable_proc_id ~= win.proc_id and (stat(317) & 0x2) == 0 then -- no Exit for (web) export; [currently] doesn't make sense
---	if haltable_proc_id ~= win.proc_id then -- to do: include Exit in exports / bbs player -- might be launched as part of a bundle
-		add(win.pmenu, {label = "Exit", action = function()
-			if (haltable_proc_id == win.proc_id) then
-				-- halt program and enable command prompt (update: never happens -- menu item is not added in that case)
+	local has_exit = true -- normally there is "Exit" at end of pause menu, except..
+	if (haltable_proc_id == win.proc_id) has_exit = false    -- running /ram/cart via ctrl+r; just press escape instead
+	if (win.player_cart and stat(318) == 1) has_exit = false -- running entry point cart / bbs cart under web (nothing to exit to)
+	
+	if (has_exit) then
+		add(win.pmenu, {label = "Exit Cartridge", action = function()
+			if is_fullscreen_export(win) and stat(318) == 0 then
+				-- 0.2.0b playing the entry point cart in a binary export -> quit to host OS
+				send_message(2, {event="shutdown"})
+			elseif (haltable_proc_id == win.proc_id) then
+				-- halt program and enable command prompt
 				win.paused = false
 				send_message(win.proc_id, {event = "unpause"})
 				send_message(haltable_proc_id, {event="halt"})
@@ -2773,7 +2844,7 @@ function _update()
 	end
 
 	-- keyboard control
-	if (key("alt")) then
+	if (key("alt") and not is_locked_in_fullscreen()) then
 		if (dkeyp("left")) then set_workspace(workspace_index - 1) used_alt_navigation = true end
 		if (dkeyp("right")) then set_workspace(workspace_index + 1) used_alt_navigation = true end
 	end
@@ -3246,6 +3317,9 @@ on_event("set_window", function(msg)
 			set_workspace(workspace_index1)
 		end
 
+		-- 8.a: make sure window never goes above toolbar; hard to close it and is rendered overlapping in tooltray area
+		win.y = max(24, win.y)
+
 		-- 9. let window know where it is to start with
 		-- (e.g. might want to preserve original window position)
 		send_message(win.proc_id, {event="move", x = win.x, y = win.y, dx = 0, dy = 0})
@@ -3407,8 +3481,6 @@ on_event("save_open_locations_metadata",
 		save_open_locations_metadata()
 	end
 )
-
-
 
 
 
@@ -3801,10 +3873,18 @@ end
 
 function toggle_picotron_menu()
 
+	-- already open
 	if (modal_gui and modal_gui.child[2] and modal_gui.child[2].is_pictron_menu) then
 		modal_gui = nil
 		return
 	end
+
+	-- never open in fullscreen exports
+	if (is_locked_in_fullscreen()) then
+		modal_gui = nil
+		return
+	end
+
 
 	
 	----------------------------------------

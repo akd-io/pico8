@@ -5,19 +5,19 @@ version 2
 :: gfx/delme2/
 :: gfx/delme2/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTAyLTExIDA4OjAyOjIwIixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjo1NzoxOCIsc3RvcmVkPSIyMDIzLTAyLTExIDA4OjAyOjIwIl1d
+NC0yNyAxNjo1OTowOCIsc3RvcmVkPSIyMDIzLTAyLTExIDA4OjAyOjIwIl1d
 :: gfx/delme/
 :: gfx/delme/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTExIDA3OjU0OjA2Iixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjo1NzoxOCIsc3RvcmVkPSIyMDIzLTU0LTExIDA3OjU0OjA2Il1d
+NC0yNyAxNjo1OTowOCIsc3RvcmVkPSIyMDIzLTU0LTExIDA3OjU0OjA2Il1d
 :: gfx/ha/
 :: gfx/ha/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTA5LTExIDA4OjA5OjQ0Iixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjo1NzoxOCIsc3RvcmVkPSIyMDIzLTA5LTExIDA4OjA5OjQ0Il1d
+NC0yNyAxNjo1OTowOCIsc3RvcmVkPSIyMDIzLTA5LTExIDA4OjA5OjQ0Il1d
 :: gfx/zxc/
 :: gfx/zxc/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTExIDA3OjQxOjQxIixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjo1NzoxOCIsc3RvcmVkPSIyMDIzLTQxLTExIDA3OjQxOjQxIl1d
+NC0yNyAxNjo1OTowOCIsc3RvcmVkPSIyMDIzLTQxLTExIDA3OjQxOjQxIl1d
 :: gfx/0.gfx
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTIwIDA2OjM4OjU2Iixtb2RpZmllZD0iMjAyNS0w
 Mi0xNSAwMjo0OToyOCIscmV2aXNpb249MzEwMSxzdG9yZWQ9IjIwMjMtMzQtMDkgMTk6MzQ6NTMi
@@ -49,7 +49,7 @@ BwQAL1eQRwAuj1eQBwAHAAcgSQAODvIADzEA----------------------------------------
 ------------------------QlBtPTh9fQ==
 :: gfx/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTExLTE1IDA3OjExOjMwIixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjo1NzoxOCIsc3RvcmVkPSIyMDIzLTExLTE1IDA3OjExOjMwIl1d
+NC0yNyAxNjo1OTowOCIsc3RvcmVkPSIyMDIzLTExLTE1IDA3OjExOjMwIl1d
 :: map/
 :: map/map0.map
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Iixtb2RpZmllZD0iMjAyNC0w
@@ -58,7 +58,7 @@ PXVzZXJkYXRhKCJpMTYiLDE2AwAvIjABAP---__hIikscGFuX3g9MAgA8gZ5PTAsc2NhbGU9MSx0
 aWxlX2g9MTYKAG93PTE2fSxLBP----84UDE2fX19
 :: map/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Iixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjo1NzoxOCIsc3RvcmVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Il1d
+NC0yNyAxNjo1OTowOCIsc3RvcmVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Il1d
 :: sfx/
 :: sfx/sfx0.sfx
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Iixtb2RpZmllZD0iMjAyNC0w
@@ -70,7 +70,7 @@ IAEgAfAAAhACDBABIA8hIAEwD0Dwww8oD--wxg-4Cg--D4AP9w8NAfAJARAGDDAA-zkf-wEA3L-4
 D0AADUD--7DwcAoA--9kH-8BAJdQ-----x8=
 :: sfx/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Iixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjo1NzoxOCIsc3RvcmVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Il1d
+NC0yNyAxNjo1OTowOCIsc3RvcmVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Il1d
 :: desktop.lua
 --[[pod_format="raw",created="2023-10-04 15:13:41",modified="2025-02-15 02:49:28",revision=3194,stored="2023-21-29 09:21:19"]]
 -- mode: desktop
@@ -326,18 +326,19 @@ local function create_file_item(parent, ff, x, y)
 		
 		if (self.finfo.selected)  then
 		
-			-- shadow colour
-			local shadow_col = theme"desktop_shadow"
-			pal(7,shadow_col) pal(6,shadow_col) pal(13,shadow_col) pal(1,shadow_col) 
-			--fillp(0xf0f0)
-			if (#g==1) spr(self.finfo.icon,sprx,spry)
-			pal()fillp()
+			-- draw shadow when single item in group
+
+			if (#g==1) then
+				memmap(icon_pal, 0x8000)
+				local shadow_col = theme"desktop_shadow"
+				pal(7,shadow_col) pal(6,shadow_col) pal(13,shadow_col) pal(1,shadow_col) 
+				spr(self.finfo.icon,sprx,spry)
+				unmap(icon_pal, 0x8000)
+			end
+
 			sprx += 1
 			spry -= 1
 			
-			-- invert
-			-- pal(7,1) pal(1,7)
-			--rectfill(0,0,self.width-1,self.height-1,10)
 		end
 		
 		-- pop up 1px on hover (but not for label hover)
@@ -353,7 +354,7 @@ local function create_file_item(parent, ff, x, y)
 	
 		
 		if (not dragging_files or not self.finfo.selected) then
-			
+			memmap(icon_pal, 0x8000)
 			if (buried) then
 				pal(7, theme"icon1")
 				pal(6,theme"icon2")
@@ -366,11 +367,10 @@ local function create_file_item(parent, ff, x, y)
 				pal(1, theme"icon3")
 			end
 			
-			
 			spr(self.finfo.icon,sprx,spry)
+			unmap(icon_pal, 0x8000)
 		end
 		
-		pal()
 		
 		--local str = "\014"..self.filename
 		poke(0x5f36, 0x80) -- turn on wrap to clip_right
@@ -1632,16 +1632,21 @@ local function create_file_item(parent, ff, x, y)
 		end
 		]]
 		
+		-- draw grid
+
+		
+
 		if (not dragging_files or not self.finfo.selected) then
+			memmap(icon_pal, 0x8000)
 			pal(7, theme"icon0")
 			pal(6,theme"icon1")
 			pal(13, theme"icon2")
 			pal(1, theme"icon3")
 			
 			spr(self.finfo.icon,sprx,spry)
+			unmap(icon_pal, 0x8000)
 		end
 		
-		pal()
 		
 		--local str = "\014"..self.filename
 		poke(0x5f36, 0x80) -- turn on wrap to clip_right
@@ -2801,8 +2806,13 @@ include "drop.lua"
 include "intention.lua"
 -----------------------
 
+
 function _init()
 
+	for i=1,63 do pal(i,theme"icon2") end -- to do: needs to update when theme changes
+	icon_pal = userdata("u8",4096)
+	icon_pal:peek(0x8000)
+	pal()
 	
 	config = fetch"/appdata/system/filenav.pod" or {}
 	on_event("modified:/appdata/system/filenav.pod", function()	
@@ -3150,7 +3160,7 @@ MGQwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMDEwMTBkMGQwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMGQw
 MTAxMGQwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMGQwZDAxMDEwZDBkMDEwMTAxMDEwMTAxMDEwMTAx
 MDEwZDBkMDEwMTBkMGQwMTAxMDEwMTA3MDcwNzA3MDcwMTBkMGQwMTAxMGQwZDAxMDEwMTAxMDcw
 NzA3MDcwNzAxMGQwZDAxMDEwZDBkMDEwMTAxMDEwNzA3MDcwNzA3MDEwZDAxMDAwMTAxMDEwMTAx
-MDEwMTAxMDEwMTAxMDEwMTAxMDAwMCIpLG1vZGlmaWVkPSIyMDI1LTA0LTI3IDE2OjU3OjE4Iixu
+MDEwMTAxMDEwMTAxMDEwMTAxMDAwMCIpLG1vZGlmaWVkPSIyMDI1LTA0LTI3IDE2OjU5OjA4Iixu
 b3Rlcz0iKGMpIExleGFsb2ZmbGUgR2FtZXMgTExQIixydW50aW1lPTEzLHN0b3JlZD0iMjAyNC0w
 My0yNCAxNTozNTo1NiIsdGl0bGU9IlBpY290cm9uIEZpbGUgTmF2aWdhdG9yIix2ZXJzaW9uPSIw
 LjEuMWQiLHdvcmtzcGFjZXM9e3tsb2NhdGlvbj0ibWFpbi5sdWEjMSIsd29ya3NwYWNlX2luZGV4

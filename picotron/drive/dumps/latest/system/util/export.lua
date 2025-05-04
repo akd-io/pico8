@@ -13,6 +13,22 @@ cd(env().path)
 src_cart = "/ram/cart" -- to do: allow export something else
 
 local outfile = nil
+local extras_file = nil
+
+local index = 1
+while index <= #env().argv do
+	local val = env().argv[index]
+	if (val[1] == "-") then
+		-- some option
+		if (val=="-e") then
+			extras_file = env().argv[index + 1]
+			index += 1
+		end
+	else
+		outfile = val
+	end
+	index += 1
+end
 
 for i=1,#env().argv do
 	local val = env().argv[i]
@@ -56,20 +72,34 @@ end
 
 -- prepare cart for exporting
 
-
-local cartfile = "/ram/expcart.p64.rom" -- outfile.."/cart.p64.rom"
+local cartfile = "/ram/expcart.p64.rom"
 
 if (ext == "bin" or ext == "html") then
+	print(string.format("exporting %s", outfile))
+	flip()
+
 	rm(cartfile) -- safety; to do: shouldn't be necessary
 	-- save the cart to export in .rom format
 	cp(src_cart, cartfile)
-	-- strip metadata
+	-- strip sandbox metadata -- avoid zoo of edge cases 
 	store_metadata(cartfile, {sandbox=false})
+
+	_,cartfile_size = fstat(cartfile)
+	print("\fsrom size: "..cartfile_size.." bytes")
+	flip()
 end
 
 
 -- export binary players
 if (ext == "bin") then
+
+	if (cartfile_size >= 1024*1024*32) then
+		print("\f8** too big! **")
+		print("\f6max binary export rom size: 33,554,432 bytes")
+		exit()
+	end
+
+
 	mkdir(outfile) -- foo.bin
 
 	local meta = fetch_metadata(src_cart) or {}
@@ -81,6 +111,14 @@ if (ext == "bin") then
 		icon = unpod("b64:bHo0ADMAAAA-AAAA-gdweHUAQyAQEATwAPEB1xEHvxIHEQe_BADwCNcRF48OJxEXjRcNEbcNAQABvQEQwfAD")
 	end
 
+	-- extras
+	rm("/ram/exp_extras")
+	mkdir("/ram/exp_extras")
+	if (fstat(extras_file)) then
+		cp(extras_file, "/ram/exp_extras")
+	end
+
+
 	--[[
 		export_home is optional -- used when exported cartridge should have its own separate home directory, 
 		with separate drive (and thus a separate /desktop, /appdata/system/settings.pod etc).
@@ -91,8 +129,8 @@ if (ext == "bin") then
 			~/.lexaloffle/Picotron/exp/shared
 	]]
 
-	print("exporting "..outfile..".. ")
-	flip() -- show message; might take a few seconds to complete
+	print("\fgplease wait...")
+	flip()
 
 	send_message(2, {
 		event = "export",
@@ -105,7 +143,8 @@ if (ext == "bin") then
 
 	for i=1,60 do flip() end
 
-	print("ok") -- to do: is lie; have no idea what the result was / is going to be
+	print("\fb[ok]")
+--	print("ok") -- to do: is lie; have no idea what the result was / is going to be
 	
 	exit()
 end
@@ -113,6 +152,11 @@ end
 
 --- html
 
+if (cartfile_size >= 1024*1024*8) then
+	print("\f8** too big! **")
+	print("\f6max html export rom size: 8,388,608 bytes")
+	exit()
+end
 
 dat = fetch(cartfile) -- .p64.rom raw data
 
@@ -189,4 +233,6 @@ store(outfile,
 	{metadata_format="none"})
 
 
-print("wrote: "..outfile)
+print("\fb[ok]")
+
+

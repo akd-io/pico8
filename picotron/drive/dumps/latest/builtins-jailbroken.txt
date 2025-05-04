@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2025-04-27 16:57:25",modified="2025-04-27 16:57:25",revision=0]]
+--[[pod_format="raw",created="2025-04-27 16:59:15",modified="2025-04-27 16:59:15",revision=0]]
 {
   "_VERSION" = "Lua 5.4",
   "kernal_path" = "/projects/builtins/gfx",
@@ -49,6 +49,7 @@
   "_set_draw_target" = function (...),
   "_set_host_clipboard_text" = function (...),
   "_set_host_window_icon" = function (...),
+  "_set_host_window_title" = function (...),
   "_set_spr" = function (...),
   "_set_userland_clipboard_text" = function (...),
   "_signal" = function (...),

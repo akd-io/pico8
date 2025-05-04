@@ -72,7 +72,7 @@ end
 
 if (stat(317) & 0x2) > 0 then
 	-- export
-	local meta = _fetch_metadata_from_file("/cart/.info.pod") or {}
+	local meta = _fetch_metadata_from_file("/ram/expcart/.info.pod") or {}
 
 	-- matches preference in export.lua
 	local icon = meta.export_icon
@@ -81,12 +81,17 @@ if (stat(317) & 0x2) > 0 then
 		-- default: pink/purple cart icon
 		icon = unpod("b64:bHo0ADMAAAA-AAAA-gdweHUAQyAQEATwAPEB1xEHvxIHEQe_BADwCNcRF48OJxEXjRcNEbcNAQABvQEQwfAD")
 	end
+
+	-- set icon and title
 	_set_host_window_icon(icon)
+	if (meta.title and meta.title ~= "") _set_host_window_title(meta.title)
+
 else
 	-- window icon shouldn't be too loud; competes with picotron menu button in ubuntu (icon shown top left, right above it)
 	-- so maybe default grey icon ramp isn't so bad
 	local meta = _fetch_metadata_from_file("/system/.info.pod") or {}
 	_set_host_window_icon(meta.icon)
+	_set_host_window_title("Picotron") -- redundant; same as default
 end
 
 
@@ -187,7 +192,7 @@ if stat(317) > 0 then
 		end
 	end
 	fstat_all("/system")
-	fstat_all("/cart")
+	fstat_all("/ram/expcart")
 
 	-- no more cartridge mounting (exports are only allowed to load/run the carts they were exported with)
 	
@@ -200,13 +205,15 @@ if stat(317) > 0 then
 
 	-- (don't need custom startup.lua -- the exported / bbs cart itself can play that role)
 
-elseif fstat("/appdata/system/startup.lua") then 
+else
 
 	-- populate tooltray with widgets
 	create_process("/system/misc/load_widgets.lua")
 
 	-- userland startup
-	create_process("/appdata/system/startup.lua")
+	if fstat("/appdata/system/startup.lua") then 
+		create_process("/appdata/system/startup.lua")
+	end
 
 end
 
