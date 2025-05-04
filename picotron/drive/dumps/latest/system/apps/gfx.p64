@@ -869,8 +869,9 @@ function set_neighbours_view(i, di)
 	end
 end
 
-function set_current_item(i)
-	i = i or current_item
+function set_current_item(i, show_in_navigator)
+
+	i = (i or current_item)\1
 	if (not item[i]) return -- out of range
 	
 	if (current_item) then
@@ -878,7 +879,7 @@ function set_current_item(i)
 		set_neighbours_view(current_item-1,-1)
 	end
 	
-	current_item = flr(i)  -- want user-facing number to be an integer
+	current_item = i
 	ci = item[current_item]
 
 	cbmp = item[current_item].bmp
@@ -900,6 +901,10 @@ function set_current_item(i)
 		local ry = current_item \ 8
 		region={x=rx,y=ry,x0=rx,y0=ry,w=1,h=1}
 	end
+
+	if (show_in_navigator) then
+		current_bank = current_item \ 64
+	end
 	
 	-- generate_gui()
 	-- refresh_gui = true
@@ -918,7 +923,7 @@ on_event("gained_focus",
 	function()
 		map_gfx_state = fetch"/ram/shared/map_gfx.pod"
 		if (map_gfx_state) then
-			set_current_item(map_gfx_state.current_sprite_index)
+			set_current_item(map_gfx_state.current_sprite_index, true)
 		end
 	end
 )
@@ -1889,8 +1894,8 @@ function _update()
 		-- navigate
 		-- to do: region moves with these keys?
 		local mag = key("shift") and 8 or 1
-		if (keyp("-")) region.w,region.h=1,1 set_current_item(current_item - mag) 
-		if (keyp("+")) region.w,region.h=1,1 set_current_item(current_item + mag)
+		if (keyp("-")) region.w,region.h=1,1 set_current_item(current_item - mag, true) 
+		if (keyp("+")) region.w,region.h=1,1 set_current_item(current_item + mag, true)
 		
 		-- switch colour
 		if (keyp("1")) switch_col(-1)
@@ -1962,13 +1967,13 @@ function _update()
 				backup_state()
 				item[current_item].bmp = bmp1
 				item[current_item].flags = meta and meta.flags or 0
-				set_current_item(current_item)
+				set_current_item(current_item, true)
 			elseif (type(bmp1) == "table" and meta and meta.region_w) then
 				-- multipaste
 				multi_op(
 					paste_sprite_collection(bmp1, meta.region_w, keyp"b")
 				)
-				set_current_item(current_item)
+				set_current_item(current_item, true)
 				notify("pasted "..#bmp1.." sprites")
 			else
 				notify("could not find gfx to paste")
@@ -1998,18 +2003,18 @@ function _update()
  end
 
 :: .info.pod
-b64$LS1bW3BvZCxzdG9yZWQ9IjIwMjQtMDMtMjIgMTE6NDM6MTIiLG1vZGlmaWVkPSIyMDI1LTA0
-LTI3IDE2OjAyOjAwIixub3Rlcz0iIixjcmVhdGVkPSIyMDIzLTEwLTE5IDEyOjUwOjUwIixpY29u
-PXVzZXJkYXRhKCJ1OCIsMTYsMTYsIjAwMDAwMDAxMDEwMTAxMDEwMTAxMDEwMTAxMDAwMDAwMDAw
-MDAxMDcwNzA3MDcwNzA3MDcwNzA3MDcwMTAwMDAwMDAxMDcwZDBkMGQwZDBkMGQwZDBkMGQwZDA3
-MDEwMDAxMDcwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMGQwNzAxMDEwNzBkMGQwZDA3MDcwZDBkMDcw
-NzBkMGQwZDA3MDEwMTA3MGQwZDBkMDcwNzBkMGQwNzA3MGQwZDBkMDcwMTAxMDcwZDBkMGQwNzA3
-MGQwZDA3MDcwZDBkMGQwNzAxMDEwNzBkMGQwZDA3MDcwNzA3MDcwNzBkMGQwZDA3MDEwMTA3MGQw
-ZDBkMDcwZDA3MDcwZDA3MGQwZDBkMDcwMTAxMDcwZDBkMGQwNzA3MDcwNzA3MDcwZDBkMGQwNzAx
-MDEwNzBkMGQwZDBkMGQwZDBkMGQwZDBkMGQwZDA3MDEwMTA2MDcwZDBkMGQwZDBkMGQwZDBkMGQw
-ZDA3MDYwMTAxMDYwNjA3MDcwNzA3MDcwNzA3MDcwNzA3MDYwNjAxMDAwMTA2MDYwNjA2MDYwNjA2
-MDYwNjA2MDYwNjAxMDAwMDAwMDEwNjA2MDYwNjA2MDYwNjA2MDYwNjAxMDAwMDAwMDAwMDAxMDEw
-MTAxMDEwMTAxMDEwMTAxMDAwMDAwIiksYXV0aG9yPSJsZXhhbG9mZmxlIixydW50aW1lPTgsdGl0
+b64$LS1bW3BvZCxzdG9yZWQ9IjIwMjQtMDMtMjIgMTE6NDM6MTIiLGNyZWF0ZWQ9IjIwMjMtMTAt
+MTkgMTI6NTA6NTAiLG5vdGVzPSIiLGljb249dXNlcmRhdGEoInU4IiwxNiwxNiwiMDAwMDAwMDEw
+MTAxMDEwMTAxMDEwMTAxMDEwMDAwMDAwMDAwMDEwNzA3MDcwNzA3MDcwNzA3MDcwNzAxMDAwMDAw
+MDEwNzBkMGQwZDBkMGQwZDBkMGQwZDBkMDcwMTAwMDEwNzBkMGQwZDBkMGQwZDBkMGQwZDBkMGQw
+ZDA3MDEwMTA3MGQwZDBkMDcwNzBkMGQwNzA3MGQwZDBkMDcwMTAxMDcwZDBkMGQwNzA3MGQwZDA3
+MDcwZDBkMGQwNzAxMDEwNzBkMGQwZDA3MDcwZDBkMDcwNzBkMGQwZDA3MDEwMTA3MGQwZDBkMDcw
+NzA3MDcwNzA3MGQwZDBkMDcwMTAxMDcwZDBkMGQwNzBkMDcwNzBkMDcwZDBkMGQwNzAxMDEwNzBk
+MGQwZDA3MDcwNzA3MDcwNzBkMGQwZDA3MDEwMTA3MGQwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMDcw
+MTAxMDYwNzBkMGQwZDBkMGQwZDBkMGQwZDBkMDcwNjAxMDEwNjA2MDcwNzA3MDcwNzA3MDcwNzA3
+MDcwNjA2MDEwMDAxMDYwNjA2MDYwNjA2MDYwNjA2MDYwNjA2MDEwMDAwMDAwMTA2MDYwNjA2MDYw
+NjA2MDYwNjA2MDEwMDAwMDAwMDAwMDEwMTAxMDEwMTAxMDEwMTAxMDEwMDAwMDAiKSxydW50aW1l
+PTgsbW9kaWZpZWQ9IjIwMjUtMDQtMjcgMTY6MDA6NTUiLGF1dGhvcj0ibGV4YWxvZmZsZSIsdGl0
 bGU9IlBpY290cm9uIFBpeGVscyIsdmVyc2lvbj0iMC4xaCIsd29ya3NwYWNlcz17e2xvY2F0aW9u
 PSJtYWluLmx1YSMxNjEiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249ImRyYXcubHVhIzQi
 LHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249Im5hdi5sdWEjOTMiLHdvcmtzcGFjZV9pbmRl

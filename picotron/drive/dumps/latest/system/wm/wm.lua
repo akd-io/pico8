@@ -456,14 +456,13 @@ function _init()
 	-- forward (low-level) event messages to active window
 	-- should be fast; everything has to go throught here
 
+	local forward_events = {keydown=1, keyup=1, textinput=1, mousewheel=nil, mouselockedmove=1, drop_items=1}
+	local activity_events = {keydown=1, keyup=1, textinput=1, mousewheel=1, mouse=1}
+
 	_subscribe_to_events( 
 		function(msg)
 			if (ws_gui == nil) then return end
 
-			local forward_events = {keydown=1, keyup=1, textinput=1, mousewheel=1, mouselockedmove=1, drop_items=1}
-			local activity_events = {keydown=1, keyup=1, textinput=1, mousewheel=1, mouse=1}
-
-			
 			if msg.event == "keydown" then
 
 				last_input_activity_t = time()
@@ -490,11 +489,21 @@ function _init()
 
 
 			if (forward_events[msg.event]) then
+
 				local win = get_active_window()
 				if (win and win.proc_id) then
 					send_message(win.proc_id, msg)
 				end
+
+			elseif msg.event == "mousewheel" then
+				-- special case: mousewheel sent to window under cursor even when window is not active
+				-- e.g. scroll a text file that is partially hidden
+				local hover_win = head_gui:el_at_xy(mx, my)
+				if (hover_win and hover_win.proc_id) then
+					send_message(hover_win.proc_id, msg)
+				end
 			end
+
 		end
 	)
 
@@ -1115,15 +1124,25 @@ function create_window(target_ws, attribs)
 
 		set_active_window(win)
 
-			-- context menu on mb2 (used by filenav -- need to provide nicer mechanism for generating that menu)
-			if (win.has_context_menu and msg.mb == 2) then
-				-- keep above 150 -- assume menu is shorter than that. to do: maybe need a keep_inside_parent attribute
-				send_message(3, {event = "toggle_app_menu", _delay = 0.1 , x = win.sx + msg.mx - 70, y = min(win.sy + msg.my - 30, 150) , proc_id = win.proc_id })
-				
-			end
-
 		return true -- processed
 	end
+
+	function win:tap(msg)
+
+		-- context menu on mb2 (used by filenav -- need to provide nicer mechanism for generating that menu)
+		-- inside tap message so that filenav has chance to generate menu based on new selection
+		if (win.has_context_menu and msg.last_mb == 2) 
+		then
+			send_message(3, {event = "toggle_app_menu", 
+				_delay = 0.0 , is_context_menu = true, 
+				x = win.sx + msg.mx - 70, 
+				y = min(win.sy + msg.my - 30, 150), -- keep y above 150 (assume menu is shorter) // to do: maybe need a keep_inside_parent attribute
+				proc_id = win.proc_id }
+			)
+		end
+
+	end
+
 
 	function win:drag(msg)
 		-- drag event is generate by window's own gui.lua
@@ -2038,7 +2057,16 @@ function _update()
 	-- can save their files to /ram/cart before the running program picks them up
 	if (key("ctrl") and keyp("r")) then
 
-		run_pwc("", key("lshift"))
+		if stat(317) == 1 then
+			-- exported player: reset cart
+			local win = get_active_window()
+			send_message(2, {event="restart_process", proc_id = win.proc_id})
+			win.paused = false
+			win.resetting = true -- don't kill process in win:update() while resetting
+		else
+			-- run / reset pwc
+			run_pwc("", key("lshift"))
+		end
 
 	end
 
@@ -2557,6 +2585,18 @@ on_event("app_menu_item", function(msg)
 	proc_menu[msg._from] = proc_menu[msg._from] or {}
 	local menu = proc_menu[msg._from]
 
+	-- clear
+	if (msg.clear) then
+		proc_menu[msg._from] = {}
+		return
+	end
+
+	-- add a divider
+	if (msg.attribs.divider) then
+		add(menu, {id="divider_"..#menu, label="[divider]", divider=true})
+		return
+	end
+
 	-- look for existing item by label
 	local pos = #menu + 1 -- default: add new
 	for i=1,#menu do
@@ -2897,7 +2937,7 @@ on_event("test_screensaver",
 
 on_event("toggle_app_menu",
 	function(msg)
-		toggle_app_menu(msg.x, msg.y, get_window_by_proc_id(msg.proc_id))
+		toggle_app_menu(msg.x, msg.y, get_window_by_proc_id(msg.proc_id), msg.is_context_menu)
 	end
 )
 
@@ -3034,8 +3074,10 @@ function toggle_workspace_menu(x, y, ws_index)
 		x = x, y = y,
 		width = 100, 
 		ws_index = ws_index,
-		onclose = dismiss_modal
 	}
+
+	pulldown.onclose = dismiss_modal
+
 
 	pulldown:attach_pulldown_item
 	{
@@ -3064,7 +3106,7 @@ function update_app_menu_item(ii)
 	end
 end
 
-function toggle_app_menu(x, y, win)
+function toggle_app_menu(x, y, win, is_context_menu)
 
 	local win = win or get_active_window()
 
@@ -3090,9 +3132,10 @@ function toggle_app_menu(x, y, win)
 	local pulldown = create_modal_gui():attach_pulldown{
 		is_app_menu = true,
 		x = x, y = y,
-		width = 142, -- to do: be adaptive when drawing
-		onclose = dismiss_modal
+		width = 142 -- to do: be adaptive when drawing
 	}
+
+	pulldown.onclose = dismiss_modal
 
 	app_menu_pulldown = pulldown
 
@@ -3100,8 +3143,10 @@ function toggle_app_menu(x, y, win)
 
 	-- to do: generate icon from win.icon
 
-	add(mm, {icon = win.icon, label = "About "..win.prog:basename(), action = function() 
-		create_process("/system/apps/about.p64", {prog=win.prog, window_attribs={workspace="current", autoclose = true}}) end})
+	if (not is_context_menu) then
+		add(mm, {icon = win.icon, label = "About "..win.prog:basename(), action = function() 
+			create_process("/system/apps/about.p64", {prog=win.prog, window_attribs={workspace="current", autoclose = true}}) end})
+	end
 
 	-- userland items created by menuitem()
 
@@ -3109,7 +3154,7 @@ function toggle_app_menu(x, y, win)
 
 	if (menu and #menu > 0) then
 
-		add(mm, {divider=true})
+		if (not is_context_menu) add(mm, {divider=true}) -- divider to separate the about program item at top
 
 		for i=1,#menu do
 
@@ -3117,7 +3162,6 @@ function toggle_app_menu(x, y, win)
 				local item = menu[i]
 				local pulldown_item = unpod(pod(item)) -- copy all attributes
 
-				--printh("pulldown item "..pod(item))
 				pulldown_item.action = function(b)
 					send_message(win.proc_id, {event="menu_action", id=menu[i].id, b=b})
 				end
@@ -3144,10 +3188,23 @@ function toggle_app_menu(x, y, win)
 	end
 
 
+	-- calculate required width; items use this when attached
+	local max_width = 90 -- nominal minimum 
+	for i=1,#mm do
+		if (mm[i].label) then
+			local ww = print(mm[i].label..(mm[i].shortcut or "") ,0,-1000) + 20
+			max_width = max(max_width, ww) -- push out
+		end
+	end
+	pulldown.width = max_width
+
+	-- attach
 	for i=1,#mm do
 		mm[i].cursor = "pointer"
 		pulldown:attach_pulldown_item(mm[i])
 	end
+
+	
 
 
 end
@@ -3223,15 +3280,14 @@ function toggle_picotron_menu()
 	add(item, {"\^:082a494141221c00 Shutdown", function() send_message(2, {event="shutdown"}) end})
 	
 
-
-
 	local pulldown = create_modal_gui():attach_pulldown{
 		is_pictron_menu = true,
 		x = 4, y = toolbar_y + 11,
-		width = 122,
-		onclose = dismiss_modal
+		width = 122
 	}
-	
+
+	pulldown.onclose = dismiss_modal
+
 	for i=1,#item do
 		if item[i] == "---" then
 			pulldown:attach_pulldown_item{divider=true}

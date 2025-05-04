@@ -1,3 +1,4 @@
+--[[pod_format="raw",created="2024-10-16 01:44:56",modified="2024-10-16 01:45:18",revision=1]]
 --[[
 
 	gui.lua
@@ -183,8 +184,9 @@ do
 			if (self.action) then
 				self.action()
 				if not self.stay_open then
-					if (self.onclose) then self.onclose() end
-					del(self.parent.parent.child, self.parent) -- close
+					if (self.onclose) then self.onclose() end -- to do: deleteme (not needed?)
+					if (self.parent.onclose) then self.parent.onclose() end
+					del(self.parent.parent.child, self.parent) -- close pulldown
 				end
 			end
 			return true

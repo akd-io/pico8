@@ -13,6 +13,7 @@ do
 	local _update_buttons = _update_buttons
 	local _flip = _flip
 	local _pid = pid
+	local _warp_mouse = _warp_mouse
 
 	local message_hooks = {}
 	local message_subscriber = {}
@@ -35,7 +36,12 @@ do
 	local frame_keypressed_result={}
 	local scancode_blocked = {} -- deleteme -- not used or needed   //  update: maybe do? ancient sticky keys problem
 
-	function mouse()
+	function mouse(new_mx, new_my)
+		if (new_mx or new_my) then
+			new_mx = new_mx or mouse_x
+			new_my = new_my or mouse_y
+			_warp_mouse(new_mx, new_my);
+		end
 		return mouse_x, mouse_y, mouse_b, wheel_x, wheel_y -- wheel
 	end
 

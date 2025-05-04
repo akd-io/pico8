@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2025-04-27 16:01:54",modified="2025-04-27 16:01:54",revision=0]]
+--[[pod_format="raw",created="2025-04-27 16:00:50",modified="2025-04-27 16:00:50",revision=0]]
 --[[
 
 	head.lua -- kernal space header for each process
@@ -86,6 +86,9 @@ function reset()
 	-- mouselock event sensitivity, move sensitivity (64 means x1.0)
 	poke(0x5f28, 64)
 	poke(0x5f29, 64)
+
+	-- window draw mask, interaction mask 
+	poke(0x547d,0x0,0x0)
 
 
 end

@@ -14,6 +14,13 @@ local _menu = {}
 
 function menuitem(m, a, b)
 
+	-- clear
+	if (not m) then
+		_menu = {}
+		send_message(3, {event = "app_menu_item", clear = true})
+		return
+	end
+
 	-- legacy pico-8 calling format
 	if (a) then
 		m = {
@@ -21,6 +28,12 @@ function menuitem(m, a, b)
 			label = a,
 			action = b
 		}
+	end
+
+	-- add divider
+	if (m.divider or m == "---") then
+		send_message(3, {event = "app_menu_item", attribs = {divider=true}})
+		return
 	end
 
 	if (not _menu[m.id]) then

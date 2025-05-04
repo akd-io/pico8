@@ -35,7 +35,7 @@ if fstat("/desktop/drive.loc") then
 end
 if fstat("/desktop/readme.txt") then
 	local dd,mm = fetch("/desktop/readme.txt") -- fetch_metadata not defined yet
-	if (not mm or not mm.icon) cp("/system/misc/readme.txt", "/desktop/readme.txt")
+	if (not mm or not mm.icon or mm.pod_format ~= "raw") cp("/system/misc/readme.txt", "/desktop/readme.txt")
 end
 
 

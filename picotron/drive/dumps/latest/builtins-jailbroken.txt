@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2025-04-27 16:02:14",modified="2025-04-27 16:02:14",revision=0]]
+--[[pod_format="raw",created="2025-04-27 16:01:02",modified="2025-04-27 16:01:02",revision=0]]
 {
   "_VERSION" = "Lua 5.4",
   "__process_event_messages" = function (),
@@ -46,6 +46,7 @@
   "_subscribe_to_events" = function (f),
   "_unmap_ram" = function (...),
   "_update_buttons" = function (...),
+  "_warp_mouse" = function (...),
   "abs" = function (a),
   "add" = function (...),
   "all" = function (c),
@@ -118,7 +119,7 @@
   "min" = function (a, b),
   "mkdir" = function (p),
   "mount" = function (a, b),
-  "mouse" = function (),
+  "mouse" = function (new_mx, new_my),
   "mouselock" = function (do_lock, event_sensitivity, move_sensitivity),
   "mset" = function (...),
   "music" = function (...),
@@ -221,6 +222,7 @@
     "add" = function (...),
     "attribs" = function (...),
     "band" = function (...),
+    "blit" = function (...),
     "bor" = function (...),
     "bxor" = function (...),
     "clear" = function (...),
@@ -234,6 +236,7 @@
     "get" = function (...),
     "height" = function (...),
     "idiv" = function (...),
+    "lerp" = function (...),
     "magnitude" = function (...),
     "matmul" = function (...),
     "matmul2d" = function (...),

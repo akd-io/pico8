@@ -228,7 +228,7 @@ do
 			local ret, meta = _fetch_anywhen(filename:sub(10)) -- include second '/' to give absolute path 
 			return ret, meta, hash_part
 
-		elseif (prot == "https" or prot == "https") then
+		elseif (prot == "https" or prot == "http") then
 			--[[
 				remote fetches are logically the same as local ones -- they block the thread
 				but.. can be put into a coroutine and polled
