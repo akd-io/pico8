@@ -19,6 +19,11 @@ if (not fstat(origin)) then
 	exit(1)
 end
 
+if (not fullpath(target)) then
+	print("could not resolve target path")
+	exit(1)
+end
+
 local kind = fstat(origin)
 
 print("mounting "..kind.." "..origin.." at "..target)

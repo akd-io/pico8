@@ -58,7 +58,7 @@ function make_window_button(parent, label, x, y, width, height, win)
 			for y=yy+2,yy+6,2 do
 				line(2,y,8,y,7)
 			end
-		pal()
+		pal(7,7)
 
 	end
 
@@ -88,7 +88,7 @@ local function make_picotron_button(parent, label, x, y, width, height)
 
 		pal(7, theme("toolbar_item"))
 			spr(picotron_icon, 1, yy)
-		pal()
+		pal(7,7)
 
 	end
 
@@ -309,7 +309,7 @@ local function make_dock_button(parent, x, y, width, height)
 		local yy = (event.mb > 0 and event.has_pointer) and 1 or 0
 		pal(7, 13)
 		spr(ws.show_toolbar and b.icon1 or b.icon0, 0, yy + 1)
-		pal()
+		pal(7,7)
 		--rectfill(0,0,4,4,8)
 	end
 
@@ -354,7 +354,7 @@ local function make_workspace_button(index, parent, label, x, y, width, height)
 
 		spr(b.icon, xx + 4, yy + 1)
 
-		pal()
+		pal(7,7)
 
 	end
 

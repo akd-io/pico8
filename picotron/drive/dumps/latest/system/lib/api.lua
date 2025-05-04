@@ -1,3 +1,4 @@
+--[[pod_format="raw",created="2024-03-24 14:56:58",modified="2024-03-24 14:56:58",revision=0]]
 
 
 local _fcopy = _fcopy
@@ -130,6 +131,9 @@ function cp(f0, f1)
 
 	f0 = fullpath(f0)
 	f1 = fullpath(f1)
+
+	if (not f0)   return "could not resolve source path"
+	if (not f1)   return "could not resolve destination path"
 	if (f0 == f1) return "can not copy over self"
 
 	local f0_type = fstat(f0)

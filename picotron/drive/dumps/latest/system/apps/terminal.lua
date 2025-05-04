@@ -645,6 +645,8 @@ function _draw()
 	local disp = get_display()
 	disp_w, disp_h = disp:width(), disp:height()
 
+--	printh("terminal draw "..pod{disp_w, disp_h})
+
 	if (running_cproj) then
 		run_cproj_callback(cproj_draw, "_draw")
 	else

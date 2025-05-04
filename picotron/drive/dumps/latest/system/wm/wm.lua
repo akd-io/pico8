@@ -636,11 +636,15 @@ end
 
 
 -- doesn't kill process -- that's up to process manager
-function close_window(win)
+-- update: seems almost always want to kill at the same time; added as a parameter
+function close_window(win, do_kill)
 
 	if (win.immortal) return
 
-	win = win or get_active_window()
+	
+	_kill_process(do_kill and win and win.proc_id)
+
+	win = win or get_active_window() -- is the get_active_window default ever used? to do: review and remove
 	if (win.closing) then return end
 
 	-- invalidate active window
@@ -828,7 +832,7 @@ function create_window(target_ws, attribs)
 		-- non-rectangular windows (w/ PROCBLIT_TRANSP_ADDR set) should make sure 
 		if (blit_result and not win.fullscreen) then
 			blit(prev_frame, nil, win.sx, win.sy, win.sx, win.sy, win.width, win.height)
-			-- clip() circfill(0,0,16,8) circfill(0,0,24,7) -- debug: show that (desktop) window is frame-skipping			
+			--clip() circfill(0,0,16,8) circfill(0,0,24,7) -- debug: show that (desktop) window is frame-skipping			
 		end
 
 
@@ -883,7 +887,7 @@ function create_window(target_ws, attribs)
 			not win.tabbed and            -- also means that this window isn't the window on top, which is tabbed
 			time() > win.created_t + 0.5) -- don't close in the first half a second (give a chance to get focus)
 		then
-			close_window(win)
+			close_window(win, true)
 			return
 		end
 
@@ -952,8 +956,7 @@ function create_window(target_ws, attribs)
 				y = 0, vjustify="center",
 				width = 7, height = 7,
 				tap = function(self)
-					close_window(self.parent.parent) -- close now to avoid 1 frame of junk
-					_kill_process(self.parent.parent.proc_id)
+					close_window(self.parent.parent, true)
 				end,
 				draw = function(self, msg)
 					(msg.has_pointer and circfill or circ)(self.width / 2, self.height / 2, self.width/3, 
@@ -1223,7 +1226,8 @@ local xodat = {26,22,19,17,15,14,12,11,10,9,8,7,6,5,5,4,3,3,2,2,1,1,1,0,0,0,0,0,
 ppy = 0
 function _draw()
 
-	pal()
+	pal(1) -- reset colourtable but leave rgb display palette alone
+	palt() -- reset transparency 
 
 	-- don't draw frame when changing window or workspace; allows messages to complete and prevents flicker
 	-- (e.g. switch through newly opened tabs, or gfx setting current sprite picked up by map editor)
@@ -1236,6 +1240,7 @@ function _draw()
 	-- to do: unnecessary? prevents gfx->map flicker, but maybe just because skipping 2 frames instead of 1
 	-- also: causes no visible refresh when holding alt-right/left (only see where workspace index ended up on release) -> why?
 	if (last_drawn_ws ~= ws_gui) then last_drawn_ws = ws_gui return end
+
 
 	-- sanity
 	if (ws_gui) then
@@ -1250,19 +1255,22 @@ function _draw()
 	poke(0x547f, peek(0x547f) & ~0x2)
 	
 	-- workspace doesn't have a fullscreen window covering it
-	-- e.g. launch terminal when there is no desktop workspace 
-	if (ws_gui and (ws_gui.clear_each_frame or (ws_gui.child[1] and ws_gui.child[1].width < 480) )) then
+	-- e.g. launch filenav when there is no desktop workspace, or running web cart player
+	-- ** important not to clear each frame for fullscreen apps -- otherwise get flashing when < 60fps
+	-- ** note: can be fullscreen but still width < 480 (because videomode) 
+	if (ws_gui and (ws_gui.clear_each_frame or (ws_gui.child[1] and ws_gui.child[1].width < 480 and not ws_gui.child[1].fullscreen))) then
 		rectfill(0,0,479, 269, 0x10)
-		rectfill(0,0,479,11,7)
+		rectfill(0,0,479,11,7) -- toolbar-ish shape for cart player
 	end
---	cls(1) -- debug
+
+	-- cls(10) -- debug
 
 	local awin = get_active_window()
 
 
 	if (not ws_gui or #workspace == 0) then
-		cls(0)
-		-- print("no workspaces",10,10,7)
+		cls(3)
+		print("[no workspaces]",10,10,7)
 		return
 	end
 
@@ -1408,10 +1416,15 @@ function _draw()
 
 	local notify_duration = 2
 	if (user_notification_message and #user_notification_message > 15) notify_duration = 3
+	if (time() < 3) notify_duration = 5 -- startup message; e.g. mended drive.loc
 
 	if (user_notification_message and time() < user_notification_message_t + notify_duration) then
-		rectfill(0,259,479,269,32)
-		print(user_notification_message, 4,261, 7)
+		local y = 270
+		if (@0x547c == 3) y = 135
+		if (@0x547c == 4) y = 90
+
+		rectfill(0,y-11,479,y-1,32)
+		print(user_notification_message, 4,y-9, 7)
 	end
 
 	
@@ -1429,13 +1442,26 @@ function _draw()
 		last_draw_t = time()
 	end
 
-	-- grab palette from active window's process (if there is one)
+	-- grab palette and video mode from active window's process (if there is one)
 
 	if (awin) then
-		for i=0x5000,0x54ff,4 do
-			poke4(i, _ppeek4(awin.proc_id, i))
+
+		-- 0.1.0c: only update when frame is not held (avoid flashing when running < 60fps)
+		local val = _ppeek(awin.proc_id, 0x547f) -- might be nil if process recently ended
+		if (val and val & 0x2 == 0)
+		then
+			--printh("@@ process palette "..time())
+
+			-- grab the rgb display palette and video mode from that process
+			for i=0x5000,0x54ff,4 do
+				poke4(i, _ppeek4(awin.proc_id, i))
+			end
+			poke(0x547c, _ppeek(awin.proc_id, 0x547c))
+		else
+			--printh("-- skipped resetting palette "..time())
 		end
 	else
+		--printh("** default rgb palette "..time())
 		pal(2) -- otherwise use default palette
 	end
 
@@ -1520,7 +1546,7 @@ function _update()
 		then
 			
 			local sdat = fetch"/appdata/system/settings.pod"
-			printh(pod(sdat))
+			-- printh(pod(sdat))
 			if (sdat and sdat.screensaver) then
 				-- note: program doesn't need to know it is a screensaver; just kill process on activity event
 				screensaver_proc_id = create_process(sdat.screensaver, 
@@ -1585,7 +1611,7 @@ function _update()
 			num_visible = num_visible + (visible and 1 or 0)
 
 			-- (optimisation)
-			-- placeholder test for window is covering everything underneath it
+			-- placeholder test for window is covering everything underneath it   // 0x547d: alpha bits
 			if (w.width==480 and w.y <= bar_h and w.y + w.height >= 270-bar_h and _ppeek(w.proc_id, 0x547d) == 0) then
 				found_covering_window = true
 				--printh("found covering window")
@@ -1594,12 +1620,14 @@ function _update()
 		end
 	end
 
+	-- printh("num_visible: "..num_visible)
+
 	-- tool tray visibility (DUPE)
 
 	for i=1,#tooltray_gui.child do
 		local w = tooltray_gui.child[i]
 		local was_visible = w.visible
-		local visible = true --tooltray_is_open()
+		local visible = tooltray_is_open()
 
 		-- notify on change
 		if (not was_visible and visible) then
@@ -1645,7 +1673,13 @@ function _update()
 			-- when haltable_proc_id is set, ESC means halt for that process
 
 			-- kill previous one
-			send_message(2, {event="kill_process", proc_id = haltable_proc_id})
+			--[[
+				-- deleteme -- is more correctly handled by clearing out existing pwc_output windows
+				-- the first time a cart is run, there is an existing pwc_output window that is not assigned to haltable_proc_id
+				
+				-- printh("killing previous: "..tostring(haltable_proc_id))
+				-- send_message(2, {event="kill_process", proc_id = haltable_proc_id})
+			]]
 
 			-- create new one
 			haltable_proc_id = create_process("/system/apps/terminal.lua",{
@@ -1730,8 +1764,25 @@ function _update()
 	if (key("ctrl") and keyp("6")) then
 		-- to do: custom desktop location from settings?
 		mkdir("/desktop")
-		store("/desktop/sshot.png", get_display())
-		notify("captured screenshot to /desktop/sshot.png")
+
+
+		local dd = get_display()
+		local w,h = 480,270
+		if (awin and _ppeek(awin.proc_id, 0x547c) == 3) w,h = 240,135
+		if (awin and _ppeek(awin.proc_id, 0x547c) == 4) w,h = 160,90
+		
+		local screen = userdata("u8", 480*2,270*2)
+		set_draw_target(screen)
+		sspr(dd,0,0,w,h,0,0,480*2,270*2)
+		set_draw_target()
+
+		local num=0
+		while (fstat("/desktop/sshot"..num..".png") and num < 64) do
+			num += 1
+		end
+		store("/desktop/sshot"..num..".png", screen)
+
+		notify("captured screenshot to /desktop/sshot"..num..".png")
 	end
 
 	-- capture label
@@ -1741,21 +1792,15 @@ function _update()
 		-- to do: custom desktop location from settings?
 
 		local dd = get_display()
-		local label = dd
 
-		if (awin and _ppeek(awin.proc_id, 0x547c) == 3) then
-			label = userdata("u8", 480,270)
-			set_draw_target(label)
-			sspr(dd,0,0,240,135,0,0,480,270)
-			set_draw_target()
-		end
+		local w,h = 480,270
+		if (awin and _ppeek(awin.proc_id, 0x547c) == 3) w,h = 240,135
+		if (awin and _ppeek(awin.proc_id, 0x547c) == 4) w,h = 160,90
 
-		if (awin and _ppeek(awin.proc_id, 0x547c) == 4) then
-			label = userdata("u8", 480,270)
-			set_draw_target(label)
-			sspr(dd,0,0,160,90,0,0,480,270)
-			set_draw_target()
-		end
+		local label = userdata("u8", 480,270)
+		set_draw_target(label)
+		sspr(dd,0,0,w,h,0,0,480,270)
+		set_draw_target()
 
 		store("/ram/cart/label.png", label)
 		notify("captured label")
@@ -1831,7 +1876,7 @@ function _update()
 		if (modal_gui) then
 			dismiss_modal()
 		elseif (get_active_window() and get_active_window().autoclose) then
-			close_window(get_active_window()) -- e.g. about / settings
+			close_window(get_active_window(), true) -- e.g. about / settings
 		elseif toolbar_y_target > 0 then
 			-- close tooltray if open
 			toolbar_y_target = 0
@@ -2135,7 +2180,8 @@ on_event("set_window", function(msg)
 					if (attribs.fullscreen == workspace[i].child[j].fullscreen or
 						not attribs.fullscreen and not workspace[i].child[j].fullscreen) then 
 						old_win = workspace[i].child[j]
-						close_window(old_win) -- eventually also kills process
+						close_window(old_win, true)
+						_kill_process(old_win.proc_id) -- need to kill explicitly here because pwc_output window is immortal
 						target_ws = workspace[i]
 					end
 				end
@@ -2368,8 +2414,7 @@ on_event("clear_project_workspaces",
 			for j=1, #workspace[i].child do
 				local win = workspace[i].child[j]
 				if (win.location and string.sub(fullpath(win.location), 1, 10) == "/ram/cart/") then
-					close_window(workspace[i].child[j])
-					_kill_process(workspace[i].child[j].proc_id)
+					close_window(workspace[i].child[j], true)
 					num -= 1
 				end
 			end
@@ -2588,10 +2633,10 @@ function toggle_app_menu(x, y, win)
 		-- no close
 	elseif (win.sy < 12) then
 		add(mm, {divider=true})
-		add(mm, {label="\^:1c3e6b776b3e1c00 Close Tab", action = function() close_window(win) _kill_process(win.proc_id) end})
+		add(mm, {label="\^:1c3e6b776b3e1c00 Close Tab", action = function() close_window(win, true) end})
 	else
 		add(mm, {divider=true})
-		add(mm, {label="\^:1c3e6b776b3e1c00 Close Window", action = function() close_window(win) _kill_process(win.proc_id) end})
+		add(mm, {label="\^:1c3e6b776b3e1c00 Close Window", action = function() close_window(win, true) end})
 	end
 
 

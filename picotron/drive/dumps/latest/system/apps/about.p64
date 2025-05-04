@@ -368,10 +368,8 @@ function _init()
 	poke(0x5600,get(fetch"/system/fonts/p8.font"))
 	poke(0x5602,6) -- to do: should be standard for p8.font
 	
-	--poke(0x5600,get(fetch"/system/fonts/lil.font"))
-
 	cd(env().path) -- can use from terminal
-	fn = env().argv[1] or env().prog or "/system/apps/about.p64"
+	fn = env().argv[1] or env().prog or "/ram/cart"
 	
 	--printh("[a3] initial fn: "..fn)
 	fn = fullpath(fn)
@@ -553,7 +551,7 @@ NzAxMDEwNjA3MGQwZDBkMGQwZDBkMGQwZDBkMGQwNzA2MDEwMTA2MDYwNzA3MDcwNzA3MDcwNzA3
 MDcwNzA2MDYwMTAwMDEwNjA2MDYwNjA2MDYwNjA2MDYwNjA2MDYwMTAwMDAwMDAxMDYwNjA2MDYw
 NjA2MDYwNjA2MDYwMTAwMDAwMDAwMDAwMTAxMDEwMTAxMDEwMTAxMDEwMTAwMDAwMCIpLG5vdGVz
 PSJGaWxlIG1ldGFkYXRhIHZpZXdlciBhbmQgZWRpdG9yLlxuQ2xpY2sgb24gdGhlIGljb24gdG8g
-ZWRpdCBpdCEiLHN0b3JlZD0iMjAyNC0wMy0xMyAwNzowNjoyOCIsdGl0bGU9IkFib3V0Iix2ZXJz
+ZWRpdCBpdCEiLHN0b3JlZD0iMjAyNC0wMy0yMyAxOTozNDoxNSIsdGl0bGU9IkFib3V0Iix2ZXJz
 aW9uPSIiLHdvcmtzcGFjZXM9e3tsb2NhdGlvbj0ibWFpbi5sdWEjOTAiLHdvcmtzcGFjZV9pbmRl
 eD0xfSx7bG9jYXRpb249Imd1aS5sdWEjMTUyIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9u
 PSJpY29uLmx1YSMxIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJnZngvMC5nZngiLHdv

@@ -2,7 +2,7 @@ picotron cartridge // www.picotron.net
 version 2
 
 :: desktop.lua
---[[pod_format="raw",created="2023-13-04 15:13:41",modified="2024-03-21 06:12:56",revision=2081,stored="2023-21-29 09:21:19"]]
+--[[pod_format="raw",created="2023-13-04 15:13:41",modified="2024-03-24 15:04:52",revision=2086,stored="2023-21-29 09:21:19"]]
 -- mode: desktop
 local desktop_items = nil
 local desktop_content = nil
@@ -529,7 +529,7 @@ end)
 
 
 :: finfo.lua
---[[pod_format="raw",created="2023-24-08 09:24:50",modified="2024-03-14 09:02:29",revision=2095,stored="2023-21-29 09:21:19"]]
+--[[pod_format="raw",created="2023-24-08 09:24:50",modified="2024-03-24 15:04:52",revision=2100,stored="2023-21-29 09:21:19"]]
 --[[
 	finfo.lua
 	
@@ -721,7 +721,18 @@ function update_file_info_menu_item()
 					{argv={which}, window_attribs={workspace = "current", show_in_workspace=true, autoclose=true}})				
 			end
 		}
+
+		menuitem{
+			id="delete_file",	
+			label = "\^:3e7f5d5d773e2a00 Delete File",
+			action = function()
+				mkdir("/ram/compost")
+				mv(which, "/ram/compost/"..which:basename())
+				notify("moved to ".."/ram/compost/"..which:basename())
+			end
+		}
 		
+		-- rename 
 		if (mode ~= "desktop") then
 			menuitem{
 				id="rename",
@@ -736,6 +747,7 @@ function update_file_info_menu_item()
 	else
 		-- clear entries
 		menuitem{id="file_info"}
+		menuitem{id="delete_file"}
 		menuitem{id="rename"}
 	end
 	
@@ -749,7 +761,7 @@ end
 :: gfx/
 :: gfx/0.gfx
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTM4LTIwIDA2OjM4OjU2Iixtb2RpZmllZD0iMjAyNC0w
-My0xNCAwOTowMjoyOSIscmV2aXNpb249MjI3NSxzdG9yZWQ9IjIwMjMtMzQtMDkgMTk6MzQ6NTMi
+My0yNCAxNTowNDo1MiIscmV2aXNpb249MjI3OSxzdG9yZWQ9IjIwMjMtMzQtMDkgMTk6MzQ6NTMi
 XV1sejQAcwQAAFE6AADzFHtbMF09e2JtcD1weHUAQyAQEATw8CxmbGFncz0wLHBhbl94CADKeT0w
 LHpvb209OH0sMQDzCgCRUAF3BgFAAXcWATABdyYBIAF3NgEQAbcEADQXJmcKAC1GRwoAAwQAL9EA
 dgAc7-AJUYABLSYBAGEtNhHWAgABTwEA0QDLADggJz2zADU3LUcMAEEXLQcNCAAgHXcGACBdNxoA
@@ -773,7 +785,7 @@ wwB-YAKxIAG3AWUND0sMAgRVDQ_6AB8PMQD-----------------------------------------
 --------gVBtPTh9fQ==
 :: gfx/1.gfx
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEzLTExIDAzOjEzOjAxIixtb2RpZmllZD0iMjAyNC0w
-My0xNCAwOTowMjoyOSIscmV2aXNpb249NDQ0XV1sejQAmgAAADMxAADzFHtbMF09e2JtcD1weHUA
+My0yNCAxNTowNDo1MiIscmV2aXNpb249NDUxXV1sejQAmgAAADMxAADzFHtbMF09e2JtcD1weHUA
 QyAQEATw8CxmbGFncz0wLHBhbl94CADPeT0wLHpvb209OH0sMQAp9QEICAQ3MAcQFyAHECcQBzAH
 BAAvV5BHAC6PV5AHAAcAByBJAA4O8gAPMQD-----------------------------------------
 ----------------------9CUG09OH19
@@ -797,7 +809,7 @@ MTEgMDc6NDE6NDEiXV1sejQABAAAAAMAAAAwbmls
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTExLTE1IDA3OjExOjMwIixzdG9yZWQ9IjIwMjMtMTEt
 MTUgMDc6MTE6MzAiXV1sejQABAAAAAMAAAAwbmls
 :: grid.lua
---[[pod_format="raw",created="2023-27-20 06:27:59",modified="2024-03-14 09:02:29",revision=2230,stored="2023-21-29 09:21:19"]]
+--[[pod_format="raw",created="2023-27-20 06:27:59",modified="2024-03-24 15:04:52",revision=2235,stored="2023-21-29 09:21:19"]]
 -- mode: icons on a grid (default folder view; is cutest for < ~100 files)
 local sel = nil
 local function create_file_item(parent, ff, x, y)
@@ -1307,7 +1319,7 @@ end
 
 
 :: intention.lua
---[[pod_format="raw",created="2023-49-05 21:49:51",modified="2024-03-14 09:02:29",revision=598]]
+--[[pod_format="raw",created="2023-49-05 21:49:51",modified="2024-03-24 15:04:52",revision=603]]
 --[[
 
 	intention.lua
@@ -1560,7 +1572,7 @@ end
 
 
 :: interf.lua
---[[pod_format="raw",created="2023-11-20 08:11:39",modified="2024-03-14 09:02:29",revision=2905,stored="2023-21-29 09:21:19"]]
+--[[pod_format="raw",created="2023-11-20 08:11:39",modified="2024-03-24 15:04:52",revision=2910,stored="2023-21-29 09:21:19"]]
 -- interface
 
 -- shortcut
@@ -1757,7 +1769,7 @@ end
 
 
 :: list.lua
---[[pod_format="raw",created="2023-27-20 06:27:42",modified="2024-03-14 09:02:29",revision=2554,stored="2023-21-29 09:21:19"]]
+--[[pod_format="raw",created="2023-27-20 06:27:42",modified="2024-03-24 15:04:52",revision=2560,stored="2023-21-29 09:21:19"]]
 -- mode: list
 local item_h = 12
 local function create_file_item(parent, ff, x, y)
@@ -1912,7 +1924,7 @@ end
 
 
 :: main.lua
---[[pod_format="raw",created="2023-24-20 06:24:13",modified="2024-03-14 09:02:29",revision=2814,stored="2023-21-29 09:21:19"]]
+--[[pod_format="raw",created="2023-24-20 06:24:13",modified="2024-03-24 15:04:52",revision=2819,stored="2023-21-29 09:21:19"]]
 --[[
 	ff: theme / app menu integration
 ]]
@@ -2063,14 +2075,16 @@ aWxlX2g9MTYKAG93PTE2fSxLBP----84UDE2fX19
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTA3IDEwOjExOjU2IixzdG9yZWQ9IjIwMjQtMDMt
 MDcgMTA6MTE6NTYiXV1sejQABAAAAAMAAAAwbmls
 :: open.lua
---[[pod_format="raw",created="2023-46-04 12:46:16",modified="2024-03-14 09:02:29",revision=2446,stored="2023-21-29 09:21:19"]]
+--[[pod_format="raw",created="2023-46-04 12:46:16",modified="2024-03-24 15:04:52",revision=2453,stored="2023-21-29 09:21:19"]]
 
 	
 	function click_on_file(filename, action, argv)
 		
 		--printh("opening: "..tostr(filename))
 		
-		if (not intention and string.sub(filename,-4) == ".loc") then
+		--if (not intention and string.sub(filename,-4) == ".loc") then
+		if (string.sub(filename,-4) == ".loc") -- 0.1.0c: always open as if folder
+		then
 			local dat = fetch(filename)
 			-- switcheroony
 			-- to do: ** loop danger! **
@@ -2233,14 +2247,14 @@ MTAxMGQwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMGQwZDAxMDEwZDBkMDEwMTAxMDEwMTAxMDEwMTAx
 MDEwZDBkMDEwMTBkMGQwMTAxMDEwMTA3MDcwNzA3MDcwMTBkMGQwMTAxMGQwZDAxMDEwMTAxMDcw
 NzA3MDcwNzAxMGQwZDAxMDEwZDBkMDEwMTAxMDEwNzA3MDcwNzA3MDEwZDAxMDAwMTAxMDEwMTAx
 MDEwMTAxMDEwMTAxMDEwMTAxMDAwMCIpLG5vdGVzPSIoYykgTGV4YWxvZmZsZSBHYW1lcyBMTFAi
-LHN0b3JlZD0iMjAyNC0wMy0xNCAwOTowMjoyOSIsdGl0bGU9IlBpY290cm9uIEZpbGUgTmF2aWdh
-dG9yIix2ZXJzaW9uPSIwLjFiIix3b3Jrc3BhY2VzPXt7bG9jYXRpb249Im1haW4ubHVhIzEiLHdv
-cmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249Im9wZW4ubHVhIzEiLHdvcmtzcGFjZV9pbmRleD0x
-fSx7bG9jYXRpb249ImludGVyZi5sdWEjMSIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0i
-aW50ZW50aW9uLmx1YSMxIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJkZXNrdG9wLmx1
-YSMyMzgiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249ImZpbmZvLmx1YSMxIix3b3Jrc3Bh
-Y2VfaW5kZXg9MX0se2xvY2F0aW9uPSJncmlkLmx1YSMxIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xv
-Y2F0aW9uPSJsaXN0Lmx1YSMxIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJnZngvMC5n
-ZngiLHdvcmtzcGFjZV9pbmRleD0yfSx7bG9jYXRpb249ImdmeC8xLmdmeCIsd29ya3NwYWNlX2lu
-ZGV4PTJ9fV1dbHo0AAQAAAADAAAAMG5p
+LHJ1bnRpbWU9MyxzdG9yZWQ9IjIwMjQtMDMtMjQgMTU6MzU6NTYiLHRpdGxlPSJQaWNvdHJvbiBG
+aWxlIE5hdmlnYXRvciIsdmVyc2lvbj0iMC4xYyIsd29ya3NwYWNlcz17e2xvY2F0aW9uPSJtYWlu
+Lmx1YSMxIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJvcGVuLmx1YSM4Iix3b3Jrc3Bh
+Y2VfaW5kZXg9MX0se2xvY2F0aW9uPSJpbnRlcmYubHVhIzEiLHdvcmtzcGFjZV9pbmRleD0xfSx7
+bG9jYXRpb249ImludGVudGlvbi5sdWEjMSIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0i
+ZGVza3RvcC5sdWEjMjM4Iix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJmaW5mby5sdWEj
+MSIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0iZ3JpZC5sdWEjMSIsd29ya3NwYWNlX2lu
+ZGV4PTF9LHtsb2NhdGlvbj0ibGlzdC5sdWEjMSIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlv
+bj0iZ2Z4LzAuZ2Z4Iix3b3Jrc3BhY2VfaW5kZXg9Mn0se2xvY2F0aW9uPSJnZngvMS5nZngiLHdv
+cmtzcGFjZV9pbmRleD0yfX1dXWx6NAAEAAAAAwAAADBuaQ==
 :: [eoc]

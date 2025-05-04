@@ -16,7 +16,12 @@ if (#argv < 1) then
 	exit(1)
 end
 
-local filename = argv[1]
+local filename = fullpath(argv[1])
+if (not filename) then
+	print("could not resolve path")
+	exit(0)
+end
+
 
 local attribs, size, origin = fstat(filename)
 

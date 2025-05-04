@@ -18,13 +18,36 @@ if (not ff or #ff == 0) then
 --	cp("/system/misc/readme.txt", "/desktop/readme.txt")
 end
 
+-- mend drive shortcut (could save over it by accident in 0.1.0b)
+local dd = fetch("/desktop/drive.loc")
+if (dd and not dd.location) then
+	store("/desktop/drive.loc", fetch("/system/misc/drive.loc"))
+	notify("mended: /desktop/drive.loc")
+end
+
 -- present working cartridge
-store("/ram/system/pwc.pod", "/untitled.p64")
+local num = 0
+local num=0
+while (fstat("/untitled"..num..".p64") and num < 64) num += 1
+store("/ram/system/pwc.pod", "/untitled"..num..".p64")
+
 
 
 -- custom startup could opt to run different window / program manager
 create_process("/system/pm/pm.lua")
 create_process("/system/wm/wm.lua")
+
+
+
+local runtime_version, system_version = stat(5)
+local system_meta = fetch_metadata("/system") or {}
+if (system_meta.version ~= system_version) then
+	printh("** version mismatch // /system: "..system_meta.version.." expects binaries: "..system_version)
+	send_message(3, {event="report_error", content = "** system version mismatch **"})
+	send_message(3, {event="report_error", content = "/system version is: "..system_meta.version})
+	send_message(3, {event="report_error", content = "this build expects: "..system_version})
+end
+
 
 
 -- starting userland programs (with blank untitled files)

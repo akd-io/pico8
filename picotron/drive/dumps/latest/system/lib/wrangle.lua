@@ -181,6 +181,7 @@ function wrangle_working_file(save_state, load_state, untitled_filename, get_hlo
 
 	untitled_filename = untitled_filename or "untitled.pod"
 	
+	
 	-- derive current_file
 	
 	cd(env().path)
@@ -216,7 +217,9 @@ function wrangle_working_file(save_state, load_state, untitled_filename, get_hlo
 	-- invoked directly from app menu, and by wm when about to run / save cartridge
 	on_event("save_file", function(msg)
 		-- can optionally 
-		if (msg.filename) current_filename = msg.filename
+		if (msg.filename) then
+			current_filename = msg.filename
+		end
 
 		-- refuse to save over external changes. to do: nicer way to handle this
 		if (stale_filename == current_filename) then
@@ -263,6 +266,12 @@ function wrangle_working_file(save_state, load_state, untitled_filename, get_hlo
 	on_event("save_file_as", function(msg)
 		
 		if (set_current_filename(msg.filename)) then
+
+			-- 0.1.0c: automatically add extension if none is given
+			if (not current_filename:ext() and untitled_filename:ext()) then
+				set_current_filename(current_filename.."."..untitled_filename:ext())
+			end
+
 			w:save()			
 			notify("saved as "..current_filename) -- show message even if cart file
 		end

@@ -48,38 +48,46 @@ do
 
 			"a" means the key with "a" written on it
 			e.g. the key to the right of tab on a typical azerty keyboard
-			defaults to raw key names (US), patched by /appdata/system/keycodes.pod
+			defaults to OS mapping, patched by /appdata/system/keycodes.pod
 			example: key"f" to flip sprite horiontally should respond to the key with "f" written on it
 
 		3. text entry  // readtext()
 
 			"a" is a unicode string triggered by pressing a when shift is not held (-> SDL_TEXTINPUT event)
-			ctrl-a or enter does not trigger a textinput event; need to read with mapped key names
-			defaults to host OS keyboard layout and text entry method; not currently configurable inside Picotron
+			ctrl-a or enter does not trigger a textinput event; need to read with mapped key names using key() + keyp()
+			defaults to host OS keyboard layout and text entry method; not configurable inside Picotron [yet?]
 	]]
 	
 
-	local name_to_scancode_raw =
-	{
-		a=4,b=5,c=6,d=7,e=8,f=9,g=10,h=11,i=12,j=13,k=14,l=15,m=16,n=17,o=18,p=19,q=20,r=21,s=22,t=23,u=24,v=25,w=26,x=27,y=28,z=29,
-		left=80,right=79,up=82,down=81,
-		lctrl=224,rctrl=228,lshift=225,rshift=229,lalt=226,ralt=230,
-		["1"]=30,["2"]=31,["3"]=32,["4"]=33,["5"]=34,["6"]=35,["7"]=36,["8"]=37,["9"]=38,["0"]=39,
-		f1 = 58, f2 = 59, f3 = 60, f4 = 61, f5 = 62, f6 = 63, f7 = 64, f8 = 65, f9 = 66, f10 = 67,
-		["<"]=54,[">"]=55, -- [","]=54,["."]=55, -- alternative names? feels like a bad idea. use most distinctive option
-
-		["["]=47,["]"]=48,["-"]=45,["+"]=46,["~"]=53,[":"]=51,["'"]=52,
-		--["\\"]=49, -- to do: why does this break esc on robot?
-		["/"]=56, [","]=54,["."]=55, 
-		space=44,tab=43,enter=40,pageup=75,pagedown=78,backspace=42,del=76,insert=73,home=74,["end"]=77,escape=41,
-
-		-- windows / command (apple) / meta
-		lgui=227, rgui=231
+	-- key names
+	-- derived from SDL2, but lower case, and "enter" instead of "return". Also "kp .." is "Keypad .." in sdl
+	-- "left control" is "lctrl" etc
+	local scancode_name = {
+	"", "", "", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", 
+	"m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "1", "2", 
+	"3", "4", "5", "6", "7", "8", "9", "0", "enter", "escape", "backspace", "tab", "space", "-", "=", "[", 
+	"]", "backslash", "#", ";", "'", "`", ",", ".", "/", "capslock", "f1", "f2", "f3", "f4", "f5", "f6", 
+	"f7", "f8", "f9", "f10", "f11", "f12", "printscreen", "scrolllock", "pause", "insert", "home", "pageup", "delete", "end", "pagedown", "right", 
+	"left", "down", "up", "numlock", "kp /", "kp *", "kp -", "kp +", "kp enter", "kp 1", "kp 2", "kp 3", "kp 4", "kp 5", "kp 6", "kp 7", 
+	"kp 8", "kp 9", "kp 0", "kp .", "<", "menu", "", "kp =", "", "", "", "", "", "", "", "f20", 
+	"f21", "f22", "f23", "f24", "execute", "help", "menu", "select", "stop", "again", "undo", "", "", "", "find", "", 
+	"", "", "", "", "", "kp ,", "kp = (as400)", "", "", "", "", "", "", "", "", "", 
+	"", "", "", "", "", "", "", "", "", "alterase", "right alt", "stop", "clear", "prior", "return", "separator", 
+	"out", "oper", "clear / again", "crsel", "exsel", "", "", "", "", "", "", "", "", "", "", "", 
+	"kp 00", "kp 000", "thousandsseparator", "decimalseparator", "currencyunit", "currencysubunit", "kp (", "kp )", "kp {", "kp }", "kp tab", "kp backspace", "kp a", "kp b", "kp c", "kp d", 
+	"kp e", "kp f", "kp xor", "kp ^", "kp %", "kp <", "kp >", "kp &", "kp &&", "kp |", "kp ||", "kp :", "kp #", "kp space", "kp @", "kp !", 
+	"kp memstore", "kp memrecall", "kp memclear", "kp memadd", "kp memsubtract", "kp memmultiply", "kp memdivide", "kp +/-", "kp clear", "kp clearentry", "kp binary", "kp octal", "kp decimal", "kp hexadecimal", "", "", 
+	"lctrl", "lshift", "lalt", "lgui", "rctrl", "rshift", "ralt", "rgui"
 	}
 
+	local name_to_scancode_raw = {}
+	for i=1,#scancode_name do
+		local name = scancode_name[i]
+		if (name ~= "") name_to_scancode_raw[name] = i
+	end
 
 	-- patch with /settings/scancodes
-	-- 57 for ctrl on robot. to do: allow multiple mappings?
+	-- e.g. store("/appdata/system/scancodes.pod", {lctrl=57}) to use capslock as lctrl
 
 	local patch_scancodes = fetch"/appdata/system/scancodes.pod"
 	if patch_scancodes then
@@ -88,36 +96,70 @@ do
 		end
 	end
 
-	local name_to_scancode0 = unpod(pod(name_to_scancode_raw))
-	local name_to_scancode  = unpod(pod(name_to_scancode_raw))
+	-------------------------------------------------------------------------
+	--	name_to_scancodes:  default host OS default mapping
+	--  each entry is a table of one or more scancodes that trigger it
+	-------------------------------------------------------------------------
+
+	local name_to_scancodes = {}
+
+	for i=1,255 do
+		local mapped_name = _get_key_from_scancode(i)
+		if (mapped_name and mapped_name ~= "") then
+			-- temporary hack -- convert from SDL names
+			mapped_name = mapped_name:lower()
+			if (mapped_name:sub(1,7) == "keypad ") mapped_name = "kp "..mapped_name:sub(8)
+			if (mapped_name:sub(1,5) == "left ") mapped_name = "l"..mapped_name:sub(6)
+			if (mapped_name:sub(1,6) == "right ") mapped_name = "r"..mapped_name:sub(7)
+			if (mapped_name == "return") mapped_name = "enter"
+
+--			printh("mapping "..mapped_name.." to "..i)
+
+			if (not name_to_scancodes[mapped_name]) name_to_scancodes[mapped_name] = {}
+
+			add(name_to_scancodes[mapped_name], i)
+
+		end
+	end
+
+	
+
+	--[[
+		to do: multiple mappings (on robot 57 and 224 should both trigger "lctrl")
+				--> can weave with virtual keys (lctrl, rctrl both trigger ctrl)
+		otherwise:
+			printh(_get_key_from_scancode("57")) 
+			printh(_get_key_from_scancode("224"))
+			printh(name_to_scancode["lctrl"])     -- 224, but only because greater
+	]]
+
+	-- patch keycodes
 
 	local patch_keycodes = fetch"/appdata/system/keycodes.pod"
 	if patch_keycodes then
 		for k,v in pairs(patch_keycodes) do
-			name_to_scancode[k] = name_to_scancode0[v] or v -- can use raw name or scancode directly
-			-- printh("mapping keycode "..k.." to "..name_to_scancode[k])
+			-- /replace/ existing table; can use keycodes.pod to turn off mappings
+			if (type(v) == "table") then
+				name_to_scancodes[k] = v
+			else
+				name_to_scancodes[k] = {name_to_scancode_raw[v] or v} -- can use raw name or scancode directly.
+			end
+			--printh("mapping keycode "..k.." to "..pod(name_to_scancodes[k]))
 		end
 	end
 
 	-- scancodes map to themselves unless explicitly remapped
-	-- (avoids an extra "or scancode" in get_scacode)
-
+	-- (avoids an extra "or scancode" in get_scancode)
 
 	for i=0,511 do
-		name_to_scancode[i]     = name_to_scancode[i]     or i
+		name_to_scancodes[i]    = name_to_scancodes[i] or {i}
 		name_to_scancode_raw[i] = name_to_scancode_raw[i] or i
 	end
 
-	-- backwards lookup (not currently used)
 
-	local scancode_to_name = {}
-	for k,v in pairs(name_to_scancode) do
-		scancode_to_name[v] = k
-	end
-
-
+	-- is allowed to return a table of scancodes that a key is mapped to
 	local function get_scancode(scancode, raw)
-		local scancode = (raw and name_to_scancode_raw or name_to_scancode)[scancode]
+		local scancode = (raw and name_to_scancode_raw or name_to_scancodes)[scancode]
 		--[[
 		if (scancode_blocked[scancode]) then
 			-- unblock when not down. to do: could do this proactively and not just when queried 
@@ -127,8 +169,6 @@ do
 		]]
 		return scancode
 	end
-
-
 
 	--[[
 
@@ -144,9 +184,24 @@ do
 
 	]]
 
-	function keyp(scancode, raw)
+	function keyp(scancode, raw, depth)
+
+--		if (scancode == "escape") printh("get_scancode(\"escape\"): "..get_scancode(escape))
 
 		scancode = get_scancode(scancode, raw)
+
+		if (type(scancode) == "table") then			
+			
+			if (#scancode == 1) then
+				-- common case: just process that single scancode
+				scancode = scancode[1]
+			else
+				if (depth == 1) return false -- eh?
+				local res = false
+				for i=1,#scancode do res = res or keyp(scancode[i], raw, 1) end
+				return res
+			end
+		end
 
 		-- keep returning same result until end of frame
 		if (frame_keypressed_result[scancode]) return frame_keypressed_result[scancode]
@@ -170,9 +225,11 @@ do
 	
 	
 	function key(scancode, raw)
+
 		-- to do: efficiency
 
 		-- "ctrl" is special -- can mean option key on apple (for option-c / ctrl-c means the same thing)
+		-- to do: move to scancode tables
 		if (scancode == "ctrl") then 
 		return 
 			key("lctrl") or key("rctrl") or 
@@ -182,6 +239,14 @@ do
 		if (scancode == "alt") then return key("lalt") or key("ralt") end
 
 		scancode = get_scancode(scancode, raw)
+		if (type(scancode) == "table") then
+			local res = false
+			for i=1,#scancode do 
+				if (key_state[scancode[i]]) return true
+			end
+			return false
+		end
+
 		return key_state[scancode]
 	end
 
@@ -190,7 +255,14 @@ do
 	-- clear state until end of frame
 	-- (mapped keys only -- can't be used with raw scancodes)
 	function clear_key(scancode)
+
 		scancode = get_scancode(scancode)
+
+		if (type(scancode) == "table") then
+			for i=1,#scancode do clear_key(scancode[i]) end
+			return
+		end
+
 		frame_keypressed_result[scancode] = nil
 		key_state[scancode] = nil
 	end

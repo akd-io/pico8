@@ -10,8 +10,76 @@ version 2
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 :: data.lua
---[[pod_format="raw",created="2023-36-24 00:36:58",modified="2024-03-14 13:11:30",revision=6685,stored="2023-36-29 04:36:40"]]
+--[[pod_format="raw",created="2023-36-24 00:36:58",modified="2024-03-26 19:03:46",revision=6941,stored="2023-36-29 04:36:40"]]
 function init_data()
 	
 	-- index (0x30000)
@@ -524,7 +592,7 @@ end
 :: gfx/
 :: gfx/0.gfx
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTMwLTIyIDA3OjMwOjA0Iixtb2RpZmllZD0iMjAyNC0w
-My0xNCAxMzoxMTozMCIscmV2aXNpb249NzAyMixzdG9yZWQ9IjIwMjMtMzYtMjkgMDQ6MzY6NDAi
+My0yNiAxOTowMzo0NiIscmV2aXNpb249NzI2NyxzdG9yZWQ9IjIwMjMtMzYtMjkgMDQ6MzY6NDAi
 XV1sejQAcgUAAEc2AADxCntbMF09e2JtcD1weHUAQyAFBQQgBzAHAEcGAPEBLGZsYWdzPTAscGFu
 X3g9NggA2nk9LTQsem9vbT04fSw7AFcnABcABwQAHydBAB2-BwA3MAcgBzA3AAc7AB0wEAcgfwBP
 JyAHQDsAH38wB4AHMAcQOQAaWxAQBPDwMgATMDIAHzAxAAVwERcQFyAnQOQA8AMXMCcQFxAn8AQH
@@ -554,7 +622,7 @@ D1YAHWOQB1AXEFehAC8HkD8AHSKAB9QAfwBXEBdQB6A-AB0zcEcQAgAfcDsADQ_6AR4PMQD-----
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTUwLTE5IDE2OjUwOjA3IixzdG9yZWQ9IjIwMjMtNTAt
 MTkgMTY6NTA6MDciXV1sejQABAAAAAMAAAAwbmls
 :: gui.lua
---[[pod_format="raw",created="2023-32-22 07:32:11",modified="2024-03-14 13:11:30",revision=7744,stored="2023-36-29 04:36:40"]]
+--[[pod_format="raw",created="2023-32-22 07:32:11",modified="2024-03-26 19:03:46",revision=8039,stored="2023-36-29 04:36:40"]]
 
 function create_pane(title, x, y, w, h, col)
 
@@ -758,9 +826,12 @@ function generate_gui_track()
 	track_pane:attach(create_octave_chooser( 75,1))
 	track_pane:attach(create_volume_chooser(145,1))
 	
-	track_pane:attach(create_tiny_num_field("spd",  track_addr + 2,250,1))
-	track_pane:attach(create_tiny_num_field("loop0",track_addr + 3,300,1))
-	track_pane:attach(create_tiny_num_field("loop1",track_addr + 4,346,1))
+-- is not just play length -- dictates how data is arranged (stride between columns)
+--	track_pane:attach(create_tiny_num_field("len",  track_addr + 0,230,1,  1,64))
+
+	track_pane:attach(create_tiny_num_field("spd",  track_addr + 2,260,1))
+	track_pane:attach(create_tiny_num_field("loop0", track_addr + 3,310,1))
+	track_pane:attach(create_tiny_num_field("loop1",track_addr + 4,360,1))
 	
 	
 	-- 8 segments of same track
@@ -772,16 +843,13 @@ function generate_gui_track()
 		})
 	end
 	
-	gui:attach(create_pane("\f6pitch ",xx,90,384,86,0x1000))
+	gui:attach(create_pane("\f6pitch ",xx,90,384,88,0x1000))
 		:attach(create_pitch_scribbler{
-			x=0,y=10,width=384,height=74,addr=track_addr + 8,stride=64})
+			x=0,y=10,width=384,height=76,addr=track_addr + 8,stride=64})
 	
-	gui:attach(create_pane("\f6volume ",xx,178,384,70,0x1000))
+	gui:attach(create_pane("\f6volume ",xx,180,386,76,0x1000))
 		:attach(create_volume_scribbler{
-			x=0,y=10,width=384,height=60,addr=track_addr + 8 + 128,stride=64})
-	
-	
-	
+			x=0,y=10,width=384,height=66,addr=track_addr + 8 + 128,stride=64})
 	
 end
 
@@ -1118,7 +1186,7 @@ end
 
 
 :: inst.lua
---[[pod_format="raw",created="2023-16-27 18:16:38",modified="2024-03-14 13:11:30",revision=2213]]
+--[[pod_format="raw",created="2023-16-27 18:16:38",modified="2024-03-26 19:03:46",revision=2486]]
 
 -- 0x1702
 local node_type_col = {
@@ -1976,7 +2044,7 @@ end
 
 
 :: main.lua
---[[pod_format="raw",created="2023-30-22 07:30:04",modified="2024-03-14 13:11:30",revision=7170,stored="2023-36-29 04:36:40"]]
+--[[pod_format="raw",created="2023-30-22 07:30:04",modified="2024-03-26 19:03:46",revision=7433,stored="2023-36-29 04:36:40"]]
 	--[[
 	Picotron Tracker
 	(c) Lexaloffle Games LLP
@@ -2021,8 +2089,7 @@ function _init()
 				end
 			end
 		end,
-		"/desktop/sfxdev2.sfx"		
-		--"/ram/cart/sfx/0.sfx"
+		"/ram/cart/sfx/0.sfx"
 	)
 
 	-- current instrument, node, pattern, track
@@ -2110,7 +2177,8 @@ function _draw()
 	-- custom display palette
 	-- at end.. something in :draw_all() probably calls pal()
 	poke4(0x5000+32*4, 0x202020)
-	--poke4(0x5000+33*4, 0x101010)
+	
+	--poke4(0x5000+32*4, 0xf020f0) -- debug flashing
 	
 	-- print(string.format("cpu:%3.3f",stat(1)),440,250,7)
 	--draw_mudo_state(380,200)
@@ -2152,11 +2220,18 @@ MTkgMTY6NTA6MDciXV1sejQABAAAAAMAAAAwbmls
 
 :: sfx/
 :: sfx/0.sfx
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTI0LTI4IDIzOjI0OjU0Iixtb2RpZmllZD0iMjAyNC0w
-My0xNCAxMzoxMTozMCIscmV2aXNpb249MTc1OV1dbHo0AJMAAADHBgAA-wFweHUAAygAAAMABPD5
-AfD-AQDr-yfmARAGDyAQASABIAHwAAIQAg4QASAPISABMA9A8MMPKA--8MYP_AoP-w_AD-cPDQHw
-CQEQBg4wAP85H-8BANz-HPgPQAAMBgggDzcPMg80DzUPNw85DzsfPP--J4H9J479J-BwD0AADxBA
--bAKAP--XB--AQCXUP----8f
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTI0IDE2OjIwOjA4Iixtb2RpZmllZD0iMjAyNC0w
+My0yNiAxOTowMzo0NiIscmV2aXNpb249MjExXV1sejQAJAIAANYHAADwJ3B4dQADKAAAAwAED0AQ
+Ag4AAaABIAKgDgAPEAAN8MoBAgMEBQYHAA--kAgJCgsPDA8NDw4PDxAA8AANDxEPEg8TDxQPFQ8W
+DxcTAPEBDxgPGQ8aDxsPHA8dDx4PHxQA8QAgDyEPIg8jDyQPJQ8mDycUAPEAKA8pDyoPKw8sDy0P
+Lg8vFADxADAPMQ8yDzMPNA81DzYPNxQA-wU4DzkPOg87DzwPPQ8_Dz8AD--w-wEA6-8nWgEQBg8g
+EAEgASAB8AACEAIMEAEgDyEgATAPQPDDDygP--DGD-gKD-8PgA-3Dw0B8AkBEAYMMAD-OR--AQDc
+8I74D0AABQ0wD1QPVQ9Sj1EPTw9MD0cPQA8tDycPHg8ZDxMPEU8P--8V8Qv_FQ9CD0APPQ87DzoP
+OA83DzYPNR80DzMPMg8xDzAPLw8uDy0PLA8rHyoPKQ8oHycPEg8PCQUCAWAIBg8bDxofGA8XDxUP
+Ew8SDxENDw8fDg8MCwoZSPBwD0AADUD_CB8wDzIPNA8yDzAPJA8mDygODycPEwAABgAFCgD0GP4O
+P_AeIw0MDzAeMQ8hD6EhDpH_HHwPOg89DzgPLw8qDyUfIjz_BFUAT7DwcAQIABj1JQ8wDzYPOg9B
+D0UPSA9CDzIPKx8nDyoPMQ88D0MPRw9ND1APUQ9GDzkPNf4a8Qb_GvwG-ho6AL4yDzT_LSH_LSz_
+LV4ADwgA-40f-wEAl1D-----Hw==
 :: sfx/test.sfx
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTE4LTA0IDEyOjE4OjUzIixtb2RpZmllZD0iMjAyNC00
 My0wNSAxNDo0MzowNyIscmV2aXNpb249MTE3XV1sejQAkQAAAMoGAADfcHh1AAMoAAADAATw-wEA
@@ -2167,7 +2242,7 @@ AP--XB--AQCXUP----8f
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTIzLTI4IDIzOjIzOjIxIixzdG9yZWQ9IjIwMjMtMjMt
 MjggMjM6MjM6MjEiXV1sejQABAAAAAMAAAAwbmls
 :: track.lua
---[[pod_format="raw",created="2023-49-27 18:49:18",modified="2024-03-14 13:11:30",revision=3055]]
+--[[pod_format="raw",created="2023-49-27 18:49:18",modified="2024-03-26 19:03:46",revision=3350]]
 --[[
 
 	track editor
@@ -2175,11 +2250,12 @@ MjggMjM6MjM6MjEiXV1sejQABAAAAAMAAAAwbmls
 ]]
 
 
-function create_tiny_num_field(label,addr,x,y)
+function create_tiny_num_field(label,addr,x,y,  vmin, vmax)
 	local el={
 		x=x,y=y,
 		width=15,height=14,
-		label=label,addr=addr
+		label=label,addr=addr,
+		vmin=vmin, vmax=vmax
 	}
 	
 	function el:draw()
@@ -2198,14 +2274,19 @@ function create_tiny_num_field(label,addr,x,y)
 		local str=tostr(val)
 		print(str,14-#str*4,yy+1,3)
 		
-		print(self.label,-(2+#self.label*4),yy+1,6)
+		local label = self.label
+		if (label == "loop0" and peek(self.addr+1) <= val) label = "len"
+		print(label,-(2+#label*4),yy+1,6)
 
 	end
 	
 	function el:drag(msg)
 		local val=peek(self.addr)
 		val += msg.dx - msg.dy
-		val = mid(0,val,255)
+		local vmin = el.vmin or 0
+		local vmax = el.vmax or 255
+		
+		val = mid(vmin,val,vmax)
 		poke(self.addr, val)
 	end
 	
@@ -2350,6 +2431,8 @@ function create_track_segment(el)
 		
 		local i=(msg.my-2)\row_h
 		cur_y = base_addr + i
+		ct = el.index
+		
 		--	printh(string.format("base_addr: %x i: %d", base_addr, i))
 		
 		
@@ -2380,6 +2463,11 @@ function create_pitch_scribbler(el)
 				rectfill(xx+1, yy, xx + 4, yy+1 , 8 + inst%24)
 			end
 		end
+		local track_addr = 0x50000 + ct * 328
+		local xx = peek(track_addr+3)*6
+		if (xx>0) line(xx,0,xx,self.height,12)
+		local xx1 = peek(track_addr+4)*6
+		if (xx1>xx) line(xx1,0,xx1,self.height,14)
 	end
 	
 	function el:drag(msg)
@@ -2425,6 +2513,41 @@ function update_track_editor()
 	local row0_addr = 0x50000 + (ct * 328) + 8
 	local stride = 64
 	local max_addr = row0_addr + 63
+	
+	-- can play even when cursor is not in range
+	if (keyp("space")) then
+		if (something_is_playing) then
+			-- stop all audio when something was playing
+			note()
+		else
+		
+			local start_row = 0
+			-- to do: setting to play from cursor instead of group of 8
+			if (key"shift") then
+				-- safety; condition always true
+				if (cur_y > row0_addr) start_row = (cur_y-row0_addr) & ~0x7
+			end
+			
+			-- play on channel 0
+			if (mode == "track") sfx(ct, 0, start_row, 0)
+			if (mode == "pattern") music(cp)
+		end
+	end
+		
+	
+	-- to do: cur_y per track
+	-- cursor isn't in current track; don't allow editing
+	
+	if (cur_y < row0_addr or cur_y >= row0_addr + 64) then
+	
+		readtext(true) -- consume (and ignore) any text entry
+
+		--------------------------------------
+		return	 
+		--------------------------------------
+	end
+	
+
 	
 	if key"ctrl" then
 	
@@ -2506,39 +2629,20 @@ function update_track_editor()
 	
 		local c = readtext()
 		
-		if (c == " ") then
 		
-			if ((keyp"space" or keyp"enter") and something_is_playing) then
-			
-				-- stop all audio when something was playing
-				note()
-				
-			else
-			
-				local start_row = 0
-				-- to do: setting to play from cursor instead of group of 8
-				if (key"shift") then
-					-- safety; condition always true
-					if (cur_y > row0_addr) start_row = (cur_y-row0_addr) & ~0x7
-				end
-				
-				-- play on channel 0
-				if (mode == "track") sfx(ct, 0, start_row, 0)
-				if (mode == "pattern") music(cp)
-				
-			end
-		end
 		
 		
 		-- fx
-		if (cur_x == 6) then
+		if (cur_x >= 6) then
 			
 			-- only PICO-8 effects
+			--[[
 			if (c >= "0" and c <= "7") or c=="." then
 				poke(cur_y + q*3, (c == "." or c == "0") and 0 or ord(c))
 				cur_y += 1
 			end
-		
+			]]
+			notify("[tracker effects coming soon!]")
 		else
 
 			local num = nil
@@ -2623,7 +2727,7 @@ end
 
 
 :: update.lua
---[[pod_format="raw",created="2023-32-22 07:32:11",modified="2024-03-14 13:11:30",revision=7169,stored="2023-36-29 04:36:40"]]
+--[[pod_format="raw",created="2023-32-22 07:32:11",modified="2024-03-26 19:03:46",revision=7432,stored="2023-36-29 04:36:40"]]
 global_t = 0
 
 -- map keyboard letters to pitches
@@ -2686,16 +2790,16 @@ function _update()
 			note(
 				pitch, -- pitch
 				ci,    -- inst
-				64,    -- volume
+				cvol,    -- volume
 				0,0,   -- effect, effect_p
-				0,     -- channel index
-				false  -- don't retrigger				
+				8,     -- channel index -- 8 so that can play with music
+				false  -- don't force retrigger (retrigger when pitch/inst changes)		
 				)
 		else
 			-- release
-			if stat(464) == 0 then -- not playing a sfx on any channel
-				note(0xff, 0xff, 0xff, 0xff, 0xff, 0)
-			end
+			--if stat(464) == 0 then -- not playing a sfx on any channel
+				note(0xff, 0xff, 0xff, 0xff, 0xff, 8)
+			--end
 		end
 		
 	end
@@ -2792,13 +2896,15 @@ MTAxMDcwZDA3MDcwZDBkMDcwZDBkMGQwZDBkMGQwNzAxMDEwNzBkMDcwNzBkMGQwZDA3MGQwZDBk
 MGQwZDA3MDEwMTA3MGQwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMDcwMTAxMDYwNzBkMGQwZDBkMGQw
 ZDBkMGQwZDBkMDcwNjAxMDEwNjA2MDcwNzA3MDcwNzA3MDcwNzA3MDcwNjA2MDEwMDAxMDYwNjA2
 MDYwNjA2MDYwNjA2MDYwNjA2MDEwMDAwMDAwMTA2MDYwNjA2MDYwNjA2MDYwNjA2MDEwMDAwMDAw
-MDAwMDEwMTAxMDEwMTAxMDEwMTAxMDEwMDAwMDAiKSxub3Rlcz0iIixzdG9yZWQ9IjIwMjQtMDMt
-MTQgMTM6MTE6MzAiLHRpdGxlPSJQaWNvdHJvbiBUcmFja2VyXDAwOSIsdmVyc2lvbj0iMC4xIix3
-b3Jrc3BhY2VzPXt7bG9jYXRpb249Im1haW4ubHVhIzEzNyIsd29ya3NwYWNlX2luZGV4PTF9LHts
-b2NhdGlvbj0idXBkYXRlLmx1YSMzMyIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0iZ3Vp
-Lmx1YSM4Iix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJ0cmFjay5sdWEjMzM4Iix3b3Jr
-c3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJkYXRhLmx1YSM5Iix3b3Jrc3BhY2VfaW5kZXg9MX0s
-e2xvY2F0aW9uPSJpbnN0Lmx1YSMyMyIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0iZ2Z4
-LzAuZ2Z4Iix3b3Jrc3BhY2VfaW5kZXg9Mn0se2xvY2F0aW9uPSJzZngvMC5zZngiLHdvcmtzcGFj
-ZV9pbmRleD00fX1dXWx6NAAEAAAAAwAAADBuaWw=
+MDAwMDEwMTAxMDEwMTAxMDEwMTAxMDEwMDAwMDAiKSxub3Rlcz0iIixydW50aW1lPTQsc3RvcmVk
+PSIyMDI0LTAzLTI2IDE5OjAzOjQ2Iix0aXRsZT0iUGljb3Ryb24gVHJhY2tlclwwMDkiLHZlcnNp
+b249IjAuMSIsd29ya3NwYWNlcz17e2xvY2F0aW9uPSJtYWluLmx1YSMxNiIsd29ya3NwYWNlX2lu
+ZGV4PTF9LHtsb2NhdGlvbj0idXBkYXRlLmx1YSM2NiIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2Nh
+dGlvbj0iZ3VpLmx1YSMxOTUiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249InRyYWNrLmx1
+YSMyMjMiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249ImRhdGEubHVhIzkiLHdvcmtzcGFj
+ZV9pbmRleD0xfSx7bG9jYXRpb249Imluc3QubHVhIzExIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xv
+Y2F0aW9uPSJnZngvMC5nZngiLHdvcmtzcGFjZV9pbmRleD0yfSx7bG9jYXRpb249InNmeC8wLnNm
+eCIsd29ya3NwYWNlX2luZGV4PTR9LHtsb2NhdGlvbj0ic2Z4LzAuc2Z4Iix3b3Jrc3BhY2VfaW5k
+ZXg9NH0se2xvY2F0aW9uPSJzZngvMC5zZngiLHdvcmtzcGFjZV9pbmRleD03fX1dXWx6NAAEAAAA
+AwAAADBuaWw=
 :: [eoc]

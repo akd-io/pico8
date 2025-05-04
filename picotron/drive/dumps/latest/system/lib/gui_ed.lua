@@ -1387,6 +1387,7 @@ function attach_text_editor(g, parent)
 
 
 	function content:click(msg)
+		self:set_keyboard_focus(true)
 		local cy = find_cur_y_for_click(msg.my)
 		if (cy ~= cur_y) checkpoint()
 		cur_y = mid(1, cy, #text)

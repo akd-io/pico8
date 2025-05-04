@@ -859,8 +859,10 @@ do
 				start_my = my
 				start_el = el -- to do: use this to discard some interactions that should start and end on the same element (no gui refresh midway)
 				drag_t = time()
-				dragging_el = el
-				-- gui.keyboard_focus_el = el -- commented: need to explicitly set
+				dragging_el = el	
+				-- commented: need to explicitly set, so that it is possible to know if there 	
+				-- is an element that is actively consuming keyboard input via gui:get_keyboard_focus_element
+				--gui.keyboard_focus_el = el 
 				el.last_click_t = time()
 				msg.event="click" el:event(msg)
 			end

@@ -2,7 +2,7 @@ picotron cartridge // www.picotron.net
 version 2
 
 :: canvas.lua
---[[pod_format="raw",created="2023-04-11 02:04:02",modified="2024-03-21 19:04:38",revision=2641]]
+--[[pod_format="raw",created="2023-04-11 02:04:02",modified="2024-03-23 19:41:53",revision=2644]]
 
 local ww,hh=0,0
 local fill_cpu=0
@@ -582,7 +582,7 @@ end
 
 
 :: draw.lua
---[[pod_format="raw",created="2023-26-12 03:26:20",modified="2024-03-21 19:04:38",revision=1565]]
+--[[pod_format="raw",created="2023-26-12 03:26:20",modified="2024-03-23 19:41:53",revision=1568]]
 function _draw()
 	cls(5)
 	-- operations during _update can request a
@@ -608,7 +608,7 @@ end
 
 
 :: gui.lua
---[[pod_format="raw",created="2023-05-11 02:05:16",modified="2024-03-21 19:04:38",revision=2375]]
+--[[pod_format="raw",created="2023-05-11 02:05:16",modified="2024-03-23 19:41:53",revision=2378]]
 
 show_pane = true
 
@@ -807,7 +807,7 @@ end
 
 
 :: main.lua
---[[pod_format="raw",created="2023-04-11 02:04:54",modified="2024-03-21 19:04:38",revision=2424]]
+--[[pod_format="raw",created="2023-04-11 02:04:54",modified="2024-03-23 19:41:53",revision=2427]]
 --[[
 	m6: multiple sprite banks
 	
@@ -1048,7 +1048,7 @@ on_event("set_palette",
 
 
 :: nav.lua
---[[pod_format="raw",created="2023-18-11 02:18:48",modified="2024-03-21 19:04:38",revision=3156]]
+--[[pod_format="raw",created="2023-18-11 02:18:48",modified="2024-03-23 19:41:53",revision=3160]]
 --[[
 	navigate sprite bank
 ]]
@@ -1686,7 +1686,7 @@ end
 
 
 :: update.lua
---[[pod_format="raw",created="2023-45-10 07:45:26",modified="2024-03-21 19:04:38",revision=2085]]
+--[[pod_format="raw",created="2023-45-10 07:45:26",modified="2024-03-23 19:41:53",revision=2088]]
 
 -- update layout without needing to regenerate gui
  -- to do: could also use this for handling changes in display size
@@ -1838,7 +1838,7 @@ end
 		window{capture_escapes = false}	
  	end
  	
-  	-- layer name editor has focus -> ignore other input
+  	-- layer name editor (or something else) has kbd focus -> ignore other input
  --	if (layer_name_editor or field_editor) return
  	if (gui:get_keyboard_focus_element()) return
 	-------------------------------------------------------------
@@ -1969,9 +1969,9 @@ MGQwZDA3MDEwMTA3MGQwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMDcwMTAxMDYwNzBkMGQwZDBkMGQw
 ZDBkMGQwZDBkMDcwNjAxMDEwNjA2MDcwNzA3MDcwNzA3MDcwNzA3MDcwNjA2MDEwMDAxMDYwNjA2
 MDYwNjA2MDYwNjA2MDYwNjA2MDEwMDAwMDAwMTA2MDYwNjA2MDYwNjA2MDYwNjA2MDEwMDAwMDAw
 MDAwMDEwMTAxMDEwMTAxMDEwMTAxMDEwMDAwMDAiKSxub3Rlcz0iIixzdG9yZWQ9IjIwMjQtMDMt
-MjEgMTk6MDQ6MzgiLHRpdGxlPSJQaWNvdHJvbiBNYXAgRWRpdG9yIix2ZXJzaW9uPSIwLjEiLHdv
+MjMgMTk6NDE6NTQiLHRpdGxlPSJQaWNvdHJvbiBNYXAgRWRpdG9yIix2ZXJzaW9uPSIwLjEiLHdv
 cmtzcGFjZXM9e3tsb2NhdGlvbj0ibWFpbi5sdWEjNzciLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9j
-YXRpb249InVwZGF0ZS5sdWEjMTU0Iix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJndWku
+YXRpb249InVwZGF0ZS5sdWEjMTUyIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJndWku
 bHVhIzQ0Iix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJjYW52YXMubHVhIzk2Iix3b3Jr
 c3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJkcmF3Lmx1YSMxIix3b3Jrc3BhY2VfaW5kZXg9MX0s
 e2xvY2F0aW9uPSJuYXYubHVhIzEwMiIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0iZ2Z4
@@ -1979,5 +1979,5 @@ LzAuZ2Z4Iix3b3Jrc3BhY2VfaW5kZXg9Mn0se2xvY2F0aW9uPSJnZngvMGIuZ2Z4Iix3b3Jrc3Bh
 Y2VfaW5kZXg9Mn0se2xvY2F0aW9uPSJtYXAvMC5tYXAiLHdvcmtzcGFjZV9pbmRleD0zfSx7bG9j
 YXRpb249Im1hcC8wLm1hcCIsd29ya3NwYWNlX2luZGV4PTN9LHtsb2NhdGlvbj0ibWFwLzAubWFw
 Iix3b3Jrc3BhY2VfaW5kZXg9M30se2xvY2F0aW9uPSJtYXAvMC5tYXAiLHdvcmtzcGFjZV9pbmRl
-eD03fX1dXWx6NAAEAAAAAwAAADBuaWw=
+eD0zfX1dXWx6NAAEAAAAAwAAADBuaWw=
 :: [eoc]

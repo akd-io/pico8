@@ -121,8 +121,8 @@ sfx_delay = 1200
 r = fetch"/system/misc/boot.sfx"
 
 
-for i=0,2 do
-	poke(0x30000+i*0x10000, get(r,i*0x10000,0x10000))
+for i=0,0x2ff do
+	poke(0x30000+i*0x100, get(r,i*0x100,0x100))
 end
 
 

@@ -120,6 +120,12 @@ function create_process(prog_name, env_patch, do_debug)
 		string.sub(prog_name,-8) == ".p64.png"
 	then
 		boot_file ..= "/main.lua"
+
+		-- only check runtime on carts; not stored on lua files
+		local meta = fetch_metadata(prog_name)
+		if (meta and type(meta.runtime) == "number" and meta.runtime > stat(5)) then
+			notify("** warning: running cartridge with future runtime version **")
+		end
 	end
 
 --	printh("create_process "..prog_name.." ("..boot_file..") env: "..pod(env_patch))
@@ -885,12 +891,14 @@ end
 	
 	-- only for holding reference
 	local userdata_ref = {}
-	
+	local _current_map = nil
+
 	function memmap(addr, a, offset, len)
 
 		if (_map_ram(addr, a, offset, len)) then
 			if (a) then
 				userdata_ref[a] = a
+				if (addr == 0x100000) _current_map = a
 			end
 		end
 

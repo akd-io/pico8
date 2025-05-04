@@ -44,6 +44,12 @@ for i=1,12 do flip() end
 send_message(3, {event="save_open_locations_metadata"})
 for i=1,4 do flip() end
 
+
+-- set runtime version metadata
+-- when loading a cartridge, runtime should be greater or equal to this
+-- (splore: refuse to run; otherwise: show a warning)
+store_metadata("/ram/cart", {runtime = stat(5)})
+
 -- copy /ram/cart to present working cartridge
 local result = cp("/ram/cart", save_as)
 

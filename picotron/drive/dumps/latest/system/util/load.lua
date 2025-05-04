@@ -71,8 +71,16 @@ send_message(3, {event="clear_project_workspaces"})
 
 
 
-dat = fetch_metadata("/ram/cart")
-if (dat) dat = dat.workspaces
+meta = fetch_metadata("/ram/cart")
+
+if (meta and type(meta.runtime) == "number" and meta.runtime > stat(5)) then
+	print("** warning: this cart was created using a future version of picotron.")
+	print("** some functionality might be broken or behave differently.")
+	print("** please upgrade to the latest version of picotron.")
+end
+
+
+if (meta) dat = meta.workspaces
 
 --[[ deleteme
 	dat = fetch("/ram/cart".."/.workspaces.pod")

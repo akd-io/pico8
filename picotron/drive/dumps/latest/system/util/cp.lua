@@ -83,8 +83,8 @@ then
 else
 	print("copying "..src.." to "..dest)
 
-	local res = cp(src, dest)
-	?res
+	local err = cp(src, dest)
+	if (err) print(err)
 
 end
 
