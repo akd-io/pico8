@@ -1,16 +1,10 @@
 # `_signal()` Documentation
 
-When patching `/system/wm.lua`, it is possible to call `_signal()` which is otherwise inaccessible to user scripts.
-
-TODO: Test if it's accessible in `pm.lua` too.
-
-For example, adding a `_signal(33)` call to the start of `/system/wm.lua`, and restarting `wm.lua` with `send_message(2, { event = "restart_process", proc_id = 3 })` will shutdown Picotron.
+The `_signal()` function is accessible by un-jettisoned scripts. It is similar to `stat()` but is used to send signals back to the picotron app instead of reading values from it.
 
 This document will try to document every `_signal()` code.
 
 ## Results
-
-List of all `_signal()` calls found in the source code.
 
 - `_signal(16)`
   - Starts and stops audio capture.
@@ -68,157 +62,178 @@ List of all `_signal()` calls found in the source code.
 
 Search term: `_signal(`
 
-Files to include: `picotron/drive/`
+Files to include: `picotron/drive/dumps/0.2.0d/system`
 
-Context lines: `0`
+Context lines: `1`
 
 ```
-105 results - 17 files
+40 results - 7 files
 
-picotron/drive/dumps/ram/mount/gfrbswob/system/startup.lua:
+picotron/drive/dumps/0.2.0d/system/startup.lua:
+  106  	flip()
   107: 	if (stat(988) > 0) bypass = true _signal(35)
+  108  end
+
+  200  		-- printh("** sending signal 39: disabling mounting **")
   201: 		_signal(39)
+  202  	end
 
-picotron/drive/dumps/ram/mount/gfrbswob/system/lib/app_menu.lua:
+picotron/drive/dumps/0.2.0d/system/lib/app_menu.lua:
+  87  			--send_message(_pid(), {event = "unpause"})
   88: 			_signal(23) -- block all buttons until released
+  89  			send_message(3, {event = "close_pause_menu"}) -- only applies to fullscreen apps
 
-picotron/drive/dumps/ram/mount/gfrbswob/system/lib/events.lua:
+picotron/drive/dumps/0.2.0d/system/lib/events.lua:
+  303  			-- update: nah -- too much magic and not that useful. better to do explicitly in _update() (e.g. ignore button presses while ctrl held)
   304: 			-- _signal(23)
+  305
+
+  380  		-- block buttons
   381: 		_signal(23)
+  382
+
+  460  			sandbox_clipboard_text = _get_userland_clipboard_text() -- ctrl-v taken as permission to transfer from userland clipboard to sandbox
   461: 			_signal(23) -- also: block buttons. Don't want the "v" press to pass through as a button press
+  462  		end
 
-picotron/drive/dumps/ram/mount/gfrbswob/system/lib/fs.lua:
+picotron/drive/dumps/0.2.0d/system/lib/fs.lua:
+   876  		if (type(obj) == "string" and ext and ext:is_cart()) then
    877: 			_signal(40)
+   878  				_rm(location:path()) -- unmount existing cartridge // to do: be more efficient
    879: 			_signal(41)
+   880  			return _store_local(location, obj)
+
+  1019  		if (f1:prot()) return -- rm not supported by protocols yet
   1020: 		_signal(40)
+  1021  			local ret = _rm(f1, 0, 0) -- atomic operation
   1022: 		_signal(41)
+  1023  		return ret
+
+  1128
   1129: 		_signal(40) -- 0.1.1e compound op lock (prevent flushing cart halfway through moving)
+  1130  			local res = _cp(src, dest, true, nil, bbs_id) -- atomic operation
   1131: 		_signal(41)
+  1132  		if (res) return res -- copy failed
+
+  1134  		-- copy completed -- safe to delete src
   1135: 		_signal(40)
+  1136  			_rm(src)
   1137: 		_signal(41)
+  1138  	end
+
+  1148
   1149: 		_signal(40) -- 0.1.1e: lock flushing for compound operation; don't want to e.g. store a cart on host that is halfway through being copied
+  1150  			local ret0, ret1 = _cp(src, dest, nil, nil, bbs_id) -- atomic operation
   1151: 		_signal(41) -- unlock
+  1152  		return ret0, ret1
 
-picotron/drive/dumps/ram/mount/gfrbswob/system/lib/head.lua:
-  454: 		_signal(38) -- start of userland code (for memory accounting)
+picotron/drive/dumps/0.2.0d/system/lib/head.lua:
+  456
+  457: 		_signal(38) -- start of userland code (for memory accounting)
+  458
 
-picotron/drive/dumps/ram/mount/gfrbswob/system/pm/pm.lua:
+picotron/drive/dumps/0.2.0d/system/pm/pm.lua:
+   17  	-- headless script: shutdown when no userland processes remaining
    18: 	if (stat(315) > 0 and #_get_process_list() <= 3) _signal(33)
-   22: 	if (stat(317) > 0 and #_get_process_list() <= 3) _signal(33)
-  113: 		_signal(33)
-  119: 		_signal(34)
-  125: 		_signal(65)
-  159: 		_signal(42)
+   19
 
-picotron/drive/dumps/ram/mount/gfrbswob/system/wm/wm.lua:
+   21  	-- to do: this test no longer works
+   22: 	if (stat(317) > 0 and #_get_process_list() <= 3) _signal(33)
+   23
+
+  112  	function()
+  113: 		_signal(33)
+  114  	end
+
+  118  	function()
+  119: 		_signal(34)
+  120  	end
+
+  124  	function()
+  125: 		_signal(65)
+  126  	end
+
+  158
+  159: 		_signal(42)
+  160
+
+picotron/drive/dumps/0.2.0d/system/wm/wm.lua:
+   635
    636: 	--_signal(36) -- finished loading core processes  (deleteme -- shouldn't need)
+   637  	--flip()
+
+   848
    849: 	_signal(23) -- block buttons
+   850
+
+  2233  					if (last_fullscreen_workspace) set_workspace(last_fullscreen_workspace)
   2234: 					_signal(37)
+  2235  					sent_presentable_signal = true
+
+  2242  				if (last_desktop_workspace) set_workspace(last_desktop_workspace)
   2243: 				_signal(37)
+  2244  				sent_presentable_signal = true
+
+  2249  		if (t() > 7.0) then
   2250: 			_signal(37)
+  2251  			sent_presentable_signal = true
+
+  2551  	if (key("ctrl") and dkeyp("q")) then
   2552: 		if (sdat.fastquit) _signal(33)
+  2553  	end
+
+  2556  	if (key("alt") and dkeyp("f4")) then
   2557: 		_signal(33)
+  2558  	end
+
+  2718  		if (key("ctrl") and dkeyp("9") or stat(321) >= max_gif_frames()) then
   2719: 			_signal(19)
+  2720  		end
+
+  2724  	if (key("ctrl") and dkeyp("0")) then
   2725: 		if (not fstat("/desktop/host")) _signal(65)
   2726: 		_signal(16) -- placeholder mechanism
+  2727  	end
+
+  3032  		if (not screensaver_proc_id) then
   3033: 			_signal(22) -- stay awake
+  3034  		end
+
+  3607
   3608: 	if (not fstat("/desktop/host")) _signal(65)
+  3609
+
+  3626
   3627: 	_signal(18)
+  3628  end
+
+  3633
   3634: 	if (not fstat("/desktop/host")) _signal(65)
+  3635
+
+  3651
   3652: 	_signal(21)
-  3920: 		add(item, {"\^:06ff81b5b181ff00 End Recording", function() _signal(19) end})
-  3957: 	--	add(item, {"\^:00387f7f7f7f7f00 Host Desktop", function() _signal(65) end})
+  3653  end
 
-picotron/drive/dumps/system/startup.lua:
-  107: 	if (stat(988) > 0) bypass = true _signal(35)
-  201: 		_signal(39)
+  3924  	if (stat(320) > 0) then
+  3925: 		add(item, {"\^:06ff81b5b181ff00 End Recording", function() _signal(19) end})
+  3926  	else
 
-picotron/drive/dumps/system/lib/app_menu.lua:
-  88: 			_signal(23) -- block all buttons until released
-
-picotron/drive/dumps/system/lib/events.lua:
-  304: 			-- _signal(23)
-  381: 		_signal(23)
-  461: 			_signal(23) -- also: block buttons. Don't want the "v" press to pass through as a button press
-
-picotron/drive/dumps/system/lib/fs.lua:
-   877: 			_signal(40)
-   879: 			_signal(41)
-  1020: 		_signal(40)
-  1022: 		_signal(41)
-  1129: 		_signal(40) -- 0.1.1e compound op lock (prevent flushing cart halfway through moving)
-  1131: 		_signal(41)
-  1135: 		_signal(40)
-  1137: 		_signal(41)
-  1149: 		_signal(40) -- 0.1.1e: lock flushing for compound operation; don't want to e.g. store a cart on host that is halfway through being copied
-  1151: 		_signal(41) -- unlock
-
-picotron/drive/dumps/system/lib/head.lua:
-  454: 		_signal(38) -- start of userland code (for memory accounting)
-
-picotron/drive/dumps/system/pm/pm.lua:
-   18: 	if (stat(315) > 0 and #_get_process_list() <= 3) _signal(33)
-   22: 	if (stat(317) > 0 and #_get_process_list() <= 3) _signal(33)
-  113: 		_signal(33)
-  119: 		_signal(34)
-  125: 		_signal(65)
-  159: 		_signal(42)
-
-picotron/drive/dumps/system/wm/wm.lua:
-   636: 	--_signal(36) -- finished loading core processes  (deleteme -- shouldn't need)
-   849: 	_signal(23) -- block buttons
-  2234: 					_signal(37)
-  2243: 				_signal(37)
-  2250: 			_signal(37)
-  2552: 		if (sdat.fastquit) _signal(33)
-  2557: 		_signal(33)
-  2719: 			_signal(19)
-  2725: 		if (not fstat("/desktop/host")) _signal(65)
-  2726: 		_signal(16) -- placeholder mechanism
-  3033: 			_signal(22) -- stay awake
-  3608: 	if (not fstat("/desktop/host")) _signal(65)
-  3627: 	_signal(18)
-  3634: 	if (not fstat("/desktop/host")) _signal(65)
-  3652: 	_signal(21)
-  3920: 		add(item, {"\^:06ff81b5b181ff00 End Recording", function() _signal(19) end})
-  3957: 	--	add(item, {"\^:00387f7f7f7f7f00 Host Desktop", function() _signal(65) end})
-
-picotron/drive/projects/signal/signal.md:
-   1: # `_signal()` Documentation
-   3: When patching `/system/wm.lua`, it is possible to call `_signal()` which is otherwise inaccessible to user scripts.
-   7: For example, adding a `_signal(33)` call to the start of `/system/wm.lua`, and restarting `wm.lua` with `send_message(2, { event = "restart_process", proc_id = 3 })` will shutdown Picotron.
-   9: This document will try to document every `_signal()` code.
-  13: - `_signal(33)` shutdown?
-
-picotron/drive/projects/stat/search.txt:
-   50:   107: 	if (stat(988) > 0) bypass = true _signal(35)
-  216:   18: 	if (stat(315) > 0 and #_get_process_list() <= 3) _signal(33)
-  220:   22: 	if (stat(317) > 0 and #_get_process_list() <= 3) _signal(33)
-  296:   2719  			_signal(19)
-  300:   3920  		add(item, {"\^:06ff81b5b181ff00 End Recording", function() _signal(19) end})
-  607:   107: 	if (stat(988) > 0) bypass = true _signal(35)
-  868:   18: 	if (stat(315) > 0 and #_get_process_list() <= 3) _signal(33)
-  872:   22: 	if (stat(317) > 0 and #_get_process_list() <= 3) _signal(33)
-  982:   2719  			_signal(19)
-  986:   3920  		add(item, {"\^:06ff81b5b181ff00 End Recording", function() _signal(19) end})
-
-picotron/drive/projects/stat/stats.md:
-  462:   18: 	if (stat(315) > 0 and #_get_process_list() <= 3) _signal(33)
-  482:   18: 	if (stat(315) > 0 and #_get_process_list() <= 3) _signal(33)
-  572:   22: 	if (stat(317) > 0 and #_get_process_list() <= 3) _signal(33)
-  653:   22: 	if (stat(317) > 0 and #_get_process_list() <= 3) _signal(33)
-  770:   3920  		add(item, {"\^:06ff81b5b181ff00 End Recording", function() _signal(19) end})
-  783:   3920  		add(item, {"\^:06ff81b5b181ff00 End Recording", function() _signal(19) end})
-  812:   2719  			_signal(19)
-  829:   2719  			_signal(19)
-  889:   107: 	if (stat(988) > 0) bypass = true _signal(35)
-  894:   107: 	if (stat(988) > 0) bypass = true _signal(35)
+  3961  	add(item, {"\^:7f7d7b7d7f083e00 Terminal", function() create_process("/system/apps/terminal.lua") end})
+  3962: 	--	add(item, {"\^:00387f7f7f7f7f00 Host Desktop", function() _signal(65) end})
+  3963
 ```
 
-After regex101 cleanup + unique + sort:
+After these operations:
+
+1. regex101 search `/_signal\(.*\)/gmU`
+2. regex101 plain text export
+3. uniqueness filter (VSCode `> Delete Duplicate Lines`)
+4. sort (VSCode `> Sort lines (natural)`)
+
+The result is:
 
 ```
-_signal()
 _signal(16)
 _signal(18)
 _signal(19)
