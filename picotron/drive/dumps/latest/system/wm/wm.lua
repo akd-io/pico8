@@ -44,7 +44,9 @@ end
 
 local last_input_activity_t = 0
 
+-- store some things by process so that they can be manipulated before window is created
 local proc_icon = {}
+local proc_menu = {}
 
 local char_w = peek(0x5600)
 
@@ -307,6 +309,7 @@ end
 -- used for keeping track of which workspace to toggle between (ESC) or where desktop is
 -- when deciding to put new windows
 function visit_workspace(ws)
+
 	if (ws.style == "fullscreen") last_fullscreen_workspace = ws
 	if (ws.style ~= "fullscreen") last_non_fullscreen_workspace = ws
 	if (ws.style == "desktop") then
@@ -463,11 +466,12 @@ function _init()
 
 				-- alt + left,right,enter filtered out (used by window manager)
 				-- needs to be here (and not in events.lua) because key state is reset when switching tabs
+
 				if key("alt") then
 					if (msg.scancode == 79 or msg.scancode == 80 or msg.scancode == 40) return
 				end
 
-				-- fittfilter ctrl combinations
+				-- filter ctrl combinations
 				if key("ctrl") then
 					-- needs to be here (and not in events.lua) because key state is reset when switching tabs
 					if (msg.scancode == 43) return -- tab / ctrl+shift+tab
@@ -644,6 +648,142 @@ function draw_window_frame(win)
 end
 
 
+function draw_window_paused_menu(win,sx,sy)
+	
+	if (not win.pmenu) return
+
+	local ww,hh = 70, 12 + (#win.pmenu) * 6
+	local x0,y0 = sx + win.width/2 - ww, sy + win.height/2 - hh
+	local x1,y1 = x0 + ww*2 - 1, y0 + hh * 2 - 1
+
+	rectfill(x0,y0,x1,y1,0)
+	rect(x0+1,y0+1,x1-1,y1-1,7)
+
+
+	for i=1,#win.pmenu do 
+		local xx = x0 + 20
+		local yy = y0 + 3 + i * 12
+		local label = "??"
+
+		if (type(win.pmenu[i].label) == "function") label = win.pmenu[i].label()
+		if (type(win.pmenu[i].label) == "string")   label = win.pmenu[i].label
+		print(label, xx, yy, 7)
+		if (i == win.pmenu.ii) print("\^:0103070f07030100",xx-10,yy,7)
+	end
+end
+
+function update_window_paused_menu(win)
+
+	if (not win) return
+
+	if (win.paused) then
+		local buttons = btnp()
+		if (win.pmenu) then
+
+			if ((buttons & 0x73) > 0) then
+				local item = win.pmenu[win.pmenu.ii]
+				if (type(item.action) == "function") item.action(buttons)
+			end
+
+			if (btnp(2)) win.pmenu.ii -= 1
+			if (btnp(3)) win.pmenu.ii += 1
+			if (win.pmenu.ii < 1) win.pmenu.ii = #win.pmenu
+			if (win.pmenu.ii > #win.pmenu) win.pmenu.ii = 1
+		end
+
+	else
+		-- pause button to pause (not within first 6 frames  ~ is left over button state)
+		-- to do: button blocking scheme?
+		if (btnp(6) and time() > win.created_t + 0.1) then
+			win.paused = true
+			generate_paused_menu(win)
+			send_message(win.proc_id, {event = "pause"})
+		end
+	end
+
+end
+
+
+
+
+function generate_paused_menu(win)
+	win.pmenu = {}
+
+	add(win.pmenu, {label = "Continue", action = function() 
+		win.paused = false
+		send_message(win.proc_id, {event = "unpause"})
+	end})
+
+	-- insert userland menu items
+	local menu = proc_menu[win.proc_id]
+
+	if (menu) then
+		for i=1,#menu do
+			add(win.pmenu,
+			{
+				label = menu[i].label or "??",
+				action = function(b)
+					send_message(win.proc_id, {event="menu_action", id=menu[i].id, b=b})
+				end
+			})
+		end
+	end
+
+--	add(win.pmenu, {label = "Options", action = function() end}) -- later
+
+	add(win.pmenu,{
+		label  = function(self) return (_ppeek(win.proc_id, 0x547f) or 0) & 0x8 > 0 and "Sound: Off" or "Sound: On" end,
+		action = function(b) send_message(win.proc_id, {event = "toggle_mute"}) end
+	})
+
+--	add(win.pmenu, {label = "Favourite"}) -- later; need to decide what this means!
+	add(win.pmenu, {label = "Reset Cartridge", action = function() 
+		if (haltable_proc_id == win.proc_id) then
+			-- pwc: same as hitting ctrl-r (dupe)
+			haltable_proc_id = create_process("/system/apps/terminal.lua",{
+				corun_program = "/ram/cart/main.lua",       -- program to run // terminal.lua observes this and is also used to set pwd
+				window_attribs = {
+					pwc_output = true,                      -- replace existing pwc_output process			
+					show_in_workspace = true,               -- immediately show running process
+				}
+			})
+		else
+			send_message(2, {event="restart_process", proc_id = win.proc_id})
+			win.paused = false
+			
+		end
+
+	end})
+
+	-- to do: can the process that launched a process have a say in its pause menu?
+	-- add(win.pmenu, {label = "Exit to Splore", action = function() end})
+
+	-- useful when running locally -- often just want to close the whole workspace when done running a fullscreen cart
+	if haltable_proc_id ~= win.proc_id then
+		add(win.pmenu, {label = "Exit", action = function()
+			if (haltable_proc_id == win.proc_id) then
+				-- halt program and enable command prompt (update: never happens -- menu item is not added in that case)
+				win.paused = false
+				send_message(win.proc_id, {event = "unpause"})
+				send_message(haltable_proc_id, {event="halt"})
+				haltable_proc_id = false
+			else
+				if (win.fullscreen) then
+					close_workspace(workspace_index) -- fullscreen: assume running as sole child in a workspace created for that purpose
+					set_workspace(previous_workspace)
+				else
+					close_window(win, true) -- windowed programs can be pauseable too, but is not on by default
+				end
+			end
+		end})
+	end
+
+	win.pmenu.ii = 1
+	
+end
+
+	
+
 -- doesn't kill process -- that's up to process manager
 -- update: seems almost always want to kill at the same time; added as a parameter
 function close_window(win, do_kill)
@@ -732,11 +872,16 @@ function create_window(target_ws, attribs)
 	attribs.x = attribs.x or (attribs.tabbed and 0  or rnd(480 - attribs.width)\1)
 	attribs.y = attribs.y or (attribs.tabbed and 11 or (30 + rnd(230 - attribs.height)\1))
 
+
+	-- default attributes
+
 	if (attribs.has_frame  == nil)   attribs.has_frame  = false
 	if (attribs.moveable   == nil)   attribs.moveable   = true
 	if (attribs.resizeable == nil)   attribs.resizeable = true
 	if (attribs.fullscreen       )   attribs.width, attribs.height, attribs.x, attribs.y = 480, 270, 0, 0
 	if (attribs.maximised        )   attribs.width, attribs.height, attribs.x, attribs.y = 480, 248, 0, 11
+
+	if (attribs.pauseable == nil) attribs.pauseable = attribs.fullscreen and not attribs.desktop_filenav and not attribs.wallpaper
 
 	win = target_ws:attach(attribs)
 	
@@ -746,8 +891,6 @@ function create_window(target_ws, attribs)
 
 	win.send_mouse_update = true -- send mouse message on first frame
 	win.created_t = time()
-
-	win.menu = {}
 
 	win.test_point = function(self, x, y)
 		-- process is using transparency on display bitmap?
@@ -855,6 +998,12 @@ function create_window(target_ws, attribs)
 		if (win.has_frame) then
 			clip()
 			draw_window_frame(win)
+		end
+
+		-- paused menu
+
+		if (win.paused) then
+			draw_window_paused_menu(win, win.sx, win.sy)
 		end
 
 		-- stickers
@@ -1208,14 +1357,15 @@ function mouse_scaled()
 
 	local x,y,b,dx,dy = mouse()
 
+
 	local scale = 1
 	local video_mode = @0x547c
 
 	if (video_mode == 3) scale = 2
 	if (video_mode == 4) scale = 3
 
-	if (x) x \= scale
-	if (y) y \= scale
+	x \= scale
+	y \= scale
 
 	return x,y,b,dx,dy
 end
@@ -1233,7 +1383,7 @@ boot_messages = {}
 
 local xodat = {26,22,19,17,15,14,12,11,10,9,8,7,6,5,5,4,3,3,2,2,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,2,2,3,3,4,5,5,6,7,8,9,10,11,12,14,15,17,19,22,26}
 
-ppy = 0
+
 function _draw()
 
 	pal(0) -- reset colourtable but leave rgb display palette alone
@@ -1278,8 +1428,9 @@ function _draw()
 
 
 	if (not ws_gui or #workspace == 0) then
-		cls(3)
-		print("[no workspaces]",10,10,7)
+		cls()
+		if (time() > 3) print("[no workspaces found] "..#workspace,20,20,13)
+		if (#workspace > 0) set_workspace(1)
 		return
 	end
 
@@ -1487,6 +1638,10 @@ function _draw()
 
 	if (sdat.rshift_magnify and key("rshift")) then
 
+		local masks = peek4(0x5508); -- backup
+
+		poke(0x5508, 0x3f, 0x3f, 0, 0) -- ignore target value; no transparency
+
 		if (not mag_bmp) mag_bmp = userdata("u8", 64, 64)
 		blit(get_display(), mag_bmp, mx-32, my-32)
 		palt(0) -- nothing is transparent
@@ -1502,9 +1657,17 @@ function _draw()
 		circfill(mx+38,my-38,5,7) -- haha
 		circfill(mx+46,my-28,3,7)
 
+		poke4(0x5508, masks); -- restore
 	end
 
 --	print(stat(1),30,260,8)
+
+
+	-- don't open on a tabbed tool (wait for desktop or terminal to be ready before displaying)
+	if (ws_gui.style != "tabbed") then 
+		if (not sent_presentable_signal) _signal(37) -- wm is presentable
+		sent_presentable_signal = true
+	end
 
 end
 
@@ -1722,9 +1885,10 @@ function _update()
 	-- to do: more general rules for specifying shortcuts? e.g. not ctrl-
 	if (key("ctrl")) then
 		local win = get_active_window()
-		if (win and win.menu) then
-			for i=1,#win.menu do
-				local mi = win.menu[i]
+		if (win and proc_menu[win.proc_id]) then
+			local menu = proc_menu[win.proc_id]
+			for i=1,#menu do
+				local mi = menu[i]
 				if (type(mi.shortcut) == "string") then
 					local letter = string.sub(mi.shortcut, -1)
 					if (ord(letter) >= ord("A") and ord(letter) <= ord("Z")) then
@@ -1775,12 +1939,15 @@ function _update()
 	if (key("ctrl") and keyp("2")) ws_gui.show_infobar = not ws_gui.show_infobar
 
 
+	-- audio capture
+	if (key("ctrl") and keyp("0")) then
+		if (not fstat("/desktop/host")) _signal(65)
+		_signal(16)
+	end
+
 	-- screenshot
 
 	if (key("ctrl") and keyp("6")) then
-		-- to do: custom desktop location from settings?
-		mkdir("/desktop")
-
 
 		local dd = get_display()
 		local w,h = 480,270
@@ -1865,12 +2032,14 @@ function _update()
 
 			-- every window can read the mouse position, but only the active window can read mouse button state.
 			-- dorky iterator for ws_gui and tooltray_gui
+			local pointer_el = head_gui:get_pointer_element()
+			if (@0x547c > 0) pointer_el = win -- video mode set -> assume pointing at active window
 			for i=1,#ws_gui.child + #tooltray_gui.child do
 				local win2 = i <= #ws_gui.child and ws_gui.child[i] or tooltray_gui.child[i - #ws_gui.child]
 
 					send_message(win2.proc_id, {event="mouse",dx = mdx, dy = mdy, mx_abs = mx, my_abs = my, mx = mx-win2.sx, my=my-win2.sy, 
 						-- only active window is allowed to read mouse button (title bar / resizer widget doesn't count)
-						mb = (win == win2 and win == head_gui:get_pointer_element()) and mb or 0
+						mb = (win == win2 and win == pointer_el) and mb or 0
 					})
 			end
 
@@ -1885,6 +2054,17 @@ function _update()
 	end
 
 
+	-- to do: terminal AND desktop filenav(!) should be allowed to capture enter
+	-- a little different from capture_escapes ~ window can just have pauseable property (turn off to capture enter)
+	-- wallpaper should never be pausible
+	-- awin.fullscreen and not awin.pwc_output and not awin.desktop_filenav and not awin.wallpaper) then 
+
+	if (awin and awin.pauseable) then
+
+		update_window_paused_menu(awin)
+
+	end
+
 	if (keyp("escape")) then
 
 		-- look for haltable process
@@ -1893,6 +2073,9 @@ function _update()
 
 		if (modal_gui) then
 			dismiss_modal()
+		elseif (awin and awin.paused) then
+			awin.paused = false
+			send_message(awin.proc_id, {event = "unpause"})
 		elseif (get_active_window() and get_active_window().autoclose) then
 			close_window(get_active_window(), true) -- e.g. about / settings
 		elseif toolbar_y_target > 0 then
@@ -1926,6 +2109,7 @@ function _update()
 	end
 
 	-- toggle fullscreen
+
 	if (key("alt") and key("enter") and not last_enter_key_state) then		
 		local sdat = fetch("/appdata/system/settings.pod") or {}
 		sdat.fullscreen = not sdat.fullscreen
@@ -2161,10 +2345,8 @@ function choose_workspace(attribs)
 end
 
 on_event("app_menu_item", function(msg)
-	local win = get_window_by_proc_id(msg._from)
-	if (not win) return
-	win.menu = win.menu or {}
-	local menu = win.menu
+	proc_menu[msg._from] = proc_menu[msg._from] or {}
+	local menu = proc_menu[msg._from]
 	-- look for existing item by label
 	local pos = #menu + 1 -- default: add new
 	for i=1,#menu do
@@ -2262,6 +2444,7 @@ on_event("set_window", function(msg)
 
 		-- 6. show in workspace if requested
 		if (msg.attribs.show_in_workspace) then
+			previous_workspace = ws_gui
 			set_workspace(target_ws)
 			target_ws.active_window = win -- give focus immediately
 		end
@@ -2269,6 +2452,14 @@ on_event("set_window", function(msg)
 		-- 7. give focus immediately when requested (autoclose implies should start with focus)
 		if (msg.attribs.give_focus or msg.attribs.autoclose) then
 			target_ws.active_window = win -- give focus immediately
+		end
+
+		-- 8. do some validation 
+		-- was removed for 0.1.0f but caused [no workspaces] bug which seems to happen frequently but couldn't reproduce yet. race condition?
+		-- to do: what is actually responsible for ensuring a valid workspace? should it really happen here?
+		local workspace_index1 = mid(1, workspace_index, #workspace)
+		if (workspace_index ~= workspace_index1 or ws_gui ~= workspace[workspace_index1]) then
+			set_workspace(workspace_index1)
 		end
 
 
@@ -2544,6 +2735,26 @@ function create_modal_gui()
 	return modal_gui
 end
 
+function close_workspace(ws_index)
+	local ws = get_workspace(ws_index)
+
+	if (ws.immortal) return
+
+	if (ws) then
+		for i=1,#ws.child do
+			_kill_process(ws.child[i].proc_id)
+		end
+	end
+
+	-- fix workspace index; when delete current, hop to left unless already at left-most
+	if (ws_index <= workspace_index and workspace_index > 1) workspace_index -= 1
+
+	deli(workspace, ws_index)
+	set_workspace(workspace_index)
+end
+
+
+
 
 function toggle_workspace_menu(x, y, ws_index)
 
@@ -2560,19 +2771,8 @@ function toggle_workspace_menu(x, y, ws_index)
 		label = "\^:1c3e6b776b3e1c00 Close Workspace", 
 		cursor="pointer",
 		action = function()
-			local ws = get_workspace(ws_index)
+			close_workspace(ws_index)
 
-			if (ws) then
-				for i=1,#ws.child do
-					_kill_process(ws.child[i].proc_id)
-				end
-			end
-
-			-- fix workspace index; when delete current, hop to left unless already at left-most
-			if (ws_index <= workspace_index and workspace_index > 1) workspace_index -= 1
-
-			deli(workspace, ws_index)
-			set_workspace(workspace_index)
 		end
 	}
 
@@ -2618,18 +2818,20 @@ function toggle_app_menu(x, y, win)
 
 	-- userland items created by menuitem()
 
-	if (win.menu and #win.menu > 0) then
+	local menu = proc_menu[win.proc_id]
+
+	if (menu and #menu > 0) then
 
 		add(mm, {divider=true})
 
-		for i=1,#win.menu do
+		for i=1,#menu do
 
-			if (win.menu[i].label) then
-				local item = win.menu[i]
+			if (menu[i].label) then
+				local item = menu[i]
 				local pulldown_item = unpod(pod(item)) -- copy all attributes
 				
 				pulldown_item.action = function(b)
-					send_message(win.proc_id, {event="menu_action", id=win.menu[i].id, b=b})
+					send_message(win.proc_id, {event="menu_action", id=menu[i].id, b=b})
 				end
 
 				add(mm,pulldown_item)
@@ -2723,8 +2925,6 @@ function toggle_picotron_menu()
 		 -- pop up menu: [Shutdown] [Reboot] [Cancel] 
 		 -- perhaps show unsaved changes 
 		 -- (checkbox: "discard unsaved changes" ~ once checked, buttons clickable)
-
-
 
 
 		{"\^:1c22494949221c00 Reboot", function() send_message(2, {event="reboot"}) end},

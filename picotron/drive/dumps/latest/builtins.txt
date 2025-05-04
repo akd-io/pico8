@@ -1,8 +1,6 @@
---[[pod_format="raw",created="2025-04-27 16:47:20",modified="2025-04-27 16:47:20",revision=0]]
+--[[pod_format="raw",created="2025-04-27 16:08:55",modified="2025-04-27 16:08:55",revision=0]]
 {
   "_VERSION" = "Lua 5.4",
-  "_fetch_remote_result" = function (...),
-  "_get_key_from_scancode" = function (...),
   "_process_event_messages" = function (),
   "_strindex" = function (...),
   "_update_buttons" = function (...),
@@ -41,7 +39,6 @@
   "date" = function (...),
   "del" = function (...),
   "deli" = function (...),
-  "dtime" = function (...),
   "env" = function (),
   "error" = function (...),
   "exit" = function (exit_code),

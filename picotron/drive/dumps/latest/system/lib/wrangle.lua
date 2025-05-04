@@ -70,7 +70,8 @@ local function update_menu_items()
 		action = function()
 			local segs = split(current_filename,"/",false)
 			local path = string.sub(current_filename, 1, -#segs[#segs] - 2) -- same folder as current file
-			create_process("/system/apps/filenav.p64", {path = path, window_attribs= {workspace = "current", autoclose=true}})
+			--create_process("/system/apps/filenav.p64", {path = path, window_attribs= {workspace = "current", autoclose=true}})
+			create_process("/system/apps/filenav.p64", {path = path, open_with = env().prog_name, window_attribs= {workspace = "current", autoclose=true}})
 		end
 	}
 
@@ -98,7 +99,8 @@ local function update_menu_items()
 		action = function() 
 			local segs = split(current_filename,"/",false)
 			local path = string.sub(current_filename, 1, -#segs[#segs] - 2) -- same folder as current file
-			create_process("/system/apps/filenav.p64", {path=path, intention="save_file_as", window_attribs={workspace = "current", autoclose=true}})
+			create_process("/system/apps/filenav.p64", 
+				{path=path, intention="save_file_as", use_ext = current_filename:ext(), window_attribs={workspace = "current", autoclose=true}})
 		end
 	}
 

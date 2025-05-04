@@ -1238,11 +1238,15 @@ function attach_text_editor(g, parent)
 			end
 
 			if (keyp("home")) then
+				if (key"ctrl") cur_y = 1
 				cur_x = 1
+				show_cursor()
 			end
 
 			if (keyp("end")) then
+				if (key"ctrl") cur_y = #text
 				cur_x = #text[cur_y]+1
+				show_cursor()
 			end
 
 			

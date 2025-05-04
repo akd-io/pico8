@@ -40,7 +40,7 @@ local _halt = _halt
 local _fetch_local = _fetch_local
 local _fetch_remote = _fetch_remote
 local _fetch_anywhen = _fetch_anywhen
-
+local _fetch_remote_result = _fetch_remote_result
 local _store_local = _store_local
 local _signal = _signal
 
@@ -91,6 +91,17 @@ end
 
 
 local function init_runtime_state()
+
+	-- experiment: always start with a display
+	-- should be able to start drawing stuff in _init!
+	-- extra 128k per process, but not many headless processes
+--[[
+	_disp = userdata("u8", 480, 270)
+	memmap(0x10000, _disp)
+	set_draw_target() -- reset target to display\
+	poke2(0x5478, 480, 270)
+	poke (0x547c, 0)  -- video mode
+]]
 
 	-- runtime state
 	srand()
@@ -238,7 +249,7 @@ end
 	-- hidden from userland program
 	local _disp = nil
 	local _target = nil
-	local _auto_create_window = true
+
 	-- default to display
 	function set_draw_target(d)
 		d = d or _disp
@@ -274,23 +285,8 @@ end
 		return _disp
 	end
 
---[[
-	-- deleteme
-	function display_size()
-		printh("** legacy: display_size")
-		return _disp:width(), _disp:height()
-	end
-
-	function window_size()
-		printh("** legacy: window_size")
-		return _disp:width(), _disp:height()
-	end
-]]
-
 	-- starting environment: none; overwritten by injected process code
 	function env() return {} end
-
-	
 
 	---------------------------------------------------------------------------------------------------
 
@@ -304,14 +300,6 @@ end
 
 		attribs = attribs or {}
 
-		-- legacy dev -- deleteme
---[[
-		if (attribs.desktop) then
-			attribs.wallpaper = true
-			attribs.desktop = false
-			printh("*** DELETEME (LEGACY): attribs.desktop (should be .wallpaper)")
-		end
-]]
 
 		-- on first call, observe attributes from env().window_attribs
 		-- they **overwrite** any same key attributes passed to set_window

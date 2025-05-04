@@ -583,6 +583,7 @@ do
 		local last_mx, last_my, last_mb = 0,0,0
 		local dx, dy = 0
 		local start_mx, start_my,start_el = 0,0
+		local drag_t = 0
 		local dragging_el = nil
 
 		-- don't pay attention to mouse button until it is first recorded as not pressed

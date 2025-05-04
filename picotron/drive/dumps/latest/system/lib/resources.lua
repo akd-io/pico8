@@ -83,13 +83,12 @@ local function _autoload_resources()
 		poke(0x550e, 16, 16)
 	end
 
-	-- load default sound bank
+	-- load default sound bank (256k from 0x30000)
 	local ss = fetch("sfx/0.sfx")
 	if type(ss) == "userdata" then
-		for i=0,0x2ff do
+		for i=0,0x3ff do
 			poke(0x30000+i*0x100, get(ss,i*0x100,0x100))
 		end
-
 	end
 
 end

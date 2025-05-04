@@ -144,15 +144,27 @@ local function make_new_tab_button(parent, label, x, y, w, h)
 		-- create_process("/system/apps/filenav.p64", {path=path, intention="new_file", window_attribs={workspace = "current", autoclose=true}})
 
 		-- "new_tab": can either open or create a file from filenav starting state. 
-		-- guess default extention by files in same folder; is used when user types filename with no extension
-		local use_ext = "lua"
-		local files = ls(path)
-		if (files) then
-			for i=1,#files do
-				if (fstat(path.."/"..files[i]) == "file" and files[i]:ext()) use_ext = files[i]:ext()
+		-- guess default extention by current localtion, files in same folder, or fall back to .txt.
+		-- (is used by filenav when user types filename with no extension)
+
+		local use_ext = (awin and awin.location and awin.location:ext())
+
+		if (not use_ext) then
+			local files = ls(path)
+			if (files) then
+				for i=1,#files do
+					if (fstat(path.."/"..files[i]) == "file" and files[i]:ext()) use_ext = files[i]:ext()
+				end
 			end
 		end
-		create_process("/system/apps/filenav.p64", {path=path, intention="new_tab", use_ext=use_ext,  window_attribs={workspace = "current", autoclose=true}})
+
+		create_process("/system/apps/filenav.p64", 
+		{
+			path=path, intention="new_tab", 
+			use_ext=use_ext or ".txt", 
+			window_attribs={workspace = "current",autoclose=true},
+			open_with = get_workspace().prog,
+		})
 
 	end
 

@@ -1,4 +1,4 @@
---[[pod_format="raw",author="zep",created="2023-33-07 14:33:59",icon=userdata("u8",16,16,"00000001010101010101010101000000000001070707070707070707070100000001070d0d0d0d0d0d0d0d0d0d07010001070d0d0d0d0d0d0d0d0d0d0d0d070101070d0d0d0d07070d0d0d0d0d0d070101070d0d0d0d0d07070d0d0d0d0d070101070d0d0d0d0d0d07070d0d0d0d070101070d0d0d0d0d0d07070d0d0d0d070101070d0d0d0d0d07070d0d0d0d0d070101070d0d0d0d07070d0d0d0d0d0d070101070d0d0d0d0d0d0d0d0d0d0d0d07010106070d0d0d0d0d0d0d0d0d0d07060101060607070707070707070707060601000106060606060606060606060601000000010606060606060606060601000000000001010101010101010101000000"),modified="2024-03-21 16:55:11",notes="",revision=144,stored="2024-03-09 10:31:21",title="Terminal",version=""]]
+--[[pod_format="raw",author="zep",created="2023-10-07 14:33:59",icon=userdata("u8",16,16,"00000001010101010101010101000000000001070707070707070707070100000001070d0d0d0d0d0d0d0d0d0d07010001070d0d0d0d0d0d0d0d0d0d0d0d070101070d0d0d0d07070d0d0d0d0d0d070101070d0d0d0d0d07070d0d0d0d0d070101070d0d0d0d0d0d07070d0d0d0d070101070d0d0d0d0d0d07070d0d0d0d070101070d0d0d0d0d07070d0d0d0d0d070101070d0d0d0d07070d0d0d0d0d0d070101070d0d0d0d0d0d0d0d0d0d0d0d07010106070d0d0d0d0d0d0d0d0d0d07060101060607070707070707070707060601000106060606060606060606060601000000010606060606060606060601000000000001010101010101010101000000"),modified="2024-04-23 11:46:40",notes="",revision=145,stored="2024-03-09 10:31:21",title="Terminal",version=""]]
 --[[
 
 	terminal.lua
@@ -21,6 +21,7 @@ if (not env().corun_program) then
 		icon = userdata"[gfx]0907000707000000070000777777777770000077770000077770000077777777777[/gfx]"
 	}
 end
+
 
 
 if (pwd() == "/system/apps") cd("/") -- start in root instead of location of terminal.lua
@@ -52,10 +53,13 @@ local left_margin = 2
 local terminal_draw 
 local terminal_update
 
+local cproj_draw, cproj_update
+
 
 -- to do: perhaps cproj can be any program; -> should be "corunning_prog"
 -- (or two separate concepts if need)
 local running_cproj = false
+local last_pauseable = -1
 
 local _has_focus = true
 on_event("gained_focus", function() _has_focus = true end)
@@ -345,7 +349,7 @@ local function run_terminal_command(cmd)
 				set_draw_target(back_page)
 				_is_terminal_command = true -- temporary hack so that print() goes to terminal. e.g. pset(100,100,8)?pget(100,100)
 
-				res,err = coresume(cor)
+				local res,err = coresume(cor)
 				
 				set_draw_target() 
 				_is_terminal_command = false
@@ -396,9 +400,9 @@ end
 
 local function clamp_scroll()
 
-	local y = 0
+	local x, y = 0, 0
 	for i=1,#line do
-		_, y = print(line[i], 1000, y, 7)
+		x, y = print(line[i], 1000, y, 7)
 	end
 	last_total_text_h = y
 
@@ -528,11 +532,19 @@ local tv_frames =
 
 function _update()
 
+	-- app is pauseable when and only when running_cproj is true and fullscreen
+
+	if (get_display()) then
+		local w,h = get_display():attribs()
+		local pauseable1 = running_cproj and w == 480 and h == 270
+		if (last_pauseable ~= pauseable1) then
+			last_pauseable = pauseable1
+			window{pauseable = last_pauseable}
+		end
+	end
 
 	if (running_cproj and not cproj_update and not cproj_draw) then
-
 		suspend_cproj()
-
 	end
 
 	-- while co-running program, use that update instead 
@@ -582,7 +594,7 @@ function _update()
 
 
 	while (peektext()) do
-		k = readtext()
+		local k = readtext()
 
 		-- insert at cursor
 
@@ -617,7 +629,7 @@ function _update()
 		cursor_pos = mid(0, cursor_pos + 1, #cmd)
 	end
 
-	if (keyp("home")) cursor_pos = 0
+	if (keyp("home") or (key("ctrl") and keyp("a"))) cursor_pos = 0
 	if (keyp("end")) cursor_pos = #cmd
 
 
@@ -652,7 +664,7 @@ function _update()
 		cursor_pos = mid(0, cursor_pos - 1, #cmd)
 	end
 
-	if (keyp("delete")) then
+	if (keyp("delete") or (key("ctrl") and keyp("d"))) then
 		cmd = sub(cmd, 1, max(0,cursor_pos))..sub(cmd, cursor_pos+2)
 	end
 
@@ -678,7 +690,7 @@ function _draw()
 
 	if (not running_cproj) then
 		cls()
-		blit(back_page, _, 0, 0, 0, 0, 480, 270)
+		blit(back_page, nil, 0, 0, 0, 0, 480, 270)
 	end
 
 
@@ -718,35 +730,32 @@ function _draw()
 
 		-- to do: could cache wrapped strings
 		-- and/or add a picotron-specific p8scii address for rhs wrap
-		local wrap_prefix = "\006r"..chr(ord("a") + max(6, disp_w \ 4 - 10))
+		--local wrap_prefix = "\006r"..chr(ord("a") + max(6, disp_w \ 4 - 10))
+		local wrap_prefix = ""
 		
 		poke(0x5f36, (@0x5f36) | 0x80) -- turn on wrap
 
 		for i=1,#line do
-			-- _, y = print(wrap_prefix..line[i], x, y, 7)
 			_, y = print(line[i], x, y, 7)
-			--_, y = draw_text_masked(line[i], x, y, 7)  --  doesn't work 
 		end
 
 		last_total_text_h = y - y0
 
 		-- poke(0x5f36, (@0x5f36) | 0x80) -- turn on wrap
 
+		camera()
+		print(wrap_prefix..get_prompt()..cmd.."\0", x, y, 7)
 
-		print(wrap_prefix..get_prompt()..cmd, x, y, 7)
-		--draw_text_masked(wrap_prefix..get_prompt()..cmd, x, y, 7)
+		print(wrap_prefix..get_prompt()..sub(cmd,1,cursor_pos).."\0", x, y, 7)
 
-		-- find cursor position by printing part of command string offscreen
-		local cursor_x = print(wrap_prefix..get_prompt()..sub(cmd, 1, cursor_pos), 0, -100000)
+		local cx, cy = peek4(0x54f0, 2)
+		if (cx > disp_w - peek(0x4000)) cx,cy = peek4(0x54f8), cy + peek(0x4002) -- where next character is (probably) going to be after warpping
 
-		local sx = x + cursor_x
-		local sy = y
-
-		-- to do: how to tell if not active window? (shouldn't show cursor)
+		-- show cursor when window is active
 		if (_has_focus) then
-		if (time()%1 < .5) then
-			rectfill(sx, sy, sx+char_w-1, sy+char_h-4, 14) -- cursor
-		end
+			if (time()%1 < .5) then
+				rectfill(cx, cy, cx+char_w-1, cy+char_h-4, 14)
+			end
 		end
 
 	end

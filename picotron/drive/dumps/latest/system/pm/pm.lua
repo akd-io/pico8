@@ -32,6 +32,14 @@ on_event("kill_process",
 	end
 )
 
+on_event("restart_process", 
+	function(msg)
+		_kill_process(msg.proc_id, 1)
+		send_message(msg.proc_id, {event = "unpause"})
+	end
+)
+
+
 on_event("open_host_path", 
 	function(msg)
 		_open_host_path(msg.path)

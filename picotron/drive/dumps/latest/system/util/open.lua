@@ -15,25 +15,27 @@
 
 cd(env().path)
 
--- to do: could be stored in /appdata/system/util/edit.pod
--- can edit in settings
-prog_for_ext =
-{
-	lua = "/system/apps/code.p64",
-	txt = "/system/apps/notebook.p64",
-	pn  = "/system/apps/notebook.p64",
-	gfx = "/system/apps/gfx.p64",
-	map = "/system/apps/map.p64",
-	sfx = "/system/apps/sfx.p64",
-	pod = "/system/apps/podtree.p64",
-	theme = "/system/apps/themed.p64"
-}
 
 local argv = env().argv
 if (#argv < 1) then
 	print("usage: edit filename")
 	exit(1)
 end
+
+-- future: could be a list per extension (open a chooser widget)
+
+local prog_for_ext = fetch("/appdata/system/default_apps.pod")
+
+if (type(prog_for_ext) ~= "table") prog_for_ext = {}
+
+prog_for_ext.lua   = prog_for_ext.lua   or "/system/apps/code.p64"
+prog_for_ext.txt   = prog_for_ext.txt   or "/system/apps/notebook.p64"
+prog_for_ext.pn    = prog_for_ext.pn    or "/system/apps/notebook.p64"
+prog_for_ext.gfx   = prog_for_ext.gfx   or "/system/apps/gfx.p64"
+prog_for_ext.map   = prog_for_ext.map   or "/system/apps/map.p64"
+prog_for_ext.sfx   = prog_for_ext.sfx   or "/system/apps/sfx.p64"
+prog_for_ext.pod   = prog_for_ext.pod   or "/system/apps/podtree.p64"
+prog_for_ext.theme = prog_for_ext.theme or "/system/apps/themed.p64"
 
 
 local show_in_workspace = true

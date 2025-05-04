@@ -127,7 +127,7 @@ do
 	local name_to_scancodes = {}
 
 	for i=1,255 do
-		local mapped_name = _get_key_from_scancode(i)
+		local mapped_name = stat(302, i)
 		if (mapped_name and mapped_name ~= "") then
 			-- temporary hack -- convert from SDL names (should happen at lower level)
 			mapped_name = mapped_name:lower()
@@ -137,6 +137,8 @@ do
 			if (mapped_name == "return") mapped_name = "enter"
 			if (mapped_name == "lgui") mapped_name = "lcommand"
 			if (mapped_name == "rgui") mapped_name = "rcommand"
+			if (mapped_name == "loption") mapped_name = "lalt"
+			if (mapped_name == "roption") mapped_name = "ralt"
 
 --			printh("mapping "..mapped_name.." to "..i.."    // ".._get_key_from_scancode(i))
 
@@ -458,10 +460,13 @@ do
 
 						if (pid() > 3) then
 							if (key_state[lctrl] or key_state[rctrl]) then
+								-- to do (efficiency) maintain a reverse lookup of keys to filter when ctrl is held
 								if (msg.scancode == name_to_scancodes["s"][1]) accept = false
 								if (msg.scancode == name_to_scancodes["6"][1]) accept = false
 								if (msg.scancode == name_to_scancodes["7"][1]) accept = false
+								if (msg.scancode == name_to_scancodes["0"][1]) accept = false
 								if (msg.scancode == name_to_scancodes["tab"][1]) accept = false
+
 							end
 
 							if (key_state[lalt] or key_state[ralt]) then
@@ -480,7 +485,9 @@ do
 					end
 
 					if (msg.event == "textinput" and #text_queue < 1024) then
-						text_queue[#text_queue+1] = msg.text;
+						if not(key"ctrl") then -- block some stray ctrl+ combinations getting through. e.g. ctrl+1
+							text_queue[#text_queue+1] = msg.text;
+						end
 					end
 
 					if (msg.event == "gained_focus") then
@@ -514,6 +521,15 @@ do
 			end
 
 		until not msg
+
+		-- 0.1.0g: disable control keys when alt is held
+		-- don't want ALTgr + 7 to count as ctrl + 7 (some hosts consider ctrl + alt to be held when ALTgr is held)
+		if (key_state[lalt] or key_state[ralt]) then
+			key_state[lctrl] = nil
+			key_state[rctrl] = nil
+		end
+
+
 	end
 
 

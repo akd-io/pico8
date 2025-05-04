@@ -50,6 +50,7 @@ if (pid() > 3) then
 	_req_clipboard_text = nil
 	_set_clipboard_text = nil
 	_fetch = nil
+	_fetch_remote_result = nil
 	_create_process_from_code = nil
 	_run_process_slice = nil
 	
@@ -67,9 +68,11 @@ if (pid() > 3) then
 	_signal = nil
 	_printh = nil
 
+
 	-- needed by foot
 	-- _process_event_messages = nil  
 	-- _update_buttons = nil
+
 
 
 end

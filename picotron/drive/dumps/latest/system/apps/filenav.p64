@@ -2,19 +2,19 @@ picotron cartridge // www.picotron.net
 version 2
 
 :: .info.pod
-b64$LS1bW3BvZCx0aXRsZT0iUGljb3Ryb24gRmlsZSBOYXZpZ2F0b3IiLGF1dGhvcj0iemVwIixz
-dG9yZWQ9IjIwMjQtMDMtMjQgMTU6MzU6NTYiLG5vdGVzPSIoYykgTGV4YWxvZmZsZSBHYW1lcyBM
-TFAiLGNyZWF0ZWQ9IjIwMjMtMTEtMTUgMDc6MTE6MzAiLHJ1bnRpbWU9NSxpY29uPXVzZXJkYXRh
-KCJ1OCIsMTYsMTYsIjAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwZDBkMDcwNzA3
-MDcwNzA3MDcwNzA3MDcwZDBkMDEwMTBkMGQwNzAxMDcwNzA3MDcwNzA3MDEwNzBkMGQwMTAxMGQw
-ZDA3MDEwNzA3MDcwNzA3MDcwMTA3MGQwZDAxMDEwZDBkMDcwNzA3MDcwNzA3MDcwNzA3MDcwZDBk
-MDEwMTBkMGQwNzA3MGQwNzA3MDcwNzBkMDcwNzBkMGQwMTAxMGQwZDA3MDcwNzBkMGQwZDBkMDcw
-NzA3MGQwZDAxMDEwZDBkMDcwNzA3MDcwNzA3MDcwNzA3MDcwZDBkMDEwMTBkMGQwZDBkMGQwZDBk
-MGQwZDBkMGQwZDBkMGQwMTAxMGQwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMGQwZDAxMDEwZDBkMGQw
-ZDBkMGQwZDBkMGQwZDBkMGQwZDBkMDEwMTBkMGQwMTAxMDEwMTAxMDEwMTAxMDEwMTBkMGQwMTAx
-MGQwZDAxMDEwMTAxMDcwNzA3MDcwNzAxMGQwZDAxMDEwZDBkMDEwMTAxMDEwNzA3MDcwNzA3MDEw
-ZDBkMDEwMTBkMGQwMTAxMDEwMTA3MDcwNzA3MDcwMTBkMDEwMDAxMDEwMTAxMDEwMTAxMDEwMTAx
-MDEwMTAxMDEwMDAwIiksbW9kaWZpZWQ9IjIwMjUtMDQtMjcgMTY6NDc6MjAiLHZlcnNpb249IjAu
+b64$LS1bW3BvZCxub3Rlcz0iKGMpIExleGFsb2ZmbGUgR2FtZXMgTExQIixtb2RpZmllZD0iMjAy
+NS0wNC0yNyAxNjowODo1NCIsY3JlYXRlZD0iMjAyMy0xMS0xNSAwNzoxMTozMCIsYXV0aG9yPSJ6
+ZXAiLGljb249dXNlcmRhdGEoInU4IiwxNiwxNiwiMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEw
+MTAxMDEwMTBkMGQwNzA3MDcwNzA3MDcwNzA3MDcwNzBkMGQwMTAxMGQwZDA3MDEwNzA3MDcwNzA3
+MDcwMTA3MGQwZDAxMDEwZDBkMDcwMTA3MDcwNzA3MDcwNzAxMDcwZDBkMDEwMTBkMGQwNzA3MDcw
+NzA3MDcwNzA3MDcwNzBkMGQwMTAxMGQwZDA3MDcwZDA3MDcwNzA3MGQwNzA3MGQwZDAxMDEwZDBk
+MDcwNzA3MGQwZDBkMGQwNzA3MDcwZDBkMDEwMTBkMGQwNzA3MDcwNzA3MDcwNzA3MDcwNzBkMGQw
+MTAxMGQwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMGQwZDAxMDEwZDBkMGQwZDBkMGQwZDBkMGQwZDBk
+MGQwZDBkMDEwMTBkMGQwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMGQwMTAxMGQwZDAxMDEwMTAxMDEw
+MTAxMDEwMTAxMGQwZDAxMDEwZDBkMDEwMTAxMDEwNzA3MDcwNzA3MDEwZDBkMDEwMTBkMGQwMTAx
+MDEwMTA3MDcwNzA3MDcwMTBkMGQwMTAxMGQwZDAxMDEwMTAxMDcwNzA3MDcwNzAxMGQwMTAwMDEw
+MTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAwMDAiKSxydW50aW1lPTUsc3RvcmVkPSIyMDI0LTAz
+LTI0IDE1OjM1OjU2Iix0aXRsZT0iUGljb3Ryb24gRmlsZSBOYXZpZ2F0b3IiLHZlcnNpb249IjAu
 MWYiLHdvcmtzcGFjZXM9e3tsb2NhdGlvbj0ibWFpbi5sdWEjMSIsd29ya3NwYWNlX2luZGV4PTF9
 LHtsb2NhdGlvbj0ib3Blbi5sdWEjOCIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0iaW50
 ZXJmLmx1YSMxIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJpbnRlbnRpb24ubHVhIzEi
@@ -27,27 +27,27 @@ AAMAAAAwbmls
 :: gfx/
 :: gfx/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTExLTE1IDA3OjExOjMwIixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjo0NzoyMCIsc3RvcmVkPSIyMDIzLTExLTE1IDA3OjExOjMwIl1dbHo0AAQAAAADAAAA
+NC0yNyAxNjowODo1NCIsc3RvcmVkPSIyMDIzLTExLTE1IDA3OjExOjMwIl1dbHo0AAQAAAADAAAA
 MG5pbA==
 :: gfx/delme/
 :: gfx/delme/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTExIDA3OjU0OjA2Iixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjo0NzoyMCIsc3RvcmVkPSIyMDIzLTU0LTExIDA3OjU0OjA2Il1dbHo0AAQAAAADAAAA
+NC0yNyAxNjowODo1NCIsc3RvcmVkPSIyMDIzLTU0LTExIDA3OjU0OjA2Il1dbHo0AAQAAAADAAAA
 MG5pbA==
 :: gfx/delme2/
 :: gfx/delme2/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTAyLTExIDA4OjAyOjIwIixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjo0NzoyMCIsc3RvcmVkPSIyMDIzLTAyLTExIDA4OjAyOjIwIl1dbHo0AAQAAAADAAAA
+NC0yNyAxNjowODo1NCIsc3RvcmVkPSIyMDIzLTAyLTExIDA4OjAyOjIwIl1dbHo0AAQAAAADAAAA
 MG5pbA==
 :: gfx/ha/
 :: gfx/ha/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTA5LTExIDA4OjA5OjQ0Iixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjo0NzoyMCIsc3RvcmVkPSIyMDIzLTA5LTExIDA4OjA5OjQ0Il1dbHo0AAQAAAADAAAA
+NC0yNyAxNjowODo1NCIsc3RvcmVkPSIyMDIzLTA5LTExIDA4OjA5OjQ0Il1dbHo0AAQAAAADAAAA
 MG5pbA==
 :: gfx/zxc/
 :: gfx/zxc/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTExIDA3OjQxOjQxIixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjo0NzoyMCIsc3RvcmVkPSIyMDIzLTQxLTExIDA3OjQxOjQxIl1dbHo0AAQAAAADAAAA
+NC0yNyAxNjowODo1NCIsc3RvcmVkPSIyMDIzLTQxLTExIDA3OjQxOjQxIl1dbHo0AAQAAAADAAAA
 MG5pbA==
 :: gfx/0.gfx
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTIwIDA2OjM4OjU2Iixtb2RpZmllZD0iMjAyNC0w
@@ -82,7 +82,7 @@ BAAvV5BHAC6PV5AHAAcAByBJAA4O8gAPMQD-----------------------------------------
 :: map/
 :: map/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Iixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjo0NzoyMCIsc3RvcmVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Il1dbHo0AAQAAAADAAAA
+NC0yNyAxNjowODo1NCIsc3RvcmVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Il1dbHo0AAQAAAADAAAA
 MG5pbA==
 :: map/map0.map
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Iixtb2RpZmllZD0iMjAyNC0w
@@ -92,7 +92,7 @@ aWxlX2g9MTYKAG93PTE2fSxLBP----84UDE2fX19
 :: sfx/
 :: sfx/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Iixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjo0NzoyMCIsc3RvcmVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Il1dbHo0AAQAAAADAAAA
+NC0yNyAxNjowODo1NCIsc3RvcmVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Il1dbHo0AAQAAAADAAAA
 MG5pbA==
 :: sfx/sfx0.sfx
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Iixtb2RpZmllZD0iMjAyNC0w
@@ -540,9 +540,12 @@ on_event("drop_items",function(msg)
 			-- shouldn't ever need .filename
 			-- avoid introducing optional attributes / hints -- easy for another author to expect to exist on receiving end
 
-			mv(item.fullpath, pwd().."/"..item.fullpath:basename())
+			-- allowed to overwrite existing files in this case
+			local res = mv(item.fullpath, pwd().."/"..item.fullpath:basename())
 			
-			if (mode == "desktop") then	
+			if res then
+				notify("error: "..tostring(res))
+			elseif (mode == "desktop") then	
 				set_desktop_item_position(item.fullpath:basename(), msg.mx, msg.my)
 			end
 
@@ -878,8 +881,12 @@ function update_file_info_menu_item()
 			label = "\^:3e7f5d5d773e2a00 Delete File",
 			action = function()
 				mkdir("/ram/compost")
-				mv(which, "/ram/compost/"..which:basename())
-				notify("moved to ".."/ram/compost/"..which:basename())
+				local res = mv(which, "/ram/compost/"..which:basename())
+				if (res) then
+					notify("error: "..tostring(res))
+				else
+					notify("moved to ".."/ram/compost/"..which:basename())
+				end
 			end
 		}
 		
@@ -1322,15 +1329,7 @@ local index_for_type = {
 	pod = 12
 	
 }
-function get_file_extension(s)
-	if (sub(s,-8) == ".p64.rom") return "p64.rom"
-	if (sub(s,-8) == ".p64.png") return "p64.png"
-	-- max extension length: 31
-	for i = -2, -32, -1 do
-		if (string.sub(s,i,i) == ".") return string.sub(s, i+1)
-	end
-	return nil -- "no extension"
-end
+
 
 function get_file_icon(filename)
 
@@ -1340,7 +1339,7 @@ function get_file_icon(filename)
 		return md.icon
 	end
 	
-	local ext = get_file_extension(filename)
+	local ext = filename:ext()
 	
 	-- folder sprite if a folder (but .p64 doesn't count)
 
@@ -1618,7 +1617,8 @@ function process_intention()
 	-- ** never processed by requester **
 	if (intention == "new_file" or intention == "new_tab") then
 		if (not filename:ext() and env().use_ext) filename..="."..env().use_ext
-		create_process("/system/util/open.lua", { argv = {filename} })
+		create_process(env().open_with and env().open_with or "/system/util/open.lua",
+			{ argv = {filename} })
 		pop_intention()
 		return
 	end
@@ -1632,7 +1632,13 @@ function process_intention()
 	
 	if (intention == "rename") then
 		-- printh("rename: "..intention_filename.." to: "..filename)
-		mv(intention_filename, filename)
+		if (fstat(filename)) then
+			notify("can not rename to an existing file")
+		else
+			local res = mv(intention_filename, filename)
+			if (res) notify("error: "..res)
+		end
+
 		pop_intention()
 		return
 	end
@@ -2300,13 +2306,13 @@ end)
 					-- filename in text field should already be set
 					process_intention()
 				else
-	
-				create_process("/system/util/open.lua",
-					{
-						argv = {fullpath(filename)},
-						--pwd = pwd()
-					}
-				)
+					-- open by file extension
+					create_process(env().open_with and env().open_with or "/system/util/open.lua",
+						{
+							argv = {fullpath(filename)},
+							--pwd = pwd()
+						}
+					)
 				
 				end
 			

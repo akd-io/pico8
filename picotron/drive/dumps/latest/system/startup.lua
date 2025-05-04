@@ -47,9 +47,12 @@ create_process("/system/wm/wm.lua")
 --   useful for recovering from borked /appdata/system/startup.lua
 ------------------------------------------------------------------------------------------------
 
-flip()
-if (stat(988) > 0) bypass = true _signal(35) 
+-- give a guaranteed short window to skip
 
+for i=1,20 do
+	flip()
+	if (stat(988) > 0) bypass = true _signal(35) 
+end
 
 if (bypass) then
 	create_process("/system/apps/terminal.lua", 

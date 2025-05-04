@@ -2,30 +2,31 @@ picotron cartridge // www.picotron.net
 version 2
 
 :: .info.pod
-b64$LS1bW3BvZCx3b3Jrc3BhY2VzPXt7bG9jYXRpb249Im1haW4ubHVhIzE0NCIsd29ya3NwYWNl
-X2luZGV4PTF9LHtsb2NhdGlvbj0iZ3VpLmx1YSMzOSIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2Nh
-dGlvbj0iaW5zdC5sdWEjMTkwIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJlbnYubHVh
-IzEyMSIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0idHJhY2subHVhIzEzMiIsd29ya3Nw
-YWNlX2luZGV4PTF9LHtsb2NhdGlvbj0iZGVidWcubHVhIzExIix3b3Jrc3BhY2VfaW5kZXg9MX0s
-e2xvY2F0aW9uPSJzZngvMC5zZngiLHdvcmtzcGFjZV9pbmRleD00fSx7bG9jYXRpb249InNmeC8w
-LnNmeCIsd29ya3NwYWNlX2luZGV4PTR9fSxhdXRob3I9InplcCIsdmVyc2lvbj0iMC4xZiIscnVu
-dGltZT02LHRpdGxlPSJQaWNvdHJvbiBUcmFja2VyIixjcmVhdGVkPSIyMDIzLTEwLTE5IDE2OjUw
-OjA3Iixtb2RpZmllZD0iMjAyNS0wNC0yNyAxNjo0NzoyMCIscmV2aXNpb249MCxpY29uPXVzZXJk
-YXRhKCJ1OCIsMTYsMTYsIjAwMDAwMDAxMDEwMTAxMDEwMTAxMDEwMTAxMDAwMDAwMDAwMDAxMDcw
-NzA3MDcwNzA3MDcwNzA3MDcwMTAwMDAwMDAxMDcwZDBkMGQwZDBkMGQwZDBkMGQwZDA3MDEwMDAx
-MDcwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMGQwNzAxMDEwNzBkMDcwNzA3MDcwZDBkMGQwZDBkMGQw
-ZDA3MDEwMTA3MGQwNzA3MDcwNzBkMGQwZDBkMGQwZDBkMDcwMTAxMDcwZDA3MGQwNzA3MDcwNzA3
-MGQwZDBkMDcwNzAxMDEwNzBkMDcwNzA3MDcwZDBkMGQwZDA3MGQwNzA3MDEwMTA3MGQwNzA3MGQw
-ZDA3MGQwZDBkMDcwZDA3MDcwMTAxMDcwZDA3MDcwZDBkMGQwNzBkMGQwZDBkMGQwNzAxMDEwNzBk
-MGQwZDBkMGQwZDBkMGQwZDBkMGQwZDA3MDEwMTA2MDcwZDBkMGQwZDBkMGQwZDBkMGQwZDA3MDYw
-MTAxMDYwNjA3MDcwNzA3MDcwNzA3MDcwNzA3MDYwNjAxMDAwMTA2MDYwNjA2MDYwNjA2MDYwNjA2
-MDYwNjAxMDAwMDAwMDEwNjA2MDYwNjA2MDYwNjA2MDYwNjAxMDAwMDAwMDAwMDAxMDEwMTAxMDEw
-MTAxMDEwMTAxMDAwMDAwIiksbm90ZXM9IihjKSBMZXhhbG9mZmxlIEdhbWVzIExMUCJdXWx6NAAE
-AAAAAwAAADBuaWw=
+b64$LS1bW3BvZCxub3Rlcz0iKGMpIExleGFsb2ZmbGUgR2FtZXMgTExQIixtb2RpZmllZD0iMjAy
+NS0wNC0yNyAxNjowODo1NCIsY3JlYXRlZD0iMjAyMy0xMC0xOSAxNjo1MDowNyIsYXV0aG9yPSJ6
+ZXAiLGljb249dXNlcmRhdGEoInU4IiwxNiwxNiwiMDAwMDAwMDEwMTAxMDEwMTAxMDEwMTAxMDEw
+MDAwMDAwMDAwMDEwNzA3MDcwNzA3MDcwNzA3MDcwNzAxMDAwMDAwMDEwNzBkMGQwZDBkMGQwZDBk
+MGQwZDBkMDcwMTAwMDEwNzBkMGQwZDBkMGQwZDBkMGQwZDBkMGQwZDA3MDEwMTA3MGQwNzA3MDcw
+NzBkMGQwZDBkMGQwZDBkMDcwMTAxMDcwZDA3MDcwNzA3MGQwZDBkMGQwZDBkMGQwNzAxMDEwNzBk
+MDcwZDA3MDcwNzA3MDcwZDBkMGQwNzA3MDEwMTA3MGQwNzA3MDcwNzBkMGQwZDBkMDcwZDA3MDcw
+MTAxMDcwZDA3MDcwZDBkMDcwZDBkMGQwNzBkMDcwNzAxMDEwNzBkMDcwNzBkMGQwZDA3MGQwZDBk
+MGQwZDA3MDEwMTA3MGQwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMDcwMTAxMDYwNzBkMGQwZDBkMGQw
+ZDBkMGQwZDBkMDcwNjAxMDEwNjA2MDcwNzA3MDcwNzA3MDcwNzA3MDcwNjA2MDEwMDAxMDYwNjA2
+MDYwNjA2MDYwNjA2MDYwNjA2MDEwMDAwMDAwMTA2MDYwNjA2MDYwNjA2MDYwNjA2MDEwMDAwMDAw
+MDAwMDEwMTAxMDEwMTAxMDEwMTAxMDEwMDAwMDAiKSxyZXZpc2lvbj0wLHJ1bnRpbWU9Nix0aXRs
+ZT0iUGljb3Ryb24gVHJhY2tlciIsdmVyc2lvbj0iMC4xZiIsd29ya3NwYWNlcz17e2xvY2F0aW9u
+PSJtYWluLmx1YSMzMSIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0iZ3VpLmx1YSM0MjMi
+LHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249Imluc3QubHVhIzQ5MCIsd29ya3NwYWNlX2lu
+ZGV4PTF9LHtsb2NhdGlvbj0iZW52Lmx1YSMxMjEiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRp
+b249InRyYWNrLmx1YSMxMzIiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249ImRlYnVnLmx1
+YSMyMCIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0idXBkYXRlLmx1YSM3MiIsd29ya3Nw
+YWNlX2luZGV4PTF9LHtsb2NhdGlvbj0iZGF0YS5sdWEjNDIiLHdvcmtzcGFjZV9pbmRleD0xfSx7
+bG9jYXRpb249InNmeC8wLnNmeCIsd29ya3NwYWNlX2luZGV4PTR9fV1dbHo0AAQAAAADAAAAMG5p
+bA==
 :: gfx/
 :: gfx/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTA0LTA5IDAyOjM2OjAxIixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjo0NzoyMCIscmV2aXNpb249MF1dbHo0AAQAAAADAAAAMG5pbA==
+NC0yNyAxNjowODo1NCIscmV2aXNpb249MF1dbHo0AAQAAAADAAAAMG5pbA==
 :: gfx/0.gfx
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTMwLTIyIDA3OjMwOjA0Iixtb2RpZmllZD0iMjAyNC0w
 My0zMCAyMDozNDoyMiIscmV2aXNpb249Nzk0NCxzdG9yZWQ9IjIwMjMtMzYtMjkgMDQ6MzY6NDAi
@@ -58,7 +59,7 @@ VxAXUAegPwAdM3BHEAIAH3A7AA0PugEeDzEA----------------------------------------
 :: map/
 :: map/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTA0LTA5IDAyOjM2OjAxIixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjo0NzoyMCIscmV2aXNpb249MF1dbHo0AAQAAAADAAAAMG5pbA==
+NC0yNyAxNjowODo1NCIscmV2aXNpb249MF1dbHo0AAQAAAADAAAAMG5pbA==
 :: map/0.map
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTMwLTIyIDA3OjMwOjA0IixyZXZpc2lvbj00MjkyLHN0
 b3JlZD0iMjAyMy0zNi0yOSAwNDozNjo0MCJdXXtsYXllcj17WzBdPXtibXA9dXNlcmRhdGEoImkx
@@ -81,18 +82,6 @@ MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
 MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
 MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
 MDAwMDAwMDAiKSxwYW5feD0wLHBhbl95PTAsc2NhbGU9MSx0aWxlX2g9MTYsdGlsZV93PTE2fX19
-:: sfx/
-:: sfx/.info.pod
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTA0LTA5IDAyOjM2OjAxIixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjo0NzoyMCIscmV2aXNpb249MF1dbHo0AAQAAAADAAAAMG5pbA==
-:: sfx/0.sfx
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTA0LTE1IDAyOjU1OjI5Iixtb2RpZmllZD0iMjAyNC0w
-NC0xNSAxNjoyMzoxNiIscmV2aXNpb249OTZdXWx6NAAjAQAAUAgAAPAncHh1AAMoAAADAAQPQBAC
-DgABoAEgAqAOAA8QAA3wygECAwQFBgcAD-_QCAkKCw8MDw0PDg8PEADwAA0PEQ8SDxMPFA8VDxYP
-FxMA8QEPGA8ZDxoPGw8cDx0PHg8fFADxACAPIQ8iDyMPJA8lDyYPJxQA8QAoDykPKg8rDywPLQ8u
-Dy8UAPEAMA8xDzIPMw80DzUPNg83FAD-BTgPOQ86DzsPPA89Dz4PPwAP--D-AQDr-ydaARAGDyAQ
-ASABIAHwAAIQAgwQASAPISABMA9A8MMPKA--8MYP_AoP-w_AD-cPDQHwCQEQBgwwAP--uh--AQDM
-gOgPQAANQA8wCAWx--8tIf4tLP4t8HAWAF-_sPBwAwgA-9wf-wEAl1D-----Hw==
 :: amp.lua
 --[[pod_format="raw",created="2023-29-17 13:29:48",revision=257,stored="2023-27-19 23:27:17"]]
 -- amp filter
@@ -171,9 +160,16 @@ gOgPQAANQA8wCAWx--8tIf4tLP4t8HAWAF-_sPBwAwgA-9wf-wEAl1D-----Hw==
 
 
 :: data.lua
---[[pod_format="raw",created="2023-36-24 00:36:58",modified="2024-03-30 09:28:03",revision=6952,stored="2023-36-29 04:36:40"]]
+--[[pod_format="raw",created="2023-10-24 00:36:58",modified="2024-04-28 08:42:00",revision=7058,stored="2023-36-29 04:36:40"]]
 function init_data()
+
+	-- use 256k from 0x30000
+	-- gives 399 SFX and managemable size for undo state comparisons
+	-- if change this need, to adjust undo stack size and loader/saver
 	
+	memset(0x30000, 0, 0x40000)
+	
+
 	-- index (0x30000)
 	
 	-- first 3 values are almost metadata only -- not currently
@@ -203,9 +199,12 @@ function init_data()
 	-- default track speed (+3 unused)
 	poke(0x30026, 16, 0, 0, 0) 
 	
-	-- pattern data: first 8 patterns
+	-- pattern data: first 16 patterns
+	-- want to keep default sfx file quite tiny
+	-- .. should be ok to save a whole .sfx for just one inst / experiment
+	-- later: interface to generate more default patterns
 	
-	for pp = 0,7 do
+	for pp = 0,1 do
 		local addr = 0x30100 + pp * 20
 		for i = 0, 7 do
 			poke(addr+i, pp*8 + i)
@@ -308,8 +307,10 @@ function init_data()
 	-- pitch, inst, vol: not set (0xff)
 	memset(addr+8, 0xff, 64*3)
 	
-	-- copy to other tracks
-	for i=1,63 do
+	-- copy to other tracks: 128k worth
+	-- ** only first 399 are saved / undoable (0x20000\328) **
+	
+	for i=1,398 do
 		memcpy(0x50000 + i*328, 0x50000, 328)
 	end
 	
@@ -322,7 +323,7 @@ end
 
 
 :: debug.lua
---[[pod_format="raw",created="2024-03-13 08:36:45",modified="2024-04-15 16:23:16",revision=366]]
+--[[pod_format="raw",created="2024-03-13 08:36:45",modified="2024-04-28 08:42:00",revision=544]]
 
 function draw_mudo_state(x,y)
 	rectfill(x,y,x+99,y+60,0)
@@ -341,12 +342,12 @@ function draw_mudo_state(x,y)
 		print("\14"..stat(400+i,9 ), sx+60, sy, 13)
 		
 	end
-	
-	print(tostr(something_is_playing),sx,y+52,14)
+	print(string.format("cpu:%3.3f", stat(1)),x,y+52,13)
+	print(tostr(something_is_playing),x+50,y+52,14)
 end
 
 :: env.lua
---[[pod_format="raw",created="2023-10-08 03:32:58",modified="2024-04-15 16:23:16",revision=2137,stored="2023-36-29 04:36:40"]]
+--[[pod_format="raw",created="2023-10-08 03:32:58",modified="2024-04-28 08:42:00",revision=2302,stored="2023-36-29 04:36:40"]]
 
 -- flags: lerp, random start position
 -- used by DATA envelope
@@ -708,7 +709,7 @@ end
 
 
 :: gui.lua
---[[pod_format="raw",created="2023-10-22 07:32:11",modified="2024-04-15 16:23:16",revision=8931,stored="2023-36-29 04:36:40"]]
+--[[pod_format="raw",created="2023-10-22 07:32:11",modified="2024-04-28 08:42:00",revision=9103,stored="2023-36-29 04:36:40"]]
 
 function create_pane(title, x, y, w, h, col)
 
@@ -1226,7 +1227,7 @@ end
 
 
 :: inst.lua
---[[pod_format="raw",created="2023-10-27 18:16:38",modified="2024-04-15 16:23:16",revision=3380]]
+--[[pod_format="raw",created="2023-10-27 18:16:38",modified="2024-04-28 08:42:00",revision=3561]]
 
 -- 0x1702
 local node_type_col = {
@@ -1706,17 +1707,18 @@ function create_scope(addr, node_index, x, y, w, h)
 		
 		--------- live output ----------
 		
-		ci_channel = 0 -- ** assume channel 0
+		ci_channel = 8 -- ** assume channel 0
 		
 		if (ci_channel < 0) return -- don't know which channel [yet?] -- skip
 		
 		-- tick_len is never larger than 4k
-		local tick_addr = 0x200000 + node_index * 4096
+		local tick_addr = 0x200000 + node_index * 8192
 		
 		local tick_len = stat(400 + ci_channel, 8)
-		
-		-- only sample every 2 frames
-		if (global_t % 2 == 0 and not msg.has_pointer or msg.mb==0) 
+
+		-- grab at 15fps (perf + so is readble)
+		--if ((global_t + node_index) & 3 == 0 and (not msg.has_pointer or msg.mb==0)) 
+		if (true)
 		then
 			tick_len = stat(400 + ci_channel, 20 + node_index, tick_addr)
 		end
@@ -2099,7 +2101,7 @@ end
 
 
 :: main.lua
---[[pod_format="raw",created="2023-10-22 07:30:04",modified="2024-04-15 16:23:16",revision=8349,stored="2023-36-29 04:36:40"]]
+--[[pod_format="raw",created="2023-10-22 07:30:04",modified="2024-04-28 08:42:00",revision=8523,stored="2023-36-29 04:36:40"]]
 --[[
 	Picotron Tracker
 	(c) Lexaloffle Games LLP
@@ -2130,8 +2132,8 @@ function _init()
 	
 	wrangle_working_file(
 		function()
-			local ud = userdata("u8",0x30000)
-			for i=0,0x2f do
+			local ud = userdata("u8",0x40000)
+			for i=0,0x3f do
 				set(ud, i * 0x1000, peek(0x30000 + i * 0x1000, 0x1000))
 			end
 			return ud
@@ -2140,7 +2142,7 @@ function _init()
 			if (type(ud)~="userdata") then
 				init_data()
 			else
-				for i=0,0x2f do
+				for i=0,0x3f do
 					poke(0x30000 + i * 0x1000, get(ud, i * 0x1000, 0x1000))
 				end
 			end
@@ -2255,7 +2257,7 @@ end
 
 
 :: track.lua
---[[pod_format="raw",created="2023-10-27 18:49:18",modified="2024-04-15 16:23:16",revision=4272]]
+--[[pod_format="raw",created="2023-10-27 18:49:18",modified="2024-04-28 08:42:00",revision=4438]]
 --[[
 
 	track editor
@@ -2893,7 +2895,7 @@ end
 
 
 :: undo.lua
---[[pod_format="raw",created="2024-03-30 19:03:19",modified="2024-03-30 20:34:22",revision=379]]
+--[[pod_format="raw",created="2024-03-30 19:03:19",modified="2024-04-28 08:40:20",revision=451]]
 --[[
 
 	single undo stack for whole .sfx file
@@ -2904,18 +2906,21 @@ function init_undo()
 
 	undo_stack = create_undo_stack(
 		function()
-			local mem = userdata("u8",0x30000)
-			for i=0,2 do
+			local mem = userdata("u8",0x40000)
+			for i=0,3 do
 				set(mem,i*0x10000,peek(0x30000+i*0x10000, 0x10000))
 			end
 			return {mem,tdat,mode,ci,ct,cp}
 		end,
 		function(state)
-			for i=0,2 do
+			for i=0,3 do
 				poke(0x30000+i*0x10000, get(state[1],i*0x10000,0x10000))
 			end
 			tdat,mode,ci,ct,cp=state[2],state[3],state[4],state[5],state[6]
-		end
+		end,		
+		-- use raw binary encoding suitable for fixed size memory block (same as gfx)
+		--> faster encoding,  smaller patches
+		0x11 -- (0x1 binary  0x10 pxu raw)
 	)
 	
 end
@@ -2934,7 +2939,7 @@ function redo()
 	refresh_gui = true
 end
 :: update.lua
---[[pod_format="raw",created="2023-32-22 07:32:11",modified="2024-03-30 20:34:22",revision=8129,stored="2023-36-29 04:36:40"]]
+--[[pod_format="raw",created="2023-10-22 07:32:11",modified="2024-04-28 08:42:00",revision=8275,stored="2023-36-29 04:36:40"]]
 global_t = 0
 
 -- map keyboard letters to pitches

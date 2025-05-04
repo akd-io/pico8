@@ -218,7 +218,8 @@ end
 function mv(src, dest)
 
 	if (fullpath(src) == fullpath(dest)) return
-	_cp(src, dest, true)
+	local res = _cp(src, dest, true)
+	if (res) return res -- copy failed -- return before removing original!
 	_rm(src)
 end
 
