@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2025-04-27 16:59:00",modified="2025-04-27 16:59:00",revision=0]]
+--[[pod_format="raw",created="2025-04-27 17:00:42",modified="2025-04-27 17:00:42",revision=0]]
 -- **** head.lua should not have any metadata; breaks load during bootstrapping // to do: why? ****
 --[[
 
@@ -373,34 +373,17 @@ function create_process(prog_name_p, env_patch, do_debug)
 
 	if (new_env.sandbox == "bbs") then
 
-		-- essential read access
-		add(new_env.fileview, {location = "/system", mode = "R"}) -- read libraries and resources
+		-- read system libraries and resources
+		add(new_env.fileview, {location = "/system", mode = "R"})
 
---		add(new_env.fileview, {location = prog_name, mode = "R"}) -- cart/program can read itself (deleteme -- replaced with more general boot_file:dirname() rule)
-
-		-- cart/program can read itself; includes running main.lua directly
-		-- note: this never happens for stand-alone .lua files as it is not possible to sandbox them separately 
-		-- (only parent .info.pod is observed in this context)
-		add(new_env.fileview, {location = boot_file:dirname(), mode = "R"}) 
-
+		-- cart/program can read itself; includes running main.lua directly, and co-run programs. program_path is same as initial pwd
+		-- note: this never happens for stand-alone .lua files as it is not possible to sandbox them separately (only parent .info.pod is observed in this context)
+		add(new_env.fileview, {location = program_path, mode = "R"})
 
 		-- partial view of processes.pod and /desktop metadata (only icon x,y available; ref: bbs://desktop_pet.p64)
 		add(new_env.fileview, {location = "/ram/system/processes.pod", mode = "X"})
 		add(new_env.fileview, {location = "/desktop/.info.pod", mode = "X"})
 		
-		-- can read/write /ram/cart 
-		--[[
-			UPDATE: user must grant write permission explicitly by choosing file in filenav
-			(filenav has the authority to extend another process's fileview)
-			means default file location (/ram/cart/gfx/0.pal) needs to be bumped to /appdata, but that's
-			not a terrible thing esp when just quickly trying out a tool ~ get a persistent demo file.
-		]]
-		-- add(new_env.fileview, {location = "/ram/cart", mode = "RW"})
-
-		-- but can read it if running /ram/cart/main.lua (e.g. using bbs dummy id during dev)
-		-- update: handled by {location = boot_file:dirname(), mode = "R"} above. deleteme
-		-- if (running_pwc) add(new_env.fileview, {location = "/ram/cart", mode = "R"})
-
 		-- (dev) read/write mounted bbs:// cart while sandboxed
 		-- deleteme -- only needed in kernal space in fs.lua
 		--add(new_env.fileview, {location = "/ram/bbs/"..new_env.bbs_id..".p64.png", mode = "RW"})
@@ -690,6 +673,8 @@ end
 				-- 0x547d is blitting mask; keep previous value
 			end
 		end
+
+--		printh("set_window_1: "..pod(attribs))
 
 		_send_message(3, {event="set_window", attribs = attribs})
 

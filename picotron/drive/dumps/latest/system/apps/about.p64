@@ -4,36 +4,102 @@ version 2
 :: gfx/
 :: gfx/0.gfx
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTE2IDA2OjMyOjE4Iixtb2RpZmllZD0iMjAyNS0w
-My0xNCAxNDozNjowMCIscmV2aXNpb249MTAwMF1dbHo0AFYCAACvMwAA8xd7WzBdPXtibXA9cHh1
+My0yOSAwMjo1NjoxMyIscmV2aXNpb249MjYzOV1dbHo0AJoQAAB0UAAA8xd7WzBdPXtibXA9cHh1
 AEMgBQEEAAENBgcsZmxhZ3M9MCxwYW5feAgAy3k9MCx6b29tPTh9LDQAbw8SDw4PFzcAGl8QEATw
-8DEAHd4A-xIB1x4Hvw4HHge9BAD-CNceF48XJx4XjBcMHrcMDgAOvA4QzvADZgAevvEB1xEHvxIH
-EQe_BAD-BtcRF48OJxEXjRcNEbcNAQABvQEQwWUAHx-wMQB-8wUDFwA3ABdAB5AHIAewBxAHsAfw
-AgkAHBARAFEgB5AHQDAAD-sAIA8xAP9D-wH2NR8R9g4d9g4fHRYfF-ZlcAAeDzEA-0TfCVGAAS0m
-AQBhLTYR1gIAAU8BANEAVQAhnyYnAQBhJjcR1wIAAQ5VAA-3BBUvvQcEAAL-AtcRF4YnEReGFwYR
-twYBAAG29QQh-woAkVABdwYBQAF3FgEwAXcmASABdzYBEAG3BAATD9MAHpAQoTABpgEQAQcGABAR
-CgA-tgEADgAM-wOWERCxBwEQEZcGASABlgFAkSB1ACARrXUAQK0BEBEKAD_9AQAOAAwUnXUAXw0B
-IAGddQAgb-EBFpcWEQQABQJqAoMmgRYRJgE3MQYAQQEAARYIAC8Q0W0AHLAgkUABlwEgAQedB74A
-ByYCDwQAAVAGB50HBocAATYCD1QBIy-w8DEA-0RgEdEAEbchMgT5ABedFxEHDRENFgEGDRENBwwA
-ABwAz9cR3RE9UT0BANHwEZcAHg8xAP----------------------------------------------
---------WVBtPTh9fQ==
+8DEACy0xNDIA3gD-EgHXHge-DgceB70EAP8I1x4XjxcnHheMFwwetwwOAA68DhDO8ANnAB__8QHX
+EQe-EgcRB74EAP8G1xEXjw4nEReNFw0Rtw0BAAG9ARDBZgAf8BEgkUABlwEgAQedBwEAAQc9Nz0H
+EQctFx0XLQcRBx13HQYAPycdJwgAAQQmAAE0AP8GBgedBwYRFpcWAQABtgEgAZYBQJEgjQAPD-cB
+Hgs1ANAMAwQGBw8aCwwPHA8d-wH-FQ8PCQoNDxIPEQ8bDxAPFg8eCA8YBA8ZDx8AAQ8TEwUSHxQf
+FYoBHvMFAxcANwAXQAeQByAHsAcQB7AH8AIJABwQEQBRIAeQB0AwAA-zASAf8DIAggKJAvAEHxIK
+jgcRB0oeGA4YBxEHDiouSAcAzwoOCj4oDgcRB44IHpoCCg_pAEyDFAoE8DAGDx0NApUOCAkKDw8P
+F3ANAjIFDx4LAqEWDx9wBwAPEwMRDgIv8ERoAAwfMWgAAA10Ah9wdQICFoB1Ag9nABz-BBAQBPY1
+HxH2Dh32Dh8dFh8X9mVBAR8PMgD-S_8JUYABLS8PAQBhLT4R3gIAAU8BANEAVwAi3y8eLxcBAGEv
+Hj8XEd5aADYCxwMvvQcEAAIAtQPvHScRF44XDhG3DgEAAb61AyL-CgCRUAF3BgFAAXcWATABdyYB
+IAF3NgEQAbcEABMP1gAfkBChMAGpARABBwYAEBEKAD_5AQAOAAzumREQsQcBEBGXCQEgAZmpBg92
+ABMRpHYAQKQBEBEKAD_0AQAOAAwUlHYAXwQBIAGUdgAhb-EBHpceEQQABQIbAoMugR4RLgE3MQYA
+QQEAAR4IAC8Q0RoIJiGfEhsIB3wIDwQAAaEPHQeeBw0RHZcd8gU-IAGd4wAhL-DwMgD-S3AR0QAR
+tyHX7gPpnRcRBw0RDRYBBg0RDQcMAAAcAM-XEd0RPVE9AQDR8BGZAB8PMgD---8LPwEBBOMMHGAB
+BA8XDx3OCq8aDxwGDw4MCQgLQgAe-wUfDxYFDxINDx4PEA8ZBA8YDxsPEUUAHUEHAB8VNAsfEzoA
+Gv8AJBAEdz8XPx06fw8-Gj8cDAARvz8WNj8OPDk-Hzh7CwAO-wA1PT8ePxA-GTQ-GD8bPxEPABqv
+MDE-Ej8TPxRycwoACw-wAAsfNhMCHR84MQBf8TxgEgASkAIPFwcCDgKAAg4XAg8OBwJgAg4nDRcC
+UAIOHw9eAkACLgcOBw4HHgIgAg0OBw0eDQ49AhACDR4dDh0eHQIQAh0OHS4NHg0KAOANHgEODQ4B
+AgASDk0BDgIAUAIQAgcOGQBhDR4hEgY3CQDfASACNmcCMEJGAnBiIOMAHfciAQngGdApwDmwSaBZ
+kCkPGSmAKQAOKXApEA4pYCkgDilQKTAOKUAJDxEpDSkNGTAJDQIATyDO8AJwAB3xIxIfExBfEUA-
+EwcfEQ8cDxEfHA8TIB4QBw8cHxEvHB8RDhAeAAcfHA8RPxwvEQ4ALgcPDAAQTwwA8AsdTxw9DhAu
+XA4MDQwOEAc_LA0eHA4QBx2ODQYA-ww8HR4dDiANDA0sHQ4dDkANXB0OYA1cDoBNDjClABzwCAED
+DxoRDiEDAQ4BAw4BEw4TDgMBBwEDCADxAV4BFwFeAQMOEQ4BBw8dDxIjABEREADwJz0RAxE_ER0B
+PQEHEQMOAQcNDx0hHQwXEQMBBw0MBwwhDBcMAR4BDQwHLQEMFxEAEwEMBy0HDCwAgAMBAwE9Bwwd
+ZAAiAQ4LAGEMAS4RBy0JAHAAAw4RJx1BfwCzDgEcEZ4BAyEOEQ6eAA_AAR3yFwK3IAcdLxBPHh0H
+EB0-EF8eHRANLxBfEh8eDw4NEA0fEG8SDxYfCwA0XxIfCwBhPxI-Fh8fCwAyLxJPCwByDxEPEB8S
+Xw0AYC8RXxYPDwsA8AMdLxE-Gi8PHRAtDxFfGg8PLRCqCh_xKwIekzBYcJhAuCAYAAIA8hkQ6BAo
+EBgQKEAIcAjwCA8eQA6QDiAOkG5wHgAuAB5QrkAOAG4ADkAOBABfcB4AHlByABwAcQwRpnEM0aYB
+EBEWVyYBEAEmZxZZDFBWBwYHFhYAQCcGJxYYAEEHBgdWGgAgFmcYACAmVxYAEbYSABSWhQwfBqQT
+Ex84DRJiDXYA8gxgEQARkAEXAQcBgAEnAQYHAWABNwYXAVABhwGlDGAGFwYXBgdqDmAGFxYHFhfy
+AHEWBxYnBhcGCgDRBhcBBwYHEQARB0YBBwIAMBABFxcAUAYXQQZHBwDfASABNmcBMEFGAXBhIL8F
+TvAyEhEQXUAxBx0GDRYBIBEQBwYdJh0BEBEABxYNNi0BACEHBg02TQEAIR1GPQEQIVYBBg0GARAH
+MSYNERYBEAcdgQ0GAP8LNh0RHQEgDQYNJh0BHQFADVYdAWANVgGATQFXBB0G7A0VFuwNNg43bgYA
+UAcORy4XDgAwPgcOCABDFx4HLgoAMi4HTusBPgYHngMWD4kAJhURiQDfLhceFy4HEQceFz4XHggA
+CAQoAA_LAD4fHhQBJy8PFxYPAQ-9AyARrP0D0KwBEBEcVywBEAEsZxyVAGABXAcOBxwWAEAnDCcc
+GABBBw4HXBoAIBxnGAAgLFcWABG8EgAUnP0DXwwBIAGcEwEqHxkTASfeCQeeBwkRGZcZAQABuYER
+D4kAEjJAYXDzA-AAAVABBhcmFwYBMAEGJyYn7QPABidGJwYBAAEWF0YXAAJABhcGTSoAEwAaAAAj
+BCBGFwAFEKY2AFEHBi0GB0gAcAcmBwYBcBEoBBGQcQN-oAEtAaBBQDgCLDg_Nz7FAhF3swI-Jx4n
+CAABBCYAATQADzwCMgaOABUQswEFjAALQQMMCAAEKACwvgcRDAeeBwwRHJd1Ah_8PgIuHR_LAA0I
+ABFXBgBWBw4XDgcQAB__FQE_FhuKABAnpAIICABhXgcRB14nDAApFw4IAA9iBD4GYhMPTwMeDngT
+D_wEqg_KAAEPmwEcLw8OiAAwAGIE8A0OFw4XDgFQAQ4XLhcOATABDicuJw4BEAEOJ04nIxdAHhdO
+F2IVUA4XDk8SKwATABsAsBABDhdOFw4BIAGuNwBRBw4tDgdJAAA1AQBjBEEOBxGQQA0PYwQjAnwY
+ECp7GD86EdoCAAEOIRgPVQAUEClVAD85EdkCAAEPVQAmLy8XJhkqHzglGQUSDiUZPw4R3lkAOp8Q
+LAEAYS48EdwCAAEPBQEnHxwFAUA-LS8dVgA7APgC8A8IFwgXCAFQAQgXKBcIATABCCcoJwgBEAEI
+J0gnDxjmAlAGF0gXBvACcAgXDUINFwgKADInTw4mANEXSBcIASABCA4GSAYOQABRBwYiBgdSAEAH
+LAcIAQMQCAEDfggCCAGgASIBAw_eAxMkBw_gAyMHDaEDIwcdogMjFw2jAyYHDaQDEw2kAyMXDaUD
+KQcNpgMxLA4NTwAwDS4NpgMwDQ4NpgMQDKYDHiymAw8WDD8PIQczHw8hB3MvDxaIADkRlIcAdrQH
+EQcEN2QGAFAHBEckFw4AMDQHBAgAQxcUByQKAHEkB0QHEQe0lwYwlAcOIxsB1hw-IAGe_go0DZMB
+D5sBBw-6CjcPEgEAICQn7gAICABhVAcRB1QnDAApFwQIAE_0BxEODwEBDyYETTMGQgYmBB9IJQQQ
+HyglBAMPpQBOL08SpgAQHy2mADvwCTCBUAEYFwgXGAEwARgXKBcYARABGCcoJ50AD6YAdw_rCgEN
+_AIPAAMHD6sKOAEwAUEfFwgeMQETHjEBEy4xARMuMQFwDQ8OHkgOF3ESUggeDE0MMQFRLkgOBw4z
+ATEeSB4zAVENDEgMDTMBUQ4MLQwOMwEwDigOMwE-DggO2QEvB6kAEx6pABMuqQAWLqkAFS6oABMe
+qAAfLqYAVQsAKIENARYBHQEWARIeRAEWARYMAFEGFzYXBgoAOTEdMQgAURcWFxYXCgB7AQYRFhEG
+AQwADxooAg8lA0IBCQMCJQM-CE4IJAMEE2giAz8ILgjIAz7zBx8cFw4XHgEwAR4XLhceARABHicu
+Jx4XDCAPEO8BYQwXThcMDYYIAJcCDzQMAWIODQxODA3QCD8MLQw6DAEvAg4UBSgvDxzYDAMPpgA_
+D_AMJgCmACAMF5YY8gZQAQwXLBcMATABDCcsJwwBEAEMJ0ylAEEMDhdM2wlxDBduFwwBABoAASIA
+MBdMF_ISQQwObA46AFEHDC4MB0wAQAcsBwygABAMoAB-DA4MAaABLtoJUQHRADEaDBqFADEaLBqX
+ADEqLCqvADMqTCrRADEaTBrRADEabhrRACIqTCIAORpMGtEAUQoMLgwKTAAwCiwK0QA-CgwK0QBb
+DBAGkA4BHw4BHgEdAf0XIA4BkBYDDABRDRc9Fw0KADkxHjEIAFEXHRcdFwoAewENER0RDQEMAC8P
+HXUSMACXAx8elgMJER6FBR8X8QIHAQwDAfECE27vAg7PDw_VAyvxEmARwAEXAbABFwGgATcBQFE3
+YdcRBicNNw0nBhEWFw03DcgUMBZ3FukYMScdJ2An-xMBQAE3FjcBMAEXVhcBMAEHJhEmBwEwARYR
+EBEWATAhUCEQhgAd8REfFcAOFw6wDhcOoA43DkBeN27XHg8ZJw8fNw0nCR4fGYoA-ygZDgAOHHcZ
+DiAODCcdJwkOQA53DkAONwkMNw4wDhcpLBcOMA4HKR4sBw4wDhkeEB4cDjAuUC4QlgYrAKQoEm2S
+LkVBFwEdDgAwLRdtFABFARdBHQ4AH71yBjMPEhkBEW7fCFUeQRcBHg4AIC4XIBNVHgEXQR4OAA8f
+FDTH8QEdlx0RHQcBVwEHCAAAFAABiwFiHREdJz0nEgAR3QIAiB2RHREdMUcBBgBfDQEA0RB6AB5R
+GZcZERlyAAcIAAAUALIXCTcJFxkRGSc5JxIAAhwSiBmRGREZMUcBBgAeCXoAD2gKIiA_F2kOIE4X
+ZxQ1Xhc_BgACEgACHgAPcwE0AC4EMQ8eD-kTGA8zBBENJAcAIQRfDSdOJw00BAUCHQAGNASRDRxO
+HA0BMAENNASfDQFQAQ0HLgcNNAQBD6oAxi-w8DEA---9D7IuUQ91AAIRrnUAQK4BEBEKAD__AQAO
+AAwUnnUAHw4mEiQAdQAvrxd2AGIfEXYAXS-w8DEAr7AAYYABHxwnAYABHgUA8ANOAYAhDxAhoAEN
+ASBRMAENQR5pChFdBgBUDUE_ATAZAC8BwCMAAG9hPgGQUQBnFTAgHnZaCWEeBggWERYKAFImEQcB
+BgoAEjEIABM2GgAvdh5pFTcv8PAxAP8SDzkegBGYiQB2uAcRBwg3aAYAUAcIRygXDgAwOAcICABD
+FxgHKAoAICgHvSYRuIkAHpgcFw9EAU0x8QEfxDMBZwsHCAAAFAC4Fw43DhceER4nPifmM4gekR4R
+HjFHAQYAHw7pC5pP8QEfF-UAZh8eegAKMQ4PF3wA-wIdER6XHRGeLQ4Rji0eEX4tLoIANi-w8FQk
+sxGbjQDwAjs3OwcRBysXGxcrBxEHG3cbBgA-JxsnCAABBCYAATQAPwYHm7INLi-w8DEA--------
+-------------y1QbT04fX0=
 :: gfx/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTE2IDA2OjMxOjUyIixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjo1OTowOCIsc3RvcmVkPSIyMDIzLTMxLTE2IDA2OjMxOjUyIl1d
+NC0yNyAxNzowMToxNCIsc3RvcmVkPSIyMDIzLTMxLTE2IDA2OjMxOjUyIl1d
 :: map/
 :: map/0.map
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTE2IDA2OjMyOjE4Iixtb2RpZmllZD0iMjAyNS0w
-My0xNCAxNDozNjowMCIscmV2aXNpb249OTM1XV1sejQAXAAAAFgEAADwCHt7Ym1wPXVzZXJkYXRh
-KCJpMTYiLDE2AwAvIjABAP---_-xCCIpLGhpZGRlbj1mYWxzZSxwYW5feD0wCADSeT0wLHRpbGVf
-aD0xNgoAEHcKAIB6b29tPTF9fQ==
+My0yOSAwMjo1NjoxMyIscmV2aXNpb249MjMwMl1dbHo0AFsAAABWBAAA8Ah7e2JtcD11c2VyZGF0
+YSgiaTE2IiwxNgMALyIwAQD----v8QgiKSxoaWRkZW49ZmFsc2UscGFuX3g9MAgAwnk9MCx0aWxl
+X2g9MQkAwHc9NSx6b29tPTR9fQ==
 :: map/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTE2IDA2OjMxOjUyIixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjo1OTowOCIsc3RvcmVkPSIyMDIzLTMxLTE2IDA2OjMxOjUyIl1d
+NC0yNyAxNzowMToxNCIsc3RvcmVkPSIyMDIzLTMxLTE2IDA2OjMxOjUyIl1d
 :: sfx/
 :: sfx/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTE2IDA2OjMxOjUyIixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjo1OTowOCIsc3RvcmVkPSIyMDIzLTMxLTE2IDA2OjMxOjUyIl1d
+NC0yNyAxNzowMToxNCIsc3RvcmVkPSIyMDIzLTMxLTE2IDA2OjMxOjUyIl1d
 :: gui.lua
---[[pod_format="raw",created="2023-10-22 10:17:57",modified="2025-03-14 14:36:00",revision=929]]
+--[[pod_format="raw",created="2023-10-22 10:17:57",modified="2025-03-29 02:56:13",revision=2613]]
+
+
 
 function create_infotext(el)
 	el.width=140
@@ -49,8 +115,6 @@ function create_infotext(el)
 	return el
 end
 
-
-
 function generate_gui()
 	
 	gui = create_gui()
@@ -62,8 +126,8 @@ function generate_gui()
 			justify="right",
 			vjustify="bottom",
 			label = "Edit",
-			bgcol=0x070d,
-			click = function()	
+			border=0x0e12,
+			tap = function()	
 				mode = "edit"
 				generate_gui()
 			end
@@ -74,20 +138,31 @@ function generate_gui()
 		
 		gui:attach{
 			x=10,y=8,
-			width=16, height=16,
-			draw = function()
-				spr(meta.icon or get_spr(8),0,0)
+			width=17, height=17,cursor="edit",
+			draw = function(self,msg)
+				local x,y=0,1
+				if (meta.icon and msg.has_pointer) then
+					memmap(shadow_pal,0x8000)
+					spr(meta.icon,0,1)
+					unmap(shadow_pal,0x8000)
+					x,y=1,0
+				end
+				
+				if (meta.lowcol_icon and meta.icon) then
+					memmap(icon_pal,0x8000)
+					spr(meta.icon,x,y)
+					unmap(icon_pal,0x8000)
+				else
+					spr(meta.icon or get_spr(8),x,y)
+				end
 			end,
-			click = function()	
+			tap = function()	
 				mode = "icon"
 				generate_gui()
 			end
 		}	
 
 		-- info
-
-		
-
 
 		local attribs, size, origin = fstat(fn)
 	
@@ -151,12 +226,54 @@ function generate_gui()
 		gui:attach(create_icon_editor())
 		gui:attach(create_palette_chooser())
 		
+		gui:attach{
+			x=128,y=36,width=64,height=10,
+			cursor="pointer",
+			draw=function()
+				local str = "\014\fi[/] low-colour"
+				if (not meta.lowcol_icon) str = "\014\fd[ ] low-colour"
+				print(str,x,y)
+			end,
+			tap=function()
+				meta.lowcol_icon = not meta.lowcol_icon
+				generate_gui()
+			end
+		}
+		
 		-- presets / templates
 		for y=0,1 do
 			for x=0,3 do
-				gui:attach(create_preset_button{x=112+x*20, y=42+y*20, index=x+y*4})
+				gui:attach(create_preset_button{x=120+x*20, y=54+y*20+6, index=x+y*4})
 			end
 		end
+
+		-- preview
+		gui:attach{
+			x=5,y=105,width=110,height=24,
+			draw=function(self,msg)
+				-- themed preview (grayscale values)
+				memmap(lowcol_pal,0x8000)
+				spr(bmp, 4, 2) 
+				unmap(lowcol_pal,0x8000)
+				
+				-- colourful sprite
+				if (not meta.lowcol_icon) then
+					pal()
+					spr(bmp,24,2) -- colourful sprite
+				end
+				pal()
+				
+				if (msg.has_pointer) then
+					if (msg.mx < 20) then 
+						print("\014low-colour\npreview",48,4,13)
+					elseif (msg.mx < 40 and not meta.lowcol_icon) then
+						print("\014full-colour\npreview",48,4,13)
+					end
+				end
+
+			end
+		}
+		
 	end
 	
 	if (mode == "edit") then
@@ -175,8 +292,8 @@ function generate_gui()
 		
 		local texted = gui:attach_text_editor{
 			x = x, y = y, key = key,
-			width = 160, height = height or 13,
-			--block_scrolling = true,
+			width = 172, height = height or 13, -- width was 160; 0.2.0b: 172
+			block_scrolling = true,
 			max_lines = 2,
 			
 			key_callback = {
@@ -203,7 +320,7 @@ function generate_gui()
 		create_field("title  ", "title", xx, 10),
 		create_field("version", "version", xx, 25),
 		create_field("author ", "author", xx, 40),
-		create_field("notes  ", "notes", xx, 55, 26),
+		create_field("notes  ", "notes", xx, 55, 26+14),
 		
 	}
 	
@@ -213,113 +330,127 @@ function generate_gui()
 	
 	-- Cancel, Save buttons shown in both editing modes
 	if (mode ~= "view") then
-	
-	gui:attach_button{
-		label = "Save",
-		x=-10,y=-4,justify="right",vjustify="bottom",
-		bgcol=0x070d,
-		click = function()
 		
-			if (mode == "icon") then
-				meta.icon = bmp--unpod(pod(bmp))
-			else
-				for i=1,#field do
-					meta[field[i].key] = table.concat(field[i]:get_text(),"\n")
-				end
-			end
-			
-			sync_metadata()
-			mode = "view"
-			generate_gui()
-			
-			-- let filenav know (incase icon changes)
-			send_message(2, {
-				event = "broadcast",
-				msg = {
-					event = "filenav_refresh"
-				}
-			})
-			
-		end
-	}
-	
-	gui:attach_button{
-		label = "Cancel",
-		x=-45,y=-4,justify="right",vjustify="bottom",
-		bgcol=0x070d,
-		click = function()
-			sync_metadata()
-			mode = "view"
-			bmp = nil
-			generate_gui()
-		end
-	}
-	
-	if (mode == "edit") then
 		gui:attach_button{
-			label = "Edit Icon",
-			x=10,y=-4,justify="left",vjustify="bottom",
-			bgcol=0x070d,
-			click = function()
-				mode="icon"
+			label = "Save",
+			x=-10,y=-4,justify="right",vjustify="bottom",
+			--bgcol=0x070d,
+			border=0x0e12,
+			tap = function()
+			
+				if (mode == "icon") then
+					meta.icon = bmp:copy()
+				else
+					for i=1,#field do
+						meta[field[i].key] = table.concat(field[i]:get_text(),"\n")
+					end
+				end
+				
+				sync_metadata()
+				mode = "view"
+				generate_gui()
+				
+				-- let filenav know (incase icon changes)
+				send_message(2, {
+					event = "broadcast",
+					msg = {
+						event = "filenav_refresh"
+					}
+				})
+				
+			end
+		}
+		
+		gui:attach_button{
+			label = "Cancel",
+			x=-45,y=-4,justify="right",vjustify="bottom",
+			--bgcol=0x070d,
+			border=0x0e12,
+			tap = function()
+				undo_stack:checkpoint()
+				sync_metadata()
+				mode = "view"
 				generate_gui()
 			end
 		}
-	end
-
---[[
-	if (mode == "edit") then
-		gui:attach_button{
-			label = "Sandbox",
-			x=68,y=-4,justify="left",vjustify="bottom",
-			bgcol=0x070d,
-			click = function()
-				--mode="icon"
-				--generate_gui()
-			end
-		}
-	end
-]]
-	
+		
+		if (mode == "edit") then
+			gui:attach_button{
+				label = "Edit Icon",
+				x=10,y=-4,justify="left",vjustify="bottom",
+				--bgcol=0x070d,
+				border=0x0e12,
+				tap = function()
+					mode="icon"
+					generate_gui()
+				end
+			}
+		end
 	end
 	
 end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 :: icon.lua
---[[pod_format="raw",created="2023-10-25 08:45:20",modified="2025-03-14 14:36:00",revision=453]]
+--[[pod_format="raw",created="2023-10-25 08:45:20",modified="2025-03-29 02:56:13",revision=2146]]
 --[[
 
 	specialised icon editor
 	just for about box
 
 ]]
+
+-- copypaste from filenav.p64/icon.p64
+
+
+-- match table in about.p64 icon designer
+local lowcol_table = 
+{
+	  1,1,1, 13,1,6,7,
+	13,6,6,6, 6,13,6,6,
+	13,13,13,1, 1,1,13,6,
+	13,13,6,13, 6,6,13,13
+}
+local theme_index = {
+	[7] = "icon0",
+	[6] = "icon1",
+	[13] = "icon2",
+	[1] = "icon3"
+}
+local theme_index_buried = {
+	[7] = "icon1",
+	[6] = "icon2",
+	[13] = "icon3",
+	[1] = "icon3"
+}
+
+-- need to call each time theme changes
+function generate_icon_palettes()
+
+	pal()
+	for i=1,31 do
+		pal(i, theme(theme_index[lowcol_table[i]]))
+	end
+	icon_pal = userdata("u8",4096)
+	icon_pal:peek(0x8000)
+
+	pal()
+	for i=1,31 do
+		pal(i, lowcol_table[i])
+	end
+	lowcol_pal = userdata("u8",4096)
+	lowcol_pal:peek(0x8000)
+
+	pal()
+	for i=1,31 do
+		pal(i, 13)-- mode == "desktop" and theme"desktop_shadow" or 6)
+	end
+	shadow_pal = userdata("u8",4096)
+	shadow_pal:peek(0x8000)
+
+	pal()
+end
+
+
 
 function create_preset_button(el)
 
@@ -335,46 +466,54 @@ function create_preset_button(el)
 		blit(self.bmp,bmp)
 	end
 	
-	
-	
 	return el
 	
 end
 
+
 function create_palette_chooser()
 
-	local el = {
-		x = 110, y = 6,
-		width = 60, height = 12
-	}
+	local el
 	
+	if (meta.lowcol_icon) then
+		el = {x = 110, y = 10, width = 19*5, height = 14, colbmp = get_spr(6)}
+	else
+		el = {x = 110, y = 6, width = 12*8, height = 3*8, colbmp = get_spr(7)}
+	end
+		
 	function el:draw(msg)
 		clip()
 		rectfill(-1,-1,self.width,self.height,0)
-		sspr(get_spr(0),0,0,5,1,0,0,self.width,self.height)
+		local colbmp = self.colbmp
+		sspr(colbmp,0,0,nil,nil,0,0,self.width,self.height)
 		
-		for i=0,4 do
-			if (col == get_spr(0):get(i,0)) then
-				local ww = self.width/5
-				local sx = i * ww
-				rect(sx,0,sx+ww-1,self.height-1,0)
-				rect(sx-1,0-1,sx+ww,self.height,7)
+		local hh = self.height \ colbmp:height()
+		local ww = self.width \ colbmp:width()
+		local drawn=false
+		for y=0,2 do
+			for x=0,colbmp:width()-1 do
+				if (col == colbmp:get(x,y) and not drawn) then
+					local sx = x * ww
+					local sy = y * hh
+					local ww1=ww
+					if(colbmp:get(x+1,y)==col) ww1+=ww
+					rect(sx,sy,sx+ww1-1,sy+hh-1,0)
+					rect(sx-1,sy-1,sx+ww1,sy+hh,7)
+					drawn=true
+				end
 			end
 		end
 		
-		-- dump other stuff here
-		--rectfill(70,0,81,11,col)
-		
-		spr(bmp,68,-2)
-	
-		print("\014-- templates ---",10,24,13)
+--		print("\014[ ] colourful",20,28,13)
+--		print("\014-- templates ---",18,38+6,13)
 	end
 	
 	function el:drag(msg)
-		local bmp = get_spr(0)
-		local x = msg.mx * bmp:width() / self.width
-		local y = msg.my * bmp:height() / self.height
-		col = bmp:get(x,y)
+		local colbmp = self.colbmp
+		local x = msg.mx * colbmp:width() / self.width
+		local y = msg.my * colbmp:height() / self.height
+		
+		col = colbmp:get(x,y)
 	end
 		
 	return el
@@ -386,23 +525,38 @@ function create_icon_editor()
 
 	local ed = {
 		x=6,y=6,
-		width=96,height=96
+		width=96,height=96,
+		cursor="crosshair"
 	}
 	
 	-- global
 	col = 7
 	
-	bmp = userdata("u8",16,16)
+	
 	
 	local bmp_width = bmp:width()
 	local bmp_height= bmp:height()
 	if (meta.icon) blit(meta.icon, bmp, 0, 0, 0, 0)
 	
+	function ed:click(msg)
+		undo_stack:checkpoint()
+		if (key"ctrl") then
+			local x = msg.mx * bmp_width / self.width
+			local y = msg.my * bmp_height / self.height
+			local col0 = bmp:get(x,y)
+			for i=0,#bmp-1 do
+				if (bmp[i] == col0) bmp[i] = col
+			end
+		end
+	end
+
 	function ed:draw(msg)
 		clip()
 		rectfill(-1,-1,self.width,self.height,0)
-		sspr(bmp,0,0,16,16,0,0,self.width,self.height)
 		
+		if (meta.lowcol_icon) pal(lowcol_table)
+		sspr(bmp,0,0,16,16,0,0,self.width,self.height)
+		pal()
 	end
 	
 	function ed:drag(msg)
@@ -421,26 +575,71 @@ end
 
 
 
+function icon_editor_update()
+		
+	if (key"ctrl") then
+	
+		if (mode == "icon") then
+			if (keyp("v")) then
+				local c,m = unpod(get_clipboard())
+			
+				if (type(c)=="userdata" and c:width()==16 and c:height()==16) then
+					meta.icon = c
+					blit(c,bmp)
+					sync_metadata()
+				end
+		
+			end
+		
+			-- copy icon
+			if (keyp("c")) then
+				local bb = bmp or meta.icon
+				if (bb) then 
+					set_clipboard(pod(bb),{pod_type="image"})
+					notify("copied icon")
+				end
+			end
+			
+			if (keyp("z")) undo_stack:undo()
+			if (keyp("y")) undo_stack:redo()
+			
+		end
+	
+	end
+end
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+function icon_init()
+	bmp = userdata("u8",16,16)
+	
+	undo_stack = create_undo_stack(
+		function()
+			return bmp
+		end,
+		function(s)
+			blit(s,bmp)
+		end
+	)
+	
+	on_event("modified:/ram/shared/theme.pod", function()
+		generate_icon_palettes()
+	end)
+	generate_icon_palettes()
+end
 :: main.lua
---[[pod_format="raw",created="2023-10-16 06:32:18",modified="2025-03-14 14:36:00",revision=1179]]
+--[[pod_format="raw",created="2023-10-16 06:32:18",modified="2025-03-29 02:56:13",revision=2641]]
 --[[
+
+	a7: easy access to 1,13,6,7 palette?
+	    ** only needed if do auto colour detection thing **
+	    
+	   --> better: [/] always themed
+	       (can work in with preview interface)
+	       
+		how to say it?
+		
+		[/] colourful // means not force_themed! (noice)
+		    -> can put under palette and view different palette
 
 	about.p64
 	general purpose metadata viewer and editor
@@ -457,6 +656,9 @@ include "gui.lua"
 
 -- view, edit, icon
 mode = "view"
+
+
+
 
 function sync_metadata()
 
@@ -493,11 +695,13 @@ function _init()
 	sync_metadata()
 	
 	window{
-		width = 200,
+		width = 212, -- 0.2.0c: 210 (was 200)
 --		height = 108,
-		height = 116,
+		height = 128, -- 0.2.0c: 128 (was 116)
 		title = "About"
 	}
+	
+	icon_init()
 	
 	generate_gui()
 	
@@ -538,7 +742,7 @@ function _draw()
 	end
 ]]
 
-	-- 2 lines of notes
+	-- 3 lines of notes
 	if (meta.notes and meta.notes != "") then
 		cursor(10,38) color(5)
 		print(meta.notes)
@@ -593,32 +797,8 @@ end
 
 function _update()
 
-	if (key"ctrl") then
-	
-		if (mode == "icon") then
-			if (keyp("v")) then
-				local c,m = unpod(get_clipboard())
-			
-				if (type(c)=="userdata" and c:width()==16 and c:height()==16) then
-					meta.icon = c
-					bmp = c -- in case inside editor
-					sync_metadata()	
-				end
-		
-			end
-		
-			-- copy icon
-			if (keyp("c")) then
-				local bb = bmp or meta.icon
-				if (bb) then 
-					set_clipboard(pod(bb),{pod_type="image"})
-					notify("copied icon")
-				end
-			end
-		end
-	
-	end
-	
+	if (mode == "icon") icon_editor_update()
+
 	gui:update_all()
 end
 
@@ -653,22 +833,22 @@ end
 
 
 :: .info.pod
-b64$LS1bW3BvZCxhdXRob3I9InplcCIsY3JlYXRlZD0iMjAyNS0wMy0xNCAxNDozMjowMSIsaWNv
-bj11c2VyZGF0YSgidTgiLDE2LDE2LCIwMDAwMDAwMTAxMDEwMTAxMDEwMTAxMDEwMTAwMDAwMDAw
-MDAwMTA3MDcwNzA3MDcwNzA3MDcwNzA3MDEwMDAwMDAwMTA3MGQwZDBkMGQwZDBkMGQwZDBkMGQw
-NzAxMDAwMTA3MGQwZDBkMGQwNzA3MDcwNzBkMGQwZDBkMDcwMTAxMDcwZDBkMGQwNzA3MGQwZDA3
-MDcwZDBkMGQwNzAxMDEwNzBkMGQwNzA3MDcwNzA3MDcwNzA3MGQwZDA3MDEwMTA3MGQwZDA3MDcw
-NzBkMGQwNzA3MDcwZDBkMDcwMTAxMDcwZDBkMDcwNzA3MGQwZDA3MDcwNzBkMGQwNzAxMDEwNzBk
-MGQwNzA3MDcwZDBkMDcwNzA3MGQwZDA3MDEwMTA3MGQwZDBkMDcwNzBkMGQwNzA3MGQwZDBkMDcw
-MTAxMDcwZDBkMGQwZDA3MDcwNzA3MGQwZDBkMGQwNzAxMDEwNjA3MGQwZDBkMGQwZDBkMGQwZDBk
-MGQwNzA2MDEwMTA2MDYwNzA3MDcwNzA3MDcwNzA3MDcwNzA2MDYwMTAwMDEwNjA2MDYwNjA2MDYw
-NjA2MDYwNjA2MDYwMTAwMDAwMDAxMDYwNjA2MDYwNjA2MDYwNjA2MDYwMTAwMDAwMDAwMDAwMTAx
-MDEwMTAxMDEwMTAxMDEwMTAwMDAwMCIpLG1vZGlmaWVkPSIyMDI1LTA0LTI3IDE2OjU5OjA4Iixu
-b3Rlcz0iRmlsZSBtZXRhZGF0YSB2aWV3ZXIgYW5kIGVkaXRvci5cbkNsaWNrIG9uIHRoZSBpY29u
-IHRvIGVkaXQgaXQhIixydW50aW1lPTE0LHN0b3JlZD0iMjAyNC0wMy0yMyAxOTozNDoxNSIsdGl0
-bGU9IkFib3V0Iix2ZXJzaW9uPSIiLHdvcmtzcGFjZXM9e3tsb2NhdGlvbj0ibWFpbi5sdWEjMSIs
-d29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0iZ3VpLmx1YSMxIix3b3Jrc3BhY2VfaW5kZXg9
-MX0se2xvY2F0aW9uPSJpY29uLmx1YSMxIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJn
-ZngvMC5nZngiLHdvcmtzcGFjZV9pbmRleD0yfSx7bG9jYXRpb249Im1hcC8wLm1hcCIsd29ya3Nw
-YWNlX2luZGV4PTN9fV1d
+b64$LS1bW3BvZCxhdXRob3I9InplcCIsYmJzX2lkPSJfZGV2MjM2NiIsY3JlYXRlZD0iMjAyNS0w
+My0xNCAxNDozMjowMSIsaWNvbj11c2VyZGF0YSgidTgiLDE2LDE2LCIwMDAwMDAwMjAyMDIwMjAy
+MDIwMjAyMDIwMjAwMDAwMDAwMDAwMjA3MDcwNzA3MDcwNzA3MDcwNzA3MDIwMDAwMDAwMjA3MWUx
+ZTFlMWUxZTFlMWUxZTFlMWUwNzAyMDAwMjA3MWUxZTFlMWUwNzA3MDcwNzFlMWUxZTFlMDcwMjAy
+MDcxZTFlMWUwNzA3MWUxZTA3MDcxZTFlMWUwNzAyMDIwNzFlMWUwNzA3MDcwNzA3MDcwNzA3MWUx
+ZTA3MDIwMjA3MWUxZTA3MDcwNzFlMWUwNzA3MDcxZTFlMDcwMjAyMDcxZTFlMDcwNzA3MWUxZTA3
+MDcwNzFlMWUwNzAyMDIwNzFlMWUwNzA3MDcxZTFlMDcwNzA3MWUxZTA3MDIwMjA3MWUxZTFlMDcw
+NzFlMWUwNzA3MWUxZTFlMDcwMjAyMDcxZTFlMWUxZTA3MDcwNzA3MWUxZTFlMWUwNzAyMDIxNzA3
+MWUxZTFlMWUxZTFlMWUxZTFlMWUwNzE3MDIwMjE3MTcwNzA3MDcwNzA3MDcwNzA3MDcwNzE3MTcw
+MjAwMDIxNzE3MTcxNzE3MTcxNzE3MTcxNzE3MTcwMjAwMDAwMDAyMTcxNzE3MTcxNzE3MTcxNzE3
+MTcwMjAwMDAwMDAwMDAwMjAyMDIwMjAyMDIwMjAyMDIwMjAwMDAwMCIpLG1vZGlmaWVkPSIyMDI1
+LTA0LTI3IDE3OjAxOjE0Iixub3Rlcz0iRmlsZSBtZXRhZGF0YSB2aWV3ZXIgYW5kIGVkaXRvci5c
+bkNsaWNrIG9uIHRoZSBpY29uIHRvIGVkaXQgaXQhXG4iLHJ1bnRpbWU9MTcsc2FuZGJveD1mYWxz
+ZSxzdG9yZWQ9IjIwMjQtMDMtMjMgMTk6MzQ6MTUiLHRpdGxlPSJBYm91dCIsdmVyc2lvbj0iMC4y
+Iix3b3Jrc3BhY2VzPXt7bG9jYXRpb249Im1haW4ubHVhIzg4Iix3b3Jrc3BhY2VfaW5kZXg9MX0s
+e2xvY2F0aW9uPSJndWkubHVhIzU0Iix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJpY29u
+Lmx1YSMzOCIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0iZ2Z4LzAuZ2Z4Iix3b3Jrc3Bh
+Y2VfaW5kZXg9Mn0se2xvY2F0aW9uPSJtYXAvMC5tYXAiLHdvcmtzcGFjZV9pbmRleD0zfX1dXQ==
 :: [eoc]

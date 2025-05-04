@@ -425,7 +425,7 @@ local function attach_text_editor(g, parent)
 
 			item.has_markup = true
 			item.renderable = marked_up_line
-			item.draw_h = y1 + 1000
+			item.draw_h = y1 and (y1 + 1000) or 10 -- to do: when is marked_up_line nil? (causing y1 to be nil)
 			return
 		
 		end

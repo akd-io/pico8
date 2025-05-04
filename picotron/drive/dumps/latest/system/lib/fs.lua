@@ -693,26 +693,43 @@ do
 
 	
 
-	local function _fix_metadata_dates(result)
-		if (result) then
-			
-			-- time string generation bug that happened 2023-10! (to do: fix files in /system)
-			if (type(result.modified) == "string" and tonumber(result.modified:sub(6,7)) > 12) then
-				result.modified = result.modified:sub(1,5).."10"..result.modified:sub(8)
-			end
-			if (type(result.created) == "string" and tonumber(result.created:sub(6,7)) > 12) then
-				result.created = result.created:sub(1,5).."10"..result.created:sub(8)
-			end
+	local function _fix_metadata_dates(meta)
+		
+		-- time string generation bug that happened 2023-10! (to do: fix files in /system)
+		if (type(meta.modified) == "string" and tonumber(meta.modified:sub(6,7)) > 12) then
+			meta.modified = meta.modified:sub(1,5).."10"..meta.modified:sub(8)
+		end
+		if (type(meta.created) == "string" and tonumber(meta.created:sub(6,7)) > 12) then
+			meta.created = meta.created:sub(1,5).."10"..meta.created:sub(8)
+		end
 
-			-- use legacy value .stored if .modified was not set
-			if (not result.modified) result.modified = result.stored
+		-- use legacy value .stored if .modified was not set
+		if (not meta.modified) meta.modified = meta.stored
 
+	end
+
+	local function _fix_legacy_metadata(meta)
+		if (not meta) return
+
+		_fix_metadata_dates(meta)
+		
+		-- cartridge icons before 0.2.0c that don't have any colourful pixels set should be treaded as low-colour
+		-- same for non-cartridges (no .runtime) when modified before 0.2.0c came out
+		-- i.e. always apply theme even when not settings.lowcol_icons
+		if (type(meta.icon) == "userdata") then
+			if (meta.runtime and meta.runtime < 17) or (not meta.runtime and meta.modified and meta.modified:sub(1, 10) < "2025-03-26")then
+				meta.lowcol_icon = true
+				local themecols = {[0]=true,[1]=true,[13]=true,[6]=true,[7]=true}
+				for i=0,255 do
+					if (not themecols[meta.icon[i]]) meta.lowcol_icon = nil -- has a colourful colour
+				end
+			end
 		end
 	end
 
 	local function _fetch_metadata(filename)
 		local result = _fetch_metadata_from_file(_fstat(filename) == "folder" and filename.."/.info.pod" or filename)
-		_fix_metadata_dates(result)
+		_fix_legacy_metadata(result)
 		return result
 	end
 
@@ -808,7 +825,8 @@ do
 
 			if (not kpath) return nil, nil, "could not access path"
 			local ret, meta = _fetch_local(kpath, do_yield, ...)
-			_fix_metadata_dates(meta)
+			_fix_legacy_metadata(meta)
+
 			return ret, meta -- no error
 		end
 	end

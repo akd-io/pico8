@@ -5,19 +5,19 @@ version 2
 :: gfx/delme2/
 :: gfx/delme2/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTAyLTExIDA4OjAyOjIwIixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjo1OTowOCIsc3RvcmVkPSIyMDIzLTAyLTExIDA4OjAyOjIwIl1d
+NC0yNyAxNzowMToxNCIsc3RvcmVkPSIyMDIzLTAyLTExIDA4OjAyOjIwIl1d
 :: gfx/delme/
 :: gfx/delme/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTExIDA3OjU0OjA2Iixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjo1OTowOCIsc3RvcmVkPSIyMDIzLTU0LTExIDA3OjU0OjA2Il1d
+NC0yNyAxNzowMToxNCIsc3RvcmVkPSIyMDIzLTU0LTExIDA3OjU0OjA2Il1d
 :: gfx/ha/
 :: gfx/ha/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTA5LTExIDA4OjA5OjQ0Iixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjo1OTowOCIsc3RvcmVkPSIyMDIzLTA5LTExIDA4OjA5OjQ0Il1d
+NC0yNyAxNzowMToxNCIsc3RvcmVkPSIyMDIzLTA5LTExIDA4OjA5OjQ0Il1d
 :: gfx/zxc/
 :: gfx/zxc/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTExIDA3OjQxOjQxIixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjo1OTowOCIsc3RvcmVkPSIyMDIzLTQxLTExIDA3OjQxOjQxIl1d
+NC0yNyAxNzowMToxNCIsc3RvcmVkPSIyMDIzLTQxLTExIDA3OjQxOjQxIl1d
 :: gfx/0.gfx
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTIwIDA2OjM4OjU2Iixtb2RpZmllZD0iMjAyNS0w
 Mi0xNSAwMjo0OToyOCIscmV2aXNpb249MzEwMSxzdG9yZWQ9IjIwMjMtMzQtMDkgMTk6MzQ6NTMi
@@ -49,7 +49,7 @@ BwQAL1eQRwAuj1eQBwAHAAcgSQAODvIADzEA----------------------------------------
 ------------------------QlBtPTh9fQ==
 :: gfx/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTExLTE1IDA3OjExOjMwIixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjo1OTowOCIsc3RvcmVkPSIyMDIzLTExLTE1IDA3OjExOjMwIl1d
+NC0yNyAxNzowMToxNCIsc3RvcmVkPSIyMDIzLTExLTE1IDA3OjExOjMwIl1d
 :: map/
 :: map/map0.map
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Iixtb2RpZmllZD0iMjAyNC0w
@@ -58,7 +58,7 @@ PXVzZXJkYXRhKCJpMTYiLDE2AwAvIjABAP---__hIikscGFuX3g9MAgA8gZ5PTAsc2NhbGU9MSx0
 aWxlX2g9MTYKAG93PTE2fSxLBP----84UDE2fX19
 :: map/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Iixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjo1OTowOCIsc3RvcmVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Il1d
+NC0yNyAxNzowMToxNCIsc3RvcmVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Il1d
 :: sfx/
 :: sfx/sfx0.sfx
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Iixtb2RpZmllZD0iMjAyNC0w
@@ -70,7 +70,7 @@ IAEgAfAAAhACDBABIA8hIAEwD0Dwww8oD--wxg-4Cg--D4AP9w8NAfAJARAGDDAA-zkf-wEA3L-4
 D0AADUD--7DwcAoA--9kH-8BAJdQ-----x8=
 :: sfx/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Iixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjo1OTowOCIsc3RvcmVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Il1d
+NC0yNyAxNzowMToxNCIsc3RvcmVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Il1d
 :: desktop.lua
 --[[pod_format="raw",created="2023-10-04 15:13:41",modified="2025-02-15 02:49:28",revision=3194,stored="2023-21-29 09:21:19"]]
 -- mode: desktop
@@ -329,11 +329,9 @@ local function create_file_item(parent, ff, x, y)
 			-- draw shadow when single item in group
 
 			if (#g==1) then
-				memmap(icon_pal, 0x8000)
-				local shadow_col = theme"desktop_shadow"
-				pal(7,shadow_col) pal(6,shadow_col) pal(13,shadow_col) pal(1,shadow_col) 
+				memmap(shadow_pal, 0x8000)
 				spr(self.finfo.icon,sprx,spry)
-				unmap(icon_pal, 0x8000)
+				unmap(shadow_pal, 0x8000)
 			end
 
 			sprx += 1
@@ -354,21 +352,19 @@ local function create_file_item(parent, ff, x, y)
 	
 		
 		if (not dragging_files or not self.finfo.selected) then
-			memmap(icon_pal, 0x8000)
-			if (buried) then
-				pal(7, theme"icon1")
-				pal(6,theme"icon2")
-				pal(13, theme"icon3")
-				pal(1, theme"icon3")
-			else
-				pal(7, theme"icon0")
-				pal(6,theme"icon1")
-				pal(13, theme"icon2")
-				pal(1, theme"icon3")
-			end
 			
-			spr(self.finfo.icon,sprx,spry)
-			unmap(icon_pal, 0x8000)
+			if (settings.lowcol_icons or self.finfo.lowcol_icon) then
+				local p = buried and buried_pal or icon_pal -- lowcol icons remain low even when buried
+--				local p = buried and (settings.lowcol_icons and buried_pal or buried_pal2) or icon_pal
+				memmap(p, 0x8000)
+				spr(self.finfo.icon,sprx,spry)
+				unmap(p, 0x8000)
+			else
+				if (buried) memmap(buried_pal2, 0x8000)
+				spr(self.finfo.icon,sprx,spry)
+				if (buried) unmap(buried_pal2, 0x8000)
+			end
+
 		end
 		
 		
@@ -1075,11 +1071,24 @@ function drag_selected_files(msg)
 
 	for k,v in pairs(finfo) do
 		if (v.selected) then
+			local v0=v
+			v = unpod(pod(v)) -- make a copy
 			v.fullpath = fullpath(v.filename)
 			local mx, my = mouse()
 			-- 0.1.0c: set offsets here (wm handles this, but mouse moved by the time message arrives)
 			v.xo = v.x and (v.x - mx) or 0
 			v.yo = v.y and (v.y - my) or 0
+
+			-- burn in palette
+			if (v.lowcol_icon or settings.lowcol_icons) then
+				memmap(icon_pal, 0x8000)
+				v.icon = userdata("u8",16,16)
+				set_draw_target(v.icon)
+				spr(v0.icon,0,0)
+				set_draw_target()
+				unmap(icon_pal,0x8000)
+			end
+
 			add(dragging_files, v)
 			--printh("added "..v.fullpath..string.format(" %d %d",v.x,v.y))
 		end
@@ -1162,15 +1171,16 @@ function update_file_info(clear)
 			
 	
 			-- update / create info
-			f.pod_type = "file_reference" -- used by dragging_items
-			f.filename = filename
-			f.fullpath = fullpath(filename)
-			f.selected = f.selected or false
-			f.attrib   = f.attrib or attrib
-			f.size     = f.size or size
-			f.meta     = fetch_metadata(filename) or {}
-			f.icon     = get_file_icon(filename, f.meta)
-			f.index    = i
+			f.pod_type    = "file_reference" -- used by dragging_items
+			f.filename    = filename
+			f.fullpath    = fullpath(filename)
+			f.selected    = f.selected or false
+			f.attrib      = f.attrib or attrib
+			f.size        = f.size or size
+			f.meta        = fetch_metadata(filename) or {}
+			f.icon, 
+			f.lowcol_icon = get_file_icon(filename, f.meta)
+			f.index       = i
 			f.is_non_cart_folder = false
 		
 			-- derive printable filename (has folder icon infront for folders that aren't carts0
@@ -1608,14 +1618,14 @@ local function create_file_item(parent, ff, x, y)
 		local sprx0, spry0 = sprx, spry
 		
 		-- shadow; helps with white outline on white (when inverted)
-		pal(1,6) pal(13,6) pal(7,6)
+		memmap(shadow_pal, 0x8000)
 		if (self.finfo.selected) then
 			 -- pop up and show shadow. that works!
 			 spr(self.finfo.icon,sprx,spry)
 			 sprx += 2
 			 spry -= 1
 		end
-		pal()
+		unmap(shadow_pal, 0x8000)
 		
 		-- none of these solve the white-on-white problem well;
 		-- use pop-up for now. kinda cute and suggests mobility
@@ -1634,17 +1644,18 @@ local function create_file_item(parent, ff, x, y)
 		
 		-- draw grid
 
-		
-
 		if (not dragging_files or not self.finfo.selected) then
-			memmap(icon_pal, 0x8000)
-			pal(7, theme"icon0")
-			pal(6,theme"icon1")
-			pal(13, theme"icon2")
-			pal(1, theme"icon3")
 			
-			spr(self.finfo.icon,sprx,spry)
-			unmap(icon_pal, 0x8000)
+			if (settings.lowcol_icons or self.finfo.lowcol_icon) then
+				local p = icon_pal
+				memmap(p, 0x8000)
+				spr(self.finfo.icon,sprx,spry)
+				unmap(p, 0x8000)
+			else
+				-- to do: how to handle full-colour buried?
+				spr(self.finfo.icon,sprx,spry)
+			end
+
 		end
 		
 		
@@ -1983,15 +1994,78 @@ local index_for_type = {
 	
 }
 
+-- match table in about.p64 icon designer
+local lowcol_table = 
+{
+	  1,1,1, 13,1,6,7,
+	13,6,6,6, 6,13,6,6,
+	13,13,13,1, 1,1,13,6,
+	13,13,6,13, 6,6,13,13
+}
+local theme_index = {
+	[7] = "icon0",
+	[6] = "icon1",
+	[13] = "icon2",
+	[1] = "icon3"
+}
+local theme_index_buried = {
+	[7] = "icon1",
+	[6] = "icon2",
+	[13] = "icon3",
+	[1] = "icon3"
+}
+
+local dark_table = 
+{
+	1,21,19, 20,21,22,6,
+	24,25,9,27, 16,18,8,31,
+
+	19,16,1,1, 21,21,5,14,
+	2,4,27,3, 17,13,24,4
+}
+
+-- need to call each time theme changes
+function generate_icon_palettes()
+
+	pal()
+	for i=1,31 do
+		pal(i, theme(theme_index[lowcol_table[i]]))
+	end
+	icon_pal = userdata("u8",4096)
+	icon_pal:peek(0x8000)
+
+	pal()
+	for i=1,31 do
+		pal(i, theme(theme_index_buried[lowcol_table[i]]))
+	end
+	buried_pal = userdata("u8",4096)
+	buried_pal:peek(0x8000)
+
+	-- full colour palette for when buried
+	pal()
+	for i=1,31 do
+		pal(i, dark_table[i])
+	end
+	buried_pal2 = userdata("u8",4096)
+	buried_pal2:peek(0x8000)
+
+	pal()
+	for i=1,31 do
+		pal(i, mode == "desktop" and theme"desktop_shadow" or 6)
+	end
+	shadow_pal = userdata("u8",4096)
+	shadow_pal:peek(0x8000)
+
+	pal()
+end
+
 
 function get_file_icon(filename, md)
-
---	if (true) return get_spr(1)
 
 	-- look for icon in metadata
 
 	if (md and md.icon and md.icon:width() == 16) then
-		return md.icon
+		return md.icon, md.lowcol_icon
 	end
 	
 	local ext = filename:ext()
@@ -1999,130 +2073,15 @@ function get_file_icon(filename, md)
 	-- folder sprite if a folder (but .p64 doesn't count)
 
 	local kind,size,origin = fstat(filename)
-	if (ext ~= "p64" and ext ~= "p64.rom" and ext ~= "p64.png" and kind == "folder")
+	if (kind == "folder" and ext ~= "p64" and ext ~= "p64.rom" and ext ~= "p64.png")
 	then
-		if (origin and origin:sub(1,5) == "host:") return get_spr(4)
-		return get_spr(2)
+		if (origin and origin:sub(1,5) == "host:") return get_spr(4), true
+		return get_spr(2), true
 	end
-	
-	return get_spr(index_for_type[ext] or 1)
+
+	return get_spr(index_for_type[ext] or 1), true
 	
 end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -2208,8 +2167,9 @@ function generate_intention_panel()
  		local el = panel:attach_button{
 			x = xx, justify = "right", y = 3,
 			label = "Cancel",
-			bgcol = 0x0707,
-			fgcol = 0x0e01,
+			--bgcol = 0x0707,
+			--fgcol = 0x0e01,
+			border = 0x0e12,
 			tap = function()
 				pop_intention()
 			end
@@ -2222,8 +2182,9 @@ function generate_intention_panel()
 	local btn1 = panel:attach_button{
 		x = xx, justify = "right", y = 3,
 		label = intention_action,
-		bgcol = 0x0707,
-		fgcol = 0x0e01,
+		--bgcol = 0x0707,
+		--fgcol = 0x0e01,
+		border = 0x0e12,
 		tap = process_intention
 	}
 	
@@ -2516,7 +2477,6 @@ function generate_interface()
 	
 	local add_height = intention and -19 or 0
 
-	-- to do: generate interface based on mode
 	if (mode == "list")    generate_interface_list(16, add_height)
 	if (mode == "grid")    generate_interface_grid(16, add_height)
 	if (mode == "desktop") generate_interface_desktop(0, add_height)
@@ -2809,14 +2769,20 @@ include "intention.lua"
 
 function _init()
 
-	for i=1,63 do pal(i,theme"icon2") end -- to do: needs to update when theme changes
-	icon_pal = userdata("u8",4096)
-	icon_pal:peek(0x8000)
-	pal()
-	
 	config = fetch"/appdata/system/filenav.pod" or {}
 	on_event("modified:/appdata/system/filenav.pod", function()	
 		config = fetch"/appdata/system/filenav.pod" or {}
+		finfo_version += 1
+	end)
+
+	settings = fetch"/appdata/system/settings.pod" or {}
+	on_event("modified:/appdata/system/settings.pod", function()	
+		settings = fetch"/appdata/system/settings.pod" or {}
+		finfo_version += 1 -- bump
+	end)
+
+	on_event("modified:/ram/shared/theme.pod", function()
+		generate_icon_palettes()
 	end)
 
 --	printh("@@ filenav _init cd env().path: "..tostr(env().path))
@@ -2882,7 +2848,10 @@ function _init()
 	
 	--printh("===== filenav: "..pwd().." =====")
 	
+	generate_icon_palettes()
 	generate_interface()
+
+	
 end
 
 local back_page = nil
@@ -3152,15 +3121,15 @@ end
 :: .info.pod
 b64$LS1bW3BvZCxhdXRob3I9InplcCIsY3JlYXRlZD0iMjAyMy0xMS0xNSAwNzoxMTozMCIsaWNv
 bj11c2VyZGF0YSgidTgiLDE2LDE2LCIwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAx
-MGQwZDA3MDcwNzA3MDcwNzA3MDcwNzA3MGQwZDAxMDEwZDBkMDcwMTA3MDcwNzA3MDcwNzAxMDcw
-ZDBkMDEwMTBkMGQwNzAxMDcwNzA3MDcwNzA3MDEwNzBkMGQwMTAxMGQwZDA3MDcwNzA3MDcwNzA3
-MDcwNzA3MGQwZDAxMDEwZDBkMDcwNzBkMDcwNzA3MDcwZDA3MDcwZDBkMDEwMTBkMGQwNzA3MDcw
-ZDBkMGQwZDA3MDcwNzBkMGQwMTAxMGQwZDA3MDcwNzA3MDcwNzA3MDcwNzA3MGQwZDAxMDEwZDBk
-MGQwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMDEwMTBkMGQwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMGQw
-MTAxMGQwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMGQwZDAxMDEwZDBkMDEwMTAxMDEwMTAxMDEwMTAx
-MDEwZDBkMDEwMTBkMGQwMTAxMDEwMTA3MDcwNzA3MDcwMTBkMGQwMTAxMGQwZDAxMDEwMTAxMDcw
-NzA3MDcwNzAxMGQwZDAxMDEwZDBkMDEwMTAxMDEwNzA3MDcwNzA3MDEwZDAxMDAwMTAxMDEwMTAx
-MDEwMTAxMDEwMTAxMDEwMTAxMDAwMCIpLG1vZGlmaWVkPSIyMDI1LTA0LTI3IDE2OjU5OjA4Iixu
+MGUwZTA3MDcwNzA3MDcwNzA3MDcwNzA3MGUwZTAxMDEwZTBlMDcwMTA3MDcwNzA3MDcwNzAxMDcw
+ZTBlMDEwMTBlMGUwNzAxMDcwNzA3MDcwNzA3MDEwNzBlMGUwMTAxMGUwZTA3MDcwNzA3MDcwNzA3
+MDcwNzA3MGUwZTAxMDEwZTBlMDcwNzBlMDcwNzA3MDcwZTA3MDcwZTE3MDEwMTBlMGUwNzA3MDcw
+ZTBlMGUwZTA3MDcwNzE3MTcwMTAxMGUwZTA3MDcwNzA3MDcwNzA3MDcwNzA3MTcxNzAxMDEwZTBl
+MGUwZTBlMGUwZTBlMGUwZTE3MTcxNzBlMDEwMTBlMGUwZTBlMGUwZTBlMGUwZTE3MTcxNzBlMGUw
+MTAxMGUwZTBlMGUwZTBlMGUwZTE3MTcxNzBlMGUwZTAxMDEwZTBlMDEwMTAxMDEwMTAxMDEwMTAx
+MDEwZTBlMDEwMTBlMGUwMTAxMDEwMTA3MDcwNzA3MDcwMTBlMGUwMTAxMGUwZTAxMDEwMTAxMDcw
+NzA3MDcwNzAxMGUwZTAxMDEwZTBlMDEwMTAxMDEwNzA3MDcwNzA3MDEwZTAxMDAwMTAxMDEwMTAx
+MDEwMTAxMDEwMTAxMDEwMTAxMDAwMCIpLG1vZGlmaWVkPSIyMDI1LTA0LTI3IDE3OjAxOjE0Iixu
 b3Rlcz0iKGMpIExleGFsb2ZmbGUgR2FtZXMgTExQIixydW50aW1lPTEzLHN0b3JlZD0iMjAyNC0w
 My0yNCAxNTozNTo1NiIsdGl0bGU9IlBpY290cm9uIEZpbGUgTmF2aWdhdG9yIix2ZXJzaW9uPSIw
 LjEuMWQiLHdvcmtzcGFjZXM9e3tsb2NhdGlvbj0ibWFpbi5sdWEjMSIsd29ya3NwYWNlX2luZGV4

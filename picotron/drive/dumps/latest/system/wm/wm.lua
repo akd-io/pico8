@@ -34,6 +34,7 @@ local toolbar_y_target = 0
 local infobar_y        = 270 --270-11
 local infobar_y_target = infobar_y
 local held_frames = 0
+local next_ws_id = 100 -- start high for debugging; easy to distinguish between index vs id
 
 local sdat = fetch"/appdata/system/settings.pod" or {}
 
@@ -207,7 +208,7 @@ function create_workspace_1(proc_id, win_attribs)
 	ws.y = 0
 	ws.width = 480
 	ws.height = 270
-	ws.index = #workspace       -- ** should be "id"; can be out of order. to do: unique ids
+	ws.id = next_ws_id  next_ws_id += 1
 	ws.icon = win_attribs.icon 
 	ws.head_proc_id = proc_id
 	ws.prog = win_attribs.prog
@@ -248,9 +249,17 @@ function create_workspace_1(proc_id, win_attribs)
 
 	function ws:draw()
 		--cls(3) -- debug: see when workspace is redrawn
-		if (#self.child == 0) then
+		if (not self.child or #self.child == 0) then
 			rectfill(0,0,self.width,self.height,1)
-			print("[ empty workspace ]",self.width/2-19*2.5,self.height/2,13)
+			print("[ empty workspace ]",self.width/2-19*2.5,self.height/2-20,6)
+			print("~ click to close ~",self.width/2-18*2.5,self.height/2+10,13)
+		end
+	end
+
+	function ws:tap()
+		if (not self.child or #self.child == 0) then
+			close_workspace(workspace_index)
+			set_workspace(previous_workspace)
 		end
 	end
 
@@ -572,14 +581,6 @@ function _init()
 
 	-- ==========================================================================================================================================
 
-	-- to do: maybe no longer used / needed?
---[[
-	on_event("set_workspace",
-		function (msg)
-			set_workspace(msg.index)
-		end
-	)
-]]
 	on_event("drag_toolbar",
 		function (msg)
 			--toolbar_y_target = mid(0, toolbar_y + msg.dy, tooltray_default_h) -- limiting feels bad
@@ -1828,7 +1829,7 @@ function create_window(target_ws, attribs)
 
 	if win.wallpaper and target_ws and (win.workspace == "new" or win.workspace == "tooltray") then
 
-		local filenav_workspace = win.workspace == "tooltray" and "tooltray" or target_ws.index
+		local filenav_workspace = win.workspace == "tooltray" and "tooltray" or target_ws.id
 
 		target_ws.desktop_filenav_proc_id = 
 		create_process("/system/apps/filenav.p64",{
@@ -2032,6 +2033,7 @@ function _draw()
 		if (gfx == "grab") gfx = mb == 0 and 3 or 4
 		if (gfx == "pointer") gfx = mb == 0 and 5 or 6
 		if (gfx == "dial") gfx = mb == 0 and 7 or 0
+		if (gfx == "edit") gfx = 12
 
 
 		if (type(gfx) == "number") gfx = cursor_gfx[flr(gfx)].bmp
@@ -2416,7 +2418,7 @@ function _update()
 						fullscreen = true,
 						pwc_output = true,        -- run present working cartridge in this window
 						immortal   = true,        -- no close pulldown
-						workspace = workspace[i].index,
+						workspace = workspace[i].id,
 						show_in_workspace = false
 					},
 					immortal   = true, -- exit() is a NOP
@@ -2821,6 +2823,8 @@ function _update()
 			hide_infobar()
 		elseif (awin and awin.capture_escapes) then
 			-- let active window handle it
+			send_message(awin.proc_id, {event="keydown",scancode=41}) -- added in 0.2.0c; when did this become necessary?
+
 		elseif (width and width > 0 and awin and awin.proc_id == haltable_proc_id) then 
 			-- stop haltable process
 			send_message(haltable_proc_id, {event="halt"})
@@ -3121,11 +3125,11 @@ function choose_workspace(attribs)
 	-- by workspace id
 	if (type(attribs.workspace) == "number") then
 		for i=1,#workspace do
-			if (workspace[i].index == attribs.workspace) return workspace[i]
+			if (workspace[i].id == attribs.workspace) return workspace[i]
 		end
 	end
 
-	---- no particular workspace requested --> choose cased on attributes
+	---- no particular workspace requested --> choose based on attributes
 
 	-- wallpaper should open in same workspace (when new workspace was not requested)
 	if (attribs.wallpaper) return ws_gui
@@ -3356,7 +3360,9 @@ on_event("set_window", function(msg)
 
 	-- when changing location or creating new window, apply unique location logic:
 	-- open in existing process where possible and optionally show in workspace
-	if (attribs.unique_location and old_location ~= win.location) then
+	-- 0.2.0c: "win.unique_location" (not "attribs.unique_location") because might have already set it on window earlier
+		-- (was causing duplicate tabs for same location when e.g. opening foo.lua via system error reporting
+	if (win.unique_location and old_location ~= win.location) then
 
 		-- printh("set_window change of location: "..pod{old_location, win.location})
 
@@ -3700,6 +3706,7 @@ function create_modal_gui()
 	return modal_gui
 end
 
+-- close by index (not by id)
 function close_workspace(ws_index, force)
 	local ws = get_workspace(ws_index)
 

@@ -1,3 +1,4 @@
+--[[pod_format="raw",created="2025-03-28 22:10:21",modified="2025-03-28 22:10:21",revision=0]]
 --[[
 
 	gui.lua
@@ -432,18 +433,39 @@ do
 		local b = self:attach(el)
 
 		function b:draw(msg)
-			local bgcol = el.bgcol or 0x0706
-			local fgcol = el.fgcol or 0x0e01
+			local bgcol  = el.bgcol or 0x0706
+			local fgcol  = el.fgcol or 0x0e01
+			local border = el.border or bgcol
 			if (msg.has_pointer) then
-				bgcol >>= 8 
-				fgcol >>= 8
+				bgcol  >>= 8
+				fgcol  >>= 8
+				border >>= 8
 			end
 
 			local yy = 0
 			if (msg.mb > 0 and msg.has_pointer) yy = yy + 1
 
-			rectfill(0, yy + 1, self.width-1, yy + self.height-3, bgcol)
-			rectfill(1, yy + 0, self.width-2, yy + self.height-2, bgcol)
+			local x0,y0,x1,y1 = 0,yy,self.width-1,yy+self.height-2
+
+			
+			if (el.border) then
+				-- border: default corner radius 2 (to do: rrect)
+				rectfill(x0+1,y0+1,x1-1,y1-1, bgcol)
+				color(border)
+				pset(x0+1,y0+1)
+				pset(x0+1,y1-1)
+				pset(x1-1,y0+1)
+				pset(x1-1,y1-1)
+				line(x0+2,y0,x1-2,y0)
+				line(x0+2,y1,x1-2,y1)			
+				line(x0,y0+2,x0,y1-2)
+				line(x1,y0+2,x1,y1-2)
+			else
+				-- no border; default corner radius 1
+				rectfill(x0+1,y0,x1-1,y0, bgcol)
+				rectfill(x0,y0+1,x1,y1-1, bgcol)
+				rectfill(x0+1,y1,x1-1,y1, bgcol)
+			end
 
 			print(self.label, self.width/2 - #self.label * 2.5, 3 + yy, fgcol)
 		end

@@ -82,7 +82,7 @@ for i = 1, #argv do
 						fileview = {{location=filename, mode="RW"}}, -- let sandboxed app read/write file
 						window_attribs = {
 							show_in_workspace = show_in_workspace,
-							unique_location = true, -- to do: could be optional. wrangle also sets this.
+							unique_location = true -- to do: could be optional. wrangle also sets this.
 						}
 					}
 				)

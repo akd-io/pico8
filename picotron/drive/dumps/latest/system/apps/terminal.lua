@@ -1,5 +1,4 @@
---[[pod_format="raw",author="zep",created="2023-10-07 14:33:59",icon=userdata("u8",16,16,"00000001010101010101010101000000000001070707070707070707070100000001070d0d0d0d0d0d0d0d0d0d07010001070d0d0d0d0d0d0d0d0d0d0d0d070101070d0d0d0d07070d0d0d0d0d0d070101070d0d0d0d0d07070d0d0d0d0d070101070d0d0d0d0d0d07070d0d0d0d070101070d0d0d0d0d0d07070d0d0d0d070101070d0d0d0d0d07070d0d0d0d0d070101070d0d0d0d07070d0d0d0d0d0d070101070d0d0d0d0d0d0d0d0d0d0d0d07010106070d0d0d0d0d0d0d0d0d0d07060101060607070707070707070707060601000106060606060606060606060601000000010606060606060606060601000000000001010101010101010101000000"),modified="2025-03-04 10:24:33",notes="",revision=153,stored="2024-03-09 10:31:21",title="Terminal",version=""]]
---[[
+--[[pod_format="raw",author="zep",created="2023-10-07 14:33:59",icon=userdata("u8",16,16,"0000000000000000000000000000000000000001010101010101010100000000000001070707070707070707010000000001070101010101010101010701000001070101010101010101010101070100010701010101070101010101010701000107010101010107010101010107010001070101010101010701010101070100010701010101010701010101010701000107010101010701010101010107010001070101010101010101010101070100011d07010101010101010101071d0100011d1d0707070707070707071d1d010000011d1d1d1d1d1d1d1d1d1d1d0100000000011d1d1d1d1d1d1d1d1d0100000000000001010101010101010100000000"),modified="2025-03-26 00:11:52",notes="",revision=153,stored="2024-03-09 10:31:21",title="Terminal",version=""]]--[[
 
 	terminal.lua
 	(c) Lexaloffle Games LLP
@@ -7,8 +6,8 @@
 	-- ** terminal is also an application launcher. manages cproj / decides permissions **
 
 	-- to consider: line entry in terminal can be a bitmap
-
-
+		// can already use p8scii! works but need to improve workflow for encoding characters (and maybe use P8-style unicode replacements)
+		// alternative: could support pod_type="image" style lines using same rule a text editor widget
 ]]
 
 
@@ -54,7 +53,7 @@ local left_margin = 2
 local terminal_draw 
 local terminal_update
 
-local cproj_draw, cproj_update
+local corun_draw, corun_update
 
 
 -- to do: nice way to get a local copy of needed api
@@ -134,7 +133,7 @@ local function get_prompt()
 end
 
 
-local function run_cproj_callback(func, label)
+local function corun_callback(func, label)
 	if (type(func) ~= "function") then return end
 
 	-- run as a coroutine (separate lua_State) so that errors don't bring terminal itself down
@@ -266,8 +265,9 @@ local function resolve_program_path(prog_name)
 end
 
 
--- assume is cproj for now
-local function run_program_inside_terminal(prog_name)
+-- assume is pwc (running with ctrl+R) for now
+-- later: general corunning support; maybe don't need
+local function corun_program_inside_terminal(prog_name)
 
 	if (not prog_name) return
 
@@ -292,34 +292,44 @@ local function run_program_inside_terminal(prog_name)
 	local f, err = load(prog_str, "@"..prog_name, "t", _ENV)
 
 
---	printh(":: run_program_inside_terminal: "..tostr(prog_name))
+--	printh(":: corun_program_inside_terminal: "..tostr(prog_name))
 
 	
 	if (f) then
 
-		run_cproj_callback(f, prog_name) -- to do: fix runtime error causes message written to back page
-		--run_cproj_callback(_init, "_init") -- gets run from foot
-
-		-- record callbacks and revert to terminal ones
-		cproj_draw = _draw
-		cproj_update = _update
-
 		running_cproj = true
 
+		corun_callback(f, prog_name) -- to do: fix runtime error causes message written to back page
+
+		if (running_cproj) -- no runtime error at top evel
+		then
+
+			-- record callbacks and revert to terminal ones
+			corun_draw = _draw
+			corun_update = _update
+
+			-- 0.2.0c run init here so that can grab runtime errors
+			corun_callback(_init, "_init")
+			_init = nil -- jettison so that it is not run by foot
+
+		end
 	else
 		send_message(3, {event="report_error", content = "*syntax error"})
 		send_message(3, {event="report_error", content = tostr(err)})
 
-		--add_line("\fesyntax error")
+		-- to do: why are these not being added?
+		-- clobbered by history reloading? don'treally need to print to terminal though if have system message
+		add_line("\fesyntax error")
 		add_line("\fe"..err)
-		printh(err)
-		suspend_cproj()
+		
+		-- 0.2.0c: make sure don't get stuck in a fullscreen pauseable state
+		show_last_line()
+		window{pauseable = false}
+
 	end
 
 	_draw = terminal_draw
 	_update = terminal_update
-
-
 
 end
 
@@ -474,6 +484,10 @@ local function show_last_line()
 	end
 	last_total_text_h = hh
 
+	-- printh("show_last_line  last_total_text_h:"..last_total_text_h)
+
+	if (last_total_text_h < 0) printh(pod(lineh))
+
 --	last_total_text_h = #line * char_h -- assumes constant line height
 
 	scroll_y = mid(scroll_y, last_total_text_h - disp_h + 18, last_total_text_h + char_h - 18)
@@ -511,11 +525,11 @@ function add_line(s)
 		line[#line] = sub(line[#line], 1, -2)..s
 		-- update height
 		local xx,yy = print(line[#line], 0, 10000, 7)
-		lineh[#lineh] = (yy or 1012) - 10000
+		lineh[#lineh] = (yy or 10012) - 10000
 	else
 		local xx,yy = print(s, 0, 10000, 7)
 		add(line,  s)
-		add(lineh, (yy or 1012) - 10000)
+		add(lineh, (yy or 10012) - 10000)
 	end
 
 	show_last_line()
@@ -647,13 +661,13 @@ function _update()
 		end
 	end
 ]]
-	if (running_cproj and not cproj_update and not cproj_draw) then
+	if (running_cproj and not corun_update and not corun_draw) then
 		suspend_cproj()
 	end
 
 	-- while co-running program, use that update instead 
 	if (running_cproj) then
-		run_cproj_callback(cproj_update, "_update")
+		corun_callback(corun_update, "_update")
 --		window{ icon = tv_frames[((t()*10)\1)%3] }
 		return
 	end
@@ -781,10 +795,10 @@ function _draw()
 	local disp = get_display()
 	disp_w, disp_h = disp:width(), disp:height()
 
---	printh("terminal draw "..pod{disp_w, disp_h})
+	--printh("terminal draw "..pod{disp_w, disp_h, #line, running_cproj, scroll_y})
 
 	if (running_cproj) then
-		run_cproj_callback(cproj_draw, "_draw")
+		corun_callback(corun_draw, "_draw")
 	else
 		camera()
 		clip()
@@ -840,6 +854,7 @@ function _draw()
 		poke(0x5f36, (@0x5f36) | 0x80) -- turn on wrap
 
 		for i=1,#line do
+			--printh(i..": "..scroll_y)
 			_, y = print(line[i], x, y, 7)
 		end
 
@@ -863,6 +878,7 @@ function _draw()
 		end
 
 	end
+
 
 end
 
@@ -889,7 +905,7 @@ scroll_y = 0
 
 -- run e.g. pwc output
 if (env().corun_program) then
-	run_program_inside_terminal(env().corun_program)
+	corun_program_inside_terminal(env().corun_program)
 end
 
 -- happens when open terminal with ctrl-r
