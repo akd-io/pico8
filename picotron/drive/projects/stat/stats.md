@@ -323,36 +323,14 @@ stat(988)
 
 Search regex: `[^f]stat\(301`
 
-Files to include: `picotron/drive/dumps/`
+Files to include: `picotron/drive/dumps/latest/system/`
 
 Context lines: `1`
 
 ```
-12 results - 2 files
+6 results - 1 file
 
-picotron/drive/dumps/ram/mount/gfrbswob/system/boot.lua:
-   90  	local keep_going = true
-   91: 	local remaining = allotment - stat(301)
-   92  	local slices = 0
-
-  199
-  200: 	local userland_cpu = 0.98 - wm_cpu_max - stat(301)
-  201: 	local cpu0 = stat(301)
-  202
-
-  204
-  205: 	local cpu1 = stat(301)
-  206
-
-  239
-  240: 	local cpu2 = stat(301)
-  241
-
-  253
-  254: 	flip() -- reset cpu_cycles for next frame? doesn't matter now that using stat(301) though.
-  255
-
-picotron/drive/dumps/system/boot.lua:
+picotron/drive/dumps/latest/system/boot.lua:
    90  	local keep_going = true
    91: 	local remaining = allotment - stat(301)
    92  	local slices = 0
@@ -379,19 +357,14 @@ picotron/drive/dumps/system/boot.lua:
 
 Search regex: `[^f]stat\(302`
 
-Files to include: `picotron/drive/dumps/`
+Files to include: `picotron/drive/dumps/latest/system/`
 
 Context lines: `1`
 
 ```
-2 results - 2 files
+1 result - 1 file
 
-picotron/drive/dumps/ram/mount/gfrbswob/system/lib/events.lua:
-  151  	for i=1,255 do
-  152: 		local mapped_name = stat(302, i)
-  153  		if (mapped_name and mapped_name ~= "") then
-
-picotron/drive/dumps/system/lib/events.lua:
+picotron/drive/dumps/latest/system/lib/events.lua:
   151  	for i=1,255 do
   152: 		local mapped_name = stat(302, i)
   153  		if (mapped_name and mapped_name ~= "") then
@@ -401,47 +374,19 @@ picotron/drive/dumps/system/lib/events.lua:
 
 Search regex: `[^f]stat\(307`
 
-Files to include: `picotron/drive/dumps/`
+Files to include: `picotron/drive/dumps/latest/system/`
 
 Context lines: `1`
 
 ```
-14 results - 6 files
+5 results - 2 files
 
-picotron/drive/dumps/ram/mount/gfrbswob/system/apps/filenav.p64:
+picotron/drive/dumps/latest/system/apps/filenav.p64:
   3029
   3030: 				-- printh("clicked on file; {intention, open_with, fullpath(filename), stat(307)}"..pod{intention, env().open_with, fullpath(filename), stat(307)})
   3031
 
-picotron/drive/dumps/ram/mount/gfrbswob/system/lib/head.lua:
-   203  	-- sandboxed programs can not create processes
-   204: 	if _env().sandbox and ((stat(307) & 0x1) == 0) then -- sandboxed program that is not a trusted system app
-   205
-
-   363  	-- only "trusted system apps" (currently /system/*) can pass in a custom fileview
-   364: 	if (stat(307) & 0x1) == 0 then
-   365  		new_env.fileview = {}
-
-  1064  		proc_id == _pid() or                          -- can always send message to self
-  1065: 		(stat(307) & 0x1) == 1 or                     -- can always send message if is bundled /system app (filenav)
-  1066  		proc_id == 3 or                               -- can always send message to wm
-
-picotron/drive/dumps/ram/mount/lnqujccm/open.lua:
-  64
-  65: 				-- printh("clicked on file; {intention, open_with, fullpath(filename), stat(307)}"..pod{intention, env().open_with, fullpath(filename), stat(307)})
-  66
-
-picotron/drive/dumps/ram/mount/mxhduaku/open.lua:
-  64
-  65: 				-- printh("clicked on file; {intention, open_with, fullpath(filename), stat(307)}"..pod{intention, env().open_with, fullpath(filename), stat(307)})
-  66
-
-picotron/drive/dumps/system/apps/filenav.p64:
-  3029
-  3030: 				-- printh("clicked on file; {intention, open_with, fullpath(filename), stat(307)}"..pod{intention, env().open_with, fullpath(filename), stat(307)})
-  3031
-
-picotron/drive/dumps/system/lib/head.lua:
+picotron/drive/dumps/latest/system/lib/head.lua:
    203  	-- sandboxed programs can not create processes
    204: 	if _env().sandbox and ((stat(307) & 0x1) == 0) then -- sandboxed program that is not a trusted system app
    205
@@ -459,49 +404,29 @@ picotron/drive/dumps/system/lib/head.lua:
 
 Search regex: `[^f]stat\(315`
 
-Files to include: `picotron/drive/dumps/`
+Files to include: `picotron/drive/dumps/latest/system/`
 
 Context lines: `1`
 
 ```
-8 results - 8 files
+4 results - 4 files
 
-picotron/drive/dumps/ram/mount/gfrbswob/system/boot.lua:
+picotron/drive/dumps/latest/system/boot.lua:
   170  	-- to do: use time() for better sync
   171: 	if not played_boot_sound and stat(987) >= sfx_delay and stat(315) == 0 then
   172  		played_boot_sound = true
 
-picotron/drive/dumps/ram/mount/gfrbswob/system/startup.lua:
+picotron/drive/dumps/latest/system/startup.lua:
   59
   60: if (stat(315) > 0) then
   61  	-- headless script
 
-picotron/drive/dumps/ram/mount/gfrbswob/system/lib/head.lua:
+picotron/drive/dumps/latest/system/lib/head.lua:
   778
   779: 		if (stat(315) > 0) then
   780  			_printh(_tostring(str))
 
-picotron/drive/dumps/ram/mount/gfrbswob/system/pm/pm.lua:
-  17  	-- headless script: shutdown when no userland processes remaining
-  18: 	if (stat(315) > 0 and #_get_process_list() <= 3) _signal(33)
-  19
-
-picotron/drive/dumps/system/boot.lua:
-  170  	-- to do: use time() for better sync
-  171: 	if not played_boot_sound and stat(987) >= sfx_delay and stat(315) == 0 then
-  172  		played_boot_sound = true
-
-picotron/drive/dumps/system/startup.lua:
-  59
-  60: if (stat(315) > 0) then
-  61  	-- headless script
-
-picotron/drive/dumps/system/lib/head.lua:
-  778
-  779: 		if (stat(315) > 0) then
-  780  			_printh(_tostring(str))
-
-picotron/drive/dumps/system/pm/pm.lua:
+picotron/drive/dumps/latest/system/pm/pm.lua:
   17  	-- headless script: shutdown when no userland processes remaining
   18: 	if (stat(315) > 0 and #_get_process_list() <= 3) _signal(33)
   19
@@ -511,19 +436,14 @@ picotron/drive/dumps/system/pm/pm.lua:
 
 Search regex: `[^f]stat\(316`
 
-Files to include: `picotron/drive/dumps/`
+Files to include: `picotron/drive/dumps/latest/system/`
 
 Context lines: `1`
 
 ```
-2 results - 2 files
+1 result - 1 file
 
-picotron/drive/dumps/ram/mount/gfrbswob/system/startup.lua:
-  61  	-- headless script
-  62: 	create_process(stat(316))
-  63  	return
-
-picotron/drive/dumps/system/startup.lua:
+picotron/drive/dumps/latest/system/startup.lua:
   61  	-- headless script
   62: 	create_process(stat(316))
   63  	return
@@ -533,14 +453,14 @@ picotron/drive/dumps/system/startup.lua:
 
 Search regex: `[^f]stat\(317`
 
-Files to include: `picotron/drive/dumps/`
+Files to include: `picotron/drive/dumps/latest/system/`
 
 Context lines: `1`
 
 ```
-40 results - 8 files
+20 results - 4 files
 
-picotron/drive/dumps/ram/mount/gfrbswob/system/startup.lua:
+picotron/drive/dumps/latest/system/startup.lua:
     8  	sdat = fetch"/system/misc/default_settings.pod"
     9: 	if (stat(317) > 0) then
    10  		sdat.wallpaper = "/system/wallpapers/pattern.p64"
@@ -576,7 +496,7 @@ picotron/drive/dumps/ram/mount/gfrbswob/system/startup.lua:
   199: 	if ((stat(317) & 0x3) == 0x3) then -- player that has embedded rom
   200  		-- printh("** sending signal 39: disabling mounting **")
 
-picotron/drive/dumps/ram/mount/gfrbswob/system/lib/fs.lua:
+picotron/drive/dumps/latest/system/lib/fs.lua:
    92  		-- bbs web player
    93: 		if ((stat(317) & 0x3) == 0x1) then
    94  			if (stat(152) == "localhost") return "http://localhost" -- dev
@@ -591,93 +511,12 @@ picotron/drive/dumps/ram/mount/gfrbswob/system/lib/fs.lua:
   109: 		if (stat(317) > 0) return ""
   110  		-- binaries: use cdn
 
-picotron/drive/dumps/ram/mount/gfrbswob/system/pm/pm.lua:
+picotron/drive/dumps/latest/system/pm/pm.lua:
   21  	-- to do: this test no longer works
   22: 	if (stat(317) > 0 and #_get_process_list() <= 3) _signal(33)
   23
 
-picotron/drive/dumps/ram/mount/gfrbswob/system/wm/wm.lua:
-   836  	if (not win) return false
-   837: 	return win.fullscreen and win.player_cart and (stat(317)&0x3) == 0x3 and not win.can_escape_fullscreen
-   838  end
-
-  2221  	if (not sent_presentable_signal) then
-  2222: 		if (stat(317) > 0) then
-  2223  			-- exported cartridge / bbs player: show when a window is open, active (0x1) and not holding frame (0x2)
-
-  2407  	-- deleteme -- happens when window manager sends signal(37) (wm_is_presentable)
-  2408: 	-- if (time() == 1.5 and stat(317) == 0) set_workspace(5)
-  2409
-
-  2455  		-- 3 minutes; to do: store in settings.pod
-  2456: 		if (stat(317) & 0x1) == 0 then -- placeholder: no screensaver for exports / bbs player (older exported runtimes can end up running newer screensavers)
-  2457  			if ((time() > last_input_activity_t + 180 or test_screensaver_t0) and not screensaver_proc_id)
-
-  2567
-  2568: 		if stat(317) > 0 then
-  2569  			-- exported player or bbs player: reset cart if it is active
-
-  3939  	-- bbs:// not available for exports (and hide for bbs player)
-  3940: 	if (stat(317) == 0) then
-  3941  		-- to do: cartridges should launch splore (doubles as Favourites). Naming matches "Files" -- the objects you want to look through
-
-picotron/drive/dumps/system/startup.lua:
-    8  	sdat = fetch"/system/misc/default_settings.pod"
-    9: 	if (stat(317) > 0) then
-   10  		sdat.wallpaper = "/system/wallpapers/pattern.p64"
-
-   30  local ff = ls("/desktop")
-   31: if (not ff or #ff == 0 or stat(317) > 0) then
-   32  	mkdir ("/desktop") -- just in case
-   33  	cp("/system/misc/drive.loc", "/desktop/drive.loc")
-   34: 	if ((stat(317) & 0x2) == 0) cp("/system/misc/readme.txt", "/desktop/readme.txt") -- no readme for exports
-   35  end
-
-   72
-   73: if (stat(317) & 0x2) > 0 then
-   74  	-- export
-
-  141
-  142: if stat(317) == 0 then -- no tool workspaces for exports / bbs player
-  143  	create_process("/system/apps/code.p64", {argv={"/ram/cart/main.lua"}})
-
-  152  local wallpaper = (sdat and sdat.wallpaper) or "/system/wallpapers/pattern.p64"
-  153: if ((stat(317) & 0x1) ~= 0) wallpaper = nil -- placeholder: exports do not observe wallpaper to avoid exported runtime/cart mismatch in exp/shared
-  154  if (not fstat(wallpaper)) wallpaper = "/system/wallpapers/pattern.p64"
-
-  160
-  161: if stat(317) == 0 then -- no fullscreen terminal for exports / bbs player
-  162  	create_process("/system/apps/terminal.lua",
-
-  180
-  181: if stat(317) > 0 then
-  182  	-- player startup
-
-  198
-  199: 	if ((stat(317) & 0x3) == 0x3) then -- player that has embedded rom
-  200  		-- printh("** sending signal 39: disabling mounting **")
-
-picotron/drive/dumps/system/lib/fs.lua:
-   92  		-- bbs web player
-   93: 		if ((stat(317) & 0x3) == 0x1) then
-   94  			if (stat(152) == "localhost") return "http://localhost" -- dev
-
-   98  		-- any other exports: bbs:// is not supported (to do: explicit error codepath -- just disable bbs:// ? )
-   99: 		if ((stat(317) & 0x1) > 0) return ""
-  100
-
-  106  		-- bbs web player: just use get_cart for now -- later: use cdn
-  107: 		if ((stat(317) & 0x3) == 0x1) return get_bbs_host().."/bbs/get_cart.php?cat=8&lid="..bbs_id
-  108  		-- exports: bbs:// otherwise not supported
-  109: 		if (stat(317) > 0) return ""
-  110  		-- binaries: use cdn
-
-picotron/drive/dumps/system/pm/pm.lua:
-  21  	-- to do: this test no longer works
-  22: 	if (stat(317) > 0 and #_get_process_list() <= 3) _signal(33)
-  23
-
-picotron/drive/dumps/system/wm/wm.lua:
+picotron/drive/dumps/latest/system/wm/wm.lua:
    836  	if (not win) return false
    837: 	return win.fullscreen and win.player_cart and (stat(317)&0x3) == 0x3 and not win.can_escape_fullscreen
    838  end
@@ -707,51 +546,24 @@ picotron/drive/dumps/system/wm/wm.lua:
 
 Search regex: `[^f]stat\(318`
 
-Files to include: `picotron/drive/dumps/`
+Files to include: `picotron/drive/dumps/latest/system/`
 
 Context lines: `1`
 
 ```
-12 results - 6 files
+6 results - 3 files
 
-picotron/drive/dumps/ram/mount/gfrbswob/system/lib/events.lua:
+picotron/drive/dumps/latest/system/lib/events.lua:
   448
   449: 		elseif stat(318) == 1 then
   450  			-- web: when ctrl-v, pretend the v didn't happen.
 
-picotron/drive/dumps/ram/mount/gfrbswob/system/lib/head.lua:
+picotron/drive/dumps/latest/system/lib/head.lua:
   1046  	-- web debug
   1047: 	if (stat(318)==1) printh("@notify: "..msg_str.."\n")
   1048  end
 
-picotron/drive/dumps/ram/mount/gfrbswob/system/wm/wm.lua:
-   957  	if (haltable_proc_id == win.proc_id) has_exit = false    -- running /ram/cart via ctrl+r; just press escape instead
-   958: 	if (win.player_cart and stat(318) == 1) has_exit = false -- running entry point cart / bbs cart under web (nothing to exit to)
-   959
-
-   961  		add(win.pmenu, {label = "Exit Cartridge", action = function()
-   962: 			if is_fullscreen_export(win) and stat(318) == 0 then
-   963  				-- 0.2.0b playing the entry point cart in a binary export -> quit to host OS
-
-  2251  			sent_presentable_signal = true
-  2252: 			-- if (stat(318) > 0) printh("@@ forced signal 37")
-  2253  		end
-
-  3978  	-- no need to shutdown on web
-  3979: 	if (stat(318) == 0) add(item, {"\^:082a494141221c00 Shutdown", function() send_message(2, {event="shutdown"}) end})
-  3980
-
-picotron/drive/dumps/system/lib/events.lua:
-  448
-  449: 		elseif stat(318) == 1 then
-  450  			-- web: when ctrl-v, pretend the v didn't happen.
-
-picotron/drive/dumps/system/lib/head.lua:
-  1046  	-- web debug
-  1047: 	if (stat(318)==1) printh("@notify: "..msg_str.."\n")
-  1048  end
-
-picotron/drive/dumps/system/wm/wm.lua:
+picotron/drive/dumps/latest/system/wm/wm.lua:
    957  	if (haltable_proc_id == win.proc_id) has_exit = false    -- running /ram/cart via ctrl+r; just press escape instead
    958: 	if (win.player_cart and stat(318) == 1) has_exit = false -- running entry point cart / bbs cart under web (nothing to exit to)
    959
@@ -773,27 +585,14 @@ picotron/drive/dumps/system/wm/wm.lua:
 
 Search regex: `[^f]stat\(320`
 
-Files to include: `picotron/drive/dumps/`
+Files to include: `picotron/drive/dumps/latest/system/`
 
 Context lines: `1`
 
 ```
-6 results - 2 files
+3 results - 1 file
 
-picotron/drive/dumps/ram/mount/gfrbswob/system/wm/wm.lua:
-  2257  	-- show gif capture (don't draw inside captured area!)
-  2258: 	if (stat(320) > 0) then
-  2259  		local x,y,width,height,scale = peek2(0x40,5)
-
-  2716  	-- finish capturing gif
-  2717: 	if (stat(320) > 0) then
-  2718  		if (key("ctrl") and dkeyp("9") or stat(321) >= max_gif_frames()) then
-
-  3918
-  3919: 	if (stat(320) > 0) then
-  3920  		add(item, {"\^:06ff81b5b181ff00 End Recording", function() _signal(19) end})
-
-picotron/drive/dumps/system/wm/wm.lua:
+picotron/drive/dumps/latest/system/wm/wm.lua:
   2257  	-- show gif capture (don't draw inside captured area!)
   2258: 	if (stat(320) > 0) then
   2259  		local x,y,width,height,scale = peek2(0x40,5)
@@ -811,31 +610,14 @@ picotron/drive/dumps/system/wm/wm.lua:
 
 Search regex: `[^f]stat\(321`
 
-Files to include: `picotron/drive/dumps/`
+Files to include: `picotron/drive/dumps/latest/system/`
 
 Context lines: `1`
 
 ```
-8 results - 2 files
+4 results - 1 file
 
-picotron/drive/dumps/ram/mount/gfrbswob/system/wm/wm.lua:
-  2261
-  2262: 		polaroid(x,y,x+width-1,y+height-1, stat(321), max_gif_frames())
-  2263  --[[
-
-  2270  		local maxf = max_gif_frames()
-  2271: 		local q = stat(321) * 32 / maxf
-  2272  		local x0 = x + width - 40
-
-  2275  		if (width > 100) then
-  2276: 			print("\014frame "..flr(stat(321)).." / "..maxf, x+4,y+height+3, 7)
-  2277  		else
-
-  2717  	if (stat(320) > 0) then
-  2718: 		if (key("ctrl") and dkeyp("9") or stat(321) >= max_gif_frames()) then
-  2719  			_signal(19)
-
-picotron/drive/dumps/system/wm/wm.lua:
+picotron/drive/dumps/latest/system/wm/wm.lua:
   2261
   2262: 		polaroid(x,y,x+width-1,y+height-1, stat(321), max_gif_frames())
   2263  --[[
@@ -857,19 +639,14 @@ picotron/drive/dumps/system/wm/wm.lua:
 
 Search regex: `[^f]stat\(330`
 
-Files to include: `picotron/drive/dumps/`
+Files to include: `picotron/drive/dumps/latest/system/`
 
 Context lines: `1`
 
 ```
-2 results - 2 files
+1 result - 1 file
 
-picotron/drive/dumps/ram/mount/gfrbswob/system/wm/wm.lua:
-  2288  	-- debug: show when battery saver is being applied
-  2289: 	-- if (stat(330) > 0) circfill(20,20,10,8) circfill(20,20,5,1)
-  2290
-
-picotron/drive/dumps/system/wm/wm.lua:
+picotron/drive/dumps/latest/system/wm/wm.lua:
   2288  	-- debug: show when battery saver is being applied
   2289: 	-- if (stat(330) > 0) circfill(20,20,10,8) circfill(20,20,5,1)
   2290
@@ -879,19 +656,14 @@ picotron/drive/dumps/system/wm/wm.lua:
 
 Search regex: `[^f]stat\(987`
 
-Files to include: `picotron/drive/dumps/`
+Files to include: `picotron/drive/dumps/latest/system/`
 
 Context lines: `1`
 
 ```
-2 results - 2 files
+1 result - 1 file
 
-picotron/drive/dumps/ram/mount/gfrbswob/system/boot.lua:
-  170  	-- to do: use time() for better sync
-  171: 	if not played_boot_sound and stat(987) >= sfx_delay and stat(315) == 0 then
-  172  		played_boot_sound = true
-
-picotron/drive/dumps/system/boot.lua:
+picotron/drive/dumps/latest/system/boot.lua:
   170  	-- to do: use time() for better sync
   171: 	if not played_boot_sound and stat(987) >= sfx_delay and stat(315) == 0 then
   172  		played_boot_sound = true
@@ -901,19 +673,14 @@ picotron/drive/dumps/system/boot.lua:
 
 Search regex: `[^f]stat\(988`
 
-Files to include: `picotron/drive/dumps/`
+Files to include: `picotron/drive/dumps/latest/system/`
 
 Context lines: `1`
 
 ```
-2 results - 2 files
+1 result - 1 file
 
-picotron/drive/dumps/ram/mount/gfrbswob/system/startup.lua:
-  106  	flip()
-  107: 	if (stat(988) > 0) bypass = true _signal(35)
-  108  end
-
-picotron/drive/dumps/system/startup.lua:
+picotron/drive/dumps/latest/system/startup.lua:
   106  	flip()
   107: 	if (stat(988) > 0) bypass = true _signal(35)
   108  end
