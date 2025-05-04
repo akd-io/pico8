@@ -524,8 +524,6 @@ function _init()
 
 	sdat = fetch"/appdata/system/settings.pod"
 	
-
-
 	toolbar_gui = toolbar_init()
 	infobar_gui = infobar_init()
 

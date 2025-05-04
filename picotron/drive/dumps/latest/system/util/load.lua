@@ -1,3 +1,4 @@
+--[[pod_format="raw",created="2024-03-14 19:41:44",modified="2024-03-14 19:41:44",revision=0]]
 --[[
 	load
 		copy to /ram/cart
@@ -20,8 +21,8 @@ filename = argv[1]
 if (filename:sub(1,1) == "#") then
 	-- print("downloading..")
 	local cart_id = filename:sub(2)
-	--local cart_png = fetch("https://www.lexaloffle.com/bbs/get_cart.php?cat=8&lid="..cart_id)  -- ***** this is not a public api! [yet?] *****
-	local cart_png = fetch("http://localhost/bbs/get_cart.php?cat=8&lid="..cart_id)
+	local cart_png = fetch("https://www.lexaloffle.com/bbs/get_cart.php?cat=8&lid="..cart_id)  -- ***** this is not a public api! [yet?] *****
+	--local cart_png = fetch("http://localhost/bbs/get_cart.php?cat=8&lid="..cart_id)
 	if (type(cart_png) == "string" and #cart_png > 0) then
 		print(#cart_png.." bytes")
 		rm "/ram/bbs_cart"

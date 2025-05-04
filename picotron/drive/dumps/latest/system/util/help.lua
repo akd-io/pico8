@@ -1,9 +1,6 @@
 print
 "\
-\fe\128 Picotron Playground Quick Start\
-\
-\f6 // Picotron Playground is experimental and intended for testing Picotron's runtime during\
-\f6 // development. The API will likely change before 0.1 and does not include permanent storage.\
+\fe\128 Picotron Cheatsheet\
 \
 \f7 ls (or dir)       \fd list files in the current folder\
 \f7 cd <directory>    \fd change directory (folder)\
@@ -17,7 +14,7 @@ print
 \f7 CTRL-L            \fd clear the terminal\
 \
 \fcTo try out a demo:\
-\f7$ cd /demos\
+\f7$ cd /system/demos\
 $ load highway\
 \
 \fc.. and then CTRL-R to run it\
