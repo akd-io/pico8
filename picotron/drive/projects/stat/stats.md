@@ -127,6 +127,7 @@ This file attempts to document all `stat()` codes, enriching the official docume
 - `stat(330)` (undocumented)
   - Returns `1.0` when Picotron's battery saver is active, and `0.0` otherwise.
   - It does not simply reflect the `battery_saver` property of the system settings file at `appdata/system/settings.pod`. Rather, it seems to reflects whether the actual functionality of the battery saver feature is currently active.
+  - See also: `@_maxine_`'s [message](https://discord.com/channels/1068899948592107540/1358151110917099785/1366547309399249028) on Discord.
   - See [code references](#330-search)
 - `stat(400 + c, 0)` note is held (0 false 1 true)
 - `stat(400 + c, 1)` channel instrument
