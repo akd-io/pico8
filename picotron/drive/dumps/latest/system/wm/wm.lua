@@ -3581,9 +3581,9 @@ function poke_capture_name(name)
 		if (awin and awin.prog) then
 			if (awin.prog == "/ram/cart/main.lua") then
 				name = fetch("/ram/system/pwc.pod")
-				if (name) name = name:basename():split(".")[1]
+				if (name) name = name:basename():split(".",false)[1]
 			else
-				name = awin.prog:basename():split(".")[1]
+				name = awin.prog:basename():split(".",false)[1]
 			end
 		end
 	end
@@ -3905,6 +3905,11 @@ function toggle_picotron_menu()
 	{
 		{"\^:3f7f5077057f7e00 About Picotron", function() create_process("/system/apps/about.p64", 
 			{prog="/system",window_attribs={workspace="current",  autoclose = true}}) end},
+
+--[[
+		{"\^:00093e5c1c141400 Log In", function() create_process("/system/apps/login.p64", 
+			{window_attribs={workspace="current",  autoclose = true}}) end},
+]]
 		"---",
 	}
 

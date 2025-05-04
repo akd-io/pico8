@@ -397,8 +397,18 @@ local function run_terminal_command(cmd)
 	end
 
 	-----
+
+	if (argv[0] ~= "." and cmd ~= "") frame_by_frame_mode = false
 	
-	if (argv[0] == "cd") then
+	if (argv[0] == "." or (cmd == "" and frame_by_frame_mode)) then
+		frame_by_frame_mode = true
+		-- to do: run as usual to catch errors
+		if (corun_update) corun_update()
+		if (corun_draw) corun_draw()
+		flip()
+		blit(get_display(), back_page) -- copy whatever is on screen
+	
+	elseif (argv[0] == "cd") then
 
 		local result = cd(argv[1])
 		if (result) then add_line(result) end -- result is an error message
@@ -500,7 +510,7 @@ local function clamp_scroll()
 
 	local x, y = 0, 0
 	for i=1,#line do
-		x, y = print(line[i], 1000, y, 7)
+		x, y = print(line[i], 1000, y)
 	end
 	last_total_text_h = y
 
@@ -524,10 +534,10 @@ function add_line(s)
 		-- kinda inefficient if do many appends, but simplifies height calculation.
 		line[#line] = sub(line[#line], 1, -2)..s
 		-- update height
-		local xx,yy = print(line[#line], 0, 10000, 7)
+		local xx,yy = print(line[#line], 0, 10000)
 		lineh[#lineh] = (yy or 10012) - 10000
 	else
-		local xx,yy = print(s, 0, 10000, 7)
+		local xx,yy = print(s, 0, 10000)
 		add(line,  s)
 		add(lineh, (yy or 10012) - 10000)
 	end
@@ -753,7 +763,9 @@ function _update()
 
 	if (keyp("enter")) then
 
-		add_line(get_prompt()..cmd)
+		if (cmd ~= "" or not frame_by_frame_mode) then
+			add_line(get_prompt()..cmd)
+		end
 
 		-- execute the command
 
@@ -811,7 +823,6 @@ function _draw()
 		blit(back_page, nil, 0, 0, 0, 0, 480, 270)
 	end
 
-
 	-- experiment: run painto / dots3d in terminal
 --[[
 	if (running_proc_id) then
@@ -819,25 +830,10 @@ function _draw()
 	end
 ]]
 
-
 	--scroll_y = mid(0, scroll_y, #line * char_h - disp_h)
-
-	
 
 	--printh("disp_h: "..disp_h.." scroll_y: "..scroll_y.." max: "..(#line * char_h - disp_h))
 
-	local function draw_text_masked(str, x, y, col)
-
-		-- to do: how to allow colour codes?
-
-		for yy=y-1,y+1 do
- 			for xx=x-1,x+1 do
-				print(str,xx, yy, 32)
-			end
-		end
-
-		return print(str, x, y, col)
-	end
 
 	if (not running_cproj) then
 		
@@ -856,6 +852,7 @@ function _draw()
 		for i=1,#line do
 			--printh(i..": "..scroll_y)
 			_, y = print(line[i], x, y, 7)
+			--_, y = print("\^ow5a"..line[i], x, y, 7) -- kinda messy (and too expensive?)
 		end
 
 		last_total_text_h = y - y0
@@ -863,9 +860,9 @@ function _draw()
 		-- poke(0x5f36, (@0x5f36) | 0x80) -- turn on wrap
 
 		camera()
-		print(wrap_prefix..get_prompt()..cmd.."\0", x, y, 7)
-
-		print(wrap_prefix..get_prompt()..sub(cmd,1,cursor_pos).."\0", x, y, 7)
+		local prefix = "\^owff"..wrap_prefix..get_prompt() -- show outline only when entering text
+		print(prefix..cmd.."\0", x, y, 7)
+		print(prefix..sub(cmd,1,cursor_pos).."\0", x, y, 7)
 
 		local cx, cy = peek4(0x54f0, 2)
 		if (cx > disp_w - peek(0x4000)) cx,cy = peek4(0x54f8), cy + peek(0x4002) -- where next character is (probably) going to be after warpping

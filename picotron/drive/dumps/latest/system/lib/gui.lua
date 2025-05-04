@@ -361,20 +361,14 @@ do
 				local bgcol = 13
 				local fgcol = 6
 
-				rectfill(0, 0, self.width-1, self.height-1, bgcol | (fgcol << 8)) 
-				if (self.bar_h > 0) rectfill(1, self.bar_y+1, self.width-2, self.bar_y + self.bar_h-1, fgcol)
+				rectfill(0, 0, self.width-1, self.height-1, bgcol | (fgcol << 8))
+				if (self.bar_h > 0) rrectfill(1, self.bar_y+1, self.width-2, self.bar_h-1, 1, fgcol)
 
 				-- lil grip thing; same colour as background
 				local yy = self.bar_y + self.bar_h/2
 				line(2, yy-1, self.width-3, yy-1, bgcol)
 				line(2, yy+1, self.width-3, yy+1, bgcol)
 
-				-- rounded (to do: rrect)
-				pset(1,self.bar_y + 1,bgcol)
-				pset(self.width-2, self.bar_y + 1, bgcol)
-				pset(1,self.bar_y + self.bar_h-1,bgcol)
-				pset(self.width-2, self.bar_y + self.bar_h-1,bgcol)
-				
 			end,
 			drag = function(self, msg)
 				local content = self.parent.child[1]
@@ -447,24 +441,13 @@ do
 
 			local x0,y0,x1,y1 = 0,yy,self.width-1,yy+self.height-2
 
-			
 			if (el.border) then
-				-- border: default corner radius 2 (to do: rrect)
-				rectfill(x0+1,y0+1,x1-1,y1-1, bgcol)
-				color(border)
-				pset(x0+1,y0+1)
-				pset(x0+1,y1-1)
-				pset(x1-1,y0+1)
-				pset(x1-1,y1-1)
-				line(x0+2,y0,x1-2,y0)
-				line(x0+2,y1,x1-2,y1)			
-				line(x0,y0+2,x0,y1-2)
-				line(x1,y0+2,x1,y1-2)
+				-- border: default corner radius 2 
+				rrectfill(x0,y0,self.width,self.height-1,2,bgcol)
+				rrect    (x0,y0,self.width,self.height-1,2,border)
 			else
 				-- no border; default corner radius 1
-				rectfill(x0+1,y0,x1-1,y0, bgcol)
-				rectfill(x0,y0+1,x1,y1-1, bgcol)
-				rectfill(x0+1,y1,x1-1,y1, bgcol)
+				rrectfill(0,0,self.width,self.height,1,bgcol)
 			end
 
 			print(self.label, self.width/2 - #self.label * 2.5, 3 + yy, fgcol)

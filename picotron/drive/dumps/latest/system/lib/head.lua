@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2025-04-27 17:00:42",modified="2025-04-27 17:00:42",revision=0]]
+--[[pod_format="raw",created="2025-05-04 15:47:31",modified="2025-05-04 15:47:31",revision=0]]
 -- **** head.lua should not have any metadata; breaks load during bootstrapping // to do: why? ****
 --[[
 
@@ -24,6 +24,7 @@ local _unmap_ram = _unmap_ram
 local _get_process_display_size = _get_process_display_size
 local _run_process_slice = _run_process_slice
 local _fetch_metadata_from_file = _fetch_metadata_from_file
+local _load = load
 
 local _blit_process_video = _blit_process_video
 local _set_spr = _set_spr
@@ -54,7 +55,8 @@ function reset()
 
 	-- reset palette (including scanline palette selection, rgb palette)
 
-	pal()
+	pal()  -- 
+	pal(2) -- reset display palette
 
 	-- line drawing state
 
@@ -773,16 +775,25 @@ end
 
 	function print(str, x, y, col)
 
+		-- print to back page if y is set (if only x is set taken to be a colour command for printing to terminal)
 		if (y or (get_display() and not _is_terminal_command)) then
 			return _print_p8scii(str, x, y, col)
 		end
 
 		if (stat(315) > 0) then
+			-- running headless; print to host terminal
 			_printh(_tostring(str)) 
 		else
 			-- when print_to_proc_id is not set, send to self (e.g. printing to terminal)
 			-- printh("printing to "..tostring(_env().print_to_proc_id or _pid()))
-			_send_message(_env().print_to_proc_id or _pid(), {event="print",content=_tostring(str)})
+
+			-- 0.2.0d: can set colour with print("blue",12") or color(12) print("blue")			
+			if (type(x) == "number") color(x)
+			x = %0x550c -- grab current colour
+			local colpref = ""
+			if (x >= 0 and x <= 9) colpref = "\f"..chr(ord("0")+x)
+			if (x >= 10) colpref = "\f"..chr(ord("a") + x-10)
+			_send_message(_env().print_to_proc_id or _pid(), {event="print",content=colpref .. _tostring(str)})
 		end
 
 	end
@@ -870,9 +881,10 @@ end
 
 	function include(filename)
 		local filename = fullpath(filename)
-		local src = fetch(filename)
-
 		if (not filename) return nil
+
+		local src = fetch(filename)
+		if (not src) return nil
 
 		-- temporary safety: each file can only be included up to 256 times
 		-- to do: why do recursive includes cause a system-level out of memory before a process memory error?
@@ -893,7 +905,7 @@ end
 		-- https://www.lua.org/manual/5.4/manual.html#pdf-load
 		-- chunk name (for error reporting), mode ("t" for text only -- no binary chunk loading), _ENV upvalue
 		-- @ is a special character that tells debugger the string is a filename
-		local func,err = load(src, "@"..filename, "t", _ENV)
+		local func,err = _load(src, "@"..filename, "t", _ENV)
 
 		-- syntax error while loading
 		if (not func) then 

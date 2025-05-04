@@ -20,7 +20,10 @@ local function apply_markup(l)
 	if (sub(l,1,2) == "# ") then
 		--return "\14\06t\06w"..sub(l,3)
 		-- return "\^t\^w"..sub(l,3).."\^g\-h"..sub(l,3) -- haha
-		return "------------------------------------\n  "..sub(l, 3).."\n------------------------------------\n"
+		--return "------------------------------------\n  "..sub(l, 3).."\n------------------------------------\n"
+		--return "\^od60\^t\^w\f6"..sub(l,3) -- placeholder headings (later: switch to large font)
+		return "\^t\^w"..sub(l,3) -- placeholder headings (later: switch to large font)
+
 	end
 
 	if (sub(l,1,3) == "## ") then
@@ -274,23 +277,23 @@ local function attach_text_editor(g, parent)
 	local reserved = {"and", "break", "do", "else", "elseif", "end", "for", "function", "if", "in", "local", "not", "or", "repeat", "return", "then", "until", "while"}
 	local reserved_val = {"true", "false", "nil"}
 	local api_name = {
-		"camera", "clip", "cls", "color", "pal", "palt",
-		"fillp", "flip", "line", "rect", "rectfill",
-		"oval", "ovalfill", "circ", "circfill",
-		"pget", "pset", "print", "printh", "cursor",
-		"map", "tline", "spr", "sspr",
-
-		"peek", "peek2", "peek4", "poke", "poke2", "poke4",
-		"memset", "memcpy",
-
-		"sub", "chr", "ord", "split", "tostr", "tonum",	
-		"add", "del", "deli", "all", "foreach", "pairs",
-		
-		"reset", "yield", "time", "stat",
-		"btn", "btnp",
-
-		"cos", "sin", "atan2", "sqrt", "srand", "rnd",
-		"max", "min", "mid", "flr", "ceil", "sgn", "abs"
+-- /tools/list_api.lua
+"flr","pset","select","set_spr","vec","set","map","reset","palt","userdata","poke8","get_spr",
+"get","cp","create_socket","foreach","t","create_process","pal","sspr","tokenoid","fillp",
+"memset","norm","btn","assert","type","oval","add_line","create_undo_stack","error","poke2",
+"theme","add","env","fetch_metadata","clear_key","pwf","menuitem","load","create_gui",
+"on_event","sfx","mv","store","tonum","mouselock","pwd","music","print","memmap","store_metadata",
+"tostring","time","pod","include","rect","date","stat","get_clipboard","peektext","split",
+"pairs","unpod","readtext","key","getmetatable","camera","keyp","sgn","fset","mouse","tostr",
+"notify","all","sub","rawlen","ord","mset","yield","pack","costatus","cocreate","min","ceil",
+"rawequal","unmap","coresume","stop","peek2","unpack","printh","exit","memcpy","note","window",
+"line","get_display","cursor","get_draw_target","open","pget","del","mid","spr","ipairs",
+"vid","rawset","peek4","poke","deli","peek","btnp","pid","tonumber","circfill","rrectfill",
+"max","set_draw_target","cd","mget","cls","mount","poke4","color","blit","fstat","atan2",
+"collectgarbage","ls","setmetatable","rm","send_message","count","mkdir","create_delta",
+"cos","rawget","circ","clip","flip","next","peek8","fetch","wrangle_working_file","tline3d",
+"rectfill","srand","set_clipboard","fget","sqrt","warn","pcall","fullpath","chr","apply_delta",
+"rnd","ovalfill","abs","sin","rrect"
 	}
 	for i=1,#reserved do
 		identcol[reserved[i]] = "e"

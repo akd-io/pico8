@@ -5,22 +5,22 @@ version 2
 :: gfx/delme2/
 :: gfx/delme2/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTAyLTExIDA4OjAyOjIwIixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNzowMToxNCIsc3RvcmVkPSIyMDIzLTAyLTExIDA4OjAyOjIwIl1d
+NS0wNCAxNTo0Nzo1MyIsc3RvcmVkPSIyMDIzLTAyLTExIDA4OjAyOjIwIl1d
 :: gfx/delme/
 :: gfx/delme/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTExIDA3OjU0OjA2Iixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNzowMToxNCIsc3RvcmVkPSIyMDIzLTU0LTExIDA3OjU0OjA2Il1d
+NS0wNCAxNTo0Nzo1MyIsc3RvcmVkPSIyMDIzLTU0LTExIDA3OjU0OjA2Il1d
 :: gfx/ha/
 :: gfx/ha/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTA5LTExIDA4OjA5OjQ0Iixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNzowMToxNCIsc3RvcmVkPSIyMDIzLTA5LTExIDA4OjA5OjQ0Il1d
+NS0wNCAxNTo0Nzo1MyIsc3RvcmVkPSIyMDIzLTA5LTExIDA4OjA5OjQ0Il1d
 :: gfx/zxc/
 :: gfx/zxc/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTExIDA3OjQxOjQxIixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNzowMToxNCIsc3RvcmVkPSIyMDIzLTQxLTExIDA3OjQxOjQxIl1d
+NS0wNCAxNTo0Nzo1MyIsc3RvcmVkPSIyMDIzLTQxLTExIDA3OjQxOjQxIl1d
 :: gfx/0.gfx
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTIwIDA2OjM4OjU2Iixtb2RpZmllZD0iMjAyNS0w
-Mi0xNSAwMjo0OToyOCIscmV2aXNpb249MzEwMSxzdG9yZWQ9IjIwMjMtMzQtMDkgMTk6MzQ6NTMi
+NC0xOSAxOToyMDo0MiIscmV2aXNpb249MzE0NyxzdG9yZWQ9IjIwMjMtMzQtMDkgMTk6MzQ6NTMi
 XV1sejQAVwQAAI06AADzFHtbMF09e2JtcD1weHUAQyAQEATw8CxmbGFncz0wLHBhbl94CADKeT0w
 LHpvb209OH0sMQDzCgCRUAF3BgFAAXcWATABdyYBIAF3NgEQAbcEADQXJmcKAC1GRwoAAwQAL9EA
 dgAc7-AJUYABLSYBAGEtNhHWAgABTwEA0QDLADggJz2zADU3LUcMAEEXLQcNCAAgHXcGACBdNxoA
@@ -43,13 +43,13 @@ H4eGAEQat3gCD_cFCw9_A34AkAUP3wwUAtULHwLDAH9gArEgAbcBpw0PjQwCBJcND7oAHw8xAP--
 ----------------------------------------------_BUG09OH19
 :: gfx/1.gfx
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTExIDAzOjEzOjAxIixtb2RpZmllZD0iMjAyNS0w
-Mi0xNSAwMjo0OToyOCIscmV2aXNpb249MTI3NV1dbHo0AJoAAAAzMQAA8xR7WzBdPXtibXA9cHh1
+NC0xOSAxOToyMDo0MiIscmV2aXNpb249MTMyMV1dbHo0AJoAAAAzMQAA8xR7WzBdPXtibXA9cHh1
 AEMgEBAE8PAsZmxhZ3M9MCxwYW5feAgAz3k9MCx6b29tPTh9LDEAKfUBCAgENzAHEBcgBxAnEAcw
 BwQAL1eQRwAuj1eQBwAHAAcgSQAODvIADzEA----------------------------------------
 ------------------------QlBtPTh9fQ==
 :: gfx/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTExLTE1IDA3OjExOjMwIixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNzowMToxNCIsc3RvcmVkPSIyMDIzLTExLTE1IDA3OjExOjMwIl1d
+NS0wNCAxNTo0Nzo1MyIsc3RvcmVkPSIyMDIzLTExLTE1IDA3OjExOjMwIl1d
 :: map/
 :: map/map0.map
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Iixtb2RpZmllZD0iMjAyNC0w
@@ -58,7 +58,7 @@ PXVzZXJkYXRhKCJpMTYiLDE2AwAvIjABAP---__hIikscGFuX3g9MAgA8gZ5PTAsc2NhbGU9MSx0
 aWxlX2g9MTYKAG93PTE2fSxLBP----84UDE2fX19
 :: map/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Iixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNzowMToxNCIsc3RvcmVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Il1d
+NS0wNCAxNTo0Nzo1MyIsc3RvcmVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Il1d
 :: sfx/
 :: sfx/sfx0.sfx
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Iixtb2RpZmllZD0iMjAyNC0w
@@ -70,9 +70,9 @@ IAEgAfAAAhACDBABIA8hIAEwD0Dwww8oD--wxg-4Cg--D4AP9w8NAfAJARAGDDAA-zkf-wEA3L-4
 D0AADUD--7DwcAoA--9kH-8BAJdQ-----x8=
 :: sfx/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Iixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNzowMToxNCIsc3RvcmVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Il1d
+NS0wNCAxNTo0Nzo1MyIsc3RvcmVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Il1d
 :: desktop.lua
---[[pod_format="raw",created="2023-10-04 15:13:41",modified="2025-02-15 02:49:28",revision=3194,stored="2023-21-29 09:21:19"]]
+--[[pod_format="raw",created="2023-10-04 15:13:41",modified="2025-04-19 19:20:42",revision=3241,stored="2023-21-29 09:21:19"]]
 -- mode: desktop
 local desktop_items = nil
 local desktop_content = nil
@@ -749,7 +749,7 @@ end
 
 
 :: drop.lua
---[[pod_format="raw",created="2023-10-11 09:19:20",modified="2025-02-15 02:49:28",revision=1001,stored="2023-21-29 09:21:19"]]
+--[[pod_format="raw",created="2023-10-11 09:19:20",modified="2025-04-19 19:20:42",revision=1048,stored="2023-21-29 09:21:19"]]
 
 function check_for_overwrites(msg)
 
@@ -909,7 +909,7 @@ end)
 
 
 :: finfo.lua
---[[pod_format="raw",created="2023-10-08 09:24:50",modified="2025-02-15 02:49:28",revision=3009,stored="2023-21-29 09:21:19"]]
+--[[pod_format="raw",created="2023-10-08 09:24:50",modified="2025-04-19 19:20:42",revision=3060,stored="2023-21-29 09:21:19"]]
 --[[
 	finfo.lua
 	
@@ -1143,6 +1143,11 @@ function update_file_info(clear)
 	end
 	
 	update_context_menu()
+	
+	if (cd_failed) then
+		filenames = {}
+		return
+	end
 	
 	-- fetch current list
 	local files = ls(pwd())
@@ -1578,7 +1583,7 @@ end
 
 
 :: grid.lua
---[[pod_format="raw",created="2023-10-20 06:27:59",modified="2025-02-15 02:49:28",revision=3109,stored="2023-21-29 09:21:19"]]
+--[[pod_format="raw",created="2023-10-20 06:27:59",modified="2025-04-19 19:20:42",revision=3156,stored="2023-21-29 09:21:19"]]
 -- mode: icons on a grid (default folder view; is cutest for < ~100 files)
 local sel = nil
 local function create_file_item(parent, ff, x, y)
@@ -1967,10 +1972,6 @@ end
 
 
 
-:: ha.txt
---[[pod_format="raw",created="2024-04-28 17:58:32",modified="2024-08-25 09:19:16",revision=2]]
-ha!
-new version that is going to overwrite old version
 :: icon.lua
 --[[pod_format="raw",created="2023-40-05 07:40:42",modified="2023-01-11 10:01:03",revision=612,stored="2023-59-07 07:59:44"]]
 --[[
@@ -1997,7 +1998,7 @@ local index_for_type = {
 -- match table in about.p64 icon designer
 local lowcol_table = 
 {
-	  1,1,1, 13,1,6,7,
+	  1,1,13, 13,1,6,7,
 	13,6,6,6, 6,13,6,6,
 	13,13,13,1, 1,1,13,6,
 	13,13,6,13, 6,6,13,13
@@ -2086,7 +2087,7 @@ end
 
 
 :: intention.lua
---[[pod_format="raw",created="2023-10-05 21:49:51",modified="2025-02-15 02:49:28",revision=1486]]
+--[[pod_format="raw",created="2023-10-05 21:49:51",modified="2025-04-19 19:20:42",revision=1533]]
 --[[
 
 	intention.lua
@@ -2300,7 +2301,7 @@ end
 
 
 :: interf.lua
---[[pod_format="raw",created="2023-11-20 08:11:39",modified="2025-02-15 02:49:28",revision=3789,stored="2023-21-29 09:21:19"]]
+--[[pod_format="raw",created="2023-11-20 08:11:39",modified="2025-04-19 19:20:42",revision=3837,stored="2023-21-29 09:21:19"]]
 -- interface
 
 
@@ -2499,7 +2500,7 @@ end
 
 
 :: list.lua
---[[pod_format="raw",created="2023-10-20 06:27:42",modified="2025-02-15 02:49:28",revision=3467,stored="2023-21-29 09:21:19"]]
+--[[pod_format="raw",created="2023-10-20 06:27:42",modified="2025-04-19 19:20:42",revision=3515,stored="2023-21-29 09:21:19"]]
 -- mode: list
 local item_h = 12
 local function create_file_item(parent, ff, x, y)
@@ -2750,7 +2751,7 @@ end
 
 
 :: main.lua
---[[pod_format="raw",created="2023-10-20 06:24:13",modified="2025-02-15 02:49:28",revision=3711,stored="2023-21-29 09:21:19"]]
+--[[pod_format="raw",created="2023-10-20 06:24:13",modified="2025-04-19 19:20:42",revision=3778,stored="2023-21-29 09:21:19"]]
 --[[
 	fi: shuffleable stacks dev
 ]]
@@ -2784,10 +2785,18 @@ function _init()
 	on_event("modified:/ram/shared/theme.pod", function()
 		generate_icon_palettes()
 	end)
+	
+	start_path = env().path or "/"
+	
 
 --	printh("@@ filenav _init cd env().path: "..tostr(env().path))
-	cd(env().path)
+	cd(start_path)
+	
 	--cd("/desktop") -- dev
+	
+	-- debugging: if path does not succeed filenav.p64 displays own contents
+	-- inteads, show a blank folder and display a warning
+	if (pwd() ~= start_path) cd_failed = true
 	
 	push_intention(env().intention or intention, env().intention and env().parent_pid)
 	
@@ -2867,6 +2876,10 @@ function _draw()
 
 	clip()
 	camera()
+	
+	if cd_failed then
+		print("\#7 [filenav: can not access path: "..start_path.."] ",20,36,5) 
+	end
 
 --[[ to do: preview drop position (need to take drag offset into account, and maybe show group
 	if (dragging_files and config.snap_to_grid) then
@@ -2963,7 +2976,7 @@ end)
 
 
 :: open.lua
---[[pod_format="raw",created="2023-10-04 12:46:16",modified="2025-02-15 02:49:28",revision=3330,stored="2023-21-29 09:21:19"]]
+--[[pod_format="raw",created="2023-10-04 12:46:16",modified="2025-04-19 19:20:42",revision=3377,stored="2023-21-29 09:21:19"]]
 
 	
 	function click_on_file(filename, action, argv)
@@ -3129,16 +3142,16 @@ MGUwZTBlMGUwZTBlMGUwZTE3MTcxNzBlMDEwMTBlMGUwZTBlMGUwZTBlMGUwZTE3MTcxNzBlMGUw
 MTAxMGUwZTBlMGUwZTBlMGUwZTE3MTcxNzBlMGUwZTAxMDEwZTBlMDEwMTAxMDEwMTAxMDEwMTAx
 MDEwZTBlMDEwMTBlMGUwMTAxMDEwMTA3MDcwNzA3MDcwMTBlMGUwMTAxMGUwZTAxMDEwMTAxMDcw
 NzA3MDcwNzAxMGUwZTAxMDEwZTBlMDEwMTAxMDEwNzA3MDcwNzA3MDEwZTAxMDAwMTAxMDEwMTAx
-MDEwMTAxMDEwMTAxMDEwMTAxMDAwMCIpLG1vZGlmaWVkPSIyMDI1LTA0LTI3IDE3OjAxOjE0Iixu
-b3Rlcz0iKGMpIExleGFsb2ZmbGUgR2FtZXMgTExQIixydW50aW1lPTEzLHN0b3JlZD0iMjAyNC0w
+MDEwMTAxMDEwMTAxMDEwMTAxMDAwMCIpLG1vZGlmaWVkPSIyMDI1LTA1LTA0IDE1OjQ3OjUzIixu
+b3Rlcz0iKGMpIExleGFsb2ZmbGUgR2FtZXMgTExQIixydW50aW1lPTE3LHN0b3JlZD0iMjAyNC0w
 My0yNCAxNTozNTo1NiIsdGl0bGU9IlBpY290cm9uIEZpbGUgTmF2aWdhdG9yIix2ZXJzaW9uPSIw
-LjEuMWQiLHdvcmtzcGFjZXM9e3tsb2NhdGlvbj0ibWFpbi5sdWEjMSIsd29ya3NwYWNlX2luZGV4
-PTF9LHtsb2NhdGlvbj0iaW50ZXJmLmx1YSMxIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9u
-PSJncmlkLmx1YSMxIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJkcm9wLmx1YSMxIix3
-b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJvcGVuLmx1YSMxIix3b3Jrc3BhY2VfaW5kZXg9
-MX0se2xvY2F0aW9uPSJpbnRlbnRpb24ubHVhIzEiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRp
-b249ImRlc2t0b3AubHVhIzEiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249ImZpbmZvLmx1
-YSMyNzUiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249Imxpc3QubHVhIzEiLHdvcmtzcGFj
-ZV9pbmRleD0xfSx7bG9jYXRpb249ImdmeC8wLmdmeCIsd29ya3NwYWNlX2luZGV4PTJ9LHtsb2Nh
-dGlvbj0iZ2Z4LzEuZ2Z4Iix3b3Jrc3BhY2VfaW5kZXg9Mn19XV0=
+LjEuMWQiLHdvcmtzcGFjZXM9e3tsb2NhdGlvbj0ibWFpbi5sdWEjMzkiLHdvcmtzcGFjZV9pbmRl
+eD0xfSx7bG9jYXRpb249ImludGVyZi5sdWEjNSIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlv
+bj0iZ3JpZC5sdWEjMSIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0iZHJvcC5sdWEjMSIs
+d29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0ib3Blbi5sdWEjMSIsd29ya3NwYWNlX2luZGV4
+PTF9LHtsb2NhdGlvbj0iaW50ZW50aW9uLmx1YSMxIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0
+aW9uPSJkZXNrdG9wLmx1YSMxIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJmaW5mby5s
+dWEjMjM0Iix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJsaXN0Lmx1YSMxIix3b3Jrc3Bh
+Y2VfaW5kZXg9MX0se2xvY2F0aW9uPSJnZngvMC5nZngiLHdvcmtzcGFjZV9pbmRleD0yfSx7bG9j
+YXRpb249ImdmeC8xLmdmeCIsd29ya3NwYWNlX2luZGV4PTJ9fV1d
 :: [eoc]

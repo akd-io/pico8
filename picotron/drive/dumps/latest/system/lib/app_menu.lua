@@ -15,7 +15,7 @@ local _send_message = _send_message
 local _pid = pid
 local _signal = _signal
 
-function eval_menuitem(item)
+local function eval_menuitem(item)
 	local item1 = {}
 	for k,v in pairs(item) do
 		if (k == "label" and type(v) == "function") v = v() -- label can be a function

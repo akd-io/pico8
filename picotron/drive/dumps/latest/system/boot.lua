@@ -5,10 +5,6 @@
 ]]
 
 
--- need to fetch settings early to determine fullscreen or windowed
-local sdat = fetch"/appdata/system/settings.pod"
-if (type(sdat) ~= "table") sdat = {} -- will be created / mended in startup.lua if needed
-_apply_system_settings(sdat)
 
 
 
@@ -31,6 +27,24 @@ mkdir("/appdata/system")
 mkdir("/appdata/system/desktop2") -- for the tooltray
 mkdir("/appdata/bbs")
 mkdir("/appdata/shared") -- anyone can write (bbs carts can communicate with each other)
+
+
+-- 0.2.0c: quit early (yielding causes kernal runtime error) if can not read /desktop or /appdata
+-- --> means can not write there either
+if fstat("/desktop") ~= "folder" or fstat("/appdata") ~= "folder" then
+	if (fstat("/desktop") ~= "folder") _printh("can not access /desktop")
+	if (fstat("/appdata") ~= "folder") _printh("can not access /appdata")
+	_printh("picotron home path or is read-only? or / is mounted to a path that is not writeable?")
+	yield()
+end
+
+
+
+-- need to fetch settings early to determine fullscreen or windowed
+local sdat = fetch"/appdata/system/settings.pod"
+if (type(sdat) ~= "table") sdat = {} -- will be created / mended in startup.lua if needed
+_apply_system_settings(sdat)
+
 
 
 

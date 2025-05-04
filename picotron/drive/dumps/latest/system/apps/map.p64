@@ -2,7 +2,7 @@ picotron cartridge // www.picotron.net
 version 2
 
 :: canvas.lua
---[[pod_format="raw",created="2023-04-11 02:04:02",modified="2025-01-31 20:02:42",revision=3767]]
+--[[pod_format="raw",created="2023-04-11 02:04:02",modified="2025-04-15 02:51:13",revision=4368]]
 
 local fill_cpu=0
 
@@ -200,6 +200,7 @@ function create_canvas(el)
 	local ww,hh = 16,16
 	local can_x0, can_y0 = 0,0
 	local drag_x0,drag_y0 = 0,0
+	local click_x,click_y = 0,0
 	
 	function el:update(msg)
 	
@@ -226,6 +227,7 @@ function create_canvas(el)
 		mtool = ctool
 		if (key"space") mtool = "pan"
 		if (key"s") mtool = msg.mb and msg.mb > 1 and "pick" or "select"
+--		if (ctool=="stamp" and msg.mb>1) mtool = "select" -- to do: would be nice
 		
 		-- pixel looking at in center
 		local px = (cbmp_width * tile_w) /2  + ci.pan_x
@@ -247,6 +249,8 @@ function create_canvas(el)
 		local x = (msg.mx - can_x0) \ (ci.zoom * tile_w)
 		local y = (msg.my - can_y0) \ (ci.zoom * tile_h)
 		local xx,yy = x,y
+		
+		click_x, click_y = x,y
 		
 		if (ci.layer) x-= ci.layer_x y-= ci.layer_y
 
@@ -332,16 +336,50 @@ function create_canvas(el)
 		elseif (msg.mb == 2) then
 			-- anything after this: mb2 means pick up tile
 			col = get(tbmp, x, y)
+			-- region of selected sprites
+			region={
+				x=col%8,y=(col%256)\8,w=1,h=1,
+				x0=col%8,y0=(col%256)\8,
+				bank = (col \ 256) % 32 -- %32 to discard flip bits
+			}
 		elseif (mtool == "pencil" or mtool == "eraser") then
 			if (msg.mb == 1) then
+			
+				-- tile region by snapping x,y to top left of wwxhh group
+				local region_w1 = (col&0x2000>0) and region.h or region.w
+				local region_h1 = (col&0x2000>0) and region.w or region.h
+				
+				x -= (xx-click_x)%region_w1
+				y -= (yy-click_y)%region_h1
+		
 				local dx, dy = x-drag_x0, y-drag_y0
 				local steps = max(abs(dx),abs(dy))
 				dx /= steps dy /= steps
 				local xx = drag_x0
 				local yy = drag_y0
 				
+				-- steps only relevant for 1x1 tile
+				if (region.w > 1 or region.h > 1) steps = 0 
+				
 				for i=0,steps do
-					set(draw_target, xx, yy, col)
+					for tiley=0,region.h-1 do
+						for tilex=0,region.w-1 do
+							local tx=tilex
+							local ty=tiley
+							local tw=region.w
+							local th=region.h
+							
+							if(col & 0x2000 > 0) tx,ty,tw,th=ty,tx,th,tw
+							if(col & 0x4000 > 0) tx=(tw-1)-tx
+							if(col & 0x8000 > 0) ty=(th-1)-ty
+							local col1 = region.bank * 64 + region.x + region.y * 8
+							col1 += tilex + tiley * 8
+							col1 |= col & 0xe000 -- set flip bits
+							
+							set(tbmp, xx+tx, yy+ty, col1)
+						end
+					end
+				
 					xx += dx
 					yy += dy
 				end
@@ -521,6 +559,30 @@ function create_canvas(el)
 		end
 
 		fillp() pal()
+		
+		-- dupe: update last_stamp_bmp_str; need for drawing preview width, height
+		if (mtool == "stamp" and last_stamp_bmp_str ~= get_clipboard()) then
+			last_stamp_bmp_str = get_clipboard()
+			last_stamp_bmp = unpod(last_stamp_bmp_str)
+		end
+		
+		-- draw tile region
+		if mtool == "pencil" or (mtool == "stamp" and last_stamp_bmp)  then
+			local ww = mtool == "pencil" and region.w or last_stamp_bmp:width()
+			local hh = mtool == "pencil" and region.h or last_stamp_bmp:height()
+			
+			if (mtool == "pencil" and col&0x2000>0) then
+				ww,hh=hh,ww
+			end
+			
+			local sx0 = can_x0 + x * tile_w * scale
+			local sy0 = can_y0 + y * tile_h * scale
+			local sx1 = can_x0 + (x+ww) * tile_w * scale
+			local sy1 = can_y0 + (y+hh) * tile_h * scale
+
+			-- draw preview when mouse not held
+			if (msg.mb == 0) rect(sx0-1,sy0-1,sx1,sy1,0x0807)
+		end
 
 		print(string.format("\#0 %3d %3d ",x,y), 12,  self.height-14, 6)
 		
@@ -592,7 +654,7 @@ end
 
 
 :: draw.lua
---[[pod_format="raw",created="2023-10-12 03:26:20",modified="2025-01-31 20:02:42",revision=2621]]
+--[[pod_format="raw",created="2023-10-12 03:26:20",modified="2025-04-15 02:51:13",revision=3142]]
 function _draw()
 	cls(5)
 	-- operations during _update can request a
@@ -618,7 +680,7 @@ end
 
 
 :: gui.lua
---[[pod_format="raw",created="2023-05-11 02:05:16",modified="2025-01-31 20:02:42",revision=3449]]
+--[[pod_format="raw",created="2023-05-11 02:05:16",modified="2025-04-15 02:51:13",revision=3977]]
 
 show_pane = true
 
@@ -665,7 +727,7 @@ function generate_gui()
 	field_editor = nil
 	
 	if (not show_pane) then
-		gui:attach(create_canvas{x=0,y=0,width=480,height=get_display():height()})
+		gui:attach(create_canvas{x=0,y=0,width=480,height_rel=1.0})
 		return
 	end
 	
@@ -792,7 +854,7 @@ function create_ram_widget(el)
 end
 
 :: main.lua
---[[pod_format="raw",created="2023-04-11 02:04:54",modified="2025-01-31 20:02:42",revision=3504]]
+--[[pod_format="raw",created="2023-04-11 02:04:54",modified="2025-04-15 02:51:13",revision=4038]]
 --[[
 	Picotron Map Editor
 ]]
@@ -875,6 +937,12 @@ function load_working_file(item_1)
 	
 	set_current_item(1)
 	
+	-- region of selected sprites
+	region={
+		x=1,y=0,w=1,h=1,
+		x0=1,y0=0
+	}
+	
 end
 
 --[[
@@ -904,6 +972,8 @@ function load_spritebanks()
 	end
 end
 
+col = 1 -- sprite index
+
 function _init()
 	
 	poke(0x4000,get(fetch"/system/fonts/p8.font"))
@@ -927,13 +997,13 @@ function _init()
 
 	load_spritebanks()
 	
+	col = 1 -- sprite index
+	
 	set_current_item(1)
 	set_current_bank(0)
 	set_current_bank_page(0)
 	
 	generate_gui()
-	
-	col = 1 -- sprite index
 	
 	ctool = "pencil"
 	mtool = ctool
@@ -998,12 +1068,20 @@ function set_current_item(i)
 	
 	csel = item[current_item].sel
 	csel_outline = item[current_item].sel_outline
+	
+	-- to do: single-item region moves with current_item
+--	if (not region or (region.w==1 and region.h==1)) then
+--		local rx = col % 8
+--		local ry = col \ 8
+--		region={x=rx,y=ry,x0=rx,y0=ry,w=1,h=1}
+--	end
 end
 
 on_event("lost_focus",
 	function (msg)
 		map_gfx_state = map_gfx_state or fetch"/ram/shared/map_gfx.pod" or {}
 		map_gfx_state.current_sprite_index = col
+		map_gfx_state.region = region -- 0.2.0d
 		map_gfx_state.map_proc_id = pid()
 		store("/ram/shared/map_gfx.pod", map_gfx_state)
 	end
@@ -1024,10 +1102,16 @@ on_event("gained_focus",
 		
 		map_gfx_state = fetch"/ram/shared/map_gfx.pod"
 		if (map_gfx_state) then
+--			printh("map_gfx.pod on focus: "..pod(map_gfx_state))
 			col = map_gfx_state.current_sprite_index
 			sprite_bank = col \ 256
 			sprite_bank_page = (col%256) \ 64
+			if (map_gfx_state.region) then
+				region = map_gfx_state.region
+				region.bank = col \ 256
+			end
 		end
+
 	end
 )
 
@@ -1045,7 +1129,7 @@ on_event("set_palette",
 
 
 :: nav.lua
---[[pod_format="raw",created="2023-10-11 02:18:48",modified="2025-01-31 20:02:42",revision=4318]]
+--[[pod_format="raw",created="2023-10-11 02:18:48",modified="2025-04-15 02:51:13",revision=4887]]
 --[[
 	navigate sprite bank
 	
@@ -1471,6 +1555,7 @@ function create_bank_tabs(el)
 end
 
 function create_nav(el)
+
 	function el:draw()
 		clip()
 		rectfill(-1,-1,self.width, self.height, 0)
@@ -1498,6 +1583,19 @@ function create_nav(el)
 			end
 		end
 		
+		-- 0.2.0d: draw region when viewing same bank
+
+		if (region and region.bank == current_bank) then
+			local xx = region.x * 16
+			local yy = (region.y - current_bank_page*8) * 16
+			local ww = region.w * 16
+			local hh = region.h * 16
+			clip(el.sx-2,el.sy-2,el.width+4,el.height+4)
+			rect(xx-2,yy-2, xx+ww+1, yy+hh+1, 0)
+			rect(xx-1,yy-1, xx+ww+0, yy+hh+0, 7)
+		end
+		
+		--[[
 		local rcol = col & 0x1fff -- with orientation bits stripped
 		if (current_bank == rcol\256 and current_bank_page == (rcol&0xff)\64) then
 			
@@ -1510,17 +1608,50 @@ function create_nav(el)
 			rect(xx-2,yy-2,xx+17,yy+17,0)
 			rect(xx-1,yy-1,xx+16,yy+16,7)
 		end
-		
+		]]
 		
 	end
 	
 	-- select sprite
 	function el:drag(msg)
-		local x = mid(0,msg.mx * 8 \ self.width,7)
-		local y = mid(0,msg.my * 8 \ self.height, 7)
-		local i = x + y * 8
-		col = i + current_bank_page*64 + current_bank*256
+		local rx = mid(0,msg.mx * 8 \ self.width,7)
+		local ry = mid(0,msg.my * 8 \ self.height, 7) + current_bank_page*8
+		local i = rx + ry * 8
+		col = i + current_bank*256
+		
+		if key"shift" then
+			-- extend region
+			
+			rx0=min(rx, region.x0)
+			ry0=min(ry, region.y0)
+			region = {
+				x=rx0, y=ry0,
+				w=max(rx,region.x0)-rx0+1,
+				h=max(ry,region.y0)-ry0+1,
+				x0=region.x0, y0=region.y0,
+				bank = region.bank
+			}
+--			printh("set region on drag: "..pod(region))
+		else	
+			region={
+				x=rx, y=ry, w=1, h=1, x0=region.x0, y0=region.y0,
+				bank = region.bank
+			}
+		end
+		
 	end
+	
+	function el:click(msg)
+		-- reset region even if shift-clicking (p8 behaviour)
+		local rx = msg.mx * 8 \ self.width
+		local ry = msg.my * 8 \ self.height + (current_bank_page*8)
+		region={	
+			x=rx, y=ry, w=1, h=1, x0=rx, y0=ry,
+			bank = current_bank
+		}
+--		printh("set region on click: "..pod(region))
+	end
+	
 	return el
 end
 
@@ -1663,7 +1794,7 @@ end
 
 
 :: undo.lua
---[[pod_format="raw",created="2023-10-14 03:29:27",modified="2025-01-31 20:02:42",revision=2433]]
+--[[pod_format="raw",created="2023-10-14 03:29:27",modified="2025-04-15 02:51:13",revision=2953]]
 local layers_snapshot = nil
 local layer_op = false -- next thing to undo is a layer operation
 
@@ -1739,7 +1870,7 @@ function backup_layers()
 end
 
 :: update.lua
---[[pod_format="raw",created="2023-10-10 07:45:26",modified="2025-01-31 20:02:42",revision=3191]]
+--[[pod_format="raw",created="2023-10-10 07:45:26",modified="2025-04-15 02:51:13",revision=3718]]
 
 -- update layout without needing to regenerate gui
  -- to do: could also use this for handling changes in display size
@@ -1986,6 +2117,10 @@ end
  		else
 			notify(string.format("copied %d x %d tiles",tbmp:width(),tbmp:height()))
 		end
+		if (mtool == "stamp") then
+			-- auto-deselect -- probably want to use straight away
+			clear_selection()
+		end
 	end
 	
 	if keyp("v") then
@@ -2071,22 +2206,23 @@ dicAAxk0JwA-Z3VpJwADGTUnAG9jYW52YXMqAAMZNioAT3VuZG8oAAFQeD03
 :: .info.pod
 b64$LS1bW3BvZCxhdXRob3I9ImxleGFsb2ZmbGUiLGNyZWF0ZWQ9IjIwMjQtMDMtMjkgMTI6Mzk6
 NTMiLGljb249dXNlcmRhdGEoInU4IiwxNiwxNiwiMDAwMDAwMDEwMTAxMDEwMTAxMDEwMTAxMDEw
-MDAwMDAwMDAwMDEwNzA3MDcwNzA3MDcwNzA3MDcwNzAxMDAwMDAwMDEwNzFiMWIxYjFiMWIxYjFi
-MWIxYjFiMDcwMTAwMDEwNzFiMWIxYjFiMWIxYjFiMWIxYjFiMWIxYjA3MDEwMTA3MWIxYjFiMDcw
-NzA3MWIwNzA3MWIxYjFiMDcwMTAxMDcxYjFiMWIwNzA3MDcxYjA3MDcxYjFiMWIwNzAxMDEwNzFi
-MWIxYjA3MDcwNzFiMWIxYjFiMWIxYjA3MDEwMTA3MWIxYjFiMWIxYjFiMDcwNzA3MWIxYjFiMDcw
-MTAxMDcxYjFiMWIwNzA3MWIwNzA3MDcxYjFiMWIwNzAxMDEwNzFiMWIxYjA3MDcxYjA3MDcwNzFi
-MWIxYjA3MDEwMTA3MWIxYjFiMWIxYjFiMWIxYjFiMWIxYjFiMDcwMTAxMWEwNzFiMWIxYjFiMWIx
-YjFiMWIxYjFiMDcxYTAxMDExYTFhMDcwNzA3MDcwNzA3MDcwNzA3MDcxYTFhMDEwMDAxMWExYTFh
-MWExYTFhMWExYTFhMWExYTFhMDEwMDAwMDAwMTFhMWExYTFhMWExYTFhMWExYTFhMDEwMDAwMDAw
-MDAwMDEwMTAxMDEwMTAxMDEwMTAxMDEwMDAwMDAiKSxtb2RpZmllZD0iMjAyNS0wNC0yNyAxNzow
-MToxNCIsbm90ZXM9IiIscnVudGltZT0xMyxzdG9yZWQ9IjIwMjQtMDQtMDMgMDY6MDQ6MjgiLHRp
-dGxlPSJQaWNvdHJvbiBNYXAgRWRpdG9yIix2ZXJzaW9uPSIwLjEuMWUiLHdvcmtzcGFjZXM9e3ts
-b2NhdGlvbj0ibWFpbi5sdWEjMSIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0idXBkYXRl
-Lmx1YSMxNTMiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249Im5hdi5sdWEjMSIsd29ya3Nw
-YWNlX2luZGV4PTF9LHtsb2NhdGlvbj0iY2FudmFzLmx1YSM0OTgiLHdvcmtzcGFjZV9pbmRleD0x
-fSx7bG9jYXRpb249InVuZG8ubHVhIzEiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249ImRy
-YXcubHVhIzEiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249Imd1aS5sdWEjMSIsd29ya3Nw
-YWNlX2luZGV4PTF9LHtsb2NhdGlvbj0iZ2Z4LzBiLmdmeCIsd29ya3NwYWNlX2luZGV4PTJ9LHts
+MDAwMDAwMDAwMDEwNzA3MDcwNzA3MDcwNzA3MDcwNzAxMDAwMDAwMDEwNzBkMGQwZDBkMGQwZDBk
+MGQwZDBkMDcwMTAwMDEwNzBkMGQwZDBkMGQwZDBkMGQwZDBkMGQwZDA3MDEwMTA3MGQwZDBkMDcw
+NzA3MGQwNzA3MGQwZDBkMDcwMTAxMDcwZDBkMGQwNzA3MDcwZDA3MDcwZDBkMGQwNzAxMDEwNzBk
+MGQwZDA3MDcwNzBkMGQwZDBkMGQwZDA3MDEwMTA3MGQwZDBkMGQwZDBkMDcwNzA3MGQwZDBkMDcw
+MTAxMDcwZDBkMGQwNzA3MGQwNzA3MDcwZDBkMGQwNzAxMDEwNzBkMGQwZDA3MDcwZDA3MDcwNzBk
+MGQwZDA3MDEwMTA3MGQwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMDcwMTAxMDYwNzBkMGQwZDBkMGQw
+ZDBkMGQwZDBkMDcwNjAxMDEwNjA2MDcwNzA3MDcwNzA3MDcwNzA3MDcwNjA2MDEwMDAxMDYwNjA2
+MDYwNjA2MDYwNjA2MDYwNjA2MDEwMDAwMDAwMTA2MDYwNjA2MDYwNjA2MDYwNjA2MDEwMDAwMDAw
+MDAwMDEwMTAxMDEwMTAxMDEwMTAxMDEwMDAwMDAiKSxsb3djb2xfaWNvbj10cnVlLG1vZGlmaWVk
+PSIyMDI1LTA1LTA0IDE1OjQ3OjUzIixub3Rlcz0iIixydW50aW1lPTE3LHN0b3JlZD0iMjAyNC0w
+NC0wMyAwNjowNDoyOCIsdGl0bGU9IlBpY290cm9uIE1hcCBFZGl0b3IiLHZlcnNpb249IjAuMS4x
+ZSIsd29ya3NwYWNlcz17e2xvY2F0aW9uPSJtYWluLmx1YSMxIix3b3Jrc3BhY2VfaW5kZXg9MX0s
+e2xvY2F0aW9uPSJ1cGRhdGUubHVhIzEiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249Im5h
+di5sdWEjMSIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0iY2FudmFzLmx1YSMxOTQiLHdv
+cmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249InVuZG8ubHVhIzEiLHdvcmtzcGFjZV9pbmRleD0x
+fSx7bG9jYXRpb249ImRyYXcubHVhIzEiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249Imd1
+aS5sdWEjMjIiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249ImdmeC8wYi5nZngiLHdvcmtz
+cGFjZV9pbmRleD0yfSx7bG9jYXRpb249Im1hcC8wLm1hcCIsd29ya3NwYWNlX2luZGV4PTN9LHts
 b2NhdGlvbj0ibWFwLzAubWFwIix3b3Jrc3BhY2VfaW5kZXg9N319XV0=
 :: [eoc]
