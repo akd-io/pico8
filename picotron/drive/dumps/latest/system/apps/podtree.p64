@@ -2,24 +2,36 @@ picotron cartridge // www.picotron.net
 version 2
 
 :: .info.pod
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTIyIDEwOjI4OjEzIixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjowODo1NCIsc3RvcmVkPSIyMDIzLTI1LTE4IDExOjI1OjIyIix3b3Jrc3BhY2VzPXt7
-bG9jYXRpb249Im1haW4ubHVhIix3b3Jrc3BhY2VfaW5kZXg9N30se2xvY2F0aW9uPSJnZngvMC5n
-ZngiLHdvcmtzcGFjZV9pbmRleD04fX1dXWx6NAAEAAAAAwAAADBuaWw=
+b64$LS1bW3BvZCx3b3Jrc3BhY2VzPXt7bG9jYXRpb249Im1haW4ubHVhIzExNyIsd29ya3NwYWNl
+X2luZGV4PTF9LHtsb2NhdGlvbj0iZ2Z4LzAuZ2Z4Iix3b3Jrc3BhY2VfaW5kZXg9Mn19LHJ1bnRp
+bWU9Nyxub3Rlcz0iIixpY29uPXVzZXJkYXRhKCJ1OCIsMTYsMTYsIjAwMDEwMTAxMDEwMTAxMDEw
+MDAwMDAwMDAwMDAwMDAwMDAwMTA2MDYwNzA3MDcwMTAwMDAwMDAwMDAwMDAwMDAwMDAxMDYwNjA3
+MDcwNzAxMDAwMDAwMDAwMDAwMDAwMDAwMDEwNjA2MDYwNjA2MDEwMDAwMDAwMDAwMDAwMDAwMDAw
+MTAxMDEwZDAxMDEwMTAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMTBkMDEwMDAwMDAwMTAxMDEwMTAx
+MDEwMDAwMDAwMDAxMGQwMTAxMDEwMTAxMDYwNjA3MDcwMTAwMDAwMDAwMDEwZDBkMGQwZDBkMGQw
+NjA2MDcwNzAxMDAwMDAwMDAwMTBkMDEwMTAxMDEwMTA2MDYwNjA2MDEwMDAwMDAwMDAxMGQwMTAw
+MDAwMDAxMDEwMTAxMDEwMTAwMDAwMDAwMDEwZDAxMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
+MTBkMDEwMDAwMDAwMTAxMDEwMTAxMDEwMDAwMDAwMDAxMGQwMTAxMDEwMTAxMDYwNjA3MDcwMTAw
+MDAwMDAwMDEwZDBkMGQwZDBkMGQwNjA2MDcwNzAxMDAwMDAwMDAwMTAxMDEwMTAxMDEwMTA2MDYw
+NjA2MDEwMDAwMDAwMDAwMDAwMDAwMDAwMDAxMDEwMTAxMDEwMTAwIiksdGl0bGU9InBvZHRyZWUi
+LHN0b3JlZD0iMjAyMy0yNS0xOCAxMToyNToyMiIsbW9kaWZpZWQ9IjIwMjUtMDQtMjcgMTY6MDY6
+MTIiLHZlcnNpb249IjAuMSIsY3JlYXRlZD0iMjAyMy0xMC0yMiAxMDoyODoxMyIsYXV0aG9yPSJ6
+ZXAiXV1sejQABAAAAAMAAAAwbmls
 :: gfx/
 :: gfx/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTIyIDEwOjI4OjEzIixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjowODo1NCIsc3RvcmVkPSIyMDIzLTI4LTIyIDEwOjI4OjEzIl1dbHo0AAQAAAADAAAA
+NC0yNyAxNjowNjoxMiIsc3RvcmVkPSIyMDIzLTI4LTIyIDEwOjI4OjEzIl1dbHo0AAQAAAADAAAA
 MG5pbA==
 :: gfx/0.gfx
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTA1LTMwIDEwOjA1OjMzIixtb2RpZmllZD0iMjAyMy0y
-NS0xOCAxMToyNToyMiIscmV2aXNpb249NTFdXWx6NACAAAAABDMAAPEWe1swXT17Ym1wPXB4dQBD
-IBAQBPDwLGZsYWdzPTAscGFuX3g9MggA33k9MixzY2FsZT04fSwyAAwTMDIAEzAyAC8xMjMA----
---------------------------------------------------------------_2UD0xMn19
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTA1LTMwIDEwOjA1OjMzIixtb2RpZmllZD0iMjAyNC0w
+Ni0wNiAwNTowMDoxNiIscmV2aXNpb249MTQ1XV1sejQAqAAAAFAxAADxFntbMF09e2JtcD1weHUA
+QyAQEATw8CxmbGFncz0wLHBhbl94PTIIAMp5PTIsem9vbT04fSwxAGUAYYABRwEEAPUGIQchoAEH
+ASBRMAEHQTcBMAEHRjcBDAACGAAuAcAiAG9hNwGQUQB8ABwv8PAxAP----------------------
+-----------------------------------------6ZQbT04fX0=
 :: map/
 :: map/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTIyIDEwOjI4OjEzIixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjowODo1NCIsc3RvcmVkPSIyMDIzLTI4LTIyIDEwOjI4OjEzIl1dbHo0AAQAAAADAAAA
+NC0yNyAxNjowNjoxMiIsc3RvcmVkPSIyMDIzLTI4LTIyIDEwOjI4OjEzIl1dbHo0AAQAAAADAAAA
 MG5pbA==
 :: map/0.map
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTQ3LTE4IDEwOjQ3OjMzIixtb2RpZmllZD0iMjAyMy0x
@@ -43,16 +55,21 @@ MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
 MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
 MDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAw
 MDAwMDAwMCIpLHBhbl94PTAscGFuX3k9MCxzY2FsZT0xLHRpbGVfaD0xNix0aWxlX3c9MTZ9fX0=
+:: code.pod
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTA2LTA0IDExOjIwOjA0Iixtb2RpZmllZD0iMjAyNC0w
+Ni0wNCAxMToyMDowNCIscmV2aXNpb249MF1dbHo0AAMAAAACAAAAIHt9
 :: dat.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEyLTEwIDA1OjEyOjQyIixtb2RpZmllZD0iMjAyMy0y
 OC0xMCAwNToyODoxNSIscmV2aXNpb249N11de2Zvbz0iNiIsaG9nZT0ib2tleWRva2UifQ==
 :: main.lua
---[[pod_format="raw",created="2023-03-30 05:03:12",modified="2023-25-18 11:25:22",revision=4612]]
+--[[pod_format="raw",created="2023-03-30 05:03:12",modified="2024-06-06 05:00:16",revision=4749]]
 --[[
 
-	pf
+	pw: wrangler version (forked from 0.1.0g release version)
 	
 ]]
+
+local keyd = key -- "key down". want to use "key" as a variable name!
 
 local top_label_metadata = "[metadata]"
 local top_label = "[content]"
@@ -163,6 +180,14 @@ local function comp(i0, i1)
 	return k0 < k1 -- same type: can compare, I think?
 end
 
+-- to do: not bubble!
+local function bubble_sort(tbl)
+	for pass=1,#tbl-1 do
+		for i=1,#tbl-1 do
+			if (not comp(tbl[i], tbl[i+1])) tbl[i], tbl[i+1] = tbl[i+1], tbl[i]
+		end
+	end
+end
 
 local function get_key_str(key, val)
 	if (type(key)=="number") then 
@@ -294,7 +319,7 @@ function add_node(content, parent, key, sy, depth, gui_label)
 			key_callback = { 
 				enter = function () 
 					-- holding shift: let editor handle the enter
-					if(key("shift")) return true
+					if(keyd("shift")) return true
 					
 					-- keep new value and close
 					close_texted(true)
@@ -329,7 +354,7 @@ function add_node(content, parent, key, sy, depth, gui_label)
 			add(child,{k=k,v=v})
 		end
 
-		--table.sort(child, comp) -- to do: keys sort replacement
+		bubble_sort(child)
 		
 		for i=1,#child do
 			sy = add_node(content, val, child[i].k, sy, depth+1)
@@ -445,7 +470,6 @@ function create_pod_editor(parent, el)
 	
 	function content:tap(msg)
 		--local i = 1 + y \ 12
-		
 		close_texted(true)
 		
 		local i = 1
@@ -527,7 +551,7 @@ function create_pod_editor(parent, el)
 	end
 	
 	function container:mousewheel(msg)
-		if (key("ctrl")) then
+		if (keyd("ctrl")) then
 			content.x += msg.wheel_y * 32 
 		else
 			content.y += msg.wheel_y * 32 
@@ -592,33 +616,26 @@ function restore_expand_data(p, dat)
 end
 
 function save_working_file()
+	return p.contents, p.metadata
+	
+--[[
 	store(current_filename, p.contents, p.metadata)
 	printh("storing metadata: "..pod(p.metadata))
 	local e = store_expand_data(p)
 	load_working_file(current_filename) -- update metadata!
 	restore_expand_data(p, e)
 	notify("saved "..current_filename)
+]]
 end
 
 
-function load_working_file(filename)
-	
-	printh("load_working_file: "..filename.."  resolves as:"..fullpath(filename))
+function load_working_file(contents, metadata)
 
-	current_filename = filename
-	local dat, meta = fetch(filename)
-	if (dat) then
-		p = {
-			metadata = meta,
-			contents = dat
-		}
-	else
-		p = {
-			metadata = {},
-			contents = {}
-		}
-	end
-	
+	p = {
+		contents = contents or {},
+		metadata = metadata or {}
+	}
+
 	expand = {[p.contents]=true}
 end
 
@@ -644,6 +661,9 @@ function _init()
 		end
 	)
 	
+	
+
+--[[
 	cd(env().path)
 	
 	-- get_filename_from_args logic
@@ -653,14 +673,21 @@ function _init()
 	current_filename = fullpath(fn)
 	
 	load_working_file(current_filename)
-	
+]]
 	window{
 		width=200,
 		height=200,
-		userdata"[gfx]08087770000070700000777000000700777007777070070077700000000000000000[/gfx]"
+		pauseable = false,
+		icon=userdata"[gfx]08087770000070700000777000000700777007777070070077700000000000000000[/gfx]"
 	}
 	
-
+	wrangle_working_file(
+		save_working_file,
+		load_working_file,
+		"/ram/cart/untitled.pod" -- default
+	)
+	
+--[[
 	menuitem{
 		id = "open_file",
 		label = "\^:7f4141417f616500 Open File",
@@ -681,7 +708,7 @@ function _init()
 			--send_message(pid(), {event = "save_working_file"})
 		end
 	}
-
+]]
 	
 end
 
@@ -828,7 +855,8 @@ function toggle_type()
 	
 	type0 = type(val)
 	if (type0 == "string") then
-		local num = tonum(type0)
+		local num = tonum(val)	
+
 		if     val == "false" then parent[key] = false
 		elseif val == "true"  then parent[key] = true
 		elseif val == ""      then parent[key] = {}
@@ -863,13 +891,13 @@ function update_kbd()
 	end
 	
 	-- insert after pos
-	if (keyp("enter") and key("shift")) then
+	if (keyp("enter") and keyd("shift")) then
 		new_item("_key_","",1)
 		clear_key("enter")
 	end
 	
 	-- toggle type
-	if (keyp("t") and key("ctrl")) then
+	if (keyp("t") and keyd("ctrl")) then
 		toggle_type()
 	end
 	
@@ -885,7 +913,7 @@ function update_kbd()
 		clear_key("enter") -- don't immediately close again	
 	end
 	
-	if (key("ctrl")) then
+	if (keyd("ctrl")) then
 		if keyp("z") then
 			local res = undo_stack:undo()
 			--printh("undoing: "..tostr(res))
@@ -896,12 +924,13 @@ function update_kbd()
 			undo_stack:redo()
 			refresh_gui = true
 		end
-		
+		--[[
 		if keyp("s") then
 			save_working_file()
 			notify("saved "..current_filename)
 			refresh_gui = true
 		end
+		]]
 		
 		if keyp("v") then
 			local item = pp[selected]
@@ -950,13 +979,17 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
+:: untitled.pod
+b64$LS1bW3BvZCxfc3lzdGVtPXtfZGVzYz0iYXBwIGRhdGEgZ29lcyBoZXJlOyBlLmcuIHNlYXJj
+aCBibG9vbSwgdW5pdmVyc2FsIGZpbGUgSUQsIG1kNT8ifSxhdXRob3I9InplcDIiLGNyZWF0ZWQ9
+IjIwMjQtMDYtMDQgMDY6MjM6MjciLG1vZGlmaWVkPSIyMDI0LTA2LTA2IDA0OjUxOjUzIixyZXZp
+c2lvbj0xMCx0aXRsZT0iZm9vIl1dbHo0AKoBAAAdAwAA8y57YXVkaW89ZmFsc2UsY29sb3Vycz17
+InRoZSIsInF1aWNrIiwiYnJvd24iLCJmb3gifSxmdWxsc2NyZWVuNwDyGmljb249cHh1AEMgCAgE
+J0AHAAdAJ1AHECcQNwAHEAcQJ-ABLHRoZW1lWQBjbWUgMSIsCgAVMgoAFTMKABU0CgAVNQoAFTYK
+ABU3CgAVOAoAFTkKACYxMAsABmYAFjFnABYxaAAWMWkAFjFqABYxawAWMWwAFjFtABYxbgAWMm4A
+FzLUAAZuABYybgAWMm4AFjJuABYybgAWMm4AFjJuABYybgAWM24AFjNuABYzbgAWM24AFjNuABYz
+bgAWM24AFjNuABYzbgAWM24AFjRuABY0bgAWNG4AFjRuABY0bgAWNG4AFjRuABY0bgAWNG4AFjRu
+APEmNTAifSx2b2x1bWU9MjQsd2luZG93X3NjYWxlPTIsenN0cj0idGhpcyBpcyBhIHN0cmluZyIY
+ABgyGQCTbXVsdGlsaW5lIwAhXG4NABMyCAAiM2I0AKkzPSJhbm90aGVySwAQNBcAsGQgYW5vdGhl
+ciJ9
 :: [eoc]

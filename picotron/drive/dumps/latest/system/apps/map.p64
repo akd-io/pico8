@@ -2,28 +2,29 @@ picotron cartridge // www.picotron.net
 version 2
 
 :: .info.pod
-b64$LS1bW3BvZCxub3Rlcz0iIixtb2RpZmllZD0iMjAyNS0wNC0yNyAxNjowODo1NCIsY3JlYXRl
-ZD0iMjAyNC0wMy0yOSAxMjozOTo1MyIsYXV0aG9yPSJsZXhhbG9mZmxlIixpY29uPXVzZXJkYXRh
-KCJ1OCIsMTYsMTYsIjAwMDAwMDAxMDEwMTAxMDEwMTAxMDEwMTAxMDAwMDAwMDAwMDAxMDcwNzA3
-MDcwNzA3MDcwNzA3MDcwMTAwMDAwMDAxMDcwZDBkMGQwZDBkMGQwZDBkMGQwZDA3MDEwMDAxMDcw
-ZDBkMGQwZDBkMGQwZDBkMGQwZDBkMGQwNzAxMDEwNzBkMGQwZDA3MDcwNzBkMDcwNzBkMGQwZDA3
-MDEwMTA3MGQwZDBkMDcwNzA3MGQwNzA3MGQwZDBkMDcwMTAxMDcwZDBkMGQwNzA3MDcwZDBkMGQw
-ZDBkMGQwNzAxMDEwNzBkMGQwZDBkMGQwZDA3MDcwNzBkMGQwZDA3MDEwMTA3MGQwZDBkMDcwNzBk
-MDcwNzA3MGQwZDBkMDcwMTAxMDcwZDBkMGQwNzA3MGQwNzA3MDcwZDBkMGQwNzAxMDEwNzBkMGQw
-ZDBkMGQwZDBkMGQwZDBkMGQwZDA3MDEwMTA2MDcwZDBkMGQwZDBkMGQwZDBkMGQwZDA3MDYwMTAx
-MDYwNjA3MDcwNzA3MDcwNzA3MDcwNzA3MDYwNjAxMDAwMTA2MDYwNjA2MDYwNjA2MDYwNjA2MDYw
-NjAxMDAwMDAwMDEwNjA2MDYwNjA2MDYwNjA2MDYwNjAxMDAwMDAwMDAwMDAxMDEwMTAxMDEwMTAx
-MDEwMTAxMDAwMDAwIikscnVudGltZT01LHN0b3JlZD0iMjAyNC0wNC0wMyAwNjowNDoyOCIsdGl0
-bGU9IlBpY290cm9uIE1hcCBFZGl0b3IiLHZlcnNpb249IjAuMWUiLHdvcmtzcGFjZXM9e3tsb2Nh
-dGlvbj0ibWFpbi5sdWEjMiIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0iZHJhdy5sdWEj
-MSIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0idXBkYXRlLmx1YSMxIix3b3Jrc3BhY2Vf
-aW5kZXg9MX0se2xvY2F0aW9uPSJuYXYubHVhIzYiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRp
-b249Imd1aS5sdWEjMSIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0iY2FudmFzLmx1YSM5
-MyIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0idW5kby5sdWEjNDgiLHdvcmtzcGFjZV9p
-bmRleD0xfSx7bG9jYXRpb249ImdmeC8wYi5nZngiLHdvcmtzcGFjZV9pbmRleD0yfSx7bG9jYXRp
-b249Im1hcC8wLm1hcCIsd29ya3NwYWNlX2luZGV4PTd9fV1dbHo0AAQAAAADAAAAMG5pbA==
+b64$LS1bW3BvZCx3b3Jrc3BhY2VzPXt7bG9jYXRpb249Im1haW4ubHVhIzE0MSIsd29ya3NwYWNl
+X2luZGV4PTF9LHtsb2NhdGlvbj0iZHJhdy5sdWEjNiIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2Nh
+dGlvbj0idXBkYXRlLmx1YSMxNDciLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249Im5hdi5s
+dWEjMTcxIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJndWkubHVhIzc1Iix3b3Jrc3Bh
+Y2VfaW5kZXg9MX0se2xvY2F0aW9uPSJjYW52YXMubHVhIzIyOSIsd29ya3NwYWNlX2luZGV4PTF9
+LHtsb2NhdGlvbj0idW5kby5sdWEjMTkiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249Imdm
+eC8wYi5nZngiLHdvcmtzcGFjZV9pbmRleD0yfSx7bG9jYXRpb249Im1hcC8wLm1hcCIsd29ya3Nw
+YWNlX2luZGV4PTN9LHtsb2NhdGlvbj0ibWFwLzAubWFwIix3b3Jrc3BhY2VfaW5kZXg9N319LHJ1
+bnRpbWU9OCxub3Rlcz0iIixpY29uPXVzZXJkYXRhKCJ1OCIsMTYsMTYsIjAwMDAwMDAxMDEwMTAx
+MDEwMTAxMDEwMTAxMDAwMDAwMDAwMDAxMDcwNzA3MDcwNzA3MDcwNzA3MDcwMTAwMDAwMDAxMDcw
+ZDBkMGQwZDBkMGQwZDBkMGQwZDA3MDEwMDAxMDcwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMGQwNzAx
+MDEwNzBkMGQwZDA3MDcwNzBkMDcwNzBkMGQwZDA3MDEwMTA3MGQwZDBkMDcwNzA3MGQwNzA3MGQw
+ZDBkMDcwMTAxMDcwZDBkMGQwNzA3MDcwZDBkMGQwZDBkMGQwNzAxMDEwNzBkMGQwZDBkMGQwZDA3
+MDcwNzBkMGQwZDA3MDEwMTA3MGQwZDBkMDcwNzBkMDcwNzA3MGQwZDBkMDcwMTAxMDcwZDBkMGQw
+NzA3MGQwNzA3MDcwZDBkMGQwNzAxMDEwNzBkMGQwZDBkMGQwZDBkMGQwZDBkMGQwZDA3MDEwMTA2
+MDcwZDBkMGQwZDBkMGQwZDBkMGQwZDA3MDYwMTAxMDYwNjA3MDcwNzA3MDcwNzA3MDcwNzA3MDYw
+NjAxMDAwMTA2MDYwNjA2MDYwNjA2MDYwNjA2MDYwNjAxMDAwMDAwMDEwNjA2MDYwNjA2MDYwNjA2
+MDYwNjAxMDAwMDAwMDAwMDAxMDEwMTAxMDEwMTAxMDEwMTAxMDAwMDAwIiksdGl0bGU9IlBpY290
+cm9uIE1hcCBFZGl0b3IiLHN0b3JlZD0iMjAyNC0wNC0wMyAwNjowNDoyOCIsbW9kaWZpZWQ9IjIw
+MjUtMDQtMjcgMTY6MDY6MTIiLHZlcnNpb249IjAuMWgiLGNyZWF0ZWQ9IjIwMjQtMDMtMjkgMTI6
+Mzk6NTMiLGF1dGhvcj0ibGV4YWxvZmZsZSJdXWx6NAAEAAAAAwAAADBuaWw=
 :: canvas.lua
---[[pod_format="raw",created="2023-04-11 02:04:02",modified="2024-04-03 06:04:28",revision=2864]]
+--[[pod_format="raw",created="2023-04-11 02:04:02",modified="2024-07-18 22:58:53",revision=3395]]
 
 local ww,hh=0,0
 local fill_cpu=0
@@ -90,6 +91,8 @@ end
 
 -- use pan of current item
 -- to do: global pan/scale mode?
+local mline = userdata("i16", 4096, 1)
+
 function draw_layer(el, ii, pan_x, pan_y, scale)
 
 	local lbmp = ii.bmp
@@ -110,44 +113,63 @@ function draw_layer(el, ii, pan_x, pan_y, scale)
 	
 	local x0 = el.width\2  - px * scale
 	local y0 = el.height\2 - py * scale
+	
 		
 	local x1,y1 = x0 + ww * scale, y0 + hh * scale
-		
+	
+	
+	-- use for drawing grid lines
 	local min_x = mid(0, (0 - x0) \ tile_ww - 1, lbmp:width()-1)
 	local min_y = mid(0, (0 - y0) \ tile_hh - 1, lbmp:height()-1)
 	local max_x = mid(0, min_x + (el.width \ tile_ww) + 2, lbmp:width()-1)
 	local max_y = mid(0, min_y + (el.height \ tile_hh) + 2, lbmp:height()-1)
+
+
+	if (true) then
 	
-	-- to do: use tline
-	-- this is too slow when zoomed out with small tiles
-	for y=min_y, max_y do
-		for x=min_x, max_x do
-			local sx = x0 + x * tile_ww
-			local sy = y0 + y * tile_hh
-			local val=get(lbmp,x,y)
-			sspr(get_spr(val),
-			 0, 0, tile_w, tile_h, 
-			 sx, sy, tile_ww, tile_hh,
-			 val&0x4000>0, val&0x8000>0)
-			--spr(get(cbmp,x,y),sx,sy)
-		end
-	end
-	
-	-- grid lines (to do: tinted)
-		if (key("space") and ii == ci) then
-			fillp() pal()
-			--fillp(0xff00)
-			for x=min_x*tile_ww,max_x*tile_ww,tile_ww do
-				line(x0+x,y0,x0+x,y1-1,0x0201)
-			end
+		map(lbmp,0,0,x0,y0,nil,nil,0, tile_ww, tile_hh)
+
+	-- tline
+	--printh((max_x-min_x)*(max_y-min_y))
+	--if ((max_x-min_x)*(max_y-min_y) > 2000) then
+	elseif (false) then -- testing tline3d
 		
-			--fillp(0x6666)
-			for y=min_y*tile_hh,max_y*tile_hh,tile_hh do
-				line(x0,y0+y,x1-1,y0+y,0x0201)
+		local last_myi = -10000
+		for y=0, el.height-1 do
+			-- where in map?
+			local my = (y - y0) / tile_hh
+			if (my >=0 and my < lbmp:height()) then
+				if last_myi ~= my\1 then
+					last_myi = my\1
+					-- if (last_myi>=0 and last_myi<lbmp:height()) 
+					if (true) -- should be clipped!
+					then
+						blit(lbmp,mline,0,last_myi,0,0,lbmp:width(),1) -- copy line
+					end
+				end
+				tline3d(mline,x0,y,x0+ww*scale,y,   0,my%1,lbmp:width(),my%1)
 			end
-			
-			fillp()
 		end
+
+	end
+
+	-- grid lines on current grid (to do: tinted)
+	-- don't draw when pressing space in text editor
+	if (key("space") and ii == ci and not gui:get_keyboard_focus_element()) then
+		fillp() pal()
+		--fillp(0xff00)
+		for x=min_x*tile_ww,max_x*tile_ww,tile_ww do
+			line(x0+x,y0,x0+x,y1-1,0x0201)
+		end
+	
+		--fillp(0x6666)
+		for y=min_y*tile_hh,max_y*tile_hh,tile_hh do
+			line(x0,y0+y,x1-1,y0+y,0x0201)
+		end
+		
+		fillp()
+	end 
+	
 end
 
 
@@ -207,7 +229,7 @@ function create_canvas(el)
 	local ww,hh,x0,y0
 	local drag_x0,drag_y0 = 0,0
 	
-	function el:update()
+	function el:update(msg)
 	
 		el.cursor = "crosshair"
 		if (mtool == "pan") el.cursor = "grab"
@@ -231,7 +253,7 @@ function create_canvas(el)
 
 		mtool = ctool
 		if (key"space") mtool = "pan"
-		if (key"s") mtool = "select"
+		if (key"s") mtool = msg.mb and msg.mb > 1 and "pick" or "select"
 		
 		-- pixel looking at in center
 		local px = (cbmp_width * tile_w) /2  + ci.pan_x
@@ -268,10 +290,10 @@ function create_canvas(el)
 		op_bmp = tbmp:copy()
 		blit(tbmp, op_bmp) -- to do: remove
 		
-		if mtool == "fill" and not key"space" then
+		if mtool == "fill" and not key"space" and msg.mb == 1 then
 			do_fill(tbmp, x, y)
 		end
-		
+		--[[
 		if (mtool == "pick") then
 			-- 1x1 selection (dupe)
 			
@@ -279,8 +301,19 @@ function create_canvas(el)
 			ci.layer_x = xx
 			ci.layer_y = yy
 			ci.layer0 = cbmp:copy()
+			ci.layer0:set(xx,yy,0) -- cut out
 			-- copy from map to floating layer
 			blit(cbmp,ci.layer,xx,yy,0,0,1,1)
+		end
+		]]
+		-- replace
+		if (mtool == "pencil" and key"ctrl") then
+			local col0 = get(tbmp, x,y)
+			for yy=0,tbmp_height-1 do
+				for xx=0,tbmp_width-1 do
+					if (get(tbmp,xx,yy) == col0) set(tbmp,xx,yy,col)
+				end
+			end
 		end
 		
 		
@@ -315,6 +348,19 @@ function create_canvas(el)
 			rectfill(0,0,1024,1024,0)
 			rectfill(click_xx0 +.5, click_yy0 +.5, xx +.5, yy +.5, 1)
 			csel_outline = nil -- regenerate
+		elseif (mtool == "pick") then
+			-- 1x1 selection (dupe)
+			
+			ci.layer = userdata("i16",1,1)
+			ci.layer_x = xx
+			ci.layer_y = yy
+			ci.layer0 = cbmp:copy()
+			ci.layer0:set(xx,yy,0) -- cut out
+			-- copy from map to floating layer
+			blit(cbmp,ci.layer,xx,yy,0,0,1,1)
+		elseif (msg.mb == 2) then
+			-- anything after this: mb2 means pick up tile
+			col = get(tbmp, x, y)
 		elseif (mtool == "pencil" or mtool == "eraser") then
 			if (msg.mb == 1) then
 				local dx, dy = x-drag_x0, y-drag_y0
@@ -330,7 +376,6 @@ function create_canvas(el)
 				end
 			
 			end
-			if (msg.mb == 2) col = get(tbmp, x, y)
 		elseif mtool == "rect" then
 			blit(op_bmp, tbmp)
 			udrectfill(tbmp, click_x0 +.5, click_y0 +.5, x +.5, y +.5, col)
@@ -512,7 +557,7 @@ function create_canvas(el)
 
 			rect(sx0-1,sy0-1,sx1,sy1,0x0701)
 
-		elseif (click_x0 and mtool == "select" and msg.mb > 0) then
+		elseif (click_x0 and mtool == "select" and msg.mb == 1) then
 		
 			-- selection in progress
 			local mx0 = click_x0
@@ -552,7 +597,7 @@ function create_canvas(el)
 		end
 		
 		local min_scale = 0.25
-		local max_scale = 4
+		local max_scale = 16 -- was 4
 		
 		-- can zoom out further when wouldn't fit otherwise
 		-- if (cbmp:width()  >= self.width ) min_scale = 0.5
@@ -603,7 +648,7 @@ end
 
 
 :: draw.lua
---[[pod_format="raw",created="2023-26-12 03:26:20",modified="2024-04-03 06:04:28",revision=1791]]
+--[[pod_format="raw",created="2023-10-12 03:26:20",modified="2024-07-18 22:58:53",revision=2264]]
 function _draw()
 	cls(5)
 	-- operations during _update can request a
@@ -629,7 +674,7 @@ end
 
 
 :: gui.lua
---[[pod_format="raw",created="2023-05-11 02:05:16",modified="2024-04-03 06:04:28",revision=2602]]
+--[[pod_format="raw",created="2023-05-11 02:05:16",modified="2024-07-18 22:58:53",revision=3088]]
 
 show_pane = true
 
@@ -694,6 +739,8 @@ function generate_gui()
 	sidebar:attach(create_item_info{x=8,y=96,width=128,height=24})
 	sidebar:attach(create_bank_tabs{x=8+128-48+1,y=116-9,width=48,height=9})
 	sidebar:attach(create_nav{x=8,y=116,width=128,height=128})
+	sidebar:attach(create_ram_widget{x=88,y=250,width=60,height=10})
+
 	
 	---- tools ----
 	
@@ -791,11 +838,17 @@ function create_tool_button(which, x, y)
 	return el
 end
 
-
-
+-- from gfx.p64
+function create_ram_widget(el)
+	function el:draw()
+		print(string.format("%2.2fmb (%02d%%)",stat(0)/0x100000,stat(0)\167772),0,0,
+			stat(0) > 0xe00000 and 14 or 21) -- warn when more than 7/8ths of capacity
+	end
+	return el
+end
 
 :: main.lua
---[[pod_format="raw",created="2023-04-11 02:04:54",modified="2024-04-03 06:04:28",revision=2672]]
+--[[pod_format="raw",created="2023-04-11 02:04:54",modified="2024-07-18 22:58:53",revision=3148]]
 --[[
 	Picotron Map Editor
 ]]
@@ -936,7 +989,7 @@ function _init()
 	
 	generate_gui()
 	
-	col = 2 -- sprite index
+	col = 1 -- sprite index
 	
 	ctool = "pencil"
 	mtool = ctool
@@ -1045,7 +1098,7 @@ on_event("set_palette",
 
 
 :: nav.lua
---[[pod_format="raw",created="2023-18-11 02:18:48",modified="2024-04-03 06:04:28",revision=3444]]
+--[[pod_format="raw",created="2023-10-11 02:18:48",modified="2024-07-18 22:58:53",revision=3942]]
 --[[
 	navigate sprite bank
 	
@@ -1125,7 +1178,6 @@ function make_operation_button(el)
 end
 
 
--- to do: lock aspect button 
 -- (only need to change width to go from 12x8 -> 24x16)
 function resize_map(index, width, height)
 	-- note: userdata only takes numbers for sizes, not strings (!)
@@ -1217,6 +1269,12 @@ function create_layer_nav(el)
 		if (layer_name_editor) refresh_gui = true
 	end
 	
+	function el:doubletap(msg)
+		-- same as tap on edit button
+		msg.mx = self.width-29
+		el:tap(msg)
+	end
+	
 	
 	function el:tap(msg)
 		local index = 1 + (msg.my - 2) \ item_h
@@ -1224,7 +1282,7 @@ function create_layer_nav(el)
 		if (msg.mx > self.width - 18) then
 			item[index].hidden = not item[index].hidden
 		elseif (msg.mx > self.width - 30) then
-		
+			readtext(true) -- clear input buffer (to do:should attach_text_editor do that?)
 			layer_name_editor = el:attach_text_editor{
 				x=2, y= 0+ (index-1)*item_h, width=74, height= 9, 
 				block_scrolling = true, max_lines = 1,
@@ -1267,7 +1325,8 @@ function create_layer_info(el)
 	{
 		x=xx,y=yy,width=20,height=7,
 		get=function() return item[current_item].bmp:width() end,
-		set=function(self,val) 
+		set=function(self,val)
+			backup_state()
 			resize_map(current_item, val, nil)
 		end,
 		label="layer size:"
@@ -1287,6 +1346,7 @@ function create_layer_info(el)
 		x=xx+29,y=yy,width=20,height=7,
 		get=function() return item[current_item].bmp:height() end,
 		set=function(self,val) 
+			backup_state()
 			resize_map(current_item, nil, val)
 		end,
 		label=""
@@ -1297,6 +1357,11 @@ function create_layer_info(el)
 		x=xx+60,y=0,
 		bmp0=icons.add_layer,
 		tap=function()
+			if (#item >= 6) then
+				notify("maximum: 6 layers")
+				return
+			end
+			backup_layers()
 			--printh(pod(item[current_item].bmp))
 			local new_item = {}
 			for k,v in pairs(ci) do
@@ -1311,12 +1376,13 @@ function create_layer_info(el)
 		end
 	})
 	
-	-- rem layer
+	-- delete layer
 	el:attach(make_operation_button{
 		x=xx+72,y=0,
 		bmp0=icons.del_layer,
 		tap=function()
 			if (#item > 1) then
+				backup_layers()
 				deli(item, current_item)
 				set_current_item()
 			else
@@ -1342,6 +1408,11 @@ function create_item_info(el)
 			rectfill(0,0,23,23,0)
 			local b = get_spr(col)
 			if (b) spr(b,self.width/2 - b:width()/2, self.height/2-b:height()/2)
+		end,
+		tap=function(self)
+			current_bank = col\256
+			current_bank_page = (col&0xff)\64
+			refresh_gui = true
 		end
 	}
 	
@@ -1442,12 +1513,16 @@ function create_nav(el)
 		for y=0,7 do
 			for x=0,7 do
 				local scale = 1
-				
-				local bmp = get_spr(x + y*8 + current_bank_page*64 + current_bank*256)
-				if (bmp) then -- maybe no sprite banks loaded [yet]
+				local bmp = get_spr(x + y*8 + current_bank_page*64)
+				if (bmp) then
 					local ww,hh = bmp:width(), bmp:height()
 					-- to do: this makes very thin bmps invisible in preview
 					scale = 16 / max(ww,hh)
+					if (scale >= 1) then
+						scale = scale \ 1
+					elseif (scale >= 0.666) then
+						scale = 1 -- up to 24x24, still show pixel for pixel
+					end
 					clip(self.sx + x*16, self.sy + y*16, 16,16)
 					sspr(bmp,
 						0,0,nil,nil,
@@ -1458,9 +1533,10 @@ function create_nav(el)
 			end
 		end
 		
-		if (current_bank_page == col\64) then
+	
+		if (current_bank == col\256 and current_bank_page == (col&0xff)\64) then
 			
-			local ii = (col - current_bank_page*64)
+			local ii = (col - current_bank_page*64) & 0xff
 			local xx = (ii % 8) * 16
 			local yy = (ii \ 8) * 16
 	
@@ -1622,8 +1698,10 @@ end
 
 
 :: undo.lua
---[[pod_format="raw",created="2023-29-14 03:29:27",modified="2024-04-03 06:04:28",revision=1548]]
-		
+--[[pod_format="raw",created="2023-10-14 03:29:27",modified="2024-07-18 22:58:53",revision=2062]]
+local layers_snapshot = nil
+local layer_op = false -- next thing to undo is a layer operation
+
 function add_undo_stack(ii)
 	ii.undo_stack = create_undo_stack(undo_save_state, undo_load_state, 0x11, ii)
 end
@@ -1655,13 +1733,30 @@ end
 function backup_state()
 	local ii = item[current_item]
 	local tt0 = stat(1)
+	
 	ii.undo_stack:checkpoint()
+
 --	printh(string.format("%3.3f",stat(1)-tt0).." // patch size:"..
 --		#(ii.undo_stack.undo_stack[#ii.undo_stack.undo_stack]))
+
+	-- invalidate any layer op. can release layers snapshot too
+	-- (they could be the same thing)
+	layer_op = false
+	layers_snapshot = nil
+	
 end
 function undo()
-	local ii = item[current_item]
-	ii.undo_stack:undo()
+	if (layer_op and layers_snapshot) then
+		-- undo delete or add layer
+		layer_op = false -- can only undo layer operation once
+		item = layers_snapshot
+		refresh_gui = true
+		set_current_item()
+	else
+		-- regular undo on a single layer
+		local ii = item[current_item]
+		ii.undo_stack:undo()
+	end
 end
 function redo()
 	local ii = item[current_item]
@@ -1670,9 +1765,16 @@ end
 
 
 
+function backup_layers()
+	layers_snapshot = {}
+	for i=1,#item do
+		add(layers_snapshot, item[i])
+	end
+	layer_op = true
+end
 
 :: update.lua
---[[pod_format="raw",created="2023-45-10 07:45:26",modified="2024-04-03 06:04:28",revision=2307]]
+--[[pod_format="raw",created="2023-10-10 07:45:26",modified="2024-07-18 22:58:53",revision=2796]]
 
 -- update layout without needing to regenerate gui
  -- to do: could also use this for handling changes in display size
@@ -1774,7 +1876,13 @@ function select_all()
 	ci.layer_x = 0
 	ci.layer_y = 0
 	ci.layer0 = cbmp:copy()
+
+	-- same as select tool -- cut out area that will move (all of it)
+	ci.layer0:clear() 
+	
+
 	blit(cbmp,ci.layer)
+	
 end
 
 function modify_selection(op)
@@ -1811,9 +1919,12 @@ end
  
  function _update()
  
+	-- want to know if editing text at start of frame, so
+	-- that can ignore enter keypress (erf) -- messed up checkpointing
+	local kfce0 = gui:get_keyboard_focus_element()
+ 
  	gui:update_all()
 	update_gui_layout()
-
  	set_draw_target()
  	
  	-------------------------------------------------------------
@@ -1824,9 +1935,8 @@ end
 		window{capture_escapes = false}	
  	end
  	
-  	-- layer name editor (or something else) has kbd focus -> ignore other input
- --	if (layer_name_editor or field_editor) return
- 	if (gui:get_keyboard_focus_element()) return
+  	-- layer name editor (or something else) has/had kbd focus -> ignore other input
+ 	if (gui:get_keyboard_focus_element() or kfce0) return
 	-------------------------------------------------------------
  	
 	if keyp("tab") then

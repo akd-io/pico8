@@ -2,52 +2,52 @@ picotron cartridge // www.picotron.net
 version 2
 
 :: .info.pod
-b64$LS1bW3BvZCxub3Rlcz0iKGMpIExleGFsb2ZmbGUgR2FtZXMgTExQIixtb2RpZmllZD0iMjAy
-NS0wNC0yNyAxNjowODo1NCIsY3JlYXRlZD0iMjAyMy0xMS0xNSAwNzoxMTozMCIsYXV0aG9yPSJ6
-ZXAiLGljb249dXNlcmRhdGEoInU4IiwxNiwxNiwiMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEw
-MTAxMDEwMTBkMGQwNzA3MDcwNzA3MDcwNzA3MDcwNzBkMGQwMTAxMGQwZDA3MDEwNzA3MDcwNzA3
-MDcwMTA3MGQwZDAxMDEwZDBkMDcwMTA3MDcwNzA3MDcwNzAxMDcwZDBkMDEwMTBkMGQwNzA3MDcw
-NzA3MDcwNzA3MDcwNzBkMGQwMTAxMGQwZDA3MDcwZDA3MDcwNzA3MGQwNzA3MGQwZDAxMDEwZDBk
-MDcwNzA3MGQwZDBkMGQwNzA3MDcwZDBkMDEwMTBkMGQwNzA3MDcwNzA3MDcwNzA3MDcwNzBkMGQw
-MTAxMGQwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMGQwZDAxMDEwZDBkMGQwZDBkMGQwZDBkMGQwZDBk
-MGQwZDBkMDEwMTBkMGQwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMGQwMTAxMGQwZDAxMDEwMTAxMDEw
-MTAxMDEwMTAxMGQwZDAxMDEwZDBkMDEwMTAxMDEwNzA3MDcwNzA3MDEwZDBkMDEwMTBkMGQwMTAx
-MDEwMTA3MDcwNzA3MDcwMTBkMGQwMTAxMGQwZDAxMDEwMTAxMDcwNzA3MDcwNzAxMGQwMTAwMDEw
-MTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAwMDAiKSxydW50aW1lPTUsc3RvcmVkPSIyMDI0LTAz
-LTI0IDE1OjM1OjU2Iix0aXRsZT0iUGljb3Ryb24gRmlsZSBOYXZpZ2F0b3IiLHZlcnNpb249IjAu
-MWYiLHdvcmtzcGFjZXM9e3tsb2NhdGlvbj0ibWFpbi5sdWEjMSIsd29ya3NwYWNlX2luZGV4PTF9
-LHtsb2NhdGlvbj0ib3Blbi5sdWEjOCIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0iaW50
-ZXJmLmx1YSMxIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJpbnRlbnRpb24ubHVhIzEi
-LHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249ImRlc2t0b3AubHVhIzIzOCIsd29ya3NwYWNl
-X2luZGV4PTF9LHtsb2NhdGlvbj0iZmluZm8ubHVhIzEiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9j
-YXRpb249ImdyaWQubHVhIzEiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249Imxpc3QubHVh
-IzEiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249ImdmeC8wLmdmeCIsd29ya3NwYWNlX2lu
-ZGV4PTJ9LHtsb2NhdGlvbj0iZ2Z4LzEuZ2Z4Iix3b3Jrc3BhY2VfaW5kZXg9Mn19XV1sejQABAAA
+b64$LS1bW3BvZCx3b3Jrc3BhY2VzPXt7bG9jYXRpb249Im1haW4ubHVhIzEiLHdvcmtzcGFjZV9p
+bmRleD0xfSx7bG9jYXRpb249Im9wZW4ubHVhIzgiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRp
+b249ImludGVyZi5sdWEjMSIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0iaW50ZW50aW9u
+Lmx1YSMxIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJkZXNrdG9wLmx1YSMyMzgiLHdv
+cmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249ImZpbmZvLmx1YSMxIix3b3Jrc3BhY2VfaW5kZXg9
+MX0se2xvY2F0aW9uPSJncmlkLmx1YSMxIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJs
+aXN0Lmx1YSMxIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJnZngvMC5nZngiLHdvcmtz
+cGFjZV9pbmRleD0yfSx7bG9jYXRpb249ImdmeC8xLmdmeCIsd29ya3NwYWNlX2luZGV4PTJ9fSxy
+dW50aW1lPTUsbm90ZXM9IihjKSBMZXhhbG9mZmxlIEdhbWVzIExMUCIsaWNvbj11c2VyZGF0YSgi
+dTgiLDE2LDE2LCIwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMGQwZDA3MDcwNzA3
+MDcwNzA3MDcwNzA3MGQwZDAxMDEwZDBkMDcwMTA3MDcwNzA3MDcwNzAxMDcwZDBkMDEwMTBkMGQw
+NzAxMDcwNzA3MDcwNzA3MDEwNzBkMGQwMTAxMGQwZDA3MDcwNzA3MDcwNzA3MDcwNzA3MGQwZDAx
+MDEwZDBkMDcwNzBkMDcwNzA3MDcwZDA3MDcwZDBkMDEwMTBkMGQwNzA3MDcwZDBkMGQwZDA3MDcw
+NzBkMGQwMTAxMGQwZDA3MDcwNzA3MDcwNzA3MDcwNzA3MGQwZDAxMDEwZDBkMGQwZDBkMGQwZDBk
+MGQwZDBkMGQwZDBkMDEwMTBkMGQwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMGQwMTAxMGQwZDBkMGQw
+ZDBkMGQwZDBkMGQwZDBkMGQwZDAxMDEwZDBkMDEwMTAxMDEwMTAxMDEwMTAxMDEwZDBkMDEwMTBk
+MGQwMTAxMDEwMTA3MDcwNzA3MDcwMTBkMGQwMTAxMGQwZDAxMDEwMTAxMDcwNzA3MDcwNzAxMGQw
+ZDAxMDEwZDBkMDEwMTAxMDEwNzA3MDcwNzA3MDEwZDAxMDAwMTAxMDEwMTAxMDEwMTAxMDEwMTAx
+MDEwMTAxMDAwMCIpLHRpdGxlPSJQaWNvdHJvbiBGaWxlIE5hdmlnYXRvciIsc3RvcmVkPSIyMDI0
+LTAzLTI0IDE1OjM1OjU2Iixtb2RpZmllZD0iMjAyNS0wNC0yNyAxNjowNjoxMiIsdmVyc2lvbj0i
+MC4xZiIsY3JlYXRlZD0iMjAyMy0xMS0xNSAwNzoxMTozMCIsYXV0aG9yPSJ6ZXAiXV1sejQABAAA
 AAMAAAAwbmls
 :: gfx/
 :: gfx/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTExLTE1IDA3OjExOjMwIixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjowODo1NCIsc3RvcmVkPSIyMDIzLTExLTE1IDA3OjExOjMwIl1dbHo0AAQAAAADAAAA
+NC0yNyAxNjowNjoxMiIsc3RvcmVkPSIyMDIzLTExLTE1IDA3OjExOjMwIl1dbHo0AAQAAAADAAAA
 MG5pbA==
 :: gfx/delme/
 :: gfx/delme/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTExIDA3OjU0OjA2Iixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjowODo1NCIsc3RvcmVkPSIyMDIzLTU0LTExIDA3OjU0OjA2Il1dbHo0AAQAAAADAAAA
+NC0yNyAxNjowNjoxMiIsc3RvcmVkPSIyMDIzLTU0LTExIDA3OjU0OjA2Il1dbHo0AAQAAAADAAAA
 MG5pbA==
 :: gfx/delme2/
 :: gfx/delme2/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTAyLTExIDA4OjAyOjIwIixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjowODo1NCIsc3RvcmVkPSIyMDIzLTAyLTExIDA4OjAyOjIwIl1dbHo0AAQAAAADAAAA
+NC0yNyAxNjowNjoxMiIsc3RvcmVkPSIyMDIzLTAyLTExIDA4OjAyOjIwIl1dbHo0AAQAAAADAAAA
 MG5pbA==
 :: gfx/ha/
 :: gfx/ha/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTA5LTExIDA4OjA5OjQ0Iixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjowODo1NCIsc3RvcmVkPSIyMDIzLTA5LTExIDA4OjA5OjQ0Il1dbHo0AAQAAAADAAAA
+NC0yNyAxNjowNjoxMiIsc3RvcmVkPSIyMDIzLTA5LTExIDA4OjA5OjQ0Il1dbHo0AAQAAAADAAAA
 MG5pbA==
 :: gfx/zxc/
 :: gfx/zxc/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTExIDA3OjQxOjQxIixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjowODo1NCIsc3RvcmVkPSIyMDIzLTQxLTExIDA3OjQxOjQxIl1dbHo0AAQAAAADAAAA
+NC0yNyAxNjowNjoxMiIsc3RvcmVkPSIyMDIzLTQxLTExIDA3OjQxOjQxIl1dbHo0AAQAAAADAAAA
 MG5pbA==
 :: gfx/0.gfx
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTIwIDA2OjM4OjU2Iixtb2RpZmllZD0iMjAyNC0w
@@ -82,7 +82,7 @@ BAAvV5BHAC6PV5AHAAcAByBJAA4O8gAPMQD-----------------------------------------
 :: map/
 :: map/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Iixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjowODo1NCIsc3RvcmVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Il1dbHo0AAQAAAADAAAA
+NC0yNyAxNjowNjoxMiIsc3RvcmVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Il1dbHo0AAQAAAADAAAA
 MG5pbA==
 :: map/map0.map
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Iixtb2RpZmllZD0iMjAyNC0w
@@ -92,7 +92,7 @@ aWxlX2g9MTYKAG93PTE2fSxLBP----84UDE2fX19
 :: sfx/
 :: sfx/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Iixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjowODo1NCIsc3RvcmVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Il1dbHo0AAQAAAADAAAA
+NC0yNyAxNjowNjoxMiIsc3RvcmVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Il1dbHo0AAQAAAADAAAA
 MG5pbA==
 :: sfx/sfx0.sfx
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Iixtb2RpZmllZD0iMjAyNC0w
@@ -1082,7 +1082,7 @@ local function create_file_item(parent, ff, x, y)
 			
 		end	
 		
-		if intention == "save_file_as" then
+		if intention == "save_file_as" or intention == "select_file" then
 			-- set text
 			intention_text:set_text({el.filename})
 			navtext:set_text{""}
@@ -1472,7 +1472,7 @@ end
 
 
 :: intention.lua
---[[pod_format="raw",created="2023-10-05 21:49:51",modified="2024-04-11 22:26:13",revision=608]]
+--[[pod_format="raw",created="2023-10-05 21:49:51",modified="2024-06-06 04:24:02",revision=609]]
 --[[
 
 	intention.lua
@@ -1517,6 +1517,7 @@ function init_intention(p0, p1)
 	
 	intention_dat = {
 		save_file_as = {"Save As", "Save"}, -- "Save File As" doesn't fit
+		select_file  = {"Select File", "Select"}, -- similar to save_file_as but general purpose name (up to requester what to do with selected file)
 		open_file    = {"Open File", "Open"},
 		new_file     = {"New File", "Create"},
 		new_folder   = {"New Folder", "mkdir"},
@@ -2302,7 +2303,7 @@ end)
 				-- update: couldn't find an intention that /is/
 				-- appropriate here! -> always edit
 				
-				if (intention == "save_file_as") then
+				if (intention == "save_file_as" or intention == "select_file") then
 					-- filename in text field should already be set
 					process_intention()
 				else

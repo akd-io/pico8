@@ -2,40 +2,40 @@ picotron cartridge // www.picotron.net
 version 2
 
 :: .info.pod
-b64$LS1bW3BvZCxub3Rlcz0iIixtb2RpZmllZD0iMjAyNS0wNC0yNyAxNjowODo1NCIsY3JlYXRl
-ZD0iMjAyNC0wNC0xMiAwMjoxNjowNyIsYXV0aG9yPSJ6ZXAiLGljb249dXNlcmRhdGEoInU4Iiwx
-NiwxNiwiMDAwMDAwMDEwMTAxMDEwMTAxMDEwMTAxMDEwMDAwMDAwMDAwMDEwNzA3MDcwNzA3MDcw
-NzA3MDcwNzAxMDAwMDAwMDEwNzBkMGQwZDBkMGQwZDBkMGQwZDBkMDcwMTAwMDEwNzBkMGQwZDBk
-MGQwZDBkMGQwZDBkMGQwZDA3MDEwMTA3MGQwZDBkMGQwZDBkMGQwNzA3MGQwZDBkMDcwMTAxMDcw
-ZDBkMDEwMTAxMDEwMTA3MDcwMTBkMGQwNzAxMDEwNzBkMGQwZDBkMGQwZDBkMDcwNzBkMGQwZDA3
-MDEwMTA3MGQwZDBkMDcwNzBkMGQwZDBkMGQwZDBkMDcwMTAxMDcwZDBkMDEwNzA3MDEwMTAxMDEw
-MTBkMGQwNzAxMDEwNzBkMGQwZDA3MDcwZDBkMGQwZDBkMGQwZDA3MDEwMTA3MGQwZDBkMGQwZDBk
-MGQwZDBkMGQwZDBkMDcwMTAxMDYwNzBkMGQwZDBkMGQwZDBkMGQwZDBkMDcwNjAxMDEwNjA2MDcw
-NzA3MDcwNzA3MDcwNzA3MDcwNjA2MDEwMDAxMDYwNjA2MDYwNjA2MDYwNjA2MDYwNjA2MDEwMDAw
-MDAwMTA2MDYwNjA2MDYwNjA2MDYwNjA2MDEwMDAwMDAwMDAwMDEwMTAxMDEwMTAxMDEwMTAxMDEw
-MDAwMDAiKSxydW50aW1lPTYsc3RvcmVkPSIyMDI0LTAzLTIzIDE4OjM2OjA4Iix0aXRsZT0iUGlj
-b3Ryb24gU2V0dGluZ3MiLHZlcnNpb249IiIsd29ya3NwYWNlcz17e2xvY2F0aW9uPSJtYWluLmx1
-YSMxODQiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249ImdmeC8wLmdmeCIsd29ya3NwYWNl
-X2luZGV4PTJ9LHtsb2NhdGlvbj0ibWFwLzAubWFwIix3b3Jrc3BhY2VfaW5kZXg9M30se2xvY2F0
-aW9uPSJzZngvMC5zZngiLHdvcmtzcGFjZV9pbmRleD00fX1dXWx6NAAEAAAAAwAAADBuaWw=
+b64$LS1bW3BvZCx3b3Jrc3BhY2VzPXt7bG9jYXRpb249Im1haW4ubHVhIzExIix3b3Jrc3BhY2Vf
+aW5kZXg9MX0se2xvY2F0aW9uPSJnZngvMC5nZngiLHdvcmtzcGFjZV9pbmRleD0yfSx7bG9jYXRp
+b249Im1hcC8wLm1hcCIsd29ya3NwYWNlX2luZGV4PTN9LHtsb2NhdGlvbj0ic2Z4LzAuc2Z4Iix3
+b3Jrc3BhY2VfaW5kZXg9NH19LHJ1bnRpbWU9OCxub3Rlcz0iIixpY29uPXVzZXJkYXRhKCJ1OCIs
+MTYsMTYsIjAwMDAwMDAxMDEwMTAxMDEwMTAxMDEwMTAxMDAwMDAwMDAwMDAxMDcwNzA3MDcwNzA3
+MDcwNzA3MDcwMTAwMDAwMDAxMDcwZDBkMGQwZDBkMGQwZDBkMGQwZDA3MDEwMDAxMDcwZDBkMGQw
+ZDBkMGQwZDBkMGQwZDBkMGQwNzAxMDEwNzBkMGQwZDBkMGQwZDBkMDcwNzBkMGQwZDA3MDEwMTA3
+MGQwZDAxMDEwMTAxMDEwNzA3MDEwZDBkMDcwMTAxMDcwZDBkMGQwZDBkMGQwZDA3MDcwZDBkMGQw
+NzAxMDEwNzBkMGQwZDA3MDcwZDBkMGQwZDBkMGQwZDA3MDEwMTA3MGQwZDAxMDcwNzAxMDEwMTAx
+MDEwZDBkMDcwMTAxMDcwZDBkMGQwNzA3MGQwZDBkMGQwZDBkMGQwNzAxMDEwNzBkMGQwZDBkMGQw
+ZDBkMGQwZDBkMGQwZDA3MDEwMTA2MDcwZDBkMGQwZDBkMGQwZDBkMGQwZDA3MDYwMTAxMDYwNjA3
+MDcwNzA3MDcwNzA3MDcwNzA3MDYwNjAxMDAwMTA2MDYwNjA2MDYwNjA2MDYwNjA2MDYwNjAxMDAw
+MDAwMDEwNjA2MDYwNjA2MDYwNjA2MDYwNjAxMDAwMDAwMDAwMDAxMDEwMTAxMDEwMTAxMDEwMTAx
+MDAwMDAwIiksdGl0bGU9IlBpY290cm9uIFNldHRpbmdzIixzdG9yZWQ9IjIwMjQtMDMtMjMgMTg6
+MzY6MDgiLG1vZGlmaWVkPSIyMDI1LTA0LTI3IDE2OjA2OjEyIix2ZXJzaW9uPSIiLGNyZWF0ZWQ9
+IjIwMjQtMDQtMTIgMDI6MTY6MDciLGF1dGhvcj0iemVwIl1dbHo0AAQAAAADAAAAMG5pbA==
 :: gfx/
 :: gfx/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTAyIDA2OjQ0OjIwIixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjowODo1NCIsc3RvcmVkPSIyMDIzLTQ0LTAyIDA2OjQ0OjIwIl1dbHo0AAQAAAADAAAA
+NC0yNyAxNjowNjoxMiIsc3RvcmVkPSIyMDIzLTQ0LTAyIDA2OjQ0OjIwIl1dbHo0AAQAAAADAAAA
 MG5pbA==
 :: gfx/0.gfx
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTAyIDA2OjQ0OjUyIixtb2RpZmllZD0iMjAyNC0w
-NC0xMiAwMjoxNzo1OCIscmV2aXNpb249NTk5XV1sejQAbQAAAAUxAADzFHtbMF09e2JtcD1weHUA
+Ni0wNyAwNzoxMjo0MCIscmV2aXNpb249NjAzXV1sejQAbQAAAAUxAADzFHtbMF09e2JtcD1weHUA
 QyAQEATw8CxmbGFncz0wLHBhbl94CADPeT0wLHpvb209OH0sMQD-------------------------
 ---------------------------------------nUG09OH19
 :: map/
 :: map/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTAyIDA2OjQ0OjIwIixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjowODo1NCIsc3RvcmVkPSIyMDIzLTQ0LTAyIDA2OjQ0OjIwIl1dbHo0AAQAAAADAAAA
+NC0yNyAxNjowNjoxMiIsc3RvcmVkPSIyMDIzLTQ0LTAyIDA2OjQ0OjIwIl1dbHo0AAQAAAADAAAA
 MG5pbA==
 :: map/0.map
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTAyIDA2OjQ0OjUyIixtb2RpZmllZD0iMjAyNC0w
-NC0xMiAwMjoxNzo1OCIscmV2aXNpb249NTk0XV1sejQAaAAAAFgQAADwCHt7Ym1wPXVzZXJkYXRh
+Ni0wNyAwNzoxMjo0MCIscmV2aXNpb249NTk4XV1sejQAaAAAAFgQAADwCHt7Ym1wPXVzZXJkYXRh
 KCJpMTYiLDMyAwAvIjABAP--------------------vxCCIpLGhpZGRlbj1mYWxzZSxwYW5feD0w
 CADSeT0wLHRpbGVfaD0xNgoAEHcKAIB6b29tPTF9fQ==
 :: map/map0.map
@@ -46,13 +46,13 @@ aWxlX2g9MTYKAG93PTE2fSxLBP----84UDE2fX19
 :: sfx/
 :: sfx/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTAyIDA2OjQ0OjIwIixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjowODo1NCIsc3RvcmVkPSIyMDIzLTQ0LTAyIDA2OjQ0OjIwIl1dbHo0AAQAAAADAAAA
+NC0yNyAxNjowNjoxMiIsc3RvcmVkPSIyMDIzLTQ0LTAyIDA2OjQ0OjIwIl1dbHo0AAQAAAADAAAA
 MG5pbA==
 :: sfx/0.sfx
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTAyIDA2OjQ0OjUyIixtb2RpZmllZD0iMjAyNC0w
-NC0xMiAwMjoxNzo1NyIscmV2aXNpb249NTUwXV1sejQAbwAAAO0GAADfcHh1AAMoAAADAATw-wEA
+Ni0wNyAwNzoxMjo0MCIscmV2aXNpb249NTU0XV1sejQAcAAAAO4HAADfcHh1AAMoAAAEAATw-wEA
 7P8n8QEQBg8gEAEgASAB8AACEAIOEAEgDyEgATAPQPDDDygP--DGD-gKD-8PgA-3Dw0B8AkBEAYO
-MAD-OR--AQDcz-gPQAAPEED--7DwcAsA--_jH-8BAJdQ-----x8=
+MAD-OR--AQDcz-gPQAAPEED--7DwcAsA--_jH-8BAP_ZUP----8g
 :: sfx/sfx0.sfx
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTQ4LTA0IDE2OjQ4OjAxIixtb2RpZmllZD0iMjAyNC00
 OC0wNCAxNjo0ODowMSIscmV2aXNpb249MF1dbHo0ABABAABRBwAA8CdweHUAAygAAAMABA9AEAIO
@@ -62,7 +62,7 @@ LxQA8QAwDzEPMg8zDzQPNQ82DzcUAP8FOA85DzoPOw88Dz0PPg8-AQ--8P8BAOv-J1oBEAYPIBAB
 IAEgAfAAAhACDBABIA8hIAEwD0Dwww8oD--wxg-4Cg--D4AP9w8NAfAJARAGDDAA-zkf-wEA3L-4
 D0AADUD--7DwcAoA--9kH-8BAJdQ-----x8=
 :: main.lua
---[[pod_format="raw",created="2023-10-02 06:44:52",modified="2024-04-12 02:17:58",revision=871]]
+--[[pod_format="raw",created="2023-10-02 06:44:52",modified="2024-06-07 07:12:40",revision=877]]
 -- picotron settings
 -- to do: keyboard control
 
@@ -73,7 +73,7 @@ sdat = {}
 function create_checkbox(x, y, label, key)
 	local el = {
 		x = x, y = y,
-		width = 92,
+		width = 98,
 		height  = 12,
 		label = label,
 		key = key,
@@ -89,7 +89,6 @@ function create_checkbox(x, y, label, key)
 	function el:click()
 		sdat[key] = not sdat[key]
 		store_settings()
-		send_message(3, {event="reload_settings"}) -- for squishy windows
 	end
 	
 	return el
@@ -249,6 +248,7 @@ else
 	y = 80
 	gui:attach(create_checkbox(105, y, "Anywhen", "anywhen")) y += line_h
 	gui:attach(create_checkbox(105, y, "Allow High DPI", "allow_highdpi")) y += line_h
+	gui:attach(create_checkbox(105, y, "Fullscreen:Window", "fullscreen_window")) y += line_h
 	
 	-- choosers
 	gui:attach(create_chooser(x, 80, "screensaver", "/system/screensavers"))
@@ -274,8 +274,7 @@ end
 
 function store_settings()
 	--printh("storing settings: "..pod(sdat))
-	store("/appdata/system/settings.pod", sdat) -- persist
-	store("/ram/system/settings.pod", sdat) -- apply live changes
+	store("/appdata/system/settings.pod", sdat)
 end
 
 function _init()
@@ -290,7 +289,6 @@ function _init()
 	poke(0x4000, get(fetch"/system/fonts/lil.font"))
 	
 	sdat = fetch"/appdata/system/settings.pod" or {}
-	store("/ram/system/settings.pod", sdat)
 	
 	generate_gui()
 end
@@ -327,10 +325,12 @@ end
 
 function _update()
 	gui:update_all()
-	
-	-- fetch from ram every frame; might change with alt+enter
-	sdat = fetch"/ram/system/settings.pod" or sdat or {}
 end
+
+-- reload changes
+on_event("modified:/appdata/system/settings.pod", function(msg)
+	sdat = fetch(msg.filename) or sdat or {}
+end)
 
 
 :: [eoc]

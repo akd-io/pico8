@@ -2,49 +2,51 @@ picotron cartridge // www.picotron.net
 version 2
 
 :: .info.pod
-b64$LS1bW3BvZCx2ZXJzaW9uPSIwLjEiLHRpdGxlPSJQaWNvdHJvbiBDb2RlIEVkaXRvciIsY3Jl
-YXRlZD0iMjAyNC0wNC0zMCAxOTowOTozMyIsc3RvcmVkPSIyMDIzLTU0LTEyIDEwOjU0OjA2Iixp
-Y29uPXVzZXJkYXRhKCJ1OCIsMTYsMTYsIjAwMDAwMDAxMDEwMTAxMDEwMTAxMDEwMTAxMDAwMDAw
-MDAwMDAxMDcwNzA3MDcwNzA3MDcwNzA3MDcwMTAwMDAwMDAxMDcwZDBkMGQwZDBkMGQwZDBkMGQw
-ZDA3MDEwMDAxMDcwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMGQwNzAxMDEwNzBkMGQwZDA3MDcwZDBk
-MDcwNzBkMGQwZDA3MDEwMTA3MGQwZDA3MDcwZDBkMGQwZDA3MDcwZDBkMDcwMTAxMDcwZDBkMDcw
-NzBkMGQwZDBkMDcwNzBkMGQwNzAxMDEwNzBkMGQwNzA3MGQwZDBkMGQwNzA3MGQwZDA3MDEwMTA3
-MGQwZDA3MDcwZDBkMGQwZDA3MDcwZDBkMDcwMTAxMDcwZDBkMGQwNzA3MGQwZDA3MDcwZDBkMGQw
-NzAxMDEwNzBkMGQwZDBkMGQwZDBkMGQwZDBkMGQwZDA3MDEwMTA2MDcwZDBkMGQwZDBkMGQwZDBk
-MGQwZDA3MDYwMTAxMDYwNjA3MDcwNzA3MDcwNzA3MDcwNzA3MDYwNjAxMDAwMTA2MDYwNjA2MDYw
-NjA2MDYwNjA2MDYwNjAxMDAwMDAwMDEwNjA2MDYwNjA2MDYwNjA2MDYwNjAxMDAwMDAwMDAwMDAx
-MDEwMTAxMDEwMTAxMDEwMTAxMDAwMDAwIiksbm90ZXM9IiIsbW9kaWZpZWQ9IjIwMjUtMDQtMjcg
-MTY6MDg6NTQiLGF1dGhvcj0ibGV4YWxvZmZsZSIsd29ya3NwYWNlcz17e2xvY2F0aW9uPSJtYWlu
-Lmx1YSIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0iZ2Z4LzAuZ2Z4Iix3b3Jrc3BhY2Vf
-aW5kZXg9Mn0se2xvY2F0aW9uPSJtYXAvMC5tYXAiLHdvcmtzcGFjZV9pbmRleD0zfX1dXWx6NAAE
-AAAAAwAAADBuaWw=
+b64$LS1bW3BvZCx3b3Jrc3BhY2VzPXt7bG9jYXRpb249Im1haW4ubHVhIzYwIix3b3Jrc3BhY2Vf
+aW5kZXg9MX0se2xvY2F0aW9uPSJnZngvMC5nZngiLHdvcmtzcGFjZV9pbmRleD0yfSx7bG9jYXRp
+b249Im1hcC8wLm1hcCIsd29ya3NwYWNlX2luZGV4PTN9fSxydW50aW1lPTgsbm90ZXM9IiIsaWNv
+bj11c2VyZGF0YSgidTgiLDE2LDE2LCIwMDAwMDAwMTAxMDEwMTAxMDEwMTAxMDEwMTAwMDAwMDAw
+MDAwMTA3MDcwNzA3MDcwNzA3MDcwNzA3MDEwMDAwMDAwMTA3MGQwZDBkMGQwZDBkMGQwZDBkMGQw
+NzAxMDAwMTA3MGQwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMDcwMTAxMDcwZDBkMGQwNzA3MGQwZDA3
+MDcwZDBkMGQwNzAxMDEwNzBkMGQwNzA3MGQwZDBkMGQwNzA3MGQwZDA3MDEwMTA3MGQwZDA3MDcw
+ZDBkMGQwZDA3MDcwZDBkMDcwMTAxMDcwZDBkMDcwNzBkMGQwZDBkMDcwNzBkMGQwNzAxMDEwNzBk
+MGQwNzA3MGQwZDBkMGQwNzA3MGQwZDA3MDEwMTA3MGQwZDBkMDcwNzBkMGQwNzA3MGQwZDBkMDcw
+MTAxMDcwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMGQwNzAxMDEwNjA3MGQwZDBkMGQwZDBkMGQwZDBk
+MGQwNzA2MDEwMTA2MDYwNzA3MDcwNzA3MDcwNzA3MDcwNzA2MDYwMTAwMDEwNjA2MDYwNjA2MDYw
+NjA2MDYwNjA2MDYwMTAwMDAwMDAxMDYwNjA2MDYwNjA2MDYwNjA2MDYwMTAwMDAwMDAwMDAwMTAx
+MDEwMTAxMDEwMTAxMDEwMTAwMDAwMCIpLHRpdGxlPSJQaWNvdHJvbiBDb2RlIEVkaXRvciIsc3Rv
+cmVkPSIyMDIzLTU0LTEyIDEwOjU0OjA2Iixtb2RpZmllZD0iMjAyNS0wNC0yNyAxNjowNjoxMiIs
+dmVyc2lvbj0iMC4xIixjcmVhdGVkPSIyMDI0LTA1LTMxIDA2OjE5OjE0IixhdXRob3I9ImxleGFs
+b2ZmbGUiXV1sejQABAAAAAMAAAAwbmls
 :: gfx/
 :: gfx/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTAxLTI0IDE5OjAxOjU2Iixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjowODo1NCIsc3RvcmVkPSIyMDIzLTAxLTI0IDE5OjAxOjU2Il1dbHo0AAQAAAADAAAA
+NC0yNyAxNjowNjoxMiIsc3RvcmVkPSIyMDIzLTAxLTI0IDE5OjAxOjU2Il1dbHo0AAQAAAADAAAA
 MG5pbA==
 :: gfx/0.gfx
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTQ3LTI1IDA3OjQ3OjUwIixtb2RpZmllZD0iMjAyMy01
-NC0xMiAxMDo1NDowNiIscmV2aXNpb249Ml1dbHo0AHEAAAAFMwAA8xR7WzBdPXtibXA9cHh1AEMg
-EBAE8PAsZmxhZ3M9MCxwYW5feAgA73k9MCxzY2FsZT0xMn0sMwD-------------------------
------------------------------------------_dQPTEyfX0=
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTI1IDA3OjQ3OjUwIixtb2RpZmllZD0iMjAyNC0w
+Ni0wNiAwNjoxMzoxMSIscmV2aXNpb249MjYyXV1sejQA4gAAAHUxAADzFHtbMF09e2JtcD1weHUA
+QyAQEATw8CxmbGFncz0wLHBhbl94CADPeT0wLHpvb209OH0sMQD-UMUICAQAVwAHUBcAFyAEAF9Q
+BwBXgEYAIgZEAB4ARgAP7gASD7IB-xKvcIcgRyBHILfwADkAHRG3OQA-h-AA1AAeD5gB-xRAAAcA
+VwoDHwCcASM-AAcAngH-SVVnAAcQNwQAP2fwAUEAHzU3EAcEAA5BAA-kAA8PMQD-------------
+------------------------------------------_AUG09OH19
 :: map/
 :: map/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTAxLTI0IDE5OjAxOjU2Iixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjowODo1NCIsc3RvcmVkPSIyMDIzLTAxLTI0IDE5OjAxOjU2Il1dbHo0AAQAAAADAAAA
+NC0yNyAxNjowNjoxMiIsc3RvcmVkPSIyMDIzLTAxLTI0IDE5OjAxOjU2Il1dbHo0AAQAAAADAAAA
 MG5pbA==
 :: map/0.map
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTQ3LTI1IDA3OjQ3OjUwIixtb2RpZmllZD0iMjAyMy01
-NC0xMiAxMDo1NDowNiIscmV2aXNpb249Ml1dbHo0AF0AAABYBAAA8BN7bGF5ZXI9e1swXT17Ym1w
-PXVzZXJkYXRhKCJpMTYiLDE2AwAvIjABAP---__hIikscGFuX3g9MAgA8gZ5PTAsc2NhbGU9MSx0
-aWxlX2g9MTYKAHB3PTE2fX19
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTI1IDA3OjQ3OjUwIixtb2RpZmllZD0iMjAyNC0w
+Ni0wNiAwNjoxMzoxMSIscmV2aXNpb249MjUyXV1sejQAaAAAAFgQAADwCHt7Ym1wPXVzZXJkYXRh
+KCJpMTYiLDMyAwAvIjABAP--------------------vxCCIpLGhpZGRlbj1mYWxzZSxwYW5feD0w
+CADSeT0wLHRpbGVfaD0xNgoAEHcKAIB6b29tPTF9fQ==
 :: sfx/
 :: sfx/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTAxLTI0IDE5OjAxOjU2Iixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjowODo1NCIsc3RvcmVkPSIyMDIzLTAxLTI0IDE5OjAxOjU2Il1dbHo0AAQAAAADAAAA
+NC0yNyAxNjowNjoxMiIsc3RvcmVkPSIyMDIzLTAxLTI0IDE5OjAxOjU2Il1dbHo0AAQAAAADAAAA
 MG5pbA==
 :: main.lua
---[[pod_format="raw",created="2023-02-24 19:02:00",modified="2023-54-12 10:54:06",revision=3]]
+--[[pod_format="raw",created="2023-02-24 19:02:00",modified="2024-06-06 06:13:11",revision=330]]
 local ce
 
 function _draw()
@@ -62,8 +64,50 @@ function _update()
 
 end
 
+function apply_settings()
+	if (not sdat) return
+	
+	poke(0x4000, get(sdat.monospace and
+		fetch("/system/fonts/lil_mono.font") or		
+		fetch("/system/fonts/lil.font")
+	))
+	
+	-- update menu items
+	menuitem{id="monospace", label = sdat.monospace and
+		"\^:007f4f4f4f7f0000 Monospace:On" or
+		"\^:007f7979797f0000 Monospace:Off"
+	}
+	
+	-- live editor update (just stuff everything in there)
+	if (ce) then
+		for k,v in pairs(sdat) do
+			ce[k] = v
+		end
+	end
+	
+end
+
+function store_settings()
+	store("/appdata/system/code.pod",sdat)
+end
+
 
 function _init()
+
+	sdat = fetch("/appdata/system/code.pod") 
+	
+	if not sdat then
+		sdat = {
+			monospace = false,
+			bgcol = 1,
+			curcol = 14,
+			selcol = 10,
+			lncol = 16,
+			syntax_highlighting = true,
+			show_line_numbers = true
+		}
+		store("/appdata/system/code.pod", sdat)
+	end
 
 	window{
 		tabbed = true,
@@ -76,11 +120,15 @@ function _init()
 		x=0,y=0,
 		width=get_display():width(),
 		height=get_display():height(),
-		syntax_highlighting=true,
-		show_line_numbers=true,
+		syntax_highlighting=sdat.syntax_highlighting,
+		show_line_numbers=sdat.show_line_numbers,
 		markup=false, -- to do: remove markup from editor widget
 		embed_pods=true,
-		has_search=true
+		has_search=true,
+		bgcol = sdat.bgcol,
+		curcol = sdat.curcol,
+		selcol = sdat.selcol	,
+		lncol = sdat.lncol
 	})
 
 	ce:attach_scrollbars()
@@ -102,7 +150,7 @@ function _init()
 		end,
 
 		-- default filename
-		"untitled.txt", 
+		"untitled.lua", 
 
 		-- location string
 		function()
@@ -129,39 +177,35 @@ function _init()
 	"\^:304884844c360300 Find Text     (CTRL-F)",
 	"\^:1f003f003e007c00 Jump to Line  (CTRL-L)",
 	]]
+	
+	--menuitem{divider=true} -- to do
+
+	menuitem{
+		stay_open = true,
+		id="monospace",
+		label="Monospace",
+		action=function()
+			sdat.monospace = not sdat.monospace
+			store_settings() -- triggers apply_settings() via file change
+			return true
+		end
+	}
+	
+	
+	apply_settings()
 
 	-- test
 	ce:center_cursor(0.5)
 
 end
 
+on_event("modified:/appdata/system/code.pod",
+	function(msg)
+		sdat = fetch(msg.filename)
+		apply_settings()
+	end
+)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-:: untitled.txt
---[[pod_format="raw",created="2024-42-25 01:42:14",modified="2024-42-25 01:42:14",revision=0]]
 
 :: [eoc]

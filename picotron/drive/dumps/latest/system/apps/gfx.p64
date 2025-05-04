@@ -2,28 +2,29 @@ picotron cartridge // www.picotron.net
 version 2
 
 :: .info.pod
-b64$LS1bW3BvZCxub3Rlcz0iIixtb2RpZmllZD0iMjAyNS0wNC0yNyAxNjowODo1NCIsY3JlYXRl
-ZD0iMjAyMy0xMC0xOSAxMjo1MDo1MCIsYXV0aG9yPSJsZXhhbG9mZmxlIixpY29uPXVzZXJkYXRh
-KCJ1OCIsMTYsMTYsIjAwMDAwMDAxMDEwMTAxMDEwMTAxMDEwMTAxMDAwMDAwMDAwMDAxMDcwNzA3
-MDcwNzA3MDcwNzA3MDcwMTAwMDAwMDAxMDcwZDBkMGQwZDBkMGQwZDBkMGQwZDA3MDEwMDAxMDcw
-ZDBkMGQwZDBkMGQwZDBkMGQwZDBkMGQwNzAxMDEwNzBkMGQwZDA3MDcwZDBkMDcwNzBkMGQwZDA3
-MDEwMTA3MGQwZDBkMDcwNzBkMGQwNzA3MGQwZDBkMDcwMTAxMDcwZDBkMGQwNzA3MGQwZDA3MDcw
-ZDBkMGQwNzAxMDEwNzBkMGQwZDA3MDcwNzA3MDcwNzBkMGQwZDA3MDEwMTA3MGQwZDBkMDcwZDA3
-MDcwZDA3MGQwZDBkMDcwMTAxMDcwZDBkMGQwNzA3MDcwNzA3MDcwZDBkMGQwNzAxMDEwNzBkMGQw
-ZDBkMGQwZDBkMGQwZDBkMGQwZDA3MDEwMTA2MDcwZDBkMGQwZDBkMGQwZDBkMGQwZDA3MDYwMTAx
-MDYwNjA3MDcwNzA3MDcwNzA3MDcwNzA3MDYwNjAxMDAwMTA2MDYwNjA2MDYwNjA2MDYwNjA2MDYw
-NjAxMDAwMDAwMDEwNjA2MDYwNjA2MDYwNjA2MDYwNjAxMDAwMDAwMDAwMDAxMDEwMTAxMDEwMTAx
-MDEwMTAxMDAwMDAwIikscnVudGltZT01LHN0b3JlZD0iMjAyNC0wMy0yMiAxMTo0MzoxMiIsdGl0
-bGU9IlBpY290cm9uIFBpeGVscyIsdmVyc2lvbj0iMC4xIix3b3Jrc3BhY2VzPXt7bG9jYXRpb249
-Im1haW4ubHVhIzIyMyIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0iZHJhdy5sdWEjMSIs
-d29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0idXBkYXRlLmx1YSM2OSIsd29ya3NwYWNlX2lu
-ZGV4PTF9LHtsb2NhdGlvbj0ibmF2Lmx1YSMyOCIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlv
-bj0iZ3VpLmx1YSMxMjAiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249ImNhbnZhcy5sdWEj
-MjQ0Iix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJnZngvMC5nZngiLHdvcmtzcGFjZV9p
-bmRleD0yfSx7bG9jYXRpb249ImdmeC8wLmdmeCIsd29ya3NwYWNlX2luZGV4PTd9fV1dbHo0AAQA
-AAADAAAAMG5pbA==
+b64$LS1bW3BvZCx3b3Jrc3BhY2VzPXt7bG9jYXRpb249Im1haW4ubHVhIzE2MSIsd29ya3NwYWNl
+X2luZGV4PTF9LHtsb2NhdGlvbj0iZHJhdy5sdWEjNCIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2Nh
+dGlvbj0ibmF2Lmx1YSMzMTQiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249Imd1aS5sdWEj
+MjQzIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJjYW52YXMubHVhIzMwOSIsd29ya3Nw
+YWNlX2luZGV4PTF9LHtsb2NhdGlvbj0idXBkYXRlLmx1YSMyNTUiLHdvcmtzcGFjZV9pbmRleD0x
+fSx7bG9jYXRpb249InBhbC5sdWEjMjMiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249InVu
+ZG8ubHVhIzY5Iix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJnZngvMC5nZngiLHdvcmtz
+cGFjZV9pbmRleD0yfSx7bG9jYXRpb249ImdmeC8wLmdmeCIsd29ya3NwYWNlX2luZGV4PTd9fSxy
+dW50aW1lPTgsbm90ZXM9IiIsaWNvbj11c2VyZGF0YSgidTgiLDE2LDE2LCIwMDAwMDAwMTAxMDEw
+MTAxMDEwMTAxMDEwMTAwMDAwMDAwMDAwMTA3MDcwNzA3MDcwNzA3MDcwNzA3MDEwMDAwMDAwMTA3
+MGQwZDBkMGQwZDBkMGQwZDBkMGQwNzAxMDAwMTA3MGQwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMDcw
+MTAxMDcwZDBkMGQwNzA3MGQwZDA3MDcwZDBkMGQwNzAxMDEwNzBkMGQwZDA3MDcwZDBkMDcwNzBk
+MGQwZDA3MDEwMTA3MGQwZDBkMDcwNzBkMGQwNzA3MGQwZDBkMDcwMTAxMDcwZDBkMGQwNzA3MDcw
+NzA3MDcwZDBkMGQwNzAxMDEwNzBkMGQwZDA3MGQwNzA3MGQwNzBkMGQwZDA3MDEwMTA3MGQwZDBk
+MDcwNzA3MDcwNzA3MGQwZDBkMDcwMTAxMDcwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMGQwNzAxMDEw
+NjA3MGQwZDBkMGQwZDBkMGQwZDBkMGQwNzA2MDEwMTA2MDYwNzA3MDcwNzA3MDcwNzA3MDcwNzA2
+MDYwMTAwMDEwNjA2MDYwNjA2MDYwNjA2MDYwNjA2MDYwMTAwMDAwMDAxMDYwNjA2MDYwNjA2MDYw
+NjA2MDYwMTAwMDAwMDAwMDAwMTAxMDEwMTAxMDEwMTAxMDEwMTAwMDAwMCIpLHRpdGxlPSJQaWNv
+dHJvbiBQaXhlbHMiLHN0b3JlZD0iMjAyNC0wMy0yMiAxMTo0MzoxMiIsbW9kaWZpZWQ9IjIwMjUt
+MDQtMjcgMTY6MDY6MTIiLHZlcnNpb249IjAuMWgiLGNyZWF0ZWQ9IjIwMjMtMTAtMTkgMTI6NTA6
+NTAiLGF1dGhvcj0ibGV4YWxvZmZsZSJdXWx6NAAEAAAAAwAAADBuaWw=
 :: canvas.lua
---[[pod_format="raw",created="2023-04-11 02:04:02",modified="2024-04-09 09:20:36",revision=2935,stored="2023-24-28 00:24:00"]]
+--[[pod_format="raw",created="2023-04-11 02:04:02",modified="2024-07-18 16:49:37",revision=3963,stored="2023-24-28 00:24:00"]]
 local ww,hh=0,0
 local fill_cpu=0
 local x0,y0=0,0
@@ -288,17 +289,53 @@ function create_canvas(el)
 				end
 			end
 			if (msg.mb == 2) col = get(tbmp, x, y)
-		elseif mtool == "rect" then
+		elseif mtool == "circ" or mtool == "rect" then
 			blit(op_bmp, tbmp)
-			local func = key("ctrl") and rectfill or rect
-			func(click_x0 +.5, click_y0 +.5, x +.5, y +.5, col)
-		elseif mtool == "circ" then
-			blit(op_bmp, tbmp)
-			local func = key("ctrl") and ovalfill or oval
-			func(click_x0 +.5, click_y0 +.5, x +.5, y +.5, col)
+			local func = mtool == "rect" and
+				(key("ctrl") and rectfill or rect) or
+				(key("ctrl") and ovalfill or oval)
+			local ww,hh = x - click_x0, y-click_y0
+			if key("shift") then
+				if abs(ww)>abs(hh) then
+					hh = ww else ww = hh
+				end
+			end
+			func(click_x0 +.5, click_y0 +.5, click_x0 +.5 + ww, click_y0 +.5 + hh, col)
 		elseif mtool == "line" then
 			blit(op_bmp, tbmp)
-			line(click_x0 +.5, click_y0 +.5, x +.5, y +.5, col)
+			local x0,y0=click_x0 +.5, click_y0 +.5
+			local x1,y1=x +.5, y +.5
+			-- snap
+			if key("shift") then
+				local dx,dy = x1-x0,y1-y0
+				local mag   = sqrt(dx*dx+dy*dy)
+				local a     = atan2(dx,dy)
+				a += 1/32
+				a = (a * 16) \ 1
+				a &= 15
+				if (a%2 == 1) then
+					-- isometric -- use 2:1 gradient
+					mag = max(abs(dx),abs(dy)) \ 1
+					mag = (mag+1) & ~1
+					if abs(dx) > abs(dy) then
+						dx,dy = sgn(dx)*mag,sgn(dy)*mag/2
+					else
+						dx,dy = sgn(dx)*mag/2,sgn(dy)*mag
+					end
+					-- one step back to get even steps (line() is not half open)
+					dx -= sgn(dx)
+					dy -= sgn(dy)
+					
+					x1 = x0 + dx
+					y1 = y0 + dy
+				else
+					a /= 16
+					x1 = x0 + cos(a) * mag
+					y1 = y0 + sin(a) * mag
+				end
+				
+			end
+			line(x0,y0, x1,y1, col)
 		end
 		
 		drag_x0 = x 
@@ -359,7 +396,6 @@ function create_canvas(el)
 		line(x0-1*scale-1,y1+1,x1+1*scale,y1+1)
 		
 		rectfill(x0-1,y0-1,x0+ww,y0+hh,0)
-		
 		sspr(cbmp, 0, 0, _, _, x0,y0,ww,hh)
 		
 		if (csel) then
@@ -442,12 +478,11 @@ end
 
 
 :: draw.lua
---[[pod_format="raw",created="2023-10-12 03:26:20",modified="2024-04-09 09:20:36",revision=1872,stored="2023-24-28 00:24:00"]]
+--[[pod_format="raw",created="2023-10-12 03:26:20",modified="2024-07-18 16:49:37",revision=2861,stored="2023-24-28 00:24:00"]]
 function _draw()
 	
 	cls(5)
 	
-
 	-- operations during _update can request a
 	-- gui update before it is next draw (avoid flicker)
 	if (refresh_gui) then
@@ -471,7 +506,7 @@ end
 
 
 :: gui.lua
---[[pod_format="raw",created="2023-05-11 02:05:16",modified="2024-04-09 09:20:36",revision=2695,stored="2023-24-28 00:24:00"]]
+--[[pod_format="raw",created="2023-05-11 02:05:16",modified="2024-07-18 16:49:37",revision=3721,stored="2023-24-28 00:24:00"]]
 --[[
 
 	should only need:
@@ -549,7 +584,7 @@ function generate_gui()
 	sidebar:attach(create_item_info{x=8,y=96,width=128,height=24})
 	sidebar:attach(create_bank_tabs{x=8+128-48+1,y=116-9,width=48,height=9})
 	sidebar:attach(create_nav{x=8,y=116,width=128,height=128})
-	
+	sidebar:attach(create_ram_widget{x=88,y=250,width=60,height=10})
 
 	---- tools ----
 	
@@ -716,12 +751,19 @@ function create_tool_button(which, x, y)
 end
 
 
+function create_ram_widget(el)
+	function el:draw()
+		print(string.format("%2.2fmb (%02d%%)",stat(0)/0x100000,stat(0)\167772),0,0,
+			stat(0) > 0xe00000 and 14 or 21) -- warn when more than 7/8ths of capacity
+	end
+	return el
+end
 
 
 :: main.lua
---[[pod_format="raw",created="2023-04-11 02:04:54",modified="2024-04-09 09:20:36",revision=2769,stored="2023-24-28 00:24:00"]]
+--[[pod_format="raw",created="2023-04-11 02:04:54",modified="2024-07-18 16:49:37",revision=3781,stored="2023-24-28 00:24:00"]]
 --[[
-	gfx5: panning, view grouping
+	gfx6: region selection / multi-copy/paste
 ]]
 
 include "draw.lua"
@@ -747,7 +789,8 @@ function save_working_file()
 			flags = ii.flags,
 			pan_x = ii.pan_x,
 			pan_y = ii.pan_y,
-			zoom = ii.zoom
+			zoom = ii.zoom,
+			extra = ii.extra
 		}
 	end
 	return output
@@ -757,7 +800,6 @@ function load_working_file(item_1)
 
 	item_1 = item_1 or {}
 
-	
 		item = {}
 		for i=0,255 do
 			src = item_1[i] or {}
@@ -770,6 +812,14 @@ function load_working_file(item_1)
 				pan_y = src.pan_y or 0,
 				zoom = src.zoom or 8
 			}
+			
+			if (i==0 and not src.bmp) then
+				-- x
+				item[i].bmp:set(6,6,7,0,0,7)
+				item[i].bmp:set(6,7,0,7,7,0)
+				item[i].bmp:set(6,8,0,7,7,0)
+				item[i].bmp:set(6,9,7,0,0,7)
+			end
 			
 			add_undo_stack(item[i])
 			
@@ -797,8 +847,16 @@ function _init()
 		"/ram/cart/gfx/0.gfx" -- default
 	)
 	
-	set_current_item(0)
+	set_current_item(1)
 	set_current_bank(0)
+	
+	-- region of selected sprites
+	region={
+		x=1,y=0,w=1,h=1,
+		x0=1,y0=0
+	}
+	
+	item0,item1,item2 = 1,1,1
 
 	generate_gui()
 	
@@ -842,7 +900,7 @@ function set_current_item(i)
 		set_neighbours_view(current_item-1,-1)
 	end
 	
-	current_item = flr(i)  -- want it to be an integer
+	current_item = flr(i)  -- want user-facing number to be an integer
 	ci = item[current_item]
 
 	cbmp = item[current_item].bmp
@@ -858,8 +916,15 @@ function set_current_item(i)
 	csel = item[current_item].sel
 	csel_outline = item[current_item].sel_outline
 	
+	-- single-item region moves with current_item
+	if (not region or (region.w==1 and region.h==1)) then
+		local rx = current_item % 8
+		local ry = current_item \ 8
+		region={x=rx,y=ry,x0=rx,y0=ry,w=1,h=1}
+	end
+	
 	-- generate_gui()
-	--refresh_gui = true
+	-- refresh_gui = true
 end
 
 on_event("lost_focus",
@@ -957,7 +1022,7 @@ end)
 
 
 :: nav.lua
---[[pod_format="raw",created="2023-10-11 02:18:48",modified="2024-04-09 09:20:36",revision=3435,stored="2023-24-28 00:24:00"]]
+--[[pod_format="raw",created="2023-10-11 02:18:48",modified="2024-07-18 16:49:37",revision=4473,stored="2023-24-28 00:24:00"]]
 --[[
 	navigate sprite bank
 	+ top-level operations (resize bitmap)
@@ -1012,6 +1077,8 @@ function resize_item(index, width, height)
 	if (width) width=tonum(width)
 	if (height) height=tonum(height)
 	
+	--item[index].undo_state:checkpoint()
+	
 	local ww = item[index].bmp:width()
 	local hh = item[index].bmp:height()
 	local aspect = ww / hh
@@ -1046,9 +1113,6 @@ function resize_item(index, width, height)
 	)
 	
 	item[index].bmp = new
-	
-	set_current_item(index) -- update 
-	refresh_gui = true
 end
 
 
@@ -1089,7 +1153,11 @@ function create_item_info(el)
 		x=xx,y=yy,width=15,height=7,
 		get=function() return item[current_item].bmp:width() end,
 		set=function(self,val) 
-			resize_item(current_item, val, nil)
+			for index in all(multi_op(get_region_indexes(region),true)) do
+				resize_item(index, val, nil)
+			end
+			--resize_item(current_item, val, nil)
+			set_current_item() refresh_gui = true -- update
 		end,
 		label=""--size:"
 	}
@@ -1108,7 +1176,11 @@ function create_item_info(el)
 		x=xx+24,y=yy,width=15,height=7,
 		get=function() return item[current_item].bmp:height() end,
 		set=function(self,val) 
-			resize_item(current_item, nil, val)
+			for index in all(multi_op(get_region_indexes(region),true)) do
+				resize_item(index, nil, val)
+			end
+			--resize_item(current_item, nil, val)
+			set_current_item() refresh_gui = true -- update
 		end,
 		label=""
 	}	
@@ -1135,7 +1207,14 @@ function create_item_info(el)
 		
 		click = function(self)
 			backup_state()
-			item[current_item].flags ^^= (1<<self.index)
+			local bit = (1<<self.index)
+			local state1 = (item[current_item].flags & bit) ^^ bit
+			
+			--item[current_item].flags ^^= (1<<self.index)
+			
+			for index in all(multi_op(get_region_indexes(region),true)) do
+				item[index].flags = (item[index].flags & ~bit) | state1
+			end
 		end,
 	}
 	end
@@ -1208,7 +1287,8 @@ function create_nav(el)
 		for y=0,7 do
 			for x=0,7 do
 				local scale = 1
-				local bmp = item[x + y*8 + current_bank*64].bmp
+				local ii = x + y*8 + current_bank*64
+				local bmp = item[ii].bmp
 				local ww,hh = bmp:width(), bmp:height()
 				-- to do: this makes very thin bmps invisible in preview
 				scale = 16 / max(ww,hh)
@@ -1217,8 +1297,6 @@ function create_nav(el)
 				elseif (scale >= 0.666) then
 					scale = 1 -- up to 24x24, still show pixel for pixel
 				end
-				
-				
 				clip(self.sx + x*16, self.sy + y*16, 16,16)
 				sspr(bmp,
 					0,0,nil,nil,
@@ -1228,6 +1306,16 @@ function create_nav(el)
 			end
 		end
 		
+		-- region
+		local xx = region.x * 16
+		local yy = (region.y - current_bank*8) * 16
+		local ww = region.w * 16
+		local hh = region.h * 16
+		clip(el.sx-2,el.sy-2,el.width+4,el.height+4)
+		rect(xx-2,yy-2, xx+ww+1, yy+hh+1, 0)
+		rect(xx-1,yy-1, xx+ww+0, yy+hh+0, 7)
+		
+		--[[
 		if (current_bank == current_item\64) then
 			
 			local ii = (current_item - current_bank*64)
@@ -1239,14 +1327,41 @@ function create_nav(el)
 			rect(xx-2,yy-2,xx+17,yy+17,0)
 			rect(xx-1,yy-1,xx+16,yy+16,7)
 		end
-		
+		]]
 		
 	end
 	
 
 	function el:drag(msg)
-		local i = (msg.mx * 8 \ self.width) + (msg.my * 8 \ self.height) * 8
-		set_current_item(i + current_bank*64)
+		local rx = msg.mx * 8 \ self.width
+		local ry = msg.my * 8 \ self.height + (current_bank*8)
+		local i = rx + ry * 8
+		
+		if key"shift" then
+			-- extend region
+			rx0=min(rx, region.x0)
+			ry0=min(ry, region.y0)
+			region = {
+				x=rx0, y=ry0,
+				w=max(rx,region.x0)-rx0+1,
+				h=max(ry,region.y0)-ry0+1,
+				x0=region.x0, y0=region.y0
+			}
+		else	
+			region={
+				x=rx, y=ry, w=1, h=1, x0=region.x0, y0=region.y0
+			}
+		end
+		
+		set_current_item(i)
+		--printh("setting item: "..i)
+	end
+	
+	function el:click(msg)
+		-- reset region even if shift-clicking (p8 behaviour)
+		local rx = msg.mx * 8 \ self.width
+		local ry = msg.my * 8 \ self.height + (current_bank*8)
+		region={	x=rx, y=ry, w=1, h=1, x0=rx, y0=ry }
 	end
 	
 	return el
@@ -1324,7 +1439,7 @@ end
 
 
 :: pal.lua
---[[pod_format="raw",created="2023-05-11 02:05:01",modified="2024-03-07 08:23:39",revision=655,stored="2023-11-28 03:11:19"]]
+--[[pod_format="raw",created="2023-05-11 02:05:01",modified="2024-07-18 16:49:37",revision=1659,stored="2023-11-28 03:11:19"]]
 local pcols = {[0]=
 	0,19,3,27,  11,26,10,23,
 	1,17,12,28, 18,16,13,29,
@@ -1344,6 +1459,14 @@ pcols_identity = {[0] =
 	16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31
 }
 
+function switch_col(dindex)
+	if (pal_swatch==1) dindex*=2
+	local index = -1
+	for i=0,63 do
+		if (pcols[i] == col) index = i
+	end
+	if (index>=0) col = pcols[(index+dindex)%64]
+end
 
 
 function create_pal_tabs(el)
@@ -1459,8 +1582,8 @@ end
 
 
 :: undo.lua
---[[pod_format="raw",created="2023-29-14 03:29:27",modified="2024-41-04 11:41:27",revision=1501,stored="2023-24-28 00:24:00"]]
-
+--[[pod_format="raw",created="2023-10-14 03:29:27",modified="2024-07-18 16:49:37",revision=2037,stored="2023-24-28 00:24:00"]]
+local group_op_items = nil
 
 local function undo_save_state(ii)
 	-- don't store nils, to preserve order
@@ -1499,6 +1622,9 @@ function backup_state()
 	local ii = item[current_item]
 	local tt0 = stat(1)
 	ii.undo_stack:checkpoint()
+	
+	-- undo no longer applies to a group of items
+	group_op_items = nil
 
 --	printh(string.format("%3.3f",stat(1)-tt0).." // patch size:"..
 --		#(ii.undo_stack.undo_stack[#ii.undo_stack.undo_stack]))
@@ -1506,8 +1632,20 @@ end
 
 
 function undo()
-	local ii = item[current_item]
-	ii.undo_stack:undo()
+	if (group_op_items) then
+		-- undo on each item in group
+		notify("undoing "..#group_op_items.." items")
+		for i=1,#group_op_items do
+			local ii = item[group_op_items[i]]
+			if (ii) ii.undo_stack:undo()
+		end
+		-- can only do a single undo and no redos on group operations
+		group_op_items = nil
+	else
+		-- single undo on current item
+		local ii = item[current_item]
+		ii.undo_stack:undo()
+	end
 end
 
 function redo()
@@ -1519,135 +1657,217 @@ function add_undo_stack(ii)
 	ii.undo_stack = create_undo_stack(undo_save_state, undo_load_state, 0x11, ii)
 end
 
-
+function multi_op(indexes, do_checkpoint)
+	group_op_items = unpod(pod(indexes))
+	if (do_checkpoint) then
+		for i in all(group_op_items) do
+			item[i].undo_stack:checkpoint()
+		end
+	end
+	if (#indexes == 1) group_op_items = nil -- not a group op
+	return indexes
+end
 
 
 :: update.lua
---[[pod_format="raw",created="2023-10-10 07:45:26",modified="2024-04-09 09:20:36",revision=2543,stored="2023-24-28 00:24:00"]]
-
-function get_selected_region()
-	local x0,y0 = 10000, 10000
-	local x1,y1 = 0,0
-	for y = 0, cbmp_height-1 do
-		for x = 0, cbmp_width-1 do
-			if (get(csel, x, y) > 0) then
-				x0 = min(x0, x) y0 = min(y0, y)
-				x1 = max(x1, x) y1 = max(y1, y)
-			end 
-		end
-	end
-	if (x0 == 10000) x0,y0,x1,y1 = 0, 0, cbmp_width-1, cbmp_height-1
+--[[pod_format="raw",created="2023-10-10 07:45:26",modified="2024-07-18 16:49:37",revision=3619,stored="2023-24-28 00:24:00"]]
 	
-	return x0, y0, x1-x0+1, y1-y0+1
-end
-
-
-function copy_selected_region()
-	local x0, y0, ww, hh = get_selected_region()
-	local out = userdata("u8", ww, hh)
-	--printh(pod{x0,y0, ww,hh})
-	blit(cbmp, out, x0, y0, 0, 0)
-	return out
-end
-
-
-function rotate_selection(dx, dy)
-	--local x,y,w,h = get_selected_region()
-	--local bmp2 = copy_selected_region()
-	local x,y = 0, 0
-	local bmp2 = cbmp:copy()
-	local w,h = bmp2:attribs()
-	set_draw_target(cbmp)
-	
-	clip(x,y,w,h)
-	rectfill(x,y,x+w-1,y+h-1,0)
-	for yy=-1,1 do
-		for xx=-1,1 do
-			spr(bmp2,dx+x+xx*w,dy+y+yy*h)
+	function get_selected_rect()
+		local x0,y0 = 10000, 10000
+		local x1,y1 = 0,0
+		for y = 0, cbmp_height-1 do
+			for x = 0, cbmp_width-1 do
+				if (get(csel, x, y) > 0) then
+					x0 = min(x0, x) y0 = min(y0, y)
+					x1 = max(x1, x) y1 = max(y1, y)
+				end 
+			end
 		end
+		if (x0 == 10000) x0,y0,x1,y1 = 0, 0, cbmp_width-1, cbmp_height-1
+		
+		return x0, y0, x1-x0+1, y1-y0+1
 	end
+	
+	
+	function copy_selected_rect()
+		local x0, y0, ww, hh = get_selected_rect()
+		local out = userdata("u8", ww, hh)
+		--printh(pod{x0,y0, ww,hh})
+		blit(cbmp, out, x0, y0, 0, 0)
+		return out
+	end
+	
+	
+	function rotate_selection(dx, dy)
+		local x,y = 0, 0
+		local bmp2 = cbmp:copy()
+		local w,h = bmp2:attribs()
+		set_draw_target(cbmp)
+		
+		clip(x,y,w,h)
+		rectfill(x,y,x+w-1,y+h-1,0)
+		for yy=-1,1 do
+			for xx=-1,1 do
+				spr(bmp2,dx+x+xx*w,dy+y+yy*h)
+			end
+		end
+				
+		clip()
+		set_draw_target()
+	end
+	
+	function move_selection(dx, dy)
+		
+		backup_state()
+		
+		if (not ci.layer) return rotate_selection(dx, dy)
+		
+		blit(ci.layer0, cbmp)
+		ci.layer_x += dx
+		ci.layer_y += dy
+		blit(ci.layer, cbmp, 0, 0, ci.layer_x, ci.layer_y)
+		
+		-- new selection
+		csel:clear()
+		local ww, hh = ci.layer:attribs()
+		set_draw_target(csel)
+		rectfill(ci.layer_x, ci.layer_y, ci.layer_x + ww-1, ci.layer_y + hh-1, 1)
+		csel_outline = nil -- regenerate
+		set_draw_target()
+	end
+	
+	 
+	function clear_selection()
+		if (csel) csel:clear()
+		csel_outline = nil -- refresh
+		ci.layer, ci.back = nil, nil -- what is ci.back? to do: delete if not used
+	end
+	
+	function select_all()
+		backup_state()
+		csel:copy(1,true)
+		csel_outline = nil -- regenerate	
+		local ww,hh = cbmp_width,cbmp_height
+		ci.layer = userdata("u8",ww,hh)
+		ci.layer_x = 0
+		ci.layer_y = 0
+		ci.layer0 = cbmp:copy()
+		blit(cbmp,ci.layer)
+	end
+	
+	
+	function modify_selection(op)
+		backup_state()
+		
+		local tbmp = ci.layer or cbmp
+		local orig = tbmp:copy()
+		
+		if (op == "flip_x") then
+			for x=0, tbmp:width()-1 do
+				blit(orig,tbmp,x,0,tbmp:width()-1-x,0,1,tbmp:height())
+			end
 			
-	clip()
-	set_draw_target()
-end
-
-function move_selection(dx, dy)
-	
-	backup_state()
-	
-	if (not ci.layer) return rotate_selection(dx, dy)
-	
-	blit(ci.layer0, cbmp)
-	ci.layer_x += dx
-	ci.layer_y += dy
-	blit(ci.layer, cbmp, 0, 0, ci.layer_x, ci.layer_y)
-	
-	-- new selection
-	csel:clear()
-	local ww, hh = ci.layer:attribs()
-	set_draw_target(csel)
-	rectfill(ci.layer_x, ci.layer_y, ci.layer_x + ww-1, ci.layer_y + hh-1, 1)
-	csel_outline = nil -- regenerate
-	set_draw_target()
-end
-
- 
-function clear_selection()
-	if (csel) csel:clear()
-	csel_outline = nil -- refresh
-	ci.layer, ci.back = nil, nil -- what is ci.back? to do: delete if not used
-end
-
-function select_all()
-	backup_state()
-	csel:copy(1,true)
-	csel_outline = nil -- regenerate	
-	local ww,hh = cbmp_width,cbmp_height
-	ci.layer = userdata("u8",ww,hh)
-	ci.layer_x = 0
-	ci.layer_y = 0
-	ci.layer0 = cbmp:copy()
-	blit(cbmp,ci.layer)
-end
-
-
-function modify_selection(op)
-	backup_state()
-	
-	local tbmp = ci.layer or cbmp
-	local orig = tbmp:copy()
-	
-	if (op == "flip_x") then
-		for x=0, tbmp:width()-1 do
-			blit(orig,tbmp,x,0,tbmp:width()-1-x,0,1,tbmp:height())
 		end
 		
-	end
-	
-	if (op == "flip_y") then
-		for y=0, tbmp:height()-1 do
-			blit(orig,tbmp,0,y,0,tbmp:height()-1-y,tbmp:width(),1)
+		if (op == "flip_y") then
+			for y=0, tbmp:height()-1 do
+				blit(orig,tbmp,0,y,0,tbmp:height()-1-y,tbmp:width(),1)
+			end
 		end
+		
+		-- layer only -- don't clear whole map with del
+		if (ci.layer and op == "clear") then
+			ci.layer:clear()
+		end
+		
+		-- update changes
+		if (ci.layer) blit(ci.layer, cbmp, 0, 0, ci.layer_x, ci.layer_y)
 	end
 	
-	-- layer only -- don't clear whole map with del
-	if (ci.layer and op == "clear") then
-		ci.layer:clear()
+	function get_region_indexes(r)
+		local out={}
+		for y = r.y,r.y+r.h-1 do
+			for x = r.x,r.x+r.w-1 do
+				if (x>=0 and x<8 and y>=0 and y<32) then
+					add(out, x+y*8)
+				end
+			end
+		end
+		return out
+	end
+
+	function gather_sprites(r)
+		local out={}
+		
+		for index in all(get_region_indexes(r)) do
+			local ii = item[index]
+			add(out, {
+				bmp = ii.bmp,
+				flags = ii.flags,
+				pan_x = ii.pan_x,
+				pan_y = ii.pan_y,
+				zoom = ii.zoom
+			})
+		end
+		
+		return out
 	end
 	
-	-- update changes
-	if (ci.layer) blit(ci.layer, cbmp, 0, 0, ci.layer_x, ci.layer_y)
-end
-
-
- function _update()
- 
---[[
-	-- use update_gui_layout instead
-	if (get_display():height() != last_display_height) refresh_gui = true
-	last_display_height = get_display():height()
-]]	
-
+	-- return
+	function paste_sprite_collection(dat, region_w, do_big)
+		local xx=0
+		local yy=0
+		local out = {}
+		for i=1,#dat do
+			-- target
+			local tx=region.x + xx
+			local ty=region.y + yy
+			
+			if (tx>=0 and tx<8 and ty>=0 and ty<32) then
+				local index=tx+ty*8
+				local src=dat[i] 
+				item[index].undo_stack:checkpoint()
+				
+				item[index].bmp = src.bmp or userdata("u8",16,16)
+				item[index].flags = src.flags or 0
+				item[index].pan_x = src.pan_x or 0
+				item[index].pan_y = src.pan_y or 0
+				item[index].zoom  = src.zoom or 8
+				item[index].extra = src.extra
+				
+				if do_big then
+					local bmp1 = item[index].bmp
+					local w,h = bmp1:attribs()
+					local bmp2 = userdata("u8",w*2,h*2)
+					for y=0,h*2-1 do
+						for x=0,w*2-1 do
+							bmp2:set(x,y,get(bmp1,x/2,y/2))
+						end
+					end
+					item[index].bmp = bmp2
+				end
+				
+				add(out,index)
+			end
+	
+			-- advance relative position
+			xx+=1
+			if (xx >= region_w) then
+				xx=0 yy+=1
+			end
+		end
+		return out
+	end
+	
+	
+function _update()
+	 
+	--[[
+		-- use update_gui_layout instead
+		if (get_display():height() != last_display_height) refresh_gui = true
+		last_display_height = get_display():height()
+	]]	
+	
 	if (refresh_gui) then
 		generate_gui()
 		refresh_gui = false
@@ -1673,75 +1893,117 @@ end
 	if (keyp("up"))    move_selection( 0,-mag)
 	if (keyp("down"))  move_selection( 0, mag)
 	
+	if (not key"ctrl") then
+	
 	if (keyp("f")) modify_selection("flip_x")
-	if (keyp("v")) modify_selection("flip_y")
-	if (keyp("del") or keyp("backspace")) modify_selection("clear")
-	
-	-- navigate
-	local mag = key("shift") and 8 or 1
-	if (keyp("-")) set_current_item(current_item - mag)
-	if (keyp("+")) set_current_item(current_item + mag)
-	
+		if (keyp("v")) modify_selection("flip_y")
+		if (keyp("del") or keyp("backspace")) modify_selection("clear")
+		
+		-- navigate
+		-- to do: region moves with these keys?
+		local mag = key("shift") and 8 or 1
+		if (keyp("-")) region.w,region.h=1,1 set_current_item(current_item - mag) 
+		if (keyp("+")) region.w,region.h=1,1 set_current_item(current_item + mag)
+		
+		-- switch colour
+		if (keyp("1")) switch_col(-1)
+		if (keyp("2")) switch_col( 1)
+		
+	end -- no ctrl
 	
  	-- ctrl --
  	
  	if (key("ctrl")) then
- 
- 	if keyp("c") or keyp("x") then
- 		set_clipboard(pod(copy_selected_region(),7,{pod_type="gfx"}))
-		if keyp("x") then
-			backup_state()
-			set_draw_target(cbmp)
-			local x,y,w,h = get_selected_region()
-			rectfill(x,y,x+w-1,y+h-1,0)
-			set_draw_target()
-		end
-	end
-	
-	if keyp("v") or keyp("b") then
-		local ct = get_clipboard()
-		local bmp1 = nil
-		if (sub(ct,1,5) == "[gfx]") then
-			bmp1 = userdata(ct)
-		else
-			bmp1 = unpod(ct)
-		end
-		if (type(bmp1) == "userdata") then
-		
-			-- paste big
-			if (keyp"b") then
-				local w,h = bmp1:attribs()
-				local bmp2 = userdata("u8",w*2,h*2)
-				for y=0,h*2-1 do
-					for x=0,w*2-1 do
-						bmp2:set(x,y,get(bmp1,x/2,y/2))
-					end
-				end
-				bmp1 = bmp2
+	 
+	 	if keyp("c") or keyp("x") then
+	 		local flags = item[current_item].flags
+	 		if (flags == 0) flags = nil -- don't need to store anywhere
+	 		
+	 		if region.w == 1 and region.h == 1 then
+		 		set_clipboard(
+		 			pod(copy_selected_rect(),
+		 				7, {pod_type="gfx",flags=flags}
+		 		))
+		 		local _,_,ww,hh = get_selected_rect()
+		 		if (ww == cbmp_width and hh == cbmp_height) then
+		 			notify("copied sprite")
+		 		else
+		 			notify("copied "..ww.." x "..hh.." pixels")
+		 		end
+		 		
+	 		else
+	 			-- multi-copy
+	 			set_clipboard(
+	 				pod(gather_sprites(region),
+	 					7, {pod_type="gfx",region_w=region.w}
+	 			))	
+	 			notify("copied "..(region.w*region.h).." sprites")
+	 		end
+	 		
+			if keyp("x") then
+				backup_state()
+				set_draw_target(cbmp)
+				local x,y,w,h = get_selected_rect()
+				rectfill(x,y,x+w-1,y+h-1,0)
+				set_draw_target()
 			end
-			
-			backup_state()
-			item[current_item].bmp = bmp1
-			set_current_item(current_item)
 		end
-	end
-	
-	if keyp("z") then
-		undo()
-		set_current_item(current_item)
-		refresh_gui = true
-	end
-	
-	if keyp("y") then
-		redo()
-		set_current_item(current_item)
-		refresh_gui = true
-	end
-	
-	if keyp("a") then
-		select_all()
-	end
-	
+		
+		if keyp("v") or keyp("b") then
+			local ct = get_clipboard()
+			local bmp1 = nil
+			local meta = nil
+			if (sub(ct,1,5) == "[gfx]") then
+				bmp1 = userdata(ct)
+			else
+				bmp1, meta = unpod(ct)
+			end
+			if (type(bmp1) == "userdata") then
+			
+				-- paste big
+				if (keyp"b") then
+					local w,h = bmp1:attribs()
+					local bmp2 = userdata("u8",w*2,h*2)
+					for y=0,h*2-1 do
+						for x=0,w*2-1 do
+							bmp2:set(x,y,get(bmp1,x/2,y/2))
+						end
+					end
+					bmp1 = bmp2
+				end
+				
+				backup_state()
+				item[current_item].bmp = bmp1
+				item[current_item].flags = meta and meta.flags or 0
+				set_current_item(current_item)
+			elseif (type(bmp1) == "table" and meta and meta.region_w) then
+				-- multipaste
+				multi_op(
+					paste_sprite_collection(bmp1, meta.region_w, keyp"b")
+				)
+				set_current_item(current_item)
+				notify("pasted "..#bmp1.." sprites")
+			else
+				notify("could not find gfx to paste")
+			end
+		end
+		
+		if keyp("z") then
+			undo()
+			set_current_item(current_item)
+			refresh_gui = true
+		end
+		
+		if keyp("y") then
+			redo()
+			set_current_item(current_item)
+			refresh_gui = true
+		end
+		
+		if keyp("a") then
+			select_all()
+		end
+		
 	
 	end -- ctrl
 	

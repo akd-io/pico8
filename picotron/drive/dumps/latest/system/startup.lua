@@ -7,11 +7,18 @@ if not sdat then
 	store("/appdata/system/settings.pod", sdat)
 end
 
--- newer settings that should default to a non-nil value
+-- settings added since first release should default to a non-nil value
+
 if (sdat.anywhen == nil) then
 	sdat.anywhen = true
 	store("/appdata/system/settings.pod", sdat)
 end
+
+if (sdat.pixel_scale == nil) then
+	sdat.pixel_scale = 2
+	store("/appdata/system/settings.pod", sdat)
+end
+
 
 
 -- install default desktop items
@@ -131,7 +138,6 @@ mount("/system/util/edit.lua","/system/util/open.lua")
 if fstat("/appdata/system/startup.lua") then 
 	create_process("/appdata/system/startup.lua")
 end
-
 
 
 
