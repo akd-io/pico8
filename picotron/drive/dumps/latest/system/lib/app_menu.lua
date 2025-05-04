@@ -25,6 +25,9 @@ function menuitem(m, a, b)
 
 	if (not _menu[m.id]) then
 		_menu[m.id] = m
+	elseif not m.label then
+		-- remove
+		_menu[m.id] = nil
 	else
 		-- update items
 		for k,v in pairs(m) do
@@ -33,7 +36,9 @@ function menuitem(m, a, b)
 	end
 
 	-- resend whole menu item state (wm doesn't need to handle partial changes)
-	send_message(3, {event = "app_menu_item", attribs = _menu[m.id]})
+	-- also handles deletion
+
+	send_message(3, {event = "app_menu_item", attribs = _menu[m.id] or m})
 
 end
 

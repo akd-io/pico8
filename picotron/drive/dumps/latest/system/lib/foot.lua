@@ -3,6 +3,7 @@
 	foot.lua
 ]]
 
+
 -- init first; might set window inside _init
 -- only problem: no visual feedback while _init does a lot of work. maybe need to spin the picotron button gfx!
 if (_init) then _init() end
@@ -24,11 +25,7 @@ if (_draw and not get_display()) then
 
 end
 
-if (pid() > 3) then
-	on_event("pause",       function() poke(0x547f, peek(0x547f) |  0x4) end)
-	on_event("unpause",     function() poke(0x547f, peek(0x547f) & ~0x4) end)
---	on_event("toggle_mute", function() poke(0x547f, peek(0x547f) ^^ 0x8) end) -- deleteme; mute should be system-wide (maybe later: per-app volume)
-end
+
 
 -- mainloop
 -- only loop if there is a _draw or _update
@@ -80,12 +77,12 @@ while (_draw or _update) do
 
 			_draw()
 
-			flip() -- unsets 0x547f:0x2
+			flip(0x0) -- unsets 0x547f:0x2
 		else
 			-- safety: draw next frame. // to do: why is this ever 0 for kernel processes? didn't received gained_visibility message?
 			if (pid() <= 3) poke(0x547f, peek(0x547f) | 0x1)
 
-			flip() -- no more computation this frame, and show whatever is in video memory
+			flip(0x0) -- no more computation this frame, and show whatever is in video memory
 		end
 	end
 

@@ -1132,9 +1132,14 @@ function attach_text_editor(g, parent)
 				key_pressed_callback(self, "escape")
 			end
 		end
-
+		
 
 		if (self:has_keyboard_focus()) then
+
+			-- clear text input buffer when gaining focus (assumes: no reason to every want existing buffer text)
+			if (not self.last_keyboard_focus) then
+				readtext(true)
+			end
 
 			while peektext() do
 				backup_line_edit()
@@ -1221,7 +1226,7 @@ function attach_text_editor(g, parent)
 			end
 
 			-- delete
-			if (keyp("del")) then
+			if (not key("shift") and keyp("delete")) then
 
 				backup_line_edit()
 				if (is_something_selected()) then
@@ -1353,6 +1358,24 @@ function attach_text_editor(g, parent)
 				show_cursor()
 			end
 
+			-- alternative to ctrl-x: shift+delete (in same group as ctrl-insert for copy)
+
+			if key("shift") and keyp("delete") then
+				-- dupe from ctrl-x below
+				checkpoint()
+				set_clipboard(get_selected_text())
+				delete_selected()
+			end
+
+			-- alternative to ctrl-v: shift+insert (in same group as ctrl-insert for copy)
+
+			if key("shift") and keyp("insert") then
+				-- dupe from ctrl-v below
+				checkpoint()
+				delete_selected()
+				insert_multiline_string(get_clipboard(), cur_y, cur_x)
+				show_cursor()
+			end
 
 			-- ctrl-* presses
 
@@ -1364,7 +1387,7 @@ function attach_text_editor(g, parent)
 					delete_selected()
 				end
 
-				if keyp("c") and is_something_selected() then
+				if (keyp("c") or keyp("insert")) and is_something_selected() then
 					set_clipboard(get_selected_text())
 				end
 
@@ -1439,18 +1462,10 @@ function attach_text_editor(g, parent)
 
 			end
 
-			-- cproj file -> save every keypress!
-			-- to do: "about_to_run_cproj" message on pressing ctrl-r, or something
-			-- (and save when leave focus or idle)
-
-			-- any keypress that is not shift or ctrl
-			local found_keypress = false
-			for i=1,255 do
-				if (keyp(i) and i~= 225 and i~=57) found_keypress = true
-			end
-
 
 		end -- keyboard focus
+
+		self.last_keyboard_focus = self:has_keyboard_focus()
 
 		contain_cursor()
 

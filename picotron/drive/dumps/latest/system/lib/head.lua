@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2025-04-27 16:03:40",modified="2025-04-27 16:03:40",revision=0]]
+--[[pod_format="raw",created="2025-04-27 16:01:54",modified="2025-04-27 16:01:54",revision=0]]
 --[[
 
 	head.lua -- kernal space header for each process
@@ -61,6 +61,7 @@ function reset()
 	poke(0x5509, 0x3f) -- write mask   //  determines which bits to write to
 	poke(0x550a, 0x3f) -- target mask  //  (sprites)  applies to colour table lookup & selection
 	poke(0x550b, 0x00) -- target mask  //  (shapes)   applies to colour table lookup & selection
+
 
 	-- draw colour
 

@@ -27,10 +27,6 @@ end
 if (pwd() == "/system/apps") cd("/") -- start in root instead of location of terminal.lua
 
 
--- print to self, not to terminal that launched it!
--- env().print_to_proc_id = pid()
-
-
 --- *** NO GLOBALS ***   --   don't want to collide with co-running program
 
 local cmd=""
@@ -55,6 +51,45 @@ local terminal_update
 
 local cproj_draw, cproj_update
 
+
+-- to do: nice way to get a local copy of needed api
+-- co-running program should be free to redefine any of these
+
+local blit = blit
+local cls = cls
+local set_draw_target = set_draw_target
+local send_message = send_message
+local window = window
+local note = note
+local on_event = on_event
+local cocreate = cocreate
+local coresume = coresume
+local costatus = costatus
+local readtext = readtext
+local peektext = peektext
+local fstat = fstat
+local fullpath = fullpath
+local fetch = fetch
+local store = store
+local add = add
+local type = type
+local mid = mid
+local min = min
+local max = max
+local del = del
+local deli = deli
+local load = load
+local rectfill = rectfill
+local rect = rect
+local env = env
+local cd = cd
+local time = time
+local print = print
+local printh = printh
+local exit = exit
+local split = split
+local set_clipboard = set_clipboard
+local get_clipboard = get_clipboard
 
 -- to do: perhaps cproj can be any program; -> should be "corunning_prog"
 -- (or two separate concepts if need)
@@ -149,8 +184,8 @@ local function suspend_cproj()
 --	show_last_line()
 
 	-- back to last directory that user chose
-	local pwd = fetch("/ram/system/pwd.pod")
-	if (pwd) then cd(pwd) end
+	local pwd1 = fetch("/ram/system/pwd.pod")
+	if (pwd1) then cd(pwd1) end
 
 	-- terminal is not pauseable unless running something (to do: lose this state when resuming)
 	window{pauseable = false}

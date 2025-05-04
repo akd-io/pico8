@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-12 18:17:15",modified="2024-03-12 18:18:07",revision=1]]
+--[[pod_format="raw",created="2024-03-12 18:17:15",modified="2024-09-14 20:26:44",revision=2]]
 --[[
 
 	wrangle.lua
@@ -309,9 +309,9 @@ function wrangle_working_file(save_state, load_state, untitled_filename, get_hlo
 	
 		if split(last_known_filename,"#",false)[1] == split(current_filename,"#",false)[1] then
 			local md1 = fetch_metadata(current_filename)
-			if (md1) then
+			if (md1 and md1.revision) then
 --				printh("revision on disk:"..(md1.revision or -1).."   last_known_meta: "..pod(last_known_meta))
-				if (last_known_meta and last_known_meta.revision < md1.revision) then
+				if (last_known_meta and last_known_meta.revision and last_known_meta.revision < md1.revision) then
 					-- to do: how to disable autosave / 
 					stale_filename = current_filename
 					--notify("warning: external changes detected -- this version is stale")

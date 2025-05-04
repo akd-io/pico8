@@ -175,7 +175,7 @@ while (true) do -- \m/
 	end
 
 
---	printh("wm_cpu_max:"..wm_cpu_max)
+--	printh("[boot.lua] wm_cpu_max:"..wm_cpu_max)
 
 --[[	printh(string.format("%3.3f %3.3f %3.3f %3.3f %3.3f %3.3f %3.3f %3.3f ",
 		wm_cpu[0],wm_cpu[1],wm_cpu[2],wm_cpu[3],wm_cpu[4],wm_cpu[5],wm_cpu[6],wm_cpu[7]))

@@ -23,18 +23,21 @@ end
 local ff = ls("/desktop")
 if (not ff or #ff == 0) then
 	mkdir ("/desktop") -- just in case
-	store("/desktop/drive.loc", fetch("/system/misc/drive.loc"))
-	store("/desktop/readme.txt", fetch("/system/misc/readme.txt"))
---	cp("/system/misc/drive.loc", "/desktop/drive.loc")
---	cp("/system/misc/readme.txt", "/desktop/readme.txt")
+	cp("/system/misc/drive.loc", "/desktop/drive.loc")
+	cp("/system/misc/readme.txt", "/desktop/readme.txt")
 end
 
 -- mend drive shortcut (could save over it by accident in 0.1.0b)
-local dd = fetch("/desktop/drive.loc")
-if (dd and not dd.location) then
-	store("/desktop/drive.loc", fetch("/system/misc/drive.loc"))
-	notify("mended: /desktop/drive.loc")
+-- 0.1.0c: also fix missing icon metadata
+if fstat("/desktop/drive.loc") then
+	local dd,mm = fetch("/desktop/drive.loc")
+	if (not dd or not dd.location or not mm or not mm.icon) cp("/system/misc/drive.loc", "/desktop/drive.loc")
 end
+if fstat("/desktop/readme.txt") then
+	local dd,mm = fetch("/desktop/readme.txt") -- fetch_metadata not defined yet
+	if (not mm or not mm.icon) cp("/system/misc/readme.txt", "/desktop/readme.txt")
+end
+
 
 -- present working cartridge
 local num = 0

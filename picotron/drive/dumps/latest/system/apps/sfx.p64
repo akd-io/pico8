@@ -4,7 +4,7 @@ version 2
 :: gfx/
 :: gfx/0.gfx
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTIyIDA3OjMwOjA0Iixtb2RpZmllZD0iMjAyNC0w
-OC0xOCAxNjoxMToxOSIscmV2aXNpb249MTIwODQsc3RvcmVkPSIyMDIzLTM2LTI5IDA0OjM2OjQw
+OS0xMiAxNjo1ODo1NiIscmV2aXNpb249MTIxMDMsc3RvcmVkPSIyMDIzLTM2LTI5IDA0OjM2OjQw
 Il1dbHo0APAFAACbNgAA8Qp7WzBdPXtibXA9cHh1AEMgBQUEIAcwBwBHBgDxASxmbGFncz0wLHBh
 bl94PTYIANp5PS00LHpvb209OH0sOwBXJwAXAAcEAB8nQQAdvwcANzAHIAcwNwAHOwAdMBAHIH8A
 TycgB0A7AB9-MAeABzAHEDkAGlsQEATw8DIAEzAyAB8wMQAFcBEXEBcgJ0DkAPADFzAnEBcQJ-AE
@@ -34,17 +34,17 @@ gAfUAH8AVxAXUAegPwAdM3BHEAIAH3A7AA0PugEv-wM0F9A3sFeQd3B3cFeQN7AX8DpCAB4pd3AC
 AC-wND4CHg8xAP-----------------------------------------------7xQbT04fX0=
 :: gfx/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTA0LTA5IDAyOjM2OjAxIixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjowMzo1NCIscmV2aXNpb249MF1d
+NC0yNyAxNjowMjowMCIscmV2aXNpb249MF1d
 :: map/
 :: map/0.map
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTIyIDA3OjMwOjA0Iixtb2RpZmllZD0iMjAyNC0w
-OC0xOCAxNjoxMToxOSIscmV2aXNpb249ODk5OCxzdG9yZWQ9IjIwMjMtMzYtMjkgMDQ6MzY6NDAi
+OS0xMiAxNjo1ODo1NiIscmV2aXNpb249OTAxNyxzdG9yZWQ9IjIwMjMtMzYtMjkgMDQ6MzY6NDAi
 XV1sejQAcAAAAF8QAADwCHt7Ym1wPXVzZXJkYXRhKCJpMTYiLDMyAwAvIjABAP--------------
 ------vxESIpLGhpZGRlbj1mYWxzZSxuYW1lPSJmIixwYW5feD0wCADCeT0wLHRpbGVfaD01CQDA
 dz01LHpvb209MX19
 :: map/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTA0LTA5IDAyOjM2OjAxIixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjowMzo1NCIscmV2aXNpb249MF1d
+NC0yNyAxNjowMjowMCIscmV2aXNpb249MF1d
 :: amp.lua
 --[[pod_format="raw",created="2023-29-17 13:29:48",revision=257,stored="2023-27-19 23:27:17"]]
 -- amp filter
@@ -123,7 +123,7 @@ NC0yNyAxNjowMzo1NCIscmV2aXNpb249MF1d
 
 
 :: data.lua
---[[pod_format="raw",created="2023-10-24 00:36:58",modified="2024-08-18 16:11:19",revision=10982,stored="2023-36-29 04:36:40"]]
+--[[pod_format="raw",created="2023-10-24 00:36:58",modified="2024-09-12 16:58:56",revision=11004,stored="2023-36-29 04:36:40"]]
 
 function init_track(addr)
 --	printh("init_track "..addr)
@@ -333,7 +333,7 @@ function draw_mudo_state(x,y)
 end
 
 :: env.lua
---[[pod_format="raw",created="2023-10-08 03:32:58",modified="2024-08-18 16:11:19",revision=7879,stored="2023-36-29 04:36:40"]]
+--[[pod_format="raw",created="2023-10-08 03:32:58",modified="2024-09-12 16:58:56",revision=7901,stored="2023-36-29 04:36:40"]]
 
 -- flags: lerp, random start position
 -- used by DATA envelope
@@ -712,7 +712,7 @@ end
 
 
 :: gui.lua
---[[pod_format="raw",created="2023-10-22 07:32:11",modified="2024-08-18 16:11:19",revision=15421,stored="2023-36-29 04:36:40"]]
+--[[pod_format="raw",created="2023-10-22 07:32:11",modified="2024-09-12 16:58:56",revision=15444,stored="2023-36-29 04:36:40"]]
 
 function create_pane(title, x, y, w, h, col, ontap)
 
@@ -752,6 +752,37 @@ function create_pane(title, x, y, w, h, col, ontap)
 	return el
 end
 
+function extend_instrument_selection()
+	if (ci < ci2) then
+		ci0 = ci -- extend to left
+		ci1 = ci2
+	else
+		ci1 = ci -- extend to right
+		ci0 = ci2
+	end
+end
+
+function extend_track_selection()
+	if (ct < ct2) then
+		ct0 = ct -- extend to left
+		ct1 = ct2
+	else
+		ct1 = ct -- extend to right
+		ct0 = ct2
+	end
+end
+
+function extend_pattern_selection()
+	if (cp < cp2) then
+		cp0 = cp -- extend to left
+		cp1 = cp2
+	else
+		cp1 = cp -- extend to right
+		cp0 = cp2
+	end
+end
+
+
 function create_instrument_chooser(el)
 	local contents
 	-- instrument chooser
@@ -787,13 +818,7 @@ function create_instrument_chooser(el)
 			ci = msg.my\8
 			
 			if (key"shift") then
-				if (ci < ci2) then
-					ci0 = ci -- extend to left
-					ci1 = ci2
-				else
-					ci1 = ci -- extend to right
-					ci0 = ci2
-				end
+				extend_instrument_selection()
 				mode = "instrument"
 			else
 				ci0,ci1,ci2 = ci,ci,ci -- reset instrument selection
@@ -973,13 +998,7 @@ function create_track_chooser(el)
 				
 			ct = get_track_index_from_nav_mxy(msg.mx, msg.my)
 			if (key"shift") then
-				if (ct < ct2) then
-					ct0 = ct -- extend to left
-					ct1 = ct2
-				else
-					ct1 = ct -- extend to right
-					ct0 = ct2
-				end
+				extend_track_selection()
 			else
 				ct0,ct1,ct2 = ct,ct,ct -- reset track selection
 			end
@@ -1096,13 +1115,7 @@ function create_pattern_chooser(el)
 			cp = flr(mid(0, msg.mx \ 20, 3) + ((msg.my-2) \ 12) * 4)
 			
 			if (key"shift") then
-				if (cp < cp2) then
-					cp0 = cp -- extend to left
-					cp1 = cp2
-				else
-					cp1 = cp -- extend to right
-					cp0 = cp2
-				end
+				extend_pattern_selection()
 			else
 				cp0,cp1,cp2 = cp,cp,cp -- reset pattern selection
 			end
@@ -1444,7 +1457,7 @@ function generate_gui_pattern()
 		x=3,y=244,width=80,height=10,
 		draw=function()
 			if (something_is_playing and following_playback) then
-				local row = stat(400,9)
+				local row = stat(400 + stat(467),9)
 				print("playing row: "..flr(row),0,0,13)
 			else
 				local row = cur_y - (0x50000 + (ct * 328) + 8)
@@ -1472,7 +1485,8 @@ function create_play_button()
 		spr(something_is_playing and 63 or 62,5,1)
 	end
 	
-	function el:click()
+	-- use tap so that following_playback is not cancelled by click
+	function el:tap()
 		if something_is_playing then
 			note()
 		elseif mode == "instrument" then
@@ -1482,7 +1496,7 @@ function create_play_button()
 		elseif mode == "track" then
 			sfx(ct)
 		elseif mode == "pattern" then
-			music(cp)
+			music(cp) following_playback = true
 		end
 	end
 	
@@ -1753,7 +1767,7 @@ end
 
 
 :: inst.lua
---[[pod_format="raw",created="2023-10-27 18:16:38",modified="2024-08-18 16:11:19",revision=9437]]
+--[[pod_format="raw",created="2023-10-27 18:16:38",modified="2024-09-12 16:58:56",revision=9459]]
 
 function get_inst_name(i)
 	local inst_addr = 0x40000 + i*0x200
@@ -2791,7 +2805,7 @@ end
 
 
 :: main.lua
---[[pod_format="raw",created="2023-10-22 07:30:04",modified="2024-08-18 16:11:19",revision=14199,stored="2023-36-29 04:36:40"]]
+--[[pod_format="raw",created="2023-10-22 07:30:04",modified="2024-09-12 16:58:56",revision=14222,stored="2023-36-29 04:36:40"]]
 --[[
 	Picotron Tracker
 	(c) Lexaloffle Games LLP
@@ -2966,7 +2980,7 @@ end
 
 
 :: track.lua
---[[pod_format="raw",created="2023-10-27 18:49:18",modified="2024-08-18 16:11:19",revision=10343]]
+--[[pod_format="raw",created="2023-10-27 18:49:18",modified="2024-09-12 17:23:50",revision=10368]]
 --[[
 
 	track editor
@@ -3369,6 +3383,15 @@ function get_track_selection(sel)
 	return x0,y0,x1,y1
 end
 
+function get_track_selection_size(tdat)
+	if (not tdat) return 0
+	if (not tdat.sel) return 0
+	local sel = tdat.sel
+	local x0,y0,x1,y1 = get_track_selection(sel)
+	return max(x0-x1, y0-y1)
+end
+
+
 
 local fx_input = {
 	["0"] = "\0", ["."] = "\0",
@@ -3498,7 +3521,14 @@ function update_track_editor()
 			-- some operations shouldn't apply to single cel (deselect / delete)	
 			
 			-- remove selection
-			if (keyp("enter")) tdat[ct].sel = nil return
+			if (keyp("enter")) then
+				if (tdat[ct]) tdat[ct].sel = nil 
+				tdat[ct].sel = {
+					x0=cur_x, y0=cur_y - row0_addr,
+					x1=cur_x, y1=cur_y - row0_addr
+				}
+				clear_key("enter") -- don't insert a line
+			end
 		
 			-- clear (also use after cutting) -- 
 			-- to do: allow clearing at the nibble level
@@ -3670,7 +3700,7 @@ function update_track_editor()
 		end
 	end
 	
-	if (keyp("enter") and cur_y < max_addr) then
+	if (keyp("enter") and cur_y < max_addr and get_track_selection_size(tdat[ct]) < 2) then
 		checkpoint()
 		for addr = max_addr, cur_y+1, -1 do
 			for j=0,4 do
@@ -3831,14 +3861,12 @@ end
 
 function update_pattern_editor()
 
-	if ( key"ctrl" and keyp"c" or keyp"x") then
+	if ( key"ctrl" and (keyp"c" or keyp"x")) then
 		local ud=userdata("u8",20 * (cp1-cp0+1)):peek(0x30100 + cp0*20)
 		set_clipboard(pod({
 			pattern=ud
 		},7,{pod_type="pattern"}))
-		for i=cp0,cp1 do
-			clear_pattern(i)
-		end
+		
 		if key"x" then
 			for i=cp0,cp1 do clear_pattern(i) end
 			notify("cut "..(cp1-cp0+1).." patterns")
@@ -3862,7 +3890,7 @@ function update_pattern_editor()
 end
 
 :: undo.lua
---[[pod_format="raw",created="2024-03-30 19:03:19",modified="2024-08-18 16:11:19",revision=2180]]
+--[[pod_format="raw",created="2024-03-30 19:03:19",modified="2024-09-12 16:58:56",revision=2205]]
 --[[
 
 	single undo stack for whole .sfx file
@@ -3905,7 +3933,7 @@ function redo()
 	refresh_gui = true
 end
 :: update.lua
---[[pod_format="raw",created="2023-10-22 07:32:11",modified="2024-08-18 16:11:19",revision=14000,stored="2023-36-29 04:36:40"]]
+--[[pod_format="raw",created="2023-10-22 07:32:11",modified="2024-09-12 16:58:56",revision=14024,stored="2023-36-29 04:36:40"]]
 global_t = 0
 
 -- map keyboard letters to pitches
@@ -3935,7 +3963,8 @@ function follow_playback(playing_pattern)
 		refresh_gui = true
 	else
 		-- follow cursor row of leftmost non-looping channel
-		local row = stat(400,9)
+		
+		local row = stat(400 + stat(467), 9)
 		pattern_contents.y = mid(0, 64 - row * 8, 
 			 pattern_contents.parent.height - pattern_contents.height)
 	end
@@ -3952,7 +3981,7 @@ function _update()
 	
 	-- find out which channel current instrument is being played on
 	ci_channel = -1
-	for i=0,31 do
+	for i=0,15 do
 		if (ci_channel == -1 and stat(400+i,1) == ci) then
 			ci_channel = i
 		end
@@ -3962,7 +3991,7 @@ function _update()
 	something_is_playing = false
 	for i=0,15 do
 		if (stat(400+i,12) != -1) something_is_playing = true -- sfx
-		if (stat(400+i,1 ) != -1) something_is_playing = true -- inst
+		--if (stat(400+i,1 ) != -1) something_is_playing = true -- inst
 	end
 	
 	-- or if there is [recently] some global output (e.g. echo or rogue node)
@@ -4063,10 +4092,12 @@ function _update()
 	elseif (keyp("-") or keyp("+")) then
 
 		local dd = keyp("-") and -1 or 1
-		if (mode == "instrument") ci += dd
-		if (mode == "track")      ct += dd
-		if (mode == "pattern")    cp += dd
+		if (mode == "instrument") ci += dd if (key"shift") then extend_instrument_selection() else ci0,ci1,ci2=ci,ci,ci end
+		if (mode == "track")      ct += dd if (key"shift") then extend_track_selection()      else ct0,ct1,ct2=ct,ct,ct end
+		if (mode == "pattern")    cp += dd if (key"shift") then extend_pattern_selection()    else cp0,cp1,cp2=cp,cp,cp end
+
 		
+
 		refresh_gui = true
 	end
 	
@@ -4084,25 +4115,25 @@ end
 
 
 :: .info.pod
-b64$LS1bW3BvZCxub3Rlcz0iKGMpIExleGFsb2ZmbGUgR2FtZXMgTExQIixtb2RpZmllZD0iMjAy
-NS0wNC0yNyAxNjowMzo1NCIsaWNvbj11c2VyZGF0YSgidTgiLDE2LDE2LCIwMDAwMDAwMTAxMDEw
-MTAxMDEwMTAxMDEwMTAwMDAwMDAwMDAwMTA3MDcwNzA3MDcwNzA3MDcwNzA3MDEwMDAwMDAwMTA3
-MGQwZDBkMGQwZDBkMGQwZDBkMGQwNzAxMDAwMTA3MGQwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMDcw
-MTAxMDcwZDA3MDcwNzA3MGQwZDBkMGQwZDBkMGQwNzAxMDEwNzBkMDcwNzA3MDcwZDBkMGQwZDBk
-MGQwZDA3MDEwMTA3MGQwNzBkMDcwNzA3MDcwNzBkMGQwZDA3MDcwMTAxMDcwZDA3MDcwNzA3MGQw
-ZDBkMGQwNzBkMDcwNzAxMDEwNzBkMDcwNzBkMGQwNzBkMGQwZDA3MGQwNzA3MDEwMTA3MGQwNzA3
-MGQwZDBkMDcwZDBkMGQwZDBkMDcwMTAxMDcwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMGQwNzAxMDEw
-NjA3MGQwZDBkMGQwZDBkMGQwZDBkMGQwNzA2MDEwMTA2MDYwNzA3MDcwNzA3MDcwNzA3MDcwNzA2
-MDYwMTAwMDEwNjA2MDYwNjA2MDYwNjA2MDYwNjA2MDYwMTAwMDAwMDAxMDYwNjA2MDYwNjA2MDYw
-NjA2MDYwMTAwMDAwMDAwMDAwMTAxMDEwMTAxMDEwMTAxMDEwMTAwMDAwMCIpLGNyZWF0ZWQ9IjIw
-MjMtMTAtMTkgMTY6NTA6MDciLGF1dGhvcj0iemVwIixyZXZpc2lvbj0wLHJ1bnRpbWU9OCx0aXRs
-ZT0iUGljb3Ryb24gVHJhY2tlciIsdmVyc2lvbj0iMC4xaCIsd29ya3NwYWNlcz17e2xvY2F0aW9u
-PSJtYWluLmx1YSMxNDgiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249Imd1aS5sdWEjOTY0
-Iix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJpbnN0Lmx1YSMyNzYiLHdvcmtzcGFjZV9p
-bmRleD0xfSx7bG9jYXRpb249ImVudi5sdWEjMjM0Iix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0
-aW9uPSJ0cmFjay5sdWEjNzI1Iix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJ1cGRhdGUu
-bHVhIzE1NCIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0iZGF0YS5sdWEjNzYiLHdvcmtz
-cGFjZV9pbmRleD0xfSx7bG9jYXRpb249InVuZG8ubHVhIzgiLHdvcmtzcGFjZV9pbmRleD0xfSx7
+b64$LS1bW3BvZCx2ZXJzaW9uPSIwLjFoIixhdXRob3I9InplcCIsbW9kaWZpZWQ9IjIwMjUtMDQt
+MjcgMTY6MDI6MDAiLG5vdGVzPSIoYykgTGV4YWxvZmZsZSBHYW1lcyBMTFAiLHRpdGxlPSJQaWNv
+dHJvbiBUcmFja2VyIixydW50aW1lPTEwLGNyZWF0ZWQ9IjIwMjMtMTAtMTkgMTY6NTA6MDciLGlj
+b249dXNlcmRhdGEoInU4IiwxNiwxNiwiMDAwMDAwMDEwMTAxMDEwMTAxMDEwMTAxMDEwMDAwMDAw
+MDAwMDEwNzA3MDcwNzA3MDcwNzA3MDcwNzAxMDAwMDAwMDEwNzBkMGQwZDBkMGQwZDBkMGQwZDBk
+MDcwMTAwMDEwNzBkMGQwZDBkMGQwZDBkMGQwZDBkMGQwZDA3MDEwMTA3MGQwNzA3MDcwNzBkMGQw
+ZDBkMGQwZDBkMDcwMTAxMDcwZDA3MDcwNzA3MGQwZDBkMGQwZDBkMGQwNzAxMDEwNzBkMDcwZDA3
+MDcwNzA3MDcwZDBkMGQwNzA3MDEwMTA3MGQwNzA3MDcwNzBkMGQwZDBkMDcwZDA3MDcwMTAxMDcw
+ZDA3MDcwZDBkMDcwZDBkMGQwNzBkMDcwNzAxMDEwNzBkMDcwNzBkMGQwZDA3MGQwZDBkMGQwZDA3
+MDEwMTA3MGQwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMDcwMTAxMDYwNzBkMGQwZDBkMGQwZDBkMGQw
+ZDBkMDcwNjAxMDEwNjA2MDcwNzA3MDcwNzA3MDcwNzA3MDcwNjA2MDEwMDAxMDYwNjA2MDYwNjA2
+MDYwNjA2MDYwNjA2MDEwMDAwMDAwMTA2MDYwNjA2MDYwNjA2MDYwNjA2MDEwMDAwMDAwMDAwMDEw
+MTAxMDEwMTAxMDEwMTAxMDEwMDAwMDAiKSxyZXZpc2lvbj0wLHdvcmtzcGFjZXM9e3tsb2NhdGlv
+bj0ibWFpbi5sdWEjMTQ4Iix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJndWkubHVhIzU1
+NyIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0iaW5zdC5sdWEjMjc2Iix3b3Jrc3BhY2Vf
+aW5kZXg9MX0se2xvY2F0aW9uPSJlbnYubHVhIzIzNCIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2Nh
+dGlvbj0idHJhY2subHVhIzEzNiIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0idXBkYXRl
+Lmx1YSM1NiIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0iZGF0YS5sdWEjNzYiLHdvcmtz
+cGFjZV9pbmRleD0xfSx7bG9jYXRpb249InVuZG8ubHVhIzQiLHdvcmtzcGFjZV9pbmRleD0xfSx7
 bG9jYXRpb249ImdmeC8wLmdmeCIsd29ya3NwYWNlX2luZGV4PTJ9LHtsb2NhdGlvbj0ibWFwLzAu
 bWFwIix3b3Jrc3BhY2VfaW5kZXg9M30se2xvY2F0aW9uPSJzZngvMC5zZngiLHdvcmtzcGFjZV9p
 bmRleD00fSx7bG9jYXRpb249InNmeC8wLnNmeCIsd29ya3NwYWNlX2luZGV4PTd9fV1d

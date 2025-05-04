@@ -596,7 +596,7 @@ function draw_window_frame(win)
 	pset(x0,y0,border_col)
 	pset(x1,y0,border_col)
 
-	if not sdat.squishy_windows then
+	if not sdat.squishy_windows or (get_active_window() != win) then
 
 		-- sides, bottom
 		line(x0+1, y1+1, x1-1, y1+1, border_col)
@@ -609,7 +609,7 @@ function draw_window_frame(win)
 
 	else
 
-		-- partial sides
+		-- partial sides for active squishy window
 		line(x0-1, y0+1, x0-1, y0+12, border_col)
 		line(x1+1, y0+1, x1+1, y0+12, border_col)
 	end
@@ -842,10 +842,12 @@ function generate_windat()
 		local w2 = ws_gui.child[i]
 		-- only windows that have a frame and are solid
 		-- later: could send a low-res 160x90 mask including non-rectangular windows
+		-- minimal information: non-sandboxed programs can use the proc_id to look up more info 
 		if (w2.has_frame and _ppeek(w2.proc_id, 0x547d) == 0 and w2 ~= win) then
 			add(windat, {
 				x = w2.x, y = w2.y - bar_h,
-				width = w2.width, height = w2.height + bar_h
+				width = w2.width, height = w2.height + bar_h,
+				proc_id = w2.proc_id
 			})
 		end
 	end
@@ -952,7 +954,7 @@ function create_window(target_ws, attribs)
 
 		local blit_result = false
 		
-		if sdat.squishy_windows and win.has_frame then
+		if sdat.squishy_windows and win.has_frame and get_active_window() == win then
 
 			local border_col = theme(get_active_window() == win and "window_border" or "dormant_border")
 
@@ -973,21 +975,39 @@ function create_window(target_ws, attribs)
 
 			camera()
 			local yy1 = win.sya[0]
-			for yy = 0, win.height-1 do
+			for yy = 0, win.height-2 do
 				local ht = (win.sya[yy+1] - win.sya[yy])\1 -- draw > 1px high when stretched out
 
 				while (yy1 <= win.sya[yy]) do
-					blit_result = _blit_process_video(win.proc_id, 0, yy, nil, 1 + ht, win.sxa[yy], yy1)
-					pset(win.sxa[yy]-1, yy1, border_col)
-					pset(win.sxa[yy]+ win.width, yy1, border_col)
+					blit_result = _blit_process_video(win.proc_id, 0, yy, nil, max(1,ht), win.sxa[yy], yy1)
+
+					if (blit_result) then
+						blit(prev_frame, nil, win.sxa[yy], yy1, win.sxa[yy], yy1, win.width, max(1,ht))
+					end
+
+					pset(win.sxa[yy] - 1, yy1, border_col)
+					pset(win.sxa[yy] + win.width, yy1, border_col)
 					yy1 += 1
 				end
-
 			end
 
-			-- bottom line
+			-- dupe on last line for efficiency -- sides are one pixel in
+			local ht = 1
 			local yy = win.height-1
-			line(win.sxa[yy], yy1, win.sxa[yy] + win.width - 1, yy1, border_col)
+			local ht = (win.sya[yy+1] - win.sya[yy])\1 -- draw > 1px high when stretched out
+			while (yy1 <= win.sya[yy]) do
+				blit_result = _blit_process_video(win.proc_id, 0, yy, nil, max(1,ht), win.sxa[yy], yy1)
+				if (blit_result) then
+					blit(prev_frame, nil, win.sxa[yy], yy1, win.sxa[yy], yy1, win.width, max(1,ht))
+				end
+				pset(win.sxa[yy], yy1, border_col)
+				pset(win.sxa[yy] + win.width - 1, yy1, border_col)
+				yy1 += 1
+			end
+
+			-- bottom line (two pixels in)
+			local yy = win.height-1
+			line(win.sxa[yy] + 1, yy1, win.sxa[yy] + win.width - 2, yy1, border_col)
 
 		else
 			-- regular rectangular blit
@@ -999,15 +1019,16 @@ function create_window(target_ws, attribs)
 			win.sxa = nil
 			win.sya = nil
 
+			-- could not blit (_draw didn't complete?) 
+			--> blit from desktop copy instead (when not fullscreen -- fullscreen can just do nothing!)
+			-- non-rectangular windows (w/ PROCBLIT_TRANSP_ADDR set) should make sure  [update: ... make sure what?]
+			if (blit_result and not win.fullscreen) then
+				blit(prev_frame, nil, win.sx, win.sy, win.sx, win.sy, win.width, win.height)
+				--clip() circfill(0,0,16,8) circfill(0,0,24,7) -- debug: show that (desktop) window is frame-skipping	
+			end
+
 		end
 		
-		-- could not blit (_draw didn't complete?) 
-			--> blit from desktop copy instead (when not fullscreen -- fullscreen can just do nothing!)
-		-- non-rectangular windows (w/ PROCBLIT_TRANSP_ADDR set) should make sure 
-		if (blit_result and not win.fullscreen) then
-			blit(prev_frame, nil, win.sx, win.sy, win.sx, win.sy, win.width, win.height)
-			--clip() circfill(0,0,16,8) circfill(0,0,24,7) -- debug: show that (desktop) window is frame-skipping			
-		end
 
 
 		-- debug: show window size
@@ -1134,19 +1155,19 @@ function create_window(target_ws, attribs)
 				cursor = "pointer",
 				x = -2, justify="right",
 				y = 0, vjustify="center",
-				width = 7, height = 7,
+				width = 12, height = 12,
 				tap = function(self)
 					close_window(self.parent.parent, true)
 				end,
 				draw = function(self, msg)
-					(msg.has_pointer and circfill or circ)(self.width / 2, self.height / 2, self.width/3, 
+					(msg.has_pointer and circfill or circ)(self.width / 2, self.height / 2 - 1, 2, 
 						win.parent.active_window == win and theme("window_button") or theme("dormant_button")) 					
 				end
 			}
 		)
 
 		-- app menu button
-		bar:attach(make_window_button(bar, "app menu", 4, 1, 10, 10 +1)) -- height +1 so that window frame border is not clobbered
+		bar:attach(make_window_button(bar, "app menu", 4, 1, 12, 10 +1)) -- height +1 so that window frame border is not clobbered
 
 
 		function bar:update(event)
@@ -1371,6 +1392,14 @@ function create_window(target_ws, attribs)
 	return win	
 end
 
+function pixel_scale()
+	local video_mode = @0x547c
+	if (video_mode == 3) return 2
+	if (video_mode == 4) return 3
+	return 1
+end
+
+
 --[[
 	mouse_scaled()
 	takes video mode into account
@@ -1380,15 +1409,8 @@ function mouse_scaled()
 
 	local x,y,b,dx,dy = mouse()
 
-
-	local scale = 1
-	local video_mode = @0x547c
-
-	if (video_mode == 3) scale = 2
-	if (video_mode == 4) scale = 3
-
-	x \= scale
-	y \= scale
+	x \= pixel_scale()
+	y \= pixel_scale()
 
 	return x,y,b,dx,dy
 end
@@ -1535,11 +1557,12 @@ function _draw()
 
 	local show_cursor = not screensaver_proc_id
 
+	mx, my, mb = mouse_scaled()
+	if (mx >= 479 and my >= 269) show_cursor = false -- can hide cursor at bottom right
+
 	if (show_cursor) then
-		mx, my, mb = mouse_scaled()
-
+		
 		-- show default cursor when active window doesn't have one, and not holding alt
-
 
 		local gfx = cursor_gfx[1].bmp or default_cursor_gfx
 
@@ -1558,6 +1581,8 @@ function _draw()
 		if (type(gfx) != "userdata") gfx = default_cursor_gfx
 
 		
+		
+
 		if (dragging_items) then
 
 			-- dragging: override cursor gfx
@@ -1648,13 +1673,14 @@ function _draw()
 			-- grab the rgb display palette and video mode from that process
 			-- to do: cross-process memcpy
 
-			if (awin.display_palette != false) then -- window can opt to leave palette alone (ref: capture.p64)
+			if (awin.push_palette ~= false) then -- window can opt to leave palette alone (ref: capture.p64)
 				for i=0x5000,0x54ff,4 do
 					poke4(i, _ppeek4(awin.proc_id, i))
 				end
 			end
-			poke(0x547c, _ppeek(awin.proc_id, 0x547c))
-
+			if (awin.push_video_mode ~= false) then -- window can opt to leave video mode alone (ditto)
+				poke(0x547c, _ppeek(awin.proc_id, 0x547c))
+			end
 		else
 			--printh("-- skipped resetting palette "..time())
 		end
@@ -2081,6 +2107,25 @@ function _update()
 
 	if (key("ctrl") and keyp("2")) ws_gui.show_infobar = not ws_gui.show_infobar
 
+	-- past file references
+	if (key("ctrl") and keyp("v") and awin) then
+		local p, m = unpod(get_clipboard())
+		if m and m.pod_type == "file_references" then
+			readtext(true) -- receiving program won't get the ctrl-v message
+			send_message(awin.proc_id, {event="drop_items", 
+				items = p,
+				from_proc_id = 3,
+				dx = 0, dy = 0,
+				mx = mx, my = my,
+				-- hold ctrl / shift to modify drop action (e.g. in filenav means force overwrite)
+				ctrl = key"ctrl", shift = key"shift", 
+			})
+			--notify("pasting "..#p.." items") -- let app handle notifications
+		else
+			-- commented; should be handled by app
+			-- notify("no items found to paste")
+		end
+	end
 
 	
 	--============================================== capture =========================================================
@@ -2090,7 +2135,8 @@ function _update()
 			-- select first
 			create_process("/system/apps/capture.p64", {
 				window_attribs = {workspace="current", autoclose = true}, 
-				intention = "capture_screenshot"
+				intention = "capture_screenshot",
+				vid_mode = 3
 			})
 		else
 			capture_screenshot()
@@ -2356,7 +2402,9 @@ function _update()
 				from_proc_id = dragging_items_from_proc_id,
 				dx = mx - start_mx, dy = my - start_my, 
 				mx = mx - win2.sx, 
-				my = my - win2.sy
+				my = my - win2.sy,
+				-- hold ctrl / shift to modify drop action (e.g. in filenav means force overwrite)
+				ctrl = key"ctrl", shift = key"shift"
 			})
 		end
 
@@ -2369,12 +2417,14 @@ function _update()
 		head_gui:update_all()
 	end
 
-	-- store state of windows data // to do: pm could wm know if anyone is subscribed to alter frequency
-	
+	-- store state of windows data // to do: pm could let wm know if anyone is subscribed to alter frequency
+	--[[
 	if (not last_windat_t or time() > last_windat_t + 0.125) then
 		last_windat_t = time()
 		store("/ram/shared/windows.pod", generate_windat())
 	end
+	]]
+	store("/ram/shared/windows.pod", generate_windat()) -- every frame; quite cheap
 
 	if (sdat.sparkles) then
 		update_sparkles()
@@ -2503,8 +2553,10 @@ function choose_workspace(attribs)
 end
 
 on_event("app_menu_item", function(msg)
+	
 	proc_menu[msg._from] = proc_menu[msg._from] or {}
 	local menu = proc_menu[msg._from]
+
 	-- look for existing item by label
 	local pos = #menu + 1 -- default: add new
 	for i=1,#menu do
@@ -2512,7 +2564,10 @@ on_event("app_menu_item", function(msg)
 	end
 	
 	menu[pos] = msg.attribs
-	update_app_menu_item(menu[pos])
+	if (get_active_window() and get_active_window().proc_id == msg._from) then
+		-- update live item when this is the active window
+		update_app_menu_item(menu[pos])
+	end
 end)
 
 
@@ -2867,8 +2922,8 @@ function capture_video(cdat)
 	poke2(0x40, 
 		tonum(cdat.x)      or 0,
 		tonum(cdat.y)      or 0,
-		tonum(cdat.width)  or 480,
-		tonum(cdat.height) or 270,
+		tonum(cdat.width)  or 480 / pixel_scale(),
+		tonum(cdat.height) or 270 / pixel_scale(),
 		tonum(cdat.scale)  or 2,
 		tonum(cdat.frames) or 30*120, -- max: 2 minutes (to do: configurable)
 		-- delay: +1 because want to start on the display data that is /going to/ be send to video out this frame
@@ -2886,8 +2941,8 @@ function capture_screenshot(cdat)
 	poke2(0x50,
 		tonum(cdat.x)      or 0,
 		tonum(cdat.y)      or 0,
-		tonum(cdat.width)  or 480,
-		tonum(cdat.height) or 270,
+		tonum(cdat.width)  or 480 / pixel_scale(),
+		tonum(cdat.height) or 270 / pixel_scale(),
 		tonum(cdat.scale)  or 2,
 		cdat.as_label and 1 or 0,
 		-- delay: +1 because want to start on the display data that is /going to/ be send to video out this frame
@@ -2998,9 +3053,13 @@ end
 -- update the single label of an appmenu item rather than regenerating the interface on change
 function update_app_menu_item(ii)
 	if (not app_menu_pulldown) return
-	for i=1,#app_menu_pulldown.child do
+	for i=#app_menu_pulldown.child,1,-1 do -- end to start for deletion
 		if (app_menu_pulldown.child[i].id == ii.id) then
-			app_menu_pulldown.child[i].label = ii.label
+			if (not ii.label) then
+				deli(app_menu_pulldown.child, i) -- no label means remove item
+			else
+				app_menu_pulldown.child[i].label = ii.label
+			end
 		end
 	end
 end

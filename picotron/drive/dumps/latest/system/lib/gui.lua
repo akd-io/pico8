@@ -26,10 +26,6 @@ do
 
 	local next_id = 0
 
-	-- used for setting from draw call tree
-	local mouse_cursor_gfx = nil 
-	local last_mouse_cursor_gfx = nil 
-
 	
 	function GuiElement:new(el)
 		el = el or {}
@@ -479,13 +475,12 @@ do
 		if (self.head.pointer_element == self) then
 			local mx, my, mb = mouse()
 			msg.has_pointer = (mx >= self.sx and my >= self.sy and mx < self.sx + self.width and my < self.sy + self.height)
-			if (self.cursor) mouse_cursor_gfx = self.cursor
 		else
 			msg.has_pointer = nil
 		end
 
 		local fin = false
-		local cl,ct,cw,ch,cc
+		local cl,ct,cw,ch,cc,capture_cache
 
 		-- call event handler if it exists
 		if (type(self[msg.event]) == "function") then
@@ -518,11 +513,29 @@ do
 					local mx, my, mb = mouse()
 					msg.mx, msg.my = mx - self.sx, my - self.sy
 
-					fin = self.draw(self, msg)
 
+					-- 0.1.1c: only bother drawing when state that this element depends on has changed
+					-- to do: perhaps could draw (or blit to) own userdata if requested
+					-- ** EXPERIMENTAL **
+					if (self.draw_dependency) then
+
+						local state_str = self:draw_dependency()
+						if (state_str ~= self.last_state_str) then
+							fin = self.draw(self, msg)
+							self.last_state_str = state_str
+						else
+							-- -> can skip drawing this entire cranch
+							fin = true
+						end
+					else
+						fin = self.draw(self, msg)
+					end
 				else
 
+					-- generic callback (not "draw")
+
 					fin = self[msg.event](self, msg)
+
 				end
 			end
 
@@ -549,9 +562,9 @@ do
 				if (self.parent) self.parent:event(msg)
 
 			end
-
-
 		end
+
+		
 
 		-- restore clipping, camera state if needed
 		if (cl) then
@@ -776,28 +789,11 @@ do
 			msg.propagate_to_children = true
 
 			-- should gui be responsible for preserving draw state?
-			set(draw_state, 0, peek8(0x5480, 24))
-
---			local cx, cy, cw, ch = clip()
-			clip()
-
-
-			-- use false instead of nil so that can send it via a message
-			-- means "no cursor found by gui draw tree"
-			mouse_cursor_gfx = false 
-
+			--set(draw_state, 0, peek8(0x5480, 24))
+			draw_state:peek(0x5480, 0, 24) -- back up 192 bytes of draw state
+			clip() camera()
 			self:event(msg)
-
-			-- send message to wm when cursor changed
-			if (pid() > 3) then
-				if (last_mouse_cursor_gfx != mouse_cursor_gfx) window{cursor = mouse_cursor_gfx}
-				last_mouse_cursor_gfx = mouse_cursor_gfx
-			end
-
-			gui.mouse_cursor_gfx = mouse_cursor_gfx -- could be false; means no cursor 
-
---			clip(cx, cy, cw, ch) -- restore
-			poke8(0x5480, get(draw_state)) -- restore whole draw state
+			draw_state:poke(0x5480) -- restore
 
 		end
 
@@ -836,6 +832,21 @@ do
 				if (el2.hidden) el = nil -- found; don't send any messages
 				el2 = el2.parent
 			end
+
+
+
+			----------------- update cursor --------------------------------------------------------------
+
+
+			gui.mouse_cursor_gfx = (el and el.cursor) or false -- use false so that can send in a message
+
+			if (pid() > 3) then
+				if (gui.last_mouse_cursor_gfx != gui.mouse_cursor_gfx) then
+					window{cursor = gui.mouse_cursor_gfx}
+				end
+				gui.last_mouse_cursor_gfx = gui.mouse_cursor_gfx
+			end
+
 
 			----------------- standard messages: only send to element at pointer -----------------------
 

@@ -16,6 +16,12 @@ if (pid() > 3) then
 	end
 end
 
+-- sandboxed programs can not use the Debug library for now
+-- (needs security review -- probably can be partially available at most)
+if (env().sandboxed) then
+	Debug = nil
+end
+
 
 --[[
 if (pid() > 3) then

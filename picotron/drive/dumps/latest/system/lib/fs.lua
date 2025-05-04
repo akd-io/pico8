@@ -40,7 +40,8 @@ do
 	----------------------------------------------------------------------------------------------------------------------------------
 	-- path remapping
 	--
-	-- rule: local functions (_mkdir) all take raw paths, global functions (mkdir) takes sandboxed paths 
+	-- rule: local functions (_mkdir) take raw paths ("/appdata/bbs/cart_id/gamename") 
+	--       global functions (mkdir) take userland paths ("/appdata/gamename")
 	----------------------------------------------------------------------------------------------------------------------------------
 
 	-- to do: handle protocols here? 
@@ -53,7 +54,7 @@ do
 	end
 
 
-	-- raw path -> sandboxed path
+	-- userland path -> raw path
 	local function _sandbox_path(path, writing)
 
 		if (not _sandboxed) return path
@@ -88,8 +89,9 @@ do
 		return nil
 	end
 
-	-- sandboxed -> raw path
-	-- when raw pwd is "/ram/appdata/bbs/cart_id", a sandboxed pwd() should return "/ram/appdata"
+
+	-- raw path -> userland path
+	-- when raw pwd is "/ram/appdata/bbs/cart_id", userland pwd() should return "/ram/appdata"
 	local function _un_sandbox_path(path)
 		if (type(path) ~= "string") return nil
 		
@@ -214,7 +216,9 @@ do
 		local filename, hash_part = table.unpack(_split(location, "#", false))
 		local prot = location:prot()
 
-		if (prot == "anywhen") then
+		if (prot == "test") then
+			return "hi from test"
+		elseif (prot == "anywhen") then
 
 			-- anywhen: used for testing rollback (please don't use this for anything important yet!)
 			-- fetch("anywhen://foo.txt@2024-04-05_13:02:27"
@@ -264,6 +268,7 @@ do
 		else
 			-- local file
 			filename = _sandbox_path(filename)
+			if (not filename) return nil, nil, nil, "could not access path"
 			local ret, meta = _fetch_local(filename, do_yield, ...)
 			_fix_metadata_dates(meta)
 			return ret, meta, hash_part  -- no error
@@ -273,6 +278,7 @@ do
 	
 	function mkdir(p)
 		p = _sandbox_path(p, true)
+		if (not p) return nil, nil, nil, "could not access path"
 
 		if (_fstat(p)) return -- is already a file or directory
 
@@ -299,6 +305,8 @@ do
 		end
 
 		location = _sandbox_path(location, true)
+		if (not location) return "could not store to path"
+
 
 		-- special case: can write raw .p64 / .p64.rom / .p64.png binary data out to host file without mounting it
 		local ext = location:ext()
@@ -459,7 +467,7 @@ do
 
 		if (not f0_type) then
 			-- print(tostring(f0).." does not exist") 
-			return
+			return "could not access source location"
 		end
 
 		-- explicitly delete in case is a folder -- want to make sure contents are removed
@@ -521,8 +529,9 @@ do
 	function mv(src, dest)
 		src  = _sandbox_path(src, true) 
 		dest = _sandbox_path(dest, true)
+		if (not src or not dest) return
 
-		-- skip mv if src and dest are the same (or both nil)
+		-- skip mv if src and dest are the same
 		if (_fullpath(src) == _fullpath(dest)) return
 
 		local res = _cp(src, dest, true)
@@ -535,6 +544,7 @@ do
 	function cp(src, dest)
 		src  = _sandbox_path(src)
 		dest = _sandbox_path(dest, true)
+		if (not src or not dest) return 
 		return _cp(src, dest) -- don't expose the moving or depth parameters; they are internal details
 	end
 
@@ -576,6 +586,7 @@ do
 	function fstat(p)
 		if (_sandboxed) then
 			p = _sandbox_path(p)
+			if (not p) return nil
 			local kind, size = _fstat(p)
 			return kind, size -- no mount description -- might expose information outside of sandbox
 		end

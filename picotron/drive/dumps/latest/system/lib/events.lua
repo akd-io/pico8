@@ -11,6 +11,8 @@ do
 	local _env = env
 	local _read_message = _read_message
 	local _update_buttons = _update_buttons
+	local _flip = _flip
+	local _pid = pid
 
 	local message_hooks = {}
 	local message_subscriber = {}
@@ -465,7 +467,7 @@ do
 
 						local accept = true
 
-						if (pid() > 3) then
+						if (_pid() > 3) then
 							if (key_state[lctrl] or key_state[rctrl]) then
 								-- to do (efficiency) maintain a reverse lookup of keys to filter when ctrl is held
 								if (msg.scancode == name_to_scancodes["s"][1]) accept = false
@@ -513,7 +515,7 @@ do
 					end
 
 					if (msg.event == "lost_visibility") then
-						if (pid() > 3) poke(0x547f, peek(0x547f) & ~0x1) -- safety: only userland processes can lose visibility
+						if (_pid() > 3) poke(0x547f, peek(0x547f) & ~0x1) -- safety: only userland processes can lose visibility
 					end
 
 					if (msg.event == "resize") then
@@ -542,6 +544,29 @@ do
 
 	end
 
+	-- flip()
+	-- allow custom mainloop / #putaflipinit / jelpi style fadeout
+	-- Farbs on "Meandering Thread of Execution": https://mastodon.social/@Farbs/112691223223669609
+
+	function flip(flags)
+		flags = flags or 0x4
+		if (flags & 0x4 > 0 and _pid() > 3) then
+
+			-- minimal bookkeeping
+			__process_event_messages() 
+			if (keyp("escape") and env().corun_program=="/ram/cart/main.lua") yield() -- to interrupt when corun in terminal
+			_flip(flags)
+
+			-- hold program while paused
+			while (peek(0x547f) & 0x4) > 0 do
+				__process_event_messages() 
+				_flip(0x3) -- don't advance time
+			end
+
+		else
+			_flip(flags)
+		end
+	end
 
 	-----
 	-- only one hook per event. simplifies logic.
@@ -572,5 +597,13 @@ do
 	end
 
 end
+
+
+if (pid() > 3) then
+	on_event("pause",       function() poke(0x547f, peek(0x547f) |  0x4) end)
+	on_event("unpause",     function() poke(0x547f, peek(0x547f) & ~0x4) end)
+--	on_event("toggle_mute", function() poke(0x547f, peek(0x547f) ^^ 0x8) end) -- deleteme; mute should be system-wide (maybe later: per-app volume)
+end
+
 
 
