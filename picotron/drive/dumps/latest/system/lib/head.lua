@@ -38,11 +38,15 @@ local _fcopy = _fcopy
 local _draw_map = _draw_map
 local _halt = _halt
 
+local _fetch_local = _fetch_local
+local _fetch_remote = _fetch_remote
+local _store_local = _store_local
+local _signal = _signal
 
 
 function reset()
 
-	-- reset palette 
+	-- reset palette (including scanline palette selection, rgb palette)
 
 	pal()
 
@@ -81,16 +85,15 @@ function reset()
 end
 
 
-local function init_head()
+local function init_runtime_state()
 
+	-- runtime state
 	srand()
 
---[[
-	update: don't need because now have automatic backing ram (VALIDATE_RAM_BACK scheme)
-	_base_ram = userdata("u8", 0x10000)
-	memmap(0x0, _base_ram)
-]]
+	-- default map
+	memmap(0x100000, userdata("i16", 32, 32))
 
+	-- reset() does most of the work but doesn't reset entire runtime state (maybe it should?)
 	reset()
 
 end
@@ -578,17 +581,48 @@ end
 
 	-- fetch and store can be passed locations instead of filenames
 
-	function fetch(location, ...)
+	function fetch(location, do_yield, ...)
 		local filename, hash_part = table.unpack(split(location, "#", false))
 
+		--[[
+			remote fetches are logically the same as local ones -- they block the thread
+			but.. can be put into a coroutine and polled
+		]]
 		if (string.sub(location, 1, 8) == "https://" or string.sub(location, 1, 7) == "http://" ) then
 			-- blocking call: download
-			local ret, meta = _fetch_remote(filename, ...)
-			return ret, meta, hash_part 
+
+			-- printh("[fetch] calling _fetch_remote: "..filename)
+			local job_id, err = _fetch_remote(filename, ...)
+			-- printh("[fetch] job id: "..job_id)
+
+			if (err) return nil, err
+
+			local tt = time()
+
+			while time() < tt + 10 do -- to do: configurable timeout.
+
+				-- printh("[fetch] about to fetch result for job id "..job_id)
+
+				local result, meta, hash_part, err = _fetch_remote_result(job_id)
+
+				-- printh("[fetch] result: "..type(result))
+
+				if (result or err) then
+					--printh("[fetch remote] returned an obj type: "..type(result).."  // err: "..tostring(err))
+					--printh("[fetch remote] err: "..pod(err))
+					return result, meta, hash_part, err
+				end
+
+				flip(0x1)
+				yield() -- allow pollable pattern from program.  to do: review cpu hogging
+
+			end
+			return nil, nil, nil, "timeout"
+
 		else
 			-- local file
-			local ret, meta = _fetch_local(filename, ...)
-			return ret, meta, hash_part 
+			local ret, meta = _fetch_local(filename, do_yield, ...)
+			return ret, meta, hash_part  -- no error
 		end
 	end
 
@@ -609,6 +643,7 @@ end
 
 		-- special case: can write raw .p64.png binary data out to host file without mounting it
 		if (location:ext() == "p64.png" and type(obj) == "string") then
+			rm(location:path()) -- unmount existing cartridge // to do: be more efficient
 			return _store_local(location, obj)
 		end
 
@@ -660,6 +695,7 @@ end
 		end
 
 		-- printh("storing meta_str: "..meta_str)
+
 		local result, err_str = _store_local(filename, obj, meta_str)
 
 		-- dev: assume no error for now! return stored metadata
@@ -710,10 +746,10 @@ end
 	end
 
 
-	local _lua_print = print
+	local _printh = _printh
 	local _tostring  = tostring
 	function printh(str)
-		_lua_print(string.format("[%03d] %s", pid(), _tostring(str)))
+		_printh(string.format("[%03d] %s", pid(), _tostring(str)))
 	end
 
 	
@@ -765,6 +801,11 @@ end
 		return segs[#segs]
 	end
 
+	function string:dirname()
+		local segs = split(self:path(),"/")
+		return self:sub(1,-#segs[#segs]-2)
+	end
+
 
 
 	--[[
@@ -798,6 +839,8 @@ end
 			return
 		end
 
+		local pwd0 = pwd()
+		
 		-- https://www.lua.org/manual/5.4/manual.html#pdf-load
 		-- chunk name (for error reporting), mode ("t" for text only -- no binary chunk loading), _ENV upvalue
 		-- @ is a special character that tells debugger the string is a filename
@@ -831,7 +874,11 @@ end
 ]]
 
 		-- call directly; allows complete stacktrace -- runtime error can be handled in general case
-		func()
+		
+		-- hrrm
+		-- if (filename:sub(1,12) ~= "/system/lib/") cd(filename:dirname())
+			func()
+		--cd(pwd0)
 
 		return true -- ok, no error including
 	end
@@ -885,21 +932,14 @@ end
 	end
 
 	function get_spr(index)
-		return _spr[index & 0x3fff]
+		return _spr[flr(index) & 0x3fff]
 	end
 
 
-	-- to do: should map() be able to take layer / scene table?
-	local _current_map = nil
 	function map(ud, b, ...)
 		
-		if (type(b) == "boolean") then
-			-- just set current map (used by resource loader)
-			-- using false here results in a NOP
-			if (b) _current_map = ud
-		elseif (type(ud) == "userdata") then
+		if (type(ud) == "userdata") then
 			-- userdata is first parameter -- use that and set current map
-			_current_map = ud
 			_draw_map(ud, b, ...)
 		else
 			-- pico-8 syntax
@@ -907,10 +947,8 @@ end
 		end
 	end
 
-	-- legacy
-	-- draw_map = map
-
-
+	
+	
 
 --------------------------------------------------------------------------------------------------------------------------------
 --    Undo
@@ -1013,7 +1051,7 @@ end
 
 -- notifications
 
-init_head()
+init_runtime_state()
 
 
 end

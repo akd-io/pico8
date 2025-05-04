@@ -1,3 +1,4 @@
+--[[pod_format="raw",created="2024-03-21 06:13:04",modified="2024-03-21 06:13:04",revision=0]]
 --[[
 
 	resources.lua
@@ -63,16 +64,24 @@ local function _autoload_resources()
 	-- map0.map for dev legacy -- should use 0.map
 	local mm = fetch("map/0.map") or fetch("map/map0.map")
 
+
 	-- dev legacy
 	if (mm and mm.layer) then
-		if (mm.layer[0] and mm.layer[0].bmp) map(mm.layer[0].bmp, true) ?"legacy map"
+		if (mm.layer[0] and mm.layer[0].bmp) memmap(0x100000, mm.layer[0].bmp)
 	end
 
 	-- 0.1 version: layers are in file root
 	if (mm) then
-		if (mm[1] and mm[1].bmp) map(mm[1].bmp, true)
+		if (mm[1] and mm[1].bmp) memmap(0x100000, mm[1].bmp)
 	end
 
+	-- set starting tile size to size of sprite 0 (has authority; observed by map editor too)
+	if (get_spr(0)) then
+		local w, h = get_spr():attribs()
+		poke(0x550e, w, h)
+	else
+		poke(0x550e, 16, 16)
+	end
 
 	-- load default sound bank
 	local ss = fetch("sfx/0.sfx")

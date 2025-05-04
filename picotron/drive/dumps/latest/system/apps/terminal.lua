@@ -1,4 +1,4 @@
---[[pod_format="raw",author="zep",created="2023-33-07 14:33:59",icon=userdata("u8",16,16,"00000001010101010101010101000000000001070707070707070707070100000001070d0d0d0d0d0d0d0d0d0d07010001070d0d0d0d0d0d0d0d0d0d0d0d070101070d0d0d0d07070d0d0d0d0d0d070101070d0d0d0d0d07070d0d0d0d0d070101070d0d0d0d0d0d07070d0d0d0d070101070d0d0d0d0d0d07070d0d0d0d070101070d0d0d0d0d07070d0d0d0d0d070101070d0d0d0d07070d0d0d0d0d0d070101070d0d0d0d0d0d0d0d0d0d0d0d07010106070d0d0d0d0d0d0d0d0d0d07060101060607070707070707070707060601000106060606060606060606060601000000010606060606060606060601000000000001010101010101010101000000"),modified="2024-03-11 18:45:55",notes="",revision=141,stored="2024-03-09 10:31:21",title="Terminal",version=""]]
+--[[pod_format="raw",author="zep",created="2023-33-07 14:33:59",icon=userdata("u8",16,16,"00000001010101010101010101000000000001070707070707070707070100000001070d0d0d0d0d0d0d0d0d0d07010001070d0d0d0d0d0d0d0d0d0d0d0d070101070d0d0d0d07070d0d0d0d0d0d070101070d0d0d0d0d07070d0d0d0d0d070101070d0d0d0d0d0d07070d0d0d0d070101070d0d0d0d0d0d07070d0d0d0d070101070d0d0d0d0d07070d0d0d0d0d070101070d0d0d0d07070d0d0d0d0d0d070101070d0d0d0d0d0d0d0d0d0d0d0d07010106070d0d0d0d0d0d0d0d0d0d07060101060607070707070707070707060601000106060606060606060606060601000000010606060606060606060601000000000001010101010101010101000000"),modified="2024-03-21 16:55:11",notes="",revision=144,stored="2024-03-09 10:31:21",title="Terminal",version=""]]
 --[[
 
 	terminal.lua
@@ -62,15 +62,17 @@ on_event("gained_focus", function() _has_focus = true end)
 on_event("lost_focus", function() _has_focus = false end)
 
 
+--corunning coroutines
+
+local coco = {}
+
 
 function _init()
---	print("wut")
 end
 
 -- to do: p8scii codes, at least for colour
 local function get_prompt()
 	return pwd().."> "
---	return pwd().."$ "
 end
 
 
@@ -79,8 +81,10 @@ local function run_cproj_callback(func, label)
 
 	-- run as a coroutine (separate lua_State) so that errors don't bring terminal itself down
 
-	local cor = cocreate(func)
-	local res, err = coresume(cor)
+	coco[func] = coco[func] or cocreate(func)
+
+	local res, err = coresume(coco[func])
+	
 
 	--if (res == 3) running_cproj = false -- 
 
@@ -99,6 +103,8 @@ local function run_cproj_callback(func, label)
 		send_message(3, {event="set_haltable_proc_id", haltable_proc_id = nil})
 
 	end
+
+	if (costatus(coco[func]) == "dead") coco[func] = nil
 
 
 end
@@ -163,22 +169,22 @@ end
 --[[
 	find a program 
 
-	look in current path, and then /system/util, /system/apps
+	look in /system/util, /system/apps, /appdata/system/util and finally current path
 
-	to do: some kind of customisable $PATH
+	to do: some kind of customisable $PATH? would be nice to avoid the need for that
 ]]
 local function resolve_program_path(prog_name)
 
 	local prog_name_0 = prog_name
 
-	-- try as-is in pwd first
 	-- /appdata/system/util/ can be used to extend built-in apps (same pattern as other collections)
+	-- update: not true, other collections (wallpapers) are replaced rather than extended by /appdata
 
 	return
-		try_multiple_extensions(prog_name) or
 		try_multiple_extensions("/system/util/"..prog_name) or
 		try_multiple_extensions("/system/apps/"..prog_name) or
-		try_multiple_extensions("/appdata/system/util/"..prog_name)
+		try_multiple_extensions("/appdata/system/util/"..prog_name) or
+		try_multiple_extensions(prog_name) -- 0.1.0c: moved last 
 
 end
 
@@ -193,7 +199,7 @@ local function run_program_inside_terminal(prog_name)
 		return
 	end
 
-	-- set ()(
+	coco = {}
 
 	terminal_draw = _draw
 	terminal_update = _update

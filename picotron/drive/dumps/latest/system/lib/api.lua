@@ -117,16 +117,20 @@ function rm(f0)
 	return _fdelete(f0)
 end
 
+_rm = rm
+
+
 
 --[[	
 	cp(src, dest)
 	if dest exists, is deleted!  (cp util / filenav copy operations can do safety)
+
 ]]
 function cp(f0, f1)
 
 	f0 = fullpath(f0)
 	f1 = fullpath(f1)
-	if (f0 == f1) return
+	if (f0 == f1) return "can not copy over self"
 
 	local f0_type = fstat(f0)
 	local f1_type = fstat(f1)
@@ -138,10 +142,16 @@ function cp(f0, f1)
 
 	-- explicitly delete in case is a folder -- want to make sure contents are removed
 	-- to do: should be an internal detail of delete_path()?
-	if (f1_type) rm(f1)
+	if (f1_type) _rm(f1)
 
 	-- folder: recurse
 	if (f0_type == "folder") then
+
+		-- 0.1.0c: can not copy inside itself   "cp /ram/cart /ram/cart/foo" or "cp /ram/cart/foo /ram/cart" 
+		local minlen = min(#f0, #f1)
+		if (sub(f1, 1, minlen) == sub(f0, 1, minlen)) then
+			return "can not copy folder inside self" -- 2 different meanings!
+		end
 
 		-- get a cleared out root folder with fresh metadata
 		mkdir(f1)
@@ -150,7 +160,8 @@ function cp(f0, f1)
 
 		local l = ls(f0)
 		for k,fn in pairs(l) do
-			_cp(f0.."/"..fn, f1.."/"..fn)
+			local res = _cp(f0.."/"..fn, f1.."/"..fn)
+			if (res) return res
 		end
 
 		-- copy metadata over if it exists (ls does not return dotfiles)
@@ -164,7 +175,6 @@ function cp(f0, f1)
 
 end
 
-_rm = rm
 _cp = cp
 
 

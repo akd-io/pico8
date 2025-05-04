@@ -2,13 +2,16 @@ picotron cartridge // www.picotron.net
 version 2
 
 :: canvas.lua
---[[pod_format="raw",created="2023-04-11 02:04:02",modified="2024-03-12 10:19:52",revision=2359]]
+--[[pod_format="raw",created="2023-04-11 02:04:02",modified="2024-03-21 19:04:38",revision=2641]]
 
 local ww,hh=0,0
 local fill_cpu=0
 local x0,y0=0,0
+
+--[[
 local tile_w = 16
 local tile_h = 16
+]]
 
 function do_fill_0(bmp, x, y, tc)
 	if (get(bmp,x,y) != tc) return
@@ -94,7 +97,8 @@ function draw_layer(el, ii, pan_x, pan_y, scale)
 	local max_x = mid(0, min_x + (el.width \ tile_ww) + 2, lbmp:width())
 	local max_y = mid(0, min_y + (el.height \ tile_hh) + 2, lbmp:height())
 	
-		
+	-- to do: use tline
+	-- this is too slow when zoomed out with small tiles
 	for y=min_y, max_y do
 		for x=min_x, max_x do
 			local sx = x0 + x * tile_ww
@@ -192,6 +196,12 @@ function create_canvas(el)
 		ci.zoom = item[1].zoom or 1
 		ci.pan_x = item[1].pan_x or 0
 		ci.pan_y = item[1].pan_y or 0
+		
+		-- temporary: set layer to size of sprite 0
+		-- (later: allow per-layer tile size)
+		local spr0 = get_spr(0)
+		if (spr0) ci.tile_w, ci.tile_h = spr0:width(), spr0:height()
+		
 
 		tile_w = ci.tile_w
 		tile_h = ci.tile_h
@@ -380,12 +390,11 @@ function create_canvas(el)
 		rectfill(x0-1,y0-1,x0+ww,y0+hh,0)
 		rect   (x0-2,y0-2,x0+ww+1,y0+hh+1,6)
 		
-		for i=1,#item do
+		-- draw bottom to top
+		for i=#item,1,-1 do
 			draw_layer(el, item[i], item[1].pan_x, item[1].pan_y, item[1].zoom)
 		end
 		
-		
-	
 		
 		--[[
 		-- tline version: draw a bunch of tlines; clip to viewable area
@@ -573,7 +582,7 @@ end
 
 
 :: draw.lua
---[[pod_format="raw",created="2023-26-12 03:26:20",modified="2024-03-12 10:19:52",revision=1284]]
+--[[pod_format="raw",created="2023-26-12 03:26:20",modified="2024-03-21 19:04:38",revision=1565]]
 function _draw()
 	cls(5)
 	-- operations during _update can request a
@@ -599,7 +608,7 @@ end
 
 
 :: gui.lua
---[[pod_format="raw",created="2023-05-11 02:05:16",modified="2024-03-12 10:19:52",revision=2088]]
+--[[pod_format="raw",created="2023-05-11 02:05:16",modified="2024-03-21 19:04:38",revision=2375]]
 
 show_pane = true
 
@@ -638,7 +647,12 @@ show_pane = true
  
 
 function generate_gui()
+	
 	gui = create_gui()
+	
+	-- remove temporary items attached on demand
+	layer_name_editor = nil
+	field_editor = nil
 	
 	if (not show_pane) then
 		gui:attach(create_canvas{x=0,y=0,width=480,height=get_display():height()})
@@ -793,7 +807,7 @@ end
 
 
 :: main.lua
---[[pod_format="raw",created="2023-04-11 02:04:54",modified="2024-03-12 10:19:52",revision=2140]]
+--[[pod_format="raw",created="2023-04-11 02:04:54",modified="2024-03-21 19:04:38",revision=2424]]
 --[[
 	m6: multiple sprite banks
 	
@@ -882,7 +896,6 @@ function load_working_file(item_1)
 		itm.tile_w = itm.tile_w or 16
 		itm.tile_h = itm.tile_h or 16
 		itm.hidden = itm.hidden or false
-		itm.name = itm.name or nil
 		add_undo_stack(item[i])
 	end	
 	
@@ -916,7 +929,7 @@ end
 function _init()
 	
 	poke(0x4000,get(fetch"/system/fonts/p8.font"))
-	poke(0x4002,6) -- to do: should be attribute of font
+	--poke(0x4002,6) -- to do: should be attribute of p8.font
 	
 	-- default filename is dummy for now
 	-- note: saved inside self (gfx.p64) when loaded as cproj
@@ -1005,9 +1018,19 @@ on_event("gained_focus",
 	function (msg)
 		--printh("@@ [map] reloading spritebanks on gaining focus")
 		load_spritebanks()
+
+		-- temporary: set tile sizes to sprite0
+		local spr0 = get_spr(0)
+		if (spr0) then
+			for i=1,#item do
+				item[i].tile_w, item[i].tile_h = spr0:width(), spr0:height()
+			end
+		end
+
 		
 		map_gfx_state = fetch"/ram/shared/map_gfx.pod"
 		if (map_gfx_state) col = map_gfx_state.current_sprite_index
+
 	end
 )
 
@@ -1025,7 +1048,7 @@ on_event("set_palette",
 
 
 :: nav.lua
---[[pod_format="raw",created="2023-18-11 02:18:48",modified="2024-03-12 10:19:52",revision=2792]]
+--[[pod_format="raw",created="2023-18-11 02:18:48",modified="2024-03-21 19:04:38",revision=3156]]
 --[[
 	navigate sprite bank
 ]]
@@ -1046,7 +1069,13 @@ icons =
 	
 	bucket_cursor=unpod("b64:bHo0AE8AAABPAAAA8gBweHUAQyAVFQTQAfADAQcFAPAr4EEHAcABZwGgAQcBRwGwAQcRJwHAAQcBAAEHAdABBwEQAdABIAHgAQcgBwHgASAB8AEBBwHwAwHwjQ=="),
 	add_layer=unpod("b64:bHo0ACAAAAAhAAAA4XB4dQBDIAgIBG0ALQctBADgDUcNAC0HLQAtBy0AbYA="),
-	del_layer=unpod("b64:bHo0ACgAAAArAAAA8wVweHUAQyAICAQNRw0AZwAHDScNBwYAQCcNJwAWAIANBw0HDQcNgA==")
+	del_layer=unpod("b64:bHo0ACgAAAArAAAA8wVweHUAQyAICAQNRw0AZwAHDScNBwYAQCcNJwAWAIANBw0HDQcNgA=="),
+
+	edit = unpod("b64:bHo0ABkAAAAXAAAA8AhweHUAQyAICASwB1AnMCcwBwAHQBfwBQ=="),
+	
+	layer_up = unpod("b64:bHo0ABYAAAAUAAAA8AVweHUAQyAICATwAwdQJzBHQAfwBA=="),
+	layer_down = unpod("b64:bHo0ABYAAAAUAAAA8AVweHUAQyAICATwAwdARzAnUAfwBA=="),
+	
 }
 
 function make_toggle_button(el)
@@ -1137,6 +1166,20 @@ function resize_map(index, width, height)
 	set_current_item()
 end
 
+function move_layer(index, dindex)
+	local i1 = index + dindex
+	if (i1 < 1 or i1 > #item) return
+	item[i1],item[index] = item[index],item[i1]
+	if (current_item == i1) then
+		set_current_item(index)
+	elseif current_item == index then
+		set_current_item(i1)
+	end
+	
+	refresh_gui = true
+end
+
+
 -- note: normally only need < ~4 layers, so
 -- scrollbar would be normally not needed
 -- placeholder. will have: layer name, visible, [parent / tree structure]
@@ -1152,18 +1195,58 @@ function create_layer_nav(el)
 		for i=1,#item do
 			local selected = i == current_item
 			label = item[i].name or "[layer "..i.."]"
-			if (selected) rectfill(4,yy,self.width-5,yy+6,12)
-			print(label,10,yy+1, i == 0 and 7 or 6)
-			spr(item[i].hidden and icons.hidden1 or icons.hidden0,self.width-16,yy)
+			if (selected and not layer_name_editor) rectfill(4,yy,self.width-5,yy+6,12)
+			
+			clip(el.sx,el.sy,5+72,1000)
+			print(label,5,yy+1, i == 0 and 7 or 6)
+			clip()
+			spr(item[i].hidden and icons.hidden1 or icons.hidden0,self.width-14,yy)
+			spr(icons.edit,self.width-26,yy)
+			pal(7,13)
+			spr(icons.layer_up,self.width-38,yy)
+			spr(icons.layer_down,self.width-48,yy)
+			pal(7,7)
+			
 			yy += item_h
 		end
 		
 	end
+	
+	function el:click(msg)
+		if (layer_name_editor) refresh_gui = true
+	end
+	
+	
 	function el:tap(msg)
 		local index = 1 + (msg.my - 2) \ item_h
 		index = mid(1, index, #item)
-		if (msg.mx > self.width - 20) then
+		if (msg.mx > self.width - 18) then
 			item[index].hidden = not item[index].hidden
+		elseif (msg.mx > self.width - 30) then
+		
+			layer_name_editor = el:attach_text_editor{
+				x=2, y= 0+ (index-1)*item_h, width=74, height= 9, 
+				block_scrolling = true, max_lines = 1,
+				key_callback = {
+					enter = function () 
+						item[index].name = layer_name_editor:get_text()[1]
+						layer_name_editor = nil
+						refresh_gui = true
+					end
+				},
+				-- block mouse messages from selecting other layers
+				click = function() return true end,
+				tap = function() return true end
+			}
+			layer_name_editor:set_text({(item[index].name or "")})
+			layer_name_editor:set_keyboard_focus(true)
+			layer_name_editor:set_cursor(1000,1)
+			window{capture_escapes = true}
+			
+		elseif (msg.mx > self.width - 42) then
+			move_layer(index, -1)
+		elseif (msg.mx > self.width - 52) then
+			move_layer(index, 1)
 		else
 			set_current_item(index)
 		end
@@ -1333,7 +1416,9 @@ function create_bank_tabs(el)
 end
 function create_nav(el)
 	function el:draw()
-		rectfill(0,0,self.width, self.height, 0)
+		clip()
+		rectfill(-1,-1,self.width, self.height, 0)
+
 		
 		for y=0,7 do
 			for x=0,7 do
@@ -1601,7 +1686,7 @@ end
 
 
 :: update.lua
---[[pod_format="raw",created="2023-45-10 07:45:26",modified="2024-03-12 10:19:52",revision=1795]]
+--[[pod_format="raw",created="2023-45-10 07:45:26",modified="2024-03-21 19:04:38",revision=2085]]
 
 -- update layout without needing to regenerate gui
  -- to do: could also use this for handling changes in display size
@@ -1745,7 +1830,19 @@ end
 
  	set_draw_target()
  	
-
+ 	-------------------------------------------------------------
+ 
+ 	if (keyp("escape")) then
+ 		-- get rid of attach-on-demand elements
+		refresh_gui = true
+		window{capture_escapes = false}	
+ 	end
+ 	
+  	-- layer name editor has focus -> ignore other input
+ --	if (layer_name_editor or field_editor) return
+ 	if (gui:get_keyboard_focus_element()) return
+	-------------------------------------------------------------
+ 	
 	if keyp("tab") then
 		show_pane = not show_pane
 		refresh_gui=true
@@ -1872,14 +1969,15 @@ MGQwZDA3MDEwMTA3MGQwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMDcwMTAxMDYwNzBkMGQwZDBkMGQw
 ZDBkMGQwZDBkMDcwNjAxMDEwNjA2MDcwNzA3MDcwNzA3MDcwNzA3MDcwNjA2MDEwMDAxMDYwNjA2
 MDYwNjA2MDYwNjA2MDYwNjA2MDEwMDAwMDAwMTA2MDYwNjA2MDYwNjA2MDYwNjA2MDEwMDAwMDAw
 MDAwMDEwMTAxMDEwMTAxMDEwMTAxMDEwMDAwMDAiKSxub3Rlcz0iIixzdG9yZWQ9IjIwMjQtMDMt
-MTIgMTA6MTk6NTIiLHRpdGxlPSJQaWNvdHJvbiBNYXAgRWRpdG9yIix2ZXJzaW9uPSIwLjEiLHdv
-cmtzcGFjZXM9e3tsb2NhdGlvbj0ibWFpbi5sdWEjMSIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2Nh
-dGlvbj0idXBkYXRlLmx1YSMxNzIiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249Imd1aS5s
-dWEjNDkiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249ImNhbnZhcy5sdWEjNjYiLHdvcmtz
-cGFjZV9pbmRleD0xfSx7bG9jYXRpb249ImRyYXcubHVhIzEiLHdvcmtzcGFjZV9pbmRleD0xfSx7
-bG9jYXRpb249Im5hdi5sdWEjMjA1Iix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJnZngv
-MC5nZngiLHdvcmtzcGFjZV9pbmRleD0yfSx7bG9jYXRpb249ImdmeC8wYi5nZngiLHdvcmtzcGFj
-ZV9pbmRleD0yfSx7bG9jYXRpb249Im1hcC8wLm1hcCNuaWwiLHdvcmtzcGFjZV9pbmRleD0zfSx7
-bG9jYXRpb249Im1hcC8wLm1hcCNuaWwiLHdvcmtzcGFjZV9pbmRleD0zfX1dXWx6NAAEAAAAAwAA
-ADBuaWw=
+MjEgMTk6MDQ6MzgiLHRpdGxlPSJQaWNvdHJvbiBNYXAgRWRpdG9yIix2ZXJzaW9uPSIwLjEiLHdv
+cmtzcGFjZXM9e3tsb2NhdGlvbj0ibWFpbi5sdWEjNzciLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9j
+YXRpb249InVwZGF0ZS5sdWEjMTU0Iix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJndWku
+bHVhIzQ0Iix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJjYW52YXMubHVhIzk2Iix3b3Jr
+c3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJkcmF3Lmx1YSMxIix3b3Jrc3BhY2VfaW5kZXg9MX0s
+e2xvY2F0aW9uPSJuYXYubHVhIzEwMiIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0iZ2Z4
+LzAuZ2Z4Iix3b3Jrc3BhY2VfaW5kZXg9Mn0se2xvY2F0aW9uPSJnZngvMGIuZ2Z4Iix3b3Jrc3Bh
+Y2VfaW5kZXg9Mn0se2xvY2F0aW9uPSJtYXAvMC5tYXAiLHdvcmtzcGFjZV9pbmRleD0zfSx7bG9j
+YXRpb249Im1hcC8wLm1hcCIsd29ya3NwYWNlX2luZGV4PTN9LHtsb2NhdGlvbj0ibWFwLzAubWFw
+Iix3b3Jrc3BhY2VfaW5kZXg9M30se2xvY2F0aW9uPSJtYXAvMC5tYXAiLHdvcmtzcGFjZV9pbmRl
+eD03fX1dXWx6NAAEAAAAAwAAADBuaWw=
 :: [eoc]

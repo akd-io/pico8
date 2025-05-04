@@ -228,7 +228,13 @@ function wrangle_working_file(save_state, load_state, untitled_filename, get_hlo
 		
 		-- show message only when NOT auto-saving /ram/cart files
 		if (sub(current_filename, 1, 10) ~= "/ram/cart/") then
-			notify("saved "..current_filename)
+
+			if (fullpath(current_filename):sub(1,8) == "/system/") then
+				notify("saved "..current_filename.." ** warning: changes to /system/ not written to disk **")
+			else
+				notify("saved "..current_filename)
+
+			end
 		end
 
 	end)

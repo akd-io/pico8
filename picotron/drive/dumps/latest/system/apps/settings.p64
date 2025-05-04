@@ -4,14 +4,14 @@ version 2
 :: gfx/
 :: gfx/0.gfx
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTQ0LTAyIDA2OjQ0OjUyIixtb2RpZmllZD0iMjAyNC0w
-My0wNyAwNjowOToxNSIscmV2aXNpb249NTMwXV1sejQAcQAAAAUzAADzFHtbMF09e2JtcD1weHUA
-QyAQEATw8CxmbGFncz0wLHBhbl94CADveT0wLHNjYWxlPTEyfSwzAP----------------------
---------------------------------------------51A9MTJ9fQ==
+My0yMyAxODozNjowOCIscmV2aXNpb249NTg3XV1sejQAbQAAAAUxAADzFHtbMF09e2JtcD1weHUA
+QyAQEATw8CxmbGFncz0wLHBhbl94CADPeT0wLHpvb209OH0sMQD-------------------------
+---------------------------------------nUG09OH19
 :: gfx/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTQ0LTAyIDA2OjQ0OjIwIixzdG9yZWQ9IjIwMjMtNDQt
 MDIgMDY6NDQ6MjAiXV1sejQABAAAAAMAAAAwbmls
 :: main.lua
---[[pod_format="raw",created="2023-44-02 06:44:52",modified="2024-03-13 06:10:00",revision=778]]
+--[[pod_format="raw",created="2023-44-02 06:44:52",modified="2024-03-23 18:36:08",revision=855]]
 -- picotron settings
 -- to do: keyboard control
 
@@ -22,10 +22,11 @@ sdat = {}
 function create_checkbox(x, y, label, key)
 	local el = {
 		x = x, y = y,
-		width = 100,
+		width = 92,
 		height  = 12,
 		label = label,
-		key = key
+		key = key,
+		cursor = "pointer"
 	}
 	
 	function el:draw()
@@ -154,10 +155,10 @@ function generate_gui()
 	-- page toggle
 
 	gui:attach{
-		x=170,y=2, width=35, height=9,
+		x=170,y=4, width=35, height=9,
 		cursor="pointer",
-		draw=function(self)
-			rectfill(0,0,self.width,self.height,6)
+		draw=function(self, msg)
+			rectfill(0,0,self.width,self.height, msg.has_pointer and 14 or 13)
 			print("\014page "..page.."/2",2,2,7)
 		end,
 		tap=function(self)
@@ -191,6 +192,7 @@ else
 	y = 20
 	gui:attach(create_checkbox(105, y, "RSHIFT Magnify", "rshift_magnify")) y += line_h
 	gui:attach(create_checkbox(105, y, "Sparkles",       "sparkles")) y += line_h
+	gui:attach(create_checkbox(105, y, "CTRL-Q Shutdown", "fastquit")) y += line_h
 	
 	-- choosers
 	gui:attach(create_chooser(x, 80, "screensaver", "/system/screensavers"))
@@ -225,7 +227,8 @@ function _init()
 	window{
 		width=210,
 		height=140,
-		title="System Settings"
+		title="System Settings",
+		resizeable = true
 	}
 	
 	poke(0x4000, get(fetch"/system/fonts/lil.font"))
@@ -276,9 +279,9 @@ end
 :: map/
 :: map/0.map
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTQ0LTAyIDA2OjQ0OjUyIixtb2RpZmllZD0iMjAyNC0w
-My0wNyAwNjowOToxNSIscmV2aXNpb249NTI1XV1sejQAXQAAAFgEAADwE3tsYXllcj17WzBdPXti
-bXA9dXNlcmRhdGEoImkxNiIsMTYDAC8iMAEA----76EiKSxwYW5feD0wCADyBnk9MCxzY2FsZT0x
-LHRpbGVfaD0xNgoAcHc9MTZ9fX0=
+My0yMyAxODozNjowOCIscmV2aXNpb249NTgyXV1sejQAaAAAAFgQAADwCHt7Ym1wPXVzZXJkYXRh
+KCJpMTYiLDMyAwAvIjABAP--------------------vxCCIpLGhpZGRlbj1mYWxzZSxwYW5feD0w
+CADSeT0wLHRpbGVfaD0xNgoAEHcKAIB6b29tPTF9fQ==
 :: map/map0.map
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTQ4LTA0IDE2OjQ4OjAxIixtb2RpZmllZD0iMjAyNC00
 OC0wNCAxNjo0ODowMSIscmV2aXNpb249MF1dbHo0AGkAAACjCAAA8BN7bGF5ZXI9e1swXT17Ym1w
@@ -290,7 +293,7 @@ MDIgMDY6NDQ6MjAiXV1sejQABAAAAAMAAAAwbmls
 :: sfx/
 :: sfx/0.sfx
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTQ0LTAyIDA2OjQ0OjUyIixtb2RpZmllZD0iMjAyNC0w
-My0wNyAwNjowOToxNSIscmV2aXNpb249NDg4XV1sejQAbwAAAO0GAADfcHh1AAMoAAADAATw-wEA
+My0yMyAxODozNjowOCIscmV2aXNpb249NTQwXV1sejQAbwAAAO0GAADfcHh1AAMoAAADAATw-wEA
 7P8n8QEQBg8gEAEgASAB8AACEAIOEAEgDyEgATAPQPDDDygP--DGD-gKD-8PgA-3Dw0B8AkBEAYO
 MAD-OR--AQDcz-gPQAAPEED--7DwcAsA--_jH-8BAJdQ-----x8=
 :: sfx/sfx0.sfx
@@ -315,9 +318,9 @@ MGQwZDBkMDcwNzBkMGQwZDBkMGQwZDBkMDcwMTAxMDcwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMGQw
 NzAxMDEwNjA3MGQwZDBkMGQwZDBkMGQwZDBkMGQwNzA2MDEwMTA2MDYwNzA3MDcwNzA3MDcwNzA3
 MDcwNzA2MDYwMTAwMDEwNjA2MDYwNjA2MDYwNjA2MDYwNjA2MDYwMTAwMDAwMDAxMDYwNjA2MDYw
 NjA2MDYwNjA2MDYwMTAwMDAwMDAwMDAwMTAxMDEwMTAxMDEwMTAxMDEwMTAwMDAwMCIpLG5vdGVz
-PSIiLHN0b3JlZD0iMjAyNC0wMy0wOCAxMjo1ODoxNiIsdGl0bGU9IlBpY290cm9uIFNldHRpbmdz
-Iix2ZXJzaW9uPSIiLHdvcmtzcGFjZXM9e3tsb2NhdGlvbj0ibWFpbi5sdWEjMjE0Iix3b3Jrc3Bh
-Y2VfaW5kZXg9MX0se2xvY2F0aW9uPSJnZngvMC5nZngiLHdvcmtzcGFjZV9pbmRleD0yfSx7bG9j
-YXRpb249Im1hcC8wLm1hcCIsd29ya3NwYWNlX2luZGV4PTN9LHtsb2NhdGlvbj0ic2Z4LzAuc2Z4
-Iix3b3Jrc3BhY2VfaW5kZXg9NH19XV1sejQABAAAAAMAAAAwbmls
+PSIiLHN0b3JlZD0iMjAyNC0wMy0yMyAxODozNjowOCIsdGl0bGU9IlBpY290cm9uIFNldHRpbmdz
+Iix2ZXJzaW9uPSIiLHdvcmtzcGFjZXM9e3tsb2NhdGlvbj0ibWFpbi5sdWEjMTEiLHdvcmtzcGFj
+ZV9pbmRleD0xfSx7bG9jYXRpb249ImdmeC8wLmdmeCIsd29ya3NwYWNlX2luZGV4PTJ9LHtsb2Nh
+dGlvbj0ibWFwLzAubWFwIix3b3Jrc3BhY2VfaW5kZXg9M30se2xvY2F0aW9uPSJzZngvMC5zZngi
+LHdvcmtzcGFjZV9pbmRleD00fX1dXWx6NAAEAAAAAwAAADBuaWw=
 :: [eoc]

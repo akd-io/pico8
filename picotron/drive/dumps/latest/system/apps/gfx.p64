@@ -2,7 +2,7 @@ picotron cartridge // www.picotron.net
 version 2
 
 :: canvas.lua
---[[pod_format="raw",created="2023-04-11 02:04:02",modified="2024-03-11 04:06:11",revision=2688,stored="2023-24-28 00:24:00"]]
+--[[pod_format="raw",created="2023-04-11 02:04:02",modified="2024-03-22 11:43:12",revision=2788,stored="2023-24-28 00:24:00"]]
 local ww,hh=0,0
 local fill_cpu=0
 local x0,y0=0,0
@@ -247,13 +247,16 @@ function create_canvas(el)
 					-- only transparent when draw colour is not 0
 					fillp(brush.pat) poke(0x550b,col == 0 and 0x00 or 0xff)
 					pal(7,col)
+					local brush_sprite = brush_gfx[brush.which]
+					
 					for i=0,steps do
 						--circfill(xx, yy, brush.thickness, col)
 						
-						spr(brush.sprite,xx-3,yy-3)
+						spr(brush_sprite,xx-3,yy-3)
 						xx += dx
 						yy += dy
 					end
+					pal()
 					fillp() palt() poke(0x550b,0x00)
 				else
 					for i=0,steps do
@@ -418,7 +421,7 @@ end
 
 
 :: draw.lua
---[[pod_format="raw",created="2023-26-12 03:26:20",modified="2024-03-11 04:06:11",revision=1648,stored="2023-24-28 00:24:00"]]
+--[[pod_format="raw",created="2023-26-12 03:26:20",modified="2024-03-22 11:43:12",revision=1728,stored="2023-24-28 00:24:00"]]
 function _draw()
 	
 	cls(5)
@@ -447,7 +450,7 @@ end
 
 
 :: gui.lua
---[[pod_format="raw",created="2023-05-11 02:05:16",modified="2024-03-11 04:06:11",revision=2455,stored="2023-24-28 00:24:00"]]
+--[[pod_format="raw",created="2023-05-11 02:05:16",modified="2024-03-22 11:43:12",revision=2551,stored="2023-24-28 00:24:00"]]
 --[[
 
 	should only need:
@@ -574,6 +577,9 @@ if (({brush=1,xline=1,xshape=1})[ctool]) then
 	-- fill patterns
 	
 	local pat = {[0]=
+		0x0000,0x50a0,0x5a5a,0x50a0~0xffff,	
+		0x36c9,0x9c63,0x1248~0xffff,0x8421~0xffff,
+
 		0x0000, 0x80b9, 0x813d,
 		0x7e99, 0x81db, 0x7d7d,
 		0x8272, 0x834f
@@ -620,28 +626,27 @@ scramble="[gfx]08080700070007000700777777707077707077777770070007007700077000000
 eraser="[gfx]08080007700000777700077777707077777070077700070070000077000000000000[/gfx]",
 }
 
-local brush_gfx={
-"[gfx]08080000000000000000000000000007000000000000000000000000000000000000[/gfx]",
-"[gfx]08080000000000000000000000000007700000077000000000000000000000000000[/gfx]",
-"[gfx]08080000000000000000000700000077700000070000000000000000000000000000[/gfx]",
-"[gfx]08080000000000000000000770000077770000777700000770000000000000000000[/gfx]",
-"[gfx]08080000000000077000007777000777777007777770007777000007700000000000[/gfx]",
-"[gfx]08080077770007777770777777777777777777777777777777770777777000777700[/gfx]",
+brush_gfx={
+userdata"[gfx]08080000000000000000000000000007000000000000000000000000000000000000[/gfx]",
+userdata"[gfx]08080000000000000000000000000007700000077000000000000000000000000000[/gfx]",
+userdata"[gfx]08080000000000000000000700000077700000070000000000000000000000000000[/gfx]",
+userdata"[gfx]08080000000000000000000770000077770000777700000770000000000000000000[/gfx]",
+userdata"[gfx]08080000000000077000007777000777777007777770007777000007700000000000[/gfx]",
+userdata"[gfx]08080077770007777770777777777777777777777777777777770777777000777700[/gfx]",
 --[[pod,pod_type="image"]]unpod("b64:bHo0AA8AAAAOAAAA4HB4dQBDIAgIBPAJR-AS"),
 --[[pod,pod_type="image"]]unpod("b64:bHo0ABoAAAAYAAAA8AlweHUAQyAICARQB1AXQBdAF0AXQBdAF9A="),
-"[gfx]08080000000000000000000000000000000000777700000000000000000000000000[/gfx]",
-"[gfx]08080000000000000000000007000000700000070000007000000700000000000000[/gfx]"
+userdata"[gfx]08080000000000000000000000000000000000777700000000000000000000000000[/gfx]",
+userdata"[gfx]08080000000000000000000007000000700000070000007000000700000000000000[/gfx]"
 }
 
 
 function create_brush_button(which, x, y)
-	local el= {which = which, x = x, y = y, width=12, height = 12}
+	local el= {
+		which = which, x = x, y = y, width=12, height = 12,
+		cursor="pointer"	
+	}
 	
-	if type(brush_gfx[which]) == "userdata" then
-		el.gfx = brush_gfx[which]
-	else
-		el.gfx = userdata(brush_gfx[which])
-	end
+	el.gfx = brush_gfx[which]
 	
 	function el:draw()
 		rectfill(0,1,self.width-2,self.height-2,0)
@@ -661,7 +666,7 @@ end
 
 
 function create_tool_button(which, x, y)
-	local el= {which = which, x = x, y = y, width=12, height = 12}
+	local el= {which = which, x = x, y = y, width=12, height = 12,cursor="pointer"}
 	
 	if type(tool_gfx[which]) == "userdata" then
 		el.gfx = tool_gfx[which]
@@ -693,7 +698,7 @@ end
 
 
 :: main.lua
---[[pod_format="raw",created="2023-04-11 02:04:54",modified="2024-03-11 04:06:11",revision=2495,stored="2023-24-28 00:24:00"]]
+--[[pod_format="raw",created="2023-04-11 02:04:54",modified="2024-03-22 11:43:12",revision=2580,stored="2023-24-28 00:24:00"]]
 --[[
 	gfx5: panning, view grouping
 ]]
@@ -870,7 +875,7 @@ on_event("set_palette",
 
 
 :: nav.lua
---[[pod_format="raw",created="2023-18-11 02:18:48",modified="2024-03-11 04:06:11",revision=3206,stored="2023-24-28 00:24:00"]]
+--[[pod_format="raw",created="2023-18-11 02:18:48",modified="2024-03-22 11:43:12",revision=3291,stored="2023-24-28 00:24:00"]]
 --[[
 	navigate sprite bank
 	+ top-level operations (resize bitmap)
@@ -898,7 +903,7 @@ function make_toggle_button(el)
 	el.height = el.height or 7
 	el.set = el.set or function() end
 	el.get = el.get or function() end
-	
+	el.cursor="pointer"
 	
 	function el:draw()
 		local b = el.bmp0
@@ -940,8 +945,8 @@ function resize_item(index, width, height)
 		height = height or hh
 	end
 	
-	printh("width"..tostr(width).."  height:"..tostr(height))
-	printh("type(width):"..type(width).."  type(height):"..type(height))
+	--printh("width:"..tostr(width).."  height:"..tostr(height))
+	--printh("type(width):"..type(width).."  type(height):"..type(height))
 
 	if (width < 1 or width > 8192 or
 		height < 1 or height > 8192 or
@@ -1029,6 +1034,7 @@ function create_item_info(el)
 	-- sprite flags
 	for i=0,7 do
 		el:attach{
+		cursor="pointer",
 		--x=xx0+i*7,
 		x=81+i*6,
 		y=0,
@@ -1085,6 +1091,7 @@ function create_bank_tabs(el)
 		local tab = el:attach({
 			x=i*12,y=y_offs,width=11,height=el.height - y_offs,
 			index=i,
+			cursor="pointer",
 			draw = function(self)
 				local sel = current_bank == self.index
 				rectfill(0,0,self.width-1, self.height-1, sel and 7 or 6)
@@ -1113,7 +1120,8 @@ end
 function create_nav(el)
 
 	function el:draw()
-		rectfill(0,0,self.width, self.height, 0)
+		clip()
+		rectfill(-1,-1,self.width, self.height, 0)
 		
 		for y=0,7 do
 			for x=0,7 do
@@ -1496,7 +1504,7 @@ end
 
 
 :: update.lua
---[[pod_format="raw",created="2023-45-10 07:45:26",modified="2024-03-11 04:06:11",revision=2315,stored="2023-24-28 00:24:00"]]
+--[[pod_format="raw",created="2023-45-10 07:45:26",modified="2024-03-22 11:43:12",revision=2398,stored="2023-24-28 00:24:00"]]
 
 function get_selected_region()
 	local x0,y0 = 10000, 10000
@@ -1628,9 +1636,11 @@ end
 	
  	gui:update_all()
  	update_gui_layout()
-	
- 	
  	set_draw_target()
+ 	
+ 	------------------------------------------
+ 	if (gui:get_keyboard_focus_element()) return
+ 	------------------------------------------
  	
  	if keyp("tab") then
 		show_pane = not show_pane
@@ -1731,13 +1741,12 @@ MGQwZDA3MDEwMTA3MGQwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMDcwMTAxMDYwNzBkMGQwZDBkMGQw
 ZDBkMGQwZDBkMDcwNjAxMDEwNjA2MDcwNzA3MDcwNzA3MDcwNzA3MDcwNjA2MDEwMDAxMDYwNjA2
 MDYwNjA2MDYwNjA2MDYwNjA2MDEwMDAwMDAwMTA2MDYwNjA2MDYwNjA2MDYwNjA2MDEwMDAwMDAw
 MDAwMDEwMTAxMDEwMTAxMDEwMTAxMDEwMDAwMDAiKSxub3Rlcz0iIixzdG9yZWQ9IjIwMjQtMDMt
-MTEgMDQ6MDY6MTEiLHRpdGxlPSJQaWNvdHJvbiBQaXhlbHMiLHZlcnNpb249IjAuMSIsd29ya3Nw
-YWNlcz17e2xvY2F0aW9uPSJtYWluLmx1YSMxMTgiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRp
-b249ImRyYXcubHVhIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJ1cGRhdGUubHVhIzgz
-Iix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJuYXYubHVhIix3b3Jrc3BhY2VfaW5kZXg9
-MX0se2xvY2F0aW9uPSJndWkubHVhIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJjYW52
-YXMubHVhIzE1OSIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0iZ2Z4LzAuZ2Z4Iix3b3Jr
-c3BhY2VfaW5kZXg9Mn0se2xvY2F0aW9uPSJnZngvMC5nZngiLHdvcmtzcGFjZV9pbmRleD0yfSx7
-bG9jYXRpb249ImdmeC8wLmdmeCIsd29ya3NwYWNlX2luZGV4PTJ9fV1dbHo0AAQAAAADAAAAMG5p
-bA==
+MjIgMTE6NDM6MTIiLHRpdGxlPSJQaWNvdHJvbiBQaXhlbHMiLHZlcnNpb249IjAuMSIsd29ya3Nw
+YWNlcz17e2xvY2F0aW9uPSJtYWluLmx1YSM4OSIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlv
+bj0iZHJhdy5sdWEjMSIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0idXBkYXRlLmx1YSMx
+MzMiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249Im5hdi5sdWEjMjgiLHdvcmtzcGFjZV9p
+bmRleD0xfSx7bG9jYXRpb249Imd1aS5sdWEjMTIwIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0
+aW9uPSJjYW52YXMubHVhIzI0NCIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0iZ2Z4LzAu
+Z2Z4Iix3b3Jrc3BhY2VfaW5kZXg9Mn0se2xvY2F0aW9uPSJnZngvMC5nZngiLHdvcmtzcGFjZV9p
+bmRleD03fX1dXWx6NAAEAAAAAwAAADBuaWw=
 :: [eoc]

@@ -425,18 +425,19 @@ function _init()
 	-- ==========================================================================================================================================
 	-- 
 
-	tooltray_gui = create_gui({x=0, y=0, width=480, height=270, 
+	tooltray_gui = {x=0, y=0, width=480, height=270, 
 		draw=function(self) 
-
-			rectfill(0,0,self.width,self.height,3) -- blue background for debugging
+			--[[
+			rectfill(0,0,self.width,self.height, 3) -- green background for debugging
 			print("tooltray:"..#self.child, 4,4, 7)
 			for i=1,#self.child do
 				local c = self.child[i]
 				print(pod{c.x,c.y,c.width,c.height},30,12+i*10,7)
 				
 			end
+			]]
 		end
-	})
+	}
 
 	-- ==========================================================================================================================================
 
@@ -908,12 +909,14 @@ function create_window(target_ws, attribs)
 
 		set_active_window(win)
 
-		--[[
-			-- to do: allow operations on desktop
+			-- allow operations on desktop
+			-- to do: get rid of desktop_filenav; should just be a window attribute .mb2_toggle_app_menu
 			if (win.desktop_filenav and msg.mb == 2) then
-				toggle_app_menu(msg.mx - 70, msg.my - 30, win)
+
+				send_message(3, {event = "toggle_app_menu", _delay = 0.1 , x = msg.mx - 70, y = msg.my - 30, proc_id = win.proc_id })
+				
 			end
-		]]
+
 		return true -- processed
 	end
 
@@ -921,7 +924,7 @@ function create_window(target_ws, attribs)
 		-- drag event is generate by window's own gui.lua
 		-- send_message(win.proc_id, msg) -- forward to window 
 	end
-	
+
 
 	-- titlebar
 
@@ -933,10 +936,13 @@ function create_window(target_ws, attribs)
 				width = win.width,
 				height = bar_h,
 				clip_to_parent = false,
-				cursor = "grab",
+				cursor = "grab", -- to do: why doesn't this work? because outside of parent?
 				is_window_bar = true
 			}
 		)
+
+		function bar:draw()
+		end
 
 		-- close button
 		bar:attach(
@@ -1029,16 +1035,8 @@ function create_window(target_ws, attribs)
 		end
 
 		function resize_draw(self, event) 
-			-- debug: view the widget
-			-- clip() rect(0, 0, self.width-1, self.height-1, 5)
-
-			--[[ to do
-				printh(pod{event.mx, event.my}) -- eh? why is this not relative to widget?
-				if (event.mx > -5 and event.mx < self.width+5 and event.my > -5 and event.my < self.height+5) then
-					clip() rect(0, 0, self.width-1, self.height-1, 5)
-				end
-			]]
-
+			-- debug: view the widget // don't need to clip() because .clip_to_parent == false
+			-- rect(0, 0, self.width-1, self.height-1, 5)
 		end
 
 		-- resize bottom right
@@ -1053,7 +1051,7 @@ function create_window(target_ws, attribs)
 			end,
 			draw  = resize_draw,
 			click = resize_click,
-			drag = function(self, event) 
+			drag = function(self, event)
 				if (win.resizeable and (event.dx ~= 0 or event.dy ~= 0)) then
 					-- use window manager mx, my because using relative event.mx,event.my will jump around as window resizes
 					-- hard-coded minimum window size: 64x32
@@ -1254,7 +1252,8 @@ function _draw()
 	-- workspace doesn't have a fullscreen window covering it
 	-- e.g. launch terminal when there is no desktop workspace 
 	if (ws_gui and (ws_gui.clear_each_frame or (ws_gui.child[1] and ws_gui.child[1].width < 480) )) then
-		cls(5)
+		rectfill(0,0,479, 269, 0x10)
+		rectfill(0,0,479,11,7)
 	end
 --	cls(1) -- debug
 
@@ -1405,9 +1404,12 @@ function _draw()
 		spr(gfx, mx - (gfx_w+1)\2, my - (gfx_h+1)\2)  -- +1 so exactly at center for odd-sizes bitmaps. ref: paint bucket
 	end
 
-	-- notifications  --  show for 2 seconds
+	-- notifications  --  show for 2~3 seconds (to do: customisable)
 
-	if (user_notification_message and time() < user_notification_message_t + 2) then
+	local notify_duration = 2
+	if (user_notification_message and #user_notification_message > 15) notify_duration = 3
+
+	if (user_notification_message and time() < user_notification_message_t + notify_duration) then
 		rectfill(0,259,479,269,32)
 		print(user_notification_message, 4,261, 7)
 	end
@@ -1611,6 +1613,17 @@ function _update()
 		w.visible = visible
 	end
 
+	-- ctrl-q to fastquit // dangerous so needs to be turned on
+	if (key("ctrl") and keyp("q")) then
+		local sdat = fetch("/appdata/system/settings.pod") or {}
+		if (sdat.fastquit) _signal(33)
+	end
+
+	-- alt-f4 always available (er.. does windows do that anyway?	
+	if (key("alt") and keyp("f4")) then
+		_signal(33)
+	end
+
 
 	-- :: ctrl-r  (is a window manager thing!)
 
@@ -1788,7 +1801,7 @@ function _update()
 			win.send_mouse_update = nil
 
 			-- every window can read the mouse position, but only the active window can read mouse button state.
-			-- dorkey iterator for ws_gui and tooltray_gui
+			-- dorky iterator for ws_gui and tooltray_gui
 			for i=1,#ws_gui.child + #tooltray_gui.child do
 				local win2 = i <= #ws_gui.child and ws_gui.child[i] or tooltray_gui.child[i - #ws_gui.child]
 
@@ -1926,7 +1939,7 @@ function _update()
 		local win2 = head_gui:el_at_xy(mx, my)
 
 		-- titlebar counts! (can drag and drop into titlebar, put sticker on titlebar)
-		if (win2.is_window_bar) win2 = win2.parent
+		if (win2 and win2.is_window_bar) win2 = win2.parent
 
 		--printh("dropping into proc: "..tostr(win2.proc_id))
 		
@@ -2417,6 +2430,11 @@ on_event("test_screensaver",
 	end
 )
 
+on_event("toggle_app_menu",
+	function(msg)
+		toggle_app_menu(msg.x, msg.y, get_window_by_proc_id(msg.proc_id))
+	end
+)
 
 
 function save_open_locations_metadata()
@@ -2645,7 +2663,7 @@ function toggle_picotron_menu()
 		 -- pop up menu: [Shutdown] [Reboot] [Cancel] 
 		 -- perhaps show unsaved changes 
 		 -- (checkbox: "discard unsaved changes" ~ once checked, buttons clickable)
-		{"\^:082a494141221c00 Shutdown", function()  _signal(33) end}
+		{"\^:082a494141221c00 Shutdown", function() send_message(2, {event="shutdown"}) end}
 	}
 
 

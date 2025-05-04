@@ -3,7 +3,7 @@
 	cp src dest
 
 	to do:
-		-r recursive // cp is currently recursive though!
+		-r recursive  //  cp() is currently recursive though!
 		how to do interactive copying? (prompt for overwrite)
 ]]
 
@@ -82,7 +82,10 @@ then
 	
 else
 	print("copying "..src.." to "..dest)
-	cp(src, dest)
+
+	local res = cp(src, dest)
+	?res
+
 end
 
 

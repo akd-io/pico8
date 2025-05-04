@@ -117,7 +117,7 @@ end
 
 -- boot sound
 sfx_index = 0
-sfx_delay = 70
+sfx_delay = 1200
 r = fetch"/system/misc/boot.sfx"
 
 
@@ -134,14 +134,19 @@ local wm_cpu = {}
 local max_cpu_samples = 64
 for i=0,max_cpu_samples-1 do wm_cpu[i] = 0 end
 local wm_cpu_index = 0
-
+local played_boot_sound = false
 
 while (true) do -- \m/
 
 --	printh("------------ mainloop "..total_frames.." ----------------")
 	total_frames += 1
 
-	if (total_frames == sfx_delay) sfx(sfx_index)
+	-- use time() for better sync
+	if not played_boot_sound and stat(987) >= sfx_delay then
+		played_boot_sound = true
+		sfx(sfx_index)
+	end
+
 
 	-- maybe don't need procman
 	-- to do: just let any (local security context) process kill any other process

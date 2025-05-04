@@ -53,4 +53,18 @@ on_event("broadcast",
 	end
 )
 
+-- to do: care about who is asking!
+on_event("shutdown",
+	function()
+		_signal(33)
+	end
+)
+
+on_event("reboot",
+	function()
+		_signal(34)
+	end
+)
+
+
 

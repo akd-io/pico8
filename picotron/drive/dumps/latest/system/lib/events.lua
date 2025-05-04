@@ -26,54 +26,98 @@ do
 	local repeat_key_press_t={}
 
 	local frame_keypressed_result={}
-	local scancode_blocked = {} -- deleteme -- not used or needed
+	local scancode_blocked = {} -- deleteme -- not used or needed   //  update: maybe do? ancient sticky keys problem
 
 	function mouse()
 		-- printh("@mouse() result: "..tostr(mouse_x).." ident:"..ident)
 		return mouse_x, mouse_y, mouse_b, wheel_x, wheel_y -- wheel is since last frame
 	end 
 
+
+	--[[
+
+		// 3 levels of keyboard mapping:
+
+		1. raw key names  //  key("a")
 	
-	-- to do: could just have a table indexed by numbers /and/ strings
-	local name_to_scancode =
+			"a" means the key to the right of capslock
+			defaults to US layout, patched by /appdata/system/scancodes.pod
+			example: tracker music input -- layout should physically match a piano
+
+		2. mapped key names  // key("a")
+
+			"a" means the key with "a" written on it
+			e.g. the key to the right of tab on a typical azerty keyboard
+			defaults to raw key names (US), patched by /appdata/system/keycodes.pod
+			example: key"f" to flip sprite horiontally should respond to the key with "f" written on it
+
+		3. text entry  // readtext()
+
+			"a" is a unicode string triggered by pressing a when shift is not held (-> SDL_TEXTINPUT event)
+			ctrl-a or enter does not trigger a textinput event; need to read with mapped key names
+			defaults to host OS keyboard layout and text entry method; not currently configurable inside Picotron
+	]]
+	
+
+	local name_to_scancode_raw =
 	{
 		a=4,b=5,c=6,d=7,e=8,f=9,g=10,h=11,i=12,j=13,k=14,l=15,m=16,n=17,o=18,p=19,q=20,r=21,s=22,t=23,u=24,v=25,w=26,x=27,y=28,z=29,
 		left=80,right=79,up=82,down=81,
-		lctrl=224,rctrl=228,lshift=225,rshift=229,lalt=226,ralt=226, -- !! don't know ralt cause remapped on robot atm!
+		lctrl=224,rctrl=228,lshift=225,rshift=229,lalt=226,ralt=230,
 		["1"]=30,["2"]=31,["3"]=32,["4"]=33,["5"]=34,["6"]=35,["7"]=36,["8"]=37,["9"]=38,["0"]=39,
-		["<"]=54,[">"]=55,["["]=47,["]"]=48,["-"]=45,["+"]=46,["~"]=53,
+		f1 = 58, f2 = 59, f3 = 60, f4 = 61, f5 = 62, f6 = 63, f7 = 64, f8 = 65, f9 = 66, f10 = 67,
+		["<"]=54,[">"]=55, -- [","]=54,["."]=55, -- alternative names? feels like a bad idea. use most distinctive option
+
+		["["]=47,["]"]=48,["-"]=45,["+"]=46,["~"]=53,[":"]=51,["'"]=52,
+		--["\\"]=49, -- to do: why does this break esc on robot?
+		["/"]=56, [","]=54,["."]=55, 
 		space=44,tab=43,enter=40,pageup=75,pagedown=78,backspace=42,del=76,insert=73,home=74,["end"]=77,escape=41,
 
 		-- windows / command (apple) / meta
 		lgui=227, rgui=231
 	}
 
+
 	-- patch with /settings/scancodes
-	-- 57 for ctrl on robot
+	-- 57 for ctrl on robot. to do: allow multiple mappings?
+
 	local patch_scancodes = fetch"/appdata/system/scancodes.pod"
 	if patch_scancodes then
 		for k,v in pairs(patch_scancodes) do
-			name_to_scancode[k] = v
+			name_to_scancode_raw[k] = v
 		end
 	end
 
-	-- add numbers; can still use scancode as.. name of scancode.
-	for i=0,511 do
-		name_to_scancode[i]=i
+	local name_to_scancode0 = unpod(pod(name_to_scancode_raw))
+	local name_to_scancode  = unpod(pod(name_to_scancode_raw))
+
+	local patch_keycodes = fetch"/appdata/system/keycodes.pod"
+	if patch_keycodes then
+		for k,v in pairs(patch_keycodes) do
+			name_to_scancode[k] = name_to_scancode0[v] or v -- can use raw name or scancode directly
+			-- printh("mapping keycode "..k.." to "..name_to_scancode[k])
+		end
 	end
+
+	-- scancodes map to themselves unless explicitly remapped
+	-- (avoids an extra "or scancode" in get_scacode)
+
+
+	for i=0,511 do
+		name_to_scancode[i]     = name_to_scancode[i]     or i
+		name_to_scancode_raw[i] = name_to_scancode_raw[i] or i
+	end
+
+	-- backwards lookup (not currently used)
 
 	local scancode_to_name = {}
 	for k,v in pairs(name_to_scancode) do
 		scancode_to_name[v] = k
 	end
 
-	local cursor_control_key = {
-		left=1, right=1, up=1, down=1, backspace=1, del=1, enter=1, escape=1
-	--	"left", "right", "up", "down", "backspace", "del", "enter", "escape"
-	}
 
-	local function get_scancode(scancode)
-		local scancode = name_to_scancode[scancode]
+	local function get_scancode(scancode, raw)
+		local scancode = (raw and name_to_scancode_raw or name_to_scancode)[scancode]
 		--[[
 		if (scancode_blocked[scancode]) then
 			-- unblock when not down. to do: could do this proactively and not just when queried 
@@ -86,21 +130,35 @@ do
 
 
 
-	-- frame_keypressed_result is determined before each call to _update()
-	--  (e.g. ctrl-r shouldn't leave a keypress of 'r' to be picked up by tracker. consumed by window manager)
-	function keyp(scancode)
+	--[[
 
-		scancode = get_scancode(scancode)
+		keyp(scancode, raw)
+
+			raw means: use US layout; same physical layout regardless of locale.
+			use for things like music keyboard layout in tracker
+
+			otherwise: map via appdata/system/scancodes.pod (should be "kbd_layout.pod"?)
+
+		-- frame_keypressed_result is determined before each call to _update()
+		--  (e.g. ctrl-r shouldn't leave a keypress of 'r' to be picked up by tracker. consumed by window manager)
+
+	]]
+
+	function keyp(scancode, raw)
+
+		scancode = get_scancode(scancode, raw)
 
 		-- keep returning same result until end of frame
 		if (frame_keypressed_result[scancode]) return frame_keypressed_result[scancode]
 
+		-- first press
 		if (key_state[scancode] and not last_key_state[scancode]) then
 			repeat_key_press_t[scancode] = time() + 0.5
 			frame_keypressed_result[scancode] = true
 			return true
 		end
 
+		-- repeat
 		if (key_state[scancode] and repeat_key_press_t[scancode] and time() > repeat_key_press_t[scancode]) then
 			repeat_key_press_t[scancode] = time() + 0.04
 			frame_keypressed_result[scancode] = true
@@ -109,9 +167,9 @@ do
 
 		return false
 	end
-
 	
-	function key(scancode)
+	
+	function key(scancode, raw)
 		-- to do: efficiency
 
 		-- "ctrl" is special -- can mean option key on apple (for option-c / ctrl-c means the same thing)
@@ -123,13 +181,14 @@ do
 		if (scancode == "shift") then return key("lshift") or key("rshift") end
 		if (scancode == "alt") then return key("lalt") or key("ralt") end
 
-		scancode = get_scancode(scancode)
+		scancode = get_scancode(scancode, raw)
 		return key_state[scancode]
 	end
 
 
 
 	-- clear state until end of frame
+	-- (mapped keys only -- can't be used with raw scancodes)
 	function clear_key(scancode)
 		scancode = get_scancode(scancode)
 		frame_keypressed_result[scancode] = nil
@@ -181,6 +240,7 @@ do
 	end
 ]]
 	
+	local future_messages = {}
 
 	--[[
 		called once per _update
@@ -201,10 +261,28 @@ do
 
 		last_key_state = unpod(pod(key_state))
 
+		local future_index = 1
 
 		repeat
 			
 			local msg = _read_message()
+
+			if (msg and msg._delay) msg._open_t = time() + msg._delay
+
+			-- future messages: when _open_t is specified, open message at that time
+
+			if (not msg and future_index <= #future_messages) then
+				-- look for next future message that is ready to be received
+				while (future_index <= #future_messages and future_messages[future_index]._open_t >= time()) do
+					future_index += 1
+				end
+				msg = deli(future_messages, future_index)
+			elseif (msg and msg._open_t and time() < msg._open_t) then
+				-- don't process yet! put in queue of future messages
+				add(future_messages, msg)
+				msg = nil
+			end
+
 			
 			if (msg) then
 
@@ -246,7 +324,7 @@ do
 
 					if (msg.event == "keydown") then
 						key_state[msg.scancode] = 1
---						printh("@ scancode: "..msg.scancode)
+						--printh("@@ keydown scancode: "..msg.scancode)
 					end
 
 					if (msg.event == "keyup") then

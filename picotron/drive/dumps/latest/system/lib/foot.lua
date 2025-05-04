@@ -32,7 +32,8 @@ end
 -- printh("entering mainloop at cpu:"..stat(1))
 
 while (_draw or _update) do
-	
+
+
 	-- called once before every _update()  --  otherwise keyp() returns true for multiple _update calls
 	_process_event_messages()
 
@@ -46,6 +47,7 @@ while (_draw or _update) do
 	-- to do: process can be run in background when not visible
 	-- @0x547f:0x1 currently means "window is visible", and apps only run when visible
 
+
 	if (_update and (peek(0x547f) & 0x1) > 0) then
 
 		-- always exactly one call to _update_buttons() before each _update() (allows keyp to work)
@@ -57,6 +59,7 @@ while (_draw or _update) do
 
 		-- below 20fps, just start running slower. It might be that _update is slow, not _draw.
 	end
+
 
 	if (_draw and (peek(0x547f) & 0x1) > 0) then
 

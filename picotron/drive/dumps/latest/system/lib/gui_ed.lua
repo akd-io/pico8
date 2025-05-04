@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-13 18:17:04",modified="2024-03-13 18:17:42",revision=1]]
+--[[pod_format="raw",created="2024-03-13 18:17:04",modified="2024-03-21 16:55:08",revision=2]]
 --[[
 
 	/dev/ed/gui_ed.lua
@@ -92,8 +92,32 @@ function attach_text_editor(g, parent)
 
 	
 	local container = g:attach(parent)
-	local content -- referenced by container:draw
+	local content                -- referenced by container:draw
 	local undo_stack
+
+
+
+	local char_w = peek(0x4000) -- only used for cursor
+	local char_h = peek(0x4002)
+
+	
+	local cursor_y0 = -1
+	local cursor_y1 = 7
+
+	local cur_x, cur_y = 1, 1
+
+	local hydrated = {}
+	local hydrate_y = 1
+
+	local margin_left = 0
+	local margin_top  = 3
+
+
+	local sel = {{line=0, char=0}, {line=0, char=-1}, {line=0, char=0}}
+
+
+
+
 
 	-- note: need a draw function so that parent clipping is set!
 
@@ -101,6 +125,8 @@ function attach_text_editor(g, parent)
 		-- default container draw: clear to blue
 		-- perhaps could be optional though if caller wants to manage background (e.g. live coding w/ code shown on top of output)
 		rectfill(0,0,self.width-1, self.height-1, content.bgcol)
+
+		-- print("\^w\^t ***"..tostring(cur_y), 10,10,8)
 
 		-- show keyboard focus state (debug, but maybe useful in future)
 		-- have blinking cursor!
@@ -152,25 +178,8 @@ function attach_text_editor(g, parent)
 	local height = container.height or 100
 	
 
-	local char_w = peek(0x4000) -- only used for cursor
-	local char_h = peek(0x4002)
-
-	-- colour when editing a line
+-- colour when editing a line
 	local editing_line_col = content.bgcol == 1 and 9 or 5
-
-	local cursor_y0 = -1
-	local cursor_y1 = 7
-
-	local cur_x, cur_y = 1,1
-
-	local hydrated = {}
-	local hydrate_y = 1
-
-	local margin_left = 0
-	local margin_top  = 3
-
-
-	local sel = {{line=0, char=0}, {line=0, char=-1}, {line=0, char=0}}
 
 
 	------------------------------------------------------------------------------------
@@ -191,7 +200,7 @@ function attach_text_editor(g, parent)
 	end
 
 	-- don't care about x for now
-	local function find_cur_y_for_click(mx, my)
+	local function find_cur_y_for_click(my)
 
 		local yy = margin_top
 
@@ -515,8 +524,8 @@ function attach_text_editor(g, parent)
 		local inside_comment = false
 		local something_selected = is_something_selected()
 
-		local start_i = mid(1, find_cur_y_for_click(_, 0 - content.y),       #text)
-		local end_i   = mid(1, find_cur_y_for_click(_, container.height - content.y),  #text)
+		local start_i = mid(1, find_cur_y_for_click(0 - content.y),       #text)
+		local end_i   = mid(1, find_cur_y_for_click(container.height - content.y),  #text)
 
 		-- draw_y includes the top margin
 		y = (hydrated[start_i] and hydrated[start_i].draw_y or margin_top)
@@ -799,7 +808,7 @@ function attach_text_editor(g, parent)
 			mx -= container.sx
 			my -= container.sy
 			-- printh(string.format(" --> mx %d my %d", mx, my))
-			local cy = find_cur_y_for_click(_, my)
+			local cy = find_cur_y_for_click(my)
 			cur_y = mid(1, cy, #text)
 			cur_x = find_cur_x_for_click(mx - margin_left, text[cur_y])
 			deselect()
@@ -848,11 +857,27 @@ function attach_text_editor(g, parent)
 
 	----------------------------------------------------------------------------------------------------------------
 
+	local function checkpoint()
+		--printh("@ checkpoint")
+		undo_stack:checkpoint()
+	end
+
+	local last_line_y = -1
+	local function backup_line_edit()
+		-- to do: should be whitespace check
+		if (cur_y ~= last_line_y or ((sub(text[cur_y],cur_x-1,cur_x-1) == " ") != (sub(text[cur_y],cur_x,cur_x) == " "))) then
+			checkpoint()
+		end
+		last_line_y = cur_y
+	end
+
+
+
 	local function strchr(s, c)
 		return string.find (s, c, 1, true)
 	end
 
-	function get_char_cat(c)
+	local function get_char_cat(c)
 		if (strchr("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_", c)) return 1
 		if (ord(c) >= 128 or ord(c) < 0) return 1
 
@@ -866,7 +891,9 @@ function attach_text_editor(g, parent)
 		return 6 -- something else. whitespace
 	end
 
-	function select_from_double_tap(line, pos, sel)
+	local function select_from_double_tap(line, pos, sel)
+
+		checkpoint()
 
 		local cat = get_char_cat(sub(line,pos,pos))
 		
@@ -884,7 +911,6 @@ function attach_text_editor(g, parent)
 
 		set_selection{{line=cur_y, char=sel0}, {line=cur_y, char=sel1}}
 
-		-- printh(string.format("selected: %d %d %d", cur_y, sel0, sel1))
 	end
 
 
@@ -931,7 +957,7 @@ function attach_text_editor(g, parent)
 
 
 
-	function indent_selection()
+	local function indent_selection()
 
 		checkpoint()
 
@@ -1311,7 +1337,7 @@ function attach_text_editor(g, parent)
 
 	-- don't want to unpod(pod(text)) because only need separate copy of string references
 
-	function duplicate_text_table(text)
+	local function duplicate_text_table(text)
 		local t2={}
 		for i=1,#text do
 			t2[i] = text[i]	
@@ -1341,20 +1367,7 @@ function attach_text_editor(g, parent)
 		end
 	)
 
-	function checkpoint()
-		--printh("@ checkpoint")
-		undo_stack:checkpoint()
-	end
-
-	local last_line_y = -1
-	function backup_line_edit()
-		-- to do: should be whitespace check
-		if (cur_y ~= last_line_y or ((sub(text[cur_y],cur_x-1,cur_x-1) == " ") != (sub(text[cur_y],cur_x,cur_x) == " "))) then
-			checkpoint()
-		end
-		last_line_y = cur_y
-	end
-
+	
 
 	-------------------------------------------------------------------------------------------------------------------------
 
@@ -1374,8 +1387,8 @@ function attach_text_editor(g, parent)
 
 
 	function content:click(msg)
-
-		local cy = find_cur_y_for_click(_, msg.my)
+		local cy = find_cur_y_for_click(msg.my)
+		if (cy ~= cur_y) checkpoint()
 		cur_y = mid(1, cy, #text)
 		cur_x = find_cur_x_for_click(msg.mx - margin_left, text[cur_y])
 		if (key("shift")) then
@@ -1390,9 +1403,12 @@ function attach_text_editor(g, parent)
 
 	function content:doubletap(msg)
 
-		local cy = find_cur_y_for_click(_, msg.my)
+
+		local cy = find_cur_y_for_click(msg.my)
 		cur_y = mid(1, cy, #text)
 		cur_x = find_cur_x_for_click(msg.mx - margin_left, text[cur_y])
+
+--		printh("@@ content:doubletap cur_y: "..cur_y)
 
 		select_from_double_tap(text[cur_y], cur_x, sel)
 
@@ -1401,7 +1417,7 @@ function attach_text_editor(g, parent)
 
 	function content:drag(msg)
 		-- dupe from click
-		local cy = find_cur_y_for_click(_, msg.my)
+		local cy = find_cur_y_for_click(msg.my)
 		cur_y = mid(1, cy, #text)
 		cur_x = find_cur_x_for_click(msg.mx - margin_left, text[cur_y])
 		extend_selection_to_cursor()

@@ -2,7 +2,7 @@ picotron cartridge // www.picotron.net
 version 2
 
 :: desktop.lua
---[[pod_format="raw",created="2023-13-04 15:13:41",modified="2024-03-14 09:04:20",revision=2080,stored="2023-21-29 09:21:19"]]
+--[[pod_format="raw",created="2023-13-04 15:13:41",modified="2024-03-21 06:12:56",revision=2081,stored="2023-21-29 09:21:19"]]
 -- mode: desktop
 local desktop_items = nil
 local desktop_content = nil
@@ -377,7 +377,7 @@ end
 
 on_event("drop_items",function(msg)
 
-	--printh(":: dropped items from proc_id:"..msg.from_proc_id.." // mode:"..mode)
+	-- printh("@@ dropped items from proc_id:"..msg.from_proc_id.." // mode:"..mode)
 	
 	-- drop into self
 	if (msg.from_proc_id == pid()) then
@@ -389,20 +389,23 @@ on_event("drop_items",function(msg)
 	
 	-- drop from somewhere else
 	
-	--printh("drop:"..pod(msg))
+	-- printh("@@ drop from a different process:"..pod(msg))
 	
 	for i=1,#msg.items do
 		local item = msg.items[i]
 		if (item.pod_type == "file_reference") then
+
 			-- MOVE
 			--printh(pod(item))
-			-- printh("moving "..item.fullpath.." to "..pwd())
 
+			-- printh("@@ moving "..tostring(item.fullpath).." to "..pwd())
+			
 			mv(item.fullpath, pwd().."/"..item.filename)
 			
 			if (mode == "desktop") then	
 				set_desktop_item_position(item.filename, msg.mx, msg.my)
 			end
+
 		end
 	end
 	
@@ -559,6 +562,10 @@ function drag_selected_files(msg)
 	for k,v in pairs(finfo) do
 		if (v.selected) then
 			v.fullpath = fullpath(v.filename)
+			local mx,my = mouse()
+			-- 0.1.0c: set offsets here (wm handles this, but mouse moved by the time message arrives)
+			v.xo = v.x - mx
+			v.yo = v.y - my
 			add(dragging_files, v)
 			--printh("added "..v.fullpath..string.format(" %d %d",v.x,v.y))
 		end
@@ -931,6 +938,7 @@ function generate_fels_grid()
 	fi = {}
 	
 	for i=1,#filenames do
+		-- to do: auto-stagger for long file names + (xx&1)*14
 		add(fi, create_file_item(content, finfo[filenames[i]], 2 + xx*item_w, 2 + yy*item_h))
 		xx+=1
 		if (xx >= items_x) xx=0 yy+=1
@@ -1316,34 +1324,31 @@ end
 local intention_stack = {}
 
 function push_intention(p0,p1)
-	--printh("pushing intention:"..tostr(p0))
+	--printh("pushing intention:"..pod{p0,p1})
 	add(intention_stack,
 		{
 			intention,
 			intention_requester_proc_id
 		}
 	)
-	intention = p0
-	intention_requester_proc_id = p1 -- always nil in practice
-	
-	init_intention()
+	init_intention(p0, p1)
 	refresh_gui = true
 end
 
 function pop_intention()
 	local item=deli(intention_stack) or {}
-	intention = item[1]
-	intention_requester_proc_id = item[2]
-	
-	init_intention()
+	init_intention(item[1], item[2])
 	refresh_gui = true
 	
 	return item -- never used
 end
 
 
+function init_intention(p0, p1)
 
-function init_intention()
+	-- can be nill (e.g. pop last intention off stack to remove intention panel)
+	intention = p0
+	intention_requester_proc_id = p1
 	
 	intention_dat = {
 		save_file_as = {"Save As", "Save"}, -- "Save File As" doesn't fit
@@ -1352,6 +1357,7 @@ function init_intention()
 		new_folder   = {"New Folder", "mkdir"},
 		rename       = {"Rename", "Rename"} -- could be file or folder
 	}
+
 	if intention and intention_dat[intention] then
 		intention_title  = intention_dat[intention][1] -- window title
 		intention_action = intention_dat[intention][2] -- button on right
@@ -1359,19 +1365,16 @@ function init_intention()
 end
 
 function generate_intention_panel()
+
 	local panel = gui:attach{
 		x = 0, y = 0, vjustify = "bottom",
 		width_rel = 1.0,
 		height = 19,
 	}
+
 	function panel:draw()
 		rectfill(0,0,self.width-1,self.height-1,6)
-		if (not navtext) return
-		local fn=navtext:get_text()[1]
-		local segs = split(fn,"/",false)
-	--	print(intention_title..": "..segs[#segs],6,6,13)
 		print(intention_title..":",6,6,13)
-	
 	end
 	
 	local wwa = 80
@@ -1423,11 +1426,12 @@ end
 
 
 function process_intention()
-	if (not navtext) return
-	--local filename = fullpath(navtext:get_text()[1])
+
+	if (not intention_text) return
+
 	local filename = fullpath(intention_text:get_text()[1])
 	
-	--printh("process intention: "..filename)
+	-- printh("process intention: "..pod{intention,filename})
 	
 	-- safety: can't operate on a folder
 	--[[
@@ -1604,6 +1608,8 @@ function generate_toolbar()
 				
 				local path = navtext:get_text()[1]
 				local attribs = fstat(path)
+
+				-- printh("pressed enter "..pod{navtext:get_text()[1], path, attribs})
 				
 				if attribs == "folder" then
 					cd(path)
@@ -2010,8 +2016,8 @@ function _update()
 --]]
 	
 	if refresh_gui then
-		--printh("@@ generate_interface()")
-		if (mode != "desktop") generate_interface()
+		--if (mode != "desktop") -- 0.1.0c: commented ~ generate interface even on desktop (allow file ops)
+		generate_interface()
 		refresh_gui = false
 	end
 	
@@ -2068,9 +2074,12 @@ MDcgMTA6MTE6NTYiXV1sejQABAAAAAMAAAAwbmls
 			local dat = fetch(filename)
 			-- switcheroony
 			-- to do: ** loop danger! **
-			filename = fullpath(dat.location) -- dat.location can be relative
-			click_on_file(filename, dat.action, dat.argv)
-			
+			if (dat and dat.location) then
+				filename = fullpath(dat.location) -- dat.location can be relative
+				click_on_file(filename, dat.action, dat.argv)
+			else
+				notify("not a valid location file")
+			end
 		elseif not intention and (
 				string.sub(filename,-4) == ".p64" or
 				string.sub(filename,-8) == ".p64.rom" or

@@ -25,12 +25,10 @@ do
 	local GuiElement={} -- helper class; never used externally
 
 	local next_id = 0
-	local keyboard_focus_el = nil
 
 	-- used for setting from draw call tree
 	local mouse_cursor_gfx = nil 
 	local last_mouse_cursor_gfx = nil 
-
 
 	
 	function GuiElement:new(el)
@@ -72,6 +70,7 @@ do
 		child = child or {}		
 		child = GuiElement:new(child)
 		child.parent = self
+		child.head = self.head or self -- also updated in update_absolute_position (ref: wm manually reattaches subtrees, messing up head)
 
 		-- calculate relative size immediately -- might be used while calculating other elements
 		if (child.width_rel)  child.width  = self.width  * child.width_rel  + (child.width_add  and child.width_add  or 0) 
@@ -83,12 +82,18 @@ do
 
 	function GuiElement:has_keyboard_focus()
 		-- to do: assert(typeof(this)=="table");   might accidentally self.has_keyboard_focus() instead of self:has_keyboard_focus()
-		return keyboard_focus_el == self
+		return self.head.keyboard_focus_el == self
 	end
 
 	function GuiElement:set_keyboard_focus(val)
 		-- to do: assert(typeof(this)=="table");   might accidentally self.set_keyboard_focus() instead of self:set_keyboard_focus()
-		keyboard_focus_el = val and self or nil
+		if (val == true) then
+			self.head.keyboard_focus_el = self
+		elseif (self.head.keyboard_focus_el == self) then
+			-- only set to nil if was this element (don't clobber a different element's focus)
+			self.head.keyboard_focus_el = nil
+		end
+
 	end
 
 
@@ -221,9 +226,9 @@ do
 			end
 		end
 
-
 		function el:click()
 			self:set_keyboard_focus(true)
+			readtext(true)
 			self.str = "" -- starting editing new string
 		end
 
@@ -232,14 +237,14 @@ do
 			if (self:has_keyboard_focus()) then
 
 				while (peektext()) do
-					self.str = self.str .. readtext()					
+					self.str = self.str .. readtext()
 				end
+
+				if (keyp("backspace")) self.str = sub(self.str,1,-2)
+
 				if (keyp("enter")) then
 					if (type(self.set) == "function") self:set(self.str)
 					self:set_keyboard_focus(false)
-				end
-				if (keyp("backspace") and #self.str > 1) then
-					self.str = sub(self.str, 1, #self.str-1)
 				end
 
 			end
@@ -464,13 +469,12 @@ do
 
 		if (not msg) then return end
 
-
-		-- this helper is not scoped to a particular Gui -- need to pass in pointer_element.
-		-- might as well be part of message
+		-- this helper is not scoped to a particular Gui -- need to pass in pointer_element via head
 	
-		if (msg.pointer_element == self) then
+		if (self.head.pointer_element == self) then
 			local mx, my, mb = mouse()
-			msg.has_pointer = msg.pointer_element == self and (mx >= self.sx and my >= self.sy and mx < self.sx + self.width and my < self.sy + self.height)
+			msg.has_pointer = (mx >= self.sx and my >= self.sy and mx < self.sx + self.width and my < self.sy + self.height)
+			if (self.cursor) mouse_cursor_gfx = self.cursor
 		else
 			msg.has_pointer = nil
 		end
@@ -505,14 +509,11 @@ do
 						end
 					]]
 
-					fin = self[msg.event](self, msg)
+					-- 0.1.0c: mosue position should be relative to element
+					local mx, my, mb = mouse()
+					msg.mx, msg.my = mx - self.sx, my - self.sy
 
-					-- set cursor (convenient place to put it -- assume anything that changes cursor is also visible)
-					-- means don't need to spend cpu on an extra per-element test
-					if (msg.has_pointer and self.cursor) then
-						--printh("setting cursor from draw: "..pod(self.cursor))
-						mouse_cursor_gfx = self.cursor
-					end
+					fin = self.draw(self, msg)
 
 				else
 
@@ -562,6 +563,8 @@ do
 	function create_gui(head_el)
 
 		head_el = head_el or {}
+
+		head_el.head = head_el
 		
 		head_el.x = head_el.x or 0
 		head_el.y = head_el.y or 0
@@ -581,7 +584,6 @@ do
 		local dx, dy = 0
 		local start_mx, start_my,start_el = 0,0
 		local dragging_el = nil
-		local last_pointer_el = nil
 
 		-- don't pay attention to mouse button until it is first recorded as not pressed
 		-- avoids complications when e.g. button is held on creation (generating click event)
@@ -589,7 +591,11 @@ do
 
 		-- to do: shouldn't need this? can use has_pointer()?
 		function gui:get_pointer_element()
-			return last_pointer_el
+			return gui.pointer_element
+		end
+
+		function gui:get_keyboard_focus_element()
+			return gui.keyboard_focus_el
 		end
 
 --[[
@@ -621,10 +627,14 @@ do
 				local px = el.parent.sx or 0
 				local py = el.parent.sy or 0
 
+				-- hack: update head so that tree structure can change (should that be allowed? wm does it!)
+				el.head = el.parent.head or el
+
 				-- relative size
 				if (el.width_rel)  el.width  = el.parent.width  * el.width_rel  + (el.width_add or 0)
 				if (el.height_rel) el.height = el.parent.height * el.height_rel + (el.height_add or 0)
 
+				-- to do: (optimisation) table of functions
 				if (el.justify == "right")  then px = px + el.parent.width - el.width end
 				if (el.justify == "center") then px = px + el.parent.width/2 - el.width/2 end
 
@@ -666,6 +676,7 @@ do
 			if (depth > 64) then printh("*** max depth el_at_xy_recursive") return end
 			]]
 
+			-- ghost is drawn but can't interact
 			if (el.hidden or el.ghost) return nil
 
 			local best_el = nil
@@ -713,8 +724,8 @@ do
 			-- don't interact with gui a moment after it was created; avoid complex edge cases
 			-- e.g. dragging while regenerate gui -> don't want to immediately pick up whatever
 			-- is under the cursor. (confusing)
-			if (time() < gui.t0 + 0.2) return false
-
+			--if (time() < gui.t0 + 0.2) return false
+			-- 0.1.0c: commente; pushes complexity to other places! e.g. drop file into newly opened window
 
 			--el = el_at_xy_recursive(gui, gui.x, gui.y, gui.x + gui.width, gui.y + gui.height, x, y)
 
@@ -737,6 +748,8 @@ do
 			return GuiElement:new(el)
 		end
 
+		
+
 		--[[
 					0x5480 ~ 0x5bff     (64) indexed display palette
 					0x54c0 ~ 0x553f     (128) picotron misc draw state
@@ -748,9 +761,8 @@ do
 			update_absolute_positions()
 
 			local el=self
-			local msg = el and { mx = mx - el.sx, my = my - el.sy, mb=mb} or {}
+			local msg = el and { mx = mx - el.sx, my = my - el.sy, mb = mb} or {}
 
-			msg.pointer_element = last_pointer_el
 			msg.event = "draw"
 			msg.propagate_to_children = true
 
@@ -807,7 +819,7 @@ do
 			local el = dragging_el or gui:el_at_xy(mx, my)
 
 			-- can be nil
-			last_pointer_el = el 
+			gui.pointer_element = el 
 
 
 			-- check for hidden parent
@@ -848,7 +860,7 @@ do
 				start_el = el -- to do: use this to discard some interactions that should start and end on the same element (no gui refresh midway)
 				drag_t = time()
 				dragging_el = el
-				keyboard_focus_el = el
+				-- gui.keyboard_focus_el = el -- commented: need to explicitly set
 				el.last_click_t = time()
 				msg.event="click" el:event(msg)
 			end

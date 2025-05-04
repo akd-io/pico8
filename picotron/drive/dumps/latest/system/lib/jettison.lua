@@ -2,24 +2,24 @@
 --------------------------------------------------------------------------------------------------------------------------------
 
 -- **** jettison kernel functions before entering userland code
-
 --[[
+
 if (pid() > 3) then
 	printh("----- globals at boot ------")
 	local str = ""
 	for k,v in pairs(_G) do
 		if (sub(k,1,1) == "_" and #k > 3) then
 			--str..= "local "..k.." = "..tostr(k).."\n"
-			--str..= k.." = nil\n"
+			str..= k.." = nil\n"
 		else
 			-- keep
-			str..= k.."\n"
+			--str..= k.."\n"
 		end
 	end
 	printh(str)
 end
-]]
 
+]]
 
 if (pid() > 3) then
 
@@ -53,12 +53,37 @@ if (pid() > 3) then
 	_fetch = nil
 	_create_process_from_code = nil
 	_run_process_slice = nil
-	-- _process_event_messages = nil  -- needed by foot
+	
 	_subscribe_to_events = nil -- events.lua, only used by wm
 	_superyield = nil
 
 	-- commented: even pico-8 has tostring! is slightly different
 	-- tostring = nil
 	-- tonumber = nil
+
+	_fetch_local = nil
+	_fetch_remote = nil
+	_store_local = nil
+	_signal = nil
+	_printh = nil
+
+	-- needed by foot
+	-- _process_event_messages = nil  
+	-- _update_buttons = nil
+
+
 end
+
+--[[
+if (pid() > 3) then
+	printh("----- candidates for jettison ------")
+	local str = ""
+	for k,v in pairs(_G) do
+		if (sub(k,1,1) == "_" and #k > 3) then
+			str..= k.." = nil\n"
+		end
+	end
+	printh(str)
+end
+]]
 

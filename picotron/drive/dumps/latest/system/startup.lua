@@ -47,9 +47,9 @@ create_process("/system/apps/sfx.p64", {argv={"/ram/cart/sfx/0.sfx"}})
 
 local sdat = fetch"/appdata/system/settings.pod"
 local wallpaper = (sdat and sdat.wallpaper) or "/system/wallpapers/pattern.p64"
+if (not fstat(wallpaper)) wallpaper = "/system/wallpapers/pattern.p64"
 
 create_process(wallpaper, {window_attribs = {workspace = "new", desktop_path = "/desktop", wallpaper=true}})
-
 
 create_process("/system/tooltray/tooltray.p64", {window_attribs = {workspace = "tooltray", desktop_path = "/appdata/system/desktop2", wallpaper = true}})
 
