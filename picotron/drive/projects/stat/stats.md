@@ -76,12 +76,12 @@ This file attempts to document all `stat()` codes, enriching the official docume
   - Observed value `60531740.0` and `63912031.0` in `stat.lua` output.
   - No code references.
 - `stat(310)` (undocumented)
-  - Observed value `551.0` and `565.0` in `stat.lua` output.
+  - Observed value `551.0`, `565.0` and `3689.0` in `stat.lua` output.
   - Same [decompiled code](https://discord.com/channels/1068899948592107540/1358151110917099785/1368473041113452614) as for `stat(311)` below, but passing `2` to `pdisk_count_slots_by_kind()` instead of `0`.
   - No code references.
 - `stat(311)` (undocumented)
   - Functionality unknown.
-  - Observed value `15833.0` and `15819.0` in `stat.lua` output.
+  - Observed value `15833.0`, `15819.0` and `12342.0` in `stat.lua` output.
   - [Decompiled code](https://discord.com/channels/1068899948592107540/1358151110917099785/1368470004063932467) by `@_maxine_` reads:
     ```
       if (stat_type != UNDOCUMENTED_311) goto LAB_00460c7f;
@@ -165,7 +165,7 @@ This file attempts to document all `stat()` codes, enriching the official docume
   - Observed value `1.0` in `stat.lua` output.
   - No code references.
 - `stat(987)` (undocumented)
-  - Observed value `201225.0` and `40211391.0` in `stat.lua` output.
+  - Observed value `201225.0`, `40211391.0`, and `61631102.0` in `stat.lua` output.
   - See [code references](#987-search)
 - `stat(988)` (undocumented)
   - Returns `1.0` if both left and right control keys are held down, and `0.0` otherwise.
