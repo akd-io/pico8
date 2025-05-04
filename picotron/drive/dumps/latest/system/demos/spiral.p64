@@ -6,8 +6,8 @@ version 2
 b64$LS0gcGljb3Ryb24gb2JqZWN0IGRhdGEKe3t3b3Jrc3BhY2VfaW5kZXg9MSxjcHJval9maWxl
 PSJtYWluLmx1YSJ9fQ==
 :: _meta/.info.pod
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTA4LTIwIDAyOjEyOjQ0Iixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjowNToxMyJdXQ==
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTA4LTIxIDA0OjU4OjM1Iixtb2RpZmllZD0iMjAyNS0w
+NC0yNyAxNjowMzo1NCJdXQ==
 :: main.lua
 -- spiral
 -- by zep
@@ -23,6 +23,6 @@ function _draw()
 	print(string.format("%.5f",stat(1)),2,2,7)
 end
 :: .info.pod
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTA4LTIwIDAyOjEyOjQ0Iixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjowNToxMyJdXQ==
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTA4LTIxIDA0OjU4OjM1Iixtb2RpZmllZD0iMjAyNS0w
+NC0yNyAxNjowMzo1NCJdXQ==
 :: [eoc]

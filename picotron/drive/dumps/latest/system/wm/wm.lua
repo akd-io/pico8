@@ -2602,8 +2602,11 @@ on_event("set_window", function(msg)
 			add(target_ws.tabs, win)
 		end
 
-		-- 6. show in workspace if requested ** 0.1.1: if not specified then assume true 
-		if (msg.attribs.show_in_workspace ~= false) then
+		-- 6. show in workspace if requested 
+		-- 0.1.1b: when show_in_workspace not specified, wm is allowed to decide
+		if (msg.attribs.show_in_workspace or
+			(msg.attribs.show_in_workspace == nil and msg.attribs.workspace ~= "tooltray")
+		) then
 			previous_workspace = ws_gui
 			set_workspace(target_ws)
 			target_ws.active_window = win -- give focus immediately
@@ -2677,8 +2680,11 @@ on_event("set_window", function(msg)
 						del(ws_gui, target_ws)
 					end
 
-					-- go to other window (when not specified, taken to be true)
-					if (win.show_in_workspace ~= false) then
+					-- go to other window
+					-- 0.1.1b: when show_in_workspace not specified, wm is allowed to decide
+					if (msg.attribs.show_in_workspace or
+						(msg.attribs.show_in_workspace == nil and msg.attribs.workspace ~= "tooltray")
+					) then
 						set_workspace(i)
 						win2:bring_to_front()
 					end
@@ -2824,21 +2830,7 @@ on_event("drag_items",
 
 on_event("set_wallpaper",
 	function (msg)
-
-		-- kill existing desktop process
-
-		--local wallpaper_win = last_desktop_workspace.child[1]
-		--local wallpaper_win = ws_gui.child[1]
-
-		--_kill_process(last_desktop_workspace.child[1]) -- test
-
-		-- works
 		create_process(msg.wallpaper, {window_attribs = { wallpaper = true, workspace = "current"}})
-
-		-- why doesn't this work?
---		create_process(msg.wallpaper, {window_attribs = { wallpaper = true, workspace = "current"}})
-
-		
 	end
 )
 
@@ -2854,6 +2846,7 @@ on_event("toggle_app_menu",
 	end
 )
 
+-- toggle system-wide mute
 on_event("toggle_mute",
 	function(msg)
 		sdat.mute_audio = not sdat.mute_audio
@@ -2862,13 +2855,6 @@ on_event("toggle_mute",
 		if (msg.notify) then
 			notify("Sound: "..(sdat.mute_audio and "Off" or "On"))		
 		end
-
-		-- let active window know // deleteme -- mute is system-wide
-		--[[
-			if (msg.proc_id and msg.proc_id ~= 3) then
-				send_message(msg.proc_id, {event = "toggle_mute"})
-			end
-		]]
 	end
 )
 

@@ -25,6 +25,7 @@ do
 	local _mount = mount
 	local _cd = _cd
 	local _rm = _rm
+	local _cp = _cp
 	local _mv = _mv
 	local _ls = _ls
 
@@ -389,11 +390,6 @@ do
 		return _store_metadata(_sandbox_path(filename, true), meta)
 	end
 
-
-
-	-- keep local copies so that they can be used internally, even if rm and/or rm are renamed in userland
-	local _cp = nil
-	local _rm = nil
 
 	_rm = function(f0, flags, depth)
 
