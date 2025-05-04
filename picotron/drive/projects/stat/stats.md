@@ -98,9 +98,18 @@ This file attempts to document all `stat()` codes, enriching the official docume
   - Found with the help of `@_maxine_` on Discord.
   - See [code references](#316-search)
 - `stat(317)` (undocumented)
+  - Returns:
+    - `3.0` when running as a `.bin` or `.html` export.
+    - `1.0` when running on the BBS web player.
+    - `0.0` otherwise.
+  - See [`test-317.lua`](./test-317/test-317.lua) for more details.
+  - Found with the help of `@_maxine_` on Discord.
   - See [code references](#317-search)
 - `stat(318)` (undocumented)
-  - Returns `1.0` when running as a web/`.html` export, and `0.0` otherwise.
+  - Returns:
+    - `1.0` when running as a `.html` export or in the BBS web player.
+    - `0.0` otherwise.
+  - See [`test-317.lua`](./test-317/test-317.lua) for more details.
   - See [code references](#318-search)
 - `stat(320)` (undocumented)
   - Returns `1.0` during video capture, and `0.0` otherwise.
