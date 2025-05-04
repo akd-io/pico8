@@ -1367,12 +1367,14 @@ function init_intention(p0, p1)
 		open_file    = {"Open File", "Open"},
 		new_file     = {"New File", "Create"},
 		new_folder   = {"New Folder", "mkdir"},
+		new_tab      = {"New File", "Create", "New Tab"}, -- can either open a file, or create a file  -->  window title is "New Tab"
 		rename       = {"Rename", "Rename"} -- could be file or folder
 	}
 
 	if intention and intention_dat[intention] then
 		intention_title  = intention_dat[intention][1] -- window title
 		intention_action = intention_dat[intention][2] -- button on right
+		intention_window_title = intention_dat[intention][3] or intention_title
 	end
 end
 
@@ -1442,6 +1444,11 @@ function process_intention()
 	if (not intention_text) return
 
 	local filename = fullpath(intention_text:get_text()[1])
+
+	if (not filename) then
+		notify("could not resolve; filenames must contain only a..z,0..9,_-.")
+		return
+	end
 	
 	-- printh("process intention: "..pod{intention,filename})
 	
@@ -1455,7 +1462,8 @@ function process_intention()
 	
 	-- new_file is processed by open.lua
 	-- ** never processed by requester **
-	if (intention == "new_file") then
+	if (intention == "new_file" or intention == "new_tab") then
+		if (not filename:ext() and env().use_ext) filename..="."..env().use_ext
 		create_process("/system/util/open.lua", { argv = {filename} })
 		pop_intention()
 		return
@@ -1953,7 +1961,7 @@ function _init()
 	
 	window{
 		width = 272, height = 160,
-		title = intention_title
+		title = intention_window_title or intention_title
 	}
 	-- mode: list, grid, desktop
 	mode = "grid"

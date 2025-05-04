@@ -79,7 +79,7 @@ version 2
 
 
 :: data.lua
---[[pod_format="raw",created="2023-36-24 00:36:58",modified="2024-03-26 19:03:46",revision=6941,stored="2023-36-29 04:36:40"]]
+--[[pod_format="raw",created="2023-36-24 00:36:58",modified="2024-03-30 09:28:03",revision=6952,stored="2023-36-29 04:36:40"]]
 function init_data()
 	
 	-- index (0x30000)
@@ -192,8 +192,8 @@ function init_data()
 		0,40,255,0 -- adsr
 	)
 	
-	-- copy default instrument to 1..7
-	for i=1,7 do
+	-- copy default instrument to 1..15
+	for i=1,15 do
 		memcpy(0x40000 + 0x200*i, 0x40000, 0x200)
 	end
 	
@@ -247,7 +247,7 @@ function draw_mudo_state(x,y)
 end
 
 :: env.lua
---[[pod_format="raw",created="2023-32-08 03:32:58",modified="2023-49-27 18:49:04",revision=1954,stored="2023-36-29 04:36:40"]]
+--[[pod_format="raw",created="2023-32-08 03:32:58",modified="2024-03-30 19:19:12",revision=1960,stored="2023-36-29 04:36:40"]]
 
 -- flags: lerp, random start position
 -- used by DATA envelope
@@ -267,6 +267,7 @@ function create_env_flag_toggle(addr,flag,label,x,y)
 		print(str..self.label,2,1+yy,13)
 	end
 	function el:click()
+		checkpoint()
 		local val = peek(self.addr)
 		val ^^= self.flag
 		poke(self.addr, val)
@@ -301,6 +302,7 @@ function create_env_type_toggle(addr,x,y)
 		--pal()
 	end
 	function el:click()
+		checkpoint()
 		local val = peek(self.addr)
 		val = (val + 1) % 3
 		poke(self.addr, (peek(self.addr) & 0xf0) | (val & 0x0f))
@@ -312,7 +314,8 @@ end
 
 function create_env_plug(index, x, y)
 	local el = {
-		x=x,y=y,width=7,height=7,index=index
+		x=x,y=y,width=7,height=7,index=index,
+		click=checkpoint
 	}
 	function el:draw(msg)
 		circfill(3,3,2,13)
@@ -592,37 +595,38 @@ end
 :: gfx/
 :: gfx/0.gfx
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTMwLTIyIDA3OjMwOjA0Iixtb2RpZmllZD0iMjAyNC0w
-My0yNiAxOTowMzo0NiIscmV2aXNpb249NzI2NyxzdG9yZWQ9IjIwMjMtMzYtMjkgMDQ6MzY6NDAi
-XV1sejQAcgUAAEc2AADxCntbMF09e2JtcD1weHUAQyAFBQQgBzAHAEcGAPEBLGZsYWdzPTAscGFu
+My0zMCAyMDozNDoyMiIscmV2aXNpb249Nzk0NCxzdG9yZWQ9IjIwMjMtMzYtMjkgMDQ6MzY6NDAi
+XV1sejQAkQUAAFQ2AADxCntbMF09e2JtcD1weHUAQyAFBQQgBzAHAEcGAPEBLGZsYWdzPTAscGFu
 X3g9NggA2nk9LTQsem9vbT04fSw7AFcnABcABwQAHydBAB2-BwA3MAcgBzA3AAc7AB0wEAcgfwBP
 JyAHQDsAH38wB4AHMAcQOQAaWxAQBPDwMgATMDIAHzAxAAVwERcQFyAnQOQA8AMXMCcQFxAn8AQH
 AAcQFxAHUCfDAP8AUAcAFyAn8AQn4AfgB-AsYAAZICAQgQEAVAARAFMAMgAHIAoA8QMHIAcgFwAn
 EAcQJyAHACcAJxAoASAAFxAAP-D-ksUAHR-wMQD-D1IEBAQAF9cBPwAXADoAGbEFBQQAJwAHIBcg
-F6wBDzwAHD_gJ6AyABx-UCcQJxAnUDYAHEBgByAHXAIObgMPOgANL-AJMQDgASwBMUBHQAgADzwA
-HTEwBzDGAwNXBQ9AAB0hIBcBBABHAA96AB0gIGdwAAAsBB8QUwF7VMhkBPD-AQDwEHFR8LFx8K_R
-8AMh8JbB8AFB8JTh8ABB8D8x8EBxEFELAII_UfA_cTBR4AoAIGFACgDAPWHwISHwCVFwUcBRDQBR
-IEHwB2ENAPAKPGHwIUHwBmGQQcBB8Cch8ANh8CBR8AZRoBAAUSZB8AFxEAAiQbAQACDggQ8AsAdB
-sEGwUfAmQdCRDwAwCCHADwAgJVEPALFB8BlBsEHwJlHAoQ0AgFGgQfAlYcCRZwCQGVGQUfAlYbCh
-NgAgGkENACRRwA0AADQAILCxNAAaGw0AEIA0AGSgUQBB8CEPACBRsA8AADgAEVEPADSgURAPAAA6
-AHKgUQBR8B9RSQBEJWGQYQ8AAC0AR2GQURA8AEFhgFEgWgABPAAkJXEPACAZUTwAR3FwUTAPACBh
-gA8AQhkhUCHZALckcXBRQEHwGEHwIQ8A8BcXUfAgUbBB8AmB8AJxYFFQQfAWYfAf8RLAsfABcVBh
-UEHQIUCBUBMA8AcUkOHggVBRYEHA8QMAkfAg8RSA8QDgJADAUbDxDvAh8RRw8QHQIgDwElGg8Q7w
-IvETcIEwQdCBQFFwQbDxDfAiUdBR8AJhMGHAkRMAEKATAPAQYdBB8ANBMIHAkTBRgEGQYRDxAfAl
-YeBB8AJREJHAoRUAYYBxQKHwKC4C1QLxAsChIFGQQWCBoFEUAFABwFEAQRYAcDCxoFHwJ1FpAkAC
-0fAAFgCSQaBBENGgQfAoFgDCwfAAURBBEFGgQQDRLAByAkHwApHwAxYAofEEoFHwByHwDGEYAMBx
-8ARRIEEAUbDxBJBIAvEG8Aph8ANR8AFhsDFAUSCxwKEgQWCBGABwUfAEUfACcXEBsDCh4GFQQUCR
-8AdRGADwCAVB8AOBYFEgUTCh8ABBYEEgsfAGYfAJtgLA8APxBRBhMJHwDfEDLgAgCWEVAGAE8QMQ
-YUAVABABJwDzBAlR8AhB8AXxASBRUJHwDtHwC0EXADAG0TB-AHEQkfAPIfAJVADxJwihUCGAUfAT
-YfAscfAKQfCRYfALUfCQUfAMUfCRMfAOUfCyUfCzUfCyYfCycfCwgfCwcfCxYRUAOjHw-wEAH2Uo
-BB4P6gceDzEA-3UTMjEIkwAHUAcQJwAnQFsGIPAFCQCDFxAHcAcgBxAXAE8AJ-BDGgJPDzEA--_Y
-YwcHBCAXMCkOBAQAABAAL0AXmgkMLDE2SQDxAA4QHQAOAA4NAA0OAB0OAA8AIA0QCgASIBUAARIA
-D1YAHWOQB1AXEFehAC8HkD8AHSKAB9QAfwBXEBdQB6A-AB0zcEcQAgAfcDsADQ_6AR4PMQD-----
---------------------------------------------MVBtPTh9fQ==
+F6wBDzwAHD_gJ6AyABx-UCcQJxAnUDYAHEBgByAHXAIObgMPOgANL-AJMQCs-wMICASwDxBQLjAu
+MA4ADkAe8AVvABwBOQExQEdACAAPPAAdMTAHMNMDA2QFD0AAHSEgFw4EAEcAD3oAHSAgZ3AAADkE
+HxCRAXtUyGQE8P8BAPAQcVHwsXHwr5HwAyHwlsHwAUHwlOHwAEHwPzHwQHEQUQsAgj5R8D5xMFHg
+CgAgYUAKAMA9YfAhIfAJUXBRwFENAFEgQfAHYQ0A8Ao8YfAhQfAGYZBBwEHwJyHwA2HwIFHwBlGg
+EABRJkHwAXEQACJBsBAAIOCBDwCwB0GwQbBR8CZB0JEPADAIIcAPACAlUQ8AsUHwGUGwQfAmUcCh
+DQCAUaBB8CVhwJFnAJAZUZBR8CVhsKE2ACAaQQ0AJFHADQAANAAgsLE0ABobDQAQgDQAZKBRAEHw
+IQ8AIFGwDwAAOAARUQ8ANKBREA8AADoAcqBRAFHwH1FJAEQlYZBhDwAALQBHYZBREDwAQWGAUSBa
+AAE8ACQlcQ8AIBlRPABHcXBRMA8AIGGADwBCGSFQIdkAtyRxcFFAQfAYQfAhDwDwFxdR8CBRsEHw
+CYHwAnFgUVBB8BZh8B-xEsCx8AFxUGFQQdAhQIFQEwDwBxSQ4eCBUFFgQcDxAwCR8CDxFIDxAOAk
+AMBRsPEO8CHxFHDxAdAiAPASUaDxDvAi8RNwgTBB0IFAUXBBsPEN8CJR0FHwAmEwYcCREwAQoBMA
+8BBh0EHwA0EwgcCRMFGAQZBhEPEB8CVh4EHwAlEQkcChFQBhgHFAofAoLgLVAvECwKEgUZBBYIGg
+URQAUAHAUQBBFgBwMLGgUfAnUWkCQALR8AAWAJJBoEEQ0aBB8CgWAMLB8ABREEEQUaBBANEsAHIC
+QfACkfADFgCh8QSgUfAHIfAMYRgAwHHwBFEgQQBRsPEEkEgC8QbwCmHwA1HwAWGwMUBRILHAoSBB
+YIEYAHBR8ARR8AJxcQGwMKHgYVBBQJHwB1EYAPAIBUHwA4FgUSBRMKHwAEFgQSCx8AZh8Am2AsDw
+A-EFEGEwkfAN8QMuACAJYRUAYATxAxBhQBUAEAEnAPMECVHwCEHwBfEBIFFQkfAO0fALQRcAMAbR
+MH8AcRCR8A8h8AlUAPEnCKFQIYBR8BNh8Cxx8ApB8JFh8AtR8JBR8AxR8JEx8A5R8LJR8LNR8LJh
+8LJx8LCB8LBx8LFhFQA6MfD-AQAfZfcDCx4yKAQP9wceDzEA-3UTMj4IkwAHUAcQJwAnQFsGIPAF
+CQCDFxAHcAcgBxAXAE8AJ-BDYQAMDxoCMA8xAP--mGMHBwQgFzA2DgQEAAAQAC9AF5oJDCwxNkkA
+8QAOEB0ADgAODQANDgAdDgAPACANEAoAEiAVAAESAA9WAB1jkAdQFxBXoQAvB5A-AB0igAfUAH8A
+VxAXUAegPwAdM3BHEAIAH3A7AA0PugEeDzEA----------------------------------------
+---------zFQbT04fX0=
 :: gfx/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTUwLTE5IDE2OjUwOjA3IixzdG9yZWQ9IjIwMjMtNTAt
 MTkgMTY6NTA6MDciXV1sejQABAAAAAMAAAAwbmls
 :: gui.lua
---[[pod_format="raw",created="2023-32-22 07:32:11",modified="2024-03-26 19:03:46",revision=8039,stored="2023-36-29 04:36:40"]]
+--[[pod_format="raw",created="2023-32-22 07:32:11",modified="2024-03-30 20:34:22",revision=8742,stored="2023-36-29 04:36:40"]]
 
 function create_pane(title, x, y, w, h, col)
 
@@ -710,6 +714,7 @@ function create_track_chooser(el)
 		end,
 		
 		tap=function(self, msg)
+			checkpoint()
 			ct = mid(0, msg.mx \ 20, 3) + ((msg.my-2) \ 16) * 4
 			mode = "track"
 			refresh_gui = true
@@ -755,6 +760,7 @@ function create_pattern_chooser(el)
 		end,
 		
 		tap=function(self, msg)
+			checkpoint()
 			cp = mid(0, msg.mx \ 20, 3) + ((msg.my-2) \ 12) * 4
 			mode = "pattern"
 			refresh_gui = true
@@ -921,7 +927,7 @@ function generate_gui_pattern()
 		
 		if (chan_mask & (1 << i) > 0) then
 			pane:attach(
-				create_tiny_num_field("",0x30100 + cp * 20 + i, sx+19, sy)
+				create_tiny_num_field("",0x30100 + cp * 20 + i, sx+15, sy)
 			)
 		else
 			ww = 24
@@ -929,7 +935,7 @@ function generate_gui_pattern()
 		
 		-- toggle channel bit
 		pane:attach{
-			x = sx+10, y = sy,
+			x = sx+5, y = sy,
 			width=ww, height = 7,
 			draw=function(self)
 				rect(0,0,6,6,5)
@@ -944,6 +950,20 @@ function generate_gui_pattern()
 			tap=function()
 				chan_mask ^^= (1 << i)
 				poke(0x30100 + cp*20+9, chan_mask)
+				refresh_gui = true
+			end
+		}
+		
+		-- edit track
+		pane:attach{
+			x = sx+33, y = sy,
+			width=ww, height = 7, cursor="pointer",
+			draw=function(self)
+				spr(23,0,0)
+			end,
+			tap=function()
+				mode="track"
+				ct=peek(0x30100 + cp * 20 + i)
 				refresh_gui = true
 			end
 		}
@@ -967,6 +987,8 @@ function generate_gui_pattern()
 				end
 			}
 		end
+		
+		-- jump to channel pencil
 	end
 	
 	container:attach_scrollbars()
@@ -999,6 +1021,7 @@ function generate_gui()
 				print(self.label,self.width/2 - #self.label*2, 6,sel and 7 or 13)
 			end,
 			tap=function(self)
+				checkpoint()
 				mode = self.mode
 				readtext(true) -- clear buffer
 				refresh_gui = true
@@ -1115,78 +1138,8 @@ function generate_gui_instrument()
 end
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 :: inst.lua
---[[pod_format="raw",created="2023-16-27 18:16:38",modified="2024-03-26 19:03:46",revision=2486]]
+--[[pod_format="raw",created="2023-16-27 18:16:38",modified="2024-03-30 20:34:22",revision=3174]]
 
 -- 0x1702
 local node_type_col = {
@@ -1212,7 +1165,8 @@ function create_mval_knob(label,node_type,mval_index,addr,x,y)
 		ac = 1, -- angle coefficient (notch angle)
 		a0 = 0.0,
 		-- cursor = "grab", -- to do: shouldn't set cursor while drag outside of element
-		node_col = node_type_col[node_type]
+		node_col = node_type_col[node_type],
+		click = checkpoint
 	}
 	
 	if (label == "vol") el.v0, el.v1 = 0, 64
@@ -1400,6 +1354,7 @@ function create_mval_knob(label,node_type,mval_index,addr,x,y)
 	end
 	
 	function el:tap(msg)
+		checkpoint()
 		local flags,val1,val0,env = peek(addr,4)
 		
 		-- use same gui el / can still grab and drag value without
@@ -1480,6 +1435,7 @@ function create_scope(addr, node_index, x, y, w, h)
 		addr=addr
 	}
 	function el:click(msg)
+		checkpoint()
 		local inst_addr = 0x40000 + ci*0x200
 		local node_addr = inst_addr + node_index*0x20
 		local wt_index = peek(node_addr+1)>>4
@@ -1697,6 +1653,7 @@ function create_muted_node_toggle(addr,x,y)
 		pal()
 	end
 	function el:tap()
+		checkpoint()
 		local val = peek(self.addr)
 		val ^^= 0x2
 		poke(self.addr, val)
@@ -1717,6 +1674,7 @@ function delete_node(index)
 end
 
 function create_child_node(parent_index, node_type, is_modulator)
+	checkpoint()
 	local inst_addr = 0x40000 + ci*0x200
 	
 	-- find slot after sub-tree ends
@@ -1797,7 +1755,7 @@ local node_op_str={
 }
 function create_op_toggle(addr,x,y)
 	local el = { 
-		addr = addr,
+		addr = addr, cursor="pointer",
 		x = x, y = y, width = 40, height = 7
 	}
 	function el:draw(msg)
@@ -1811,7 +1769,7 @@ function create_op_toggle(addr,x,y)
 		pal()
 	end
 	function el:click()
-		
+		checkpoint()
 		local val = peek(self.addr) >> 4
 		if (val > 0) then
 			val = val == 1 and 2 or 1
@@ -1842,6 +1800,7 @@ function create_fx_type_toggle(addr,x,y)
 		pal()
 	end
 	function el:click()
+		checkpoint()
 		local val = peek(self.addr)
 		val = 8 + (((val-8) + 1) % 3) -- only need filter, echo, gain
 		poke(self.addr, (peek(self.addr) & 0xf0) | (val & 0x0f))
@@ -1921,7 +1880,7 @@ function create_node_editor(node_index, x, y)
 		
 		if (node_type == 2) then -- +mod only for carrier osc
 		xx += el:attach{
-			x=xx,y=1,width=19,height=7,
+			x=xx,y=1,width=19,height=7,cursor="pointer",
 			draw = function(this,msg)
 				rectfill(0,0,this.width,this.height,msg.has_pointer and 23 or 6) 
 				print("+mod",2,1,5)
@@ -1930,7 +1889,7 @@ function create_node_editor(node_index, x, y)
 		}.width+2
 		end
 		xx+=el:attach{
-			x=xx,y=1,width=19,height=7,
+			x=xx,y=1,width=19,height=7,cursor="pointer",
 			draw = function(this,msg)
 				rectfill(0,0,this.width,this.height,msg.has_pointer and 23 or 6) 
 				print("+osc",2,1,5)
@@ -1939,7 +1898,7 @@ function create_node_editor(node_index, x, y)
 		}.width+2
 		
 		xx+=el:attach{
-			x=xx,y=1,width=15,height=7,
+			x=xx,y=1,width=15,height=7,cursor="pointer",
 			draw = function(this,msg)
 				rectfill(0,0,this.width,this.height,msg.has_pointer and 23 or 6) 
 				print("+fx",2,1,5)
@@ -1951,7 +1910,7 @@ function create_node_editor(node_index, x, y)
 	-- delete node
 	if (node_type > 1) then
 	el:attach{
-		x=el.width-10,y=1,width=8,height=7,
+		x=el.width-10,y=1,width=8,height=7,cursor="pointer",
 		draw = function(this,msg)
 			rectfill(0,0,this.width,this.height,msg.has_pointer and 8 or 6) 
 			print("X",2,1,5)
@@ -2044,8 +2003,8 @@ end
 
 
 :: main.lua
---[[pod_format="raw",created="2023-30-22 07:30:04",modified="2024-03-26 19:03:46",revision=7433,stored="2023-36-29 04:36:40"]]
-	--[[
+--[[pod_format="raw",created="2023-30-22 07:30:04",modified="2024-03-30 20:34:22",revision=8129,stored="2023-36-29 04:36:40"]]
+--[[
 	Picotron Tracker
 	(c) Lexaloffle Games LLP
 ]]
@@ -2057,6 +2016,7 @@ include "env.lua"
 include "pat.lua"
 include "gui.lua"
 include "update.lua"
+include "undo.lua"
 
 include "debug.lua"
 
@@ -2088,9 +2048,13 @@ function _init()
 					poke(0x30000+i, ud[i])
 				end
 			end
+			tdat={}
+			init_undo()
 		end,
 		"/ram/cart/sfx/0.sfx"
 	)
+	
+	
 
 	-- current instrument, node, pattern, track
 	ci = 1
@@ -2102,6 +2066,8 @@ function _init()
 	coct = 4
 	
 	mode = "track"
+	
+	init_undo()
 	
 end
 
@@ -2221,17 +2187,17 @@ MTkgMTY6NTA6MDciXV1sejQABAAAAAMAAAAwbmls
 :: sfx/
 :: sfx/0.sfx
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTI0IDE2OjIwOjA4Iixtb2RpZmllZD0iMjAyNC0w
-My0yNiAxOTowMzo0NiIscmV2aXNpb249MjExXV1sejQAJAIAANYHAADwJ3B4dQADKAAAAwAED0AQ
-Ag4AAaABIAKgDgAPEAAN8MoBAgMEBQYHAA--kAgJCgsPDA8NDw4PDxAA8AANDxEPEg8TDxQPFQ8W
-DxcTAPEBDxgPGQ8aDxsPHA8dDx4PHxQA8QAgDyEPIg8jDyQPJQ8mDycUAPEAKA8pDyoPKw8sDy0P
-Lg8vFADxADAPMQ8yDzMPNA81DzYPNxQA-wU4DzkPOg87DzwPPQ8_Dz8AD--w-wEA6-8nWgEQBg8g
-EAEgASAB8AACEAIMEAEgDyEgATAPQPDDDygP--DGD-gKD-8PgA-3Dw0B8AkBEAYMMAD-OR--AQDc
-8I74D0AABQ0wD1QPVQ9Sj1EPTw9MD0cPQA8tDycPHg8ZDxMPEU8P--8V8Qv_FQ9CD0APPQ87DzoP
-OA83DzYPNR80DzMPMg8xDzAPLw8uDy0PLA8rHyoPKQ8oHycPEg8PCQUCAWAIBg8bDxofGA8XDxUP
-Ew8SDxENDw8fDg8MCwoZSPBwD0AADUD_CB8wDzIPNA8yDzAPJA8mDygODycPEwAABgAFCgD0GP4O
-P_AeIw0MDzAeMQ8hD6EhDpH_HHwPOg89DzgPLw8qDyUfIjz_BFUAT7DwcAQIABj1JQ8wDzYPOg9B
-D0UPSA9CDzIPKx8nDyoPMQ88D0MPRw9ND1APUQ9GDzkPNf4a8Qb_GvwG-ho6AL4yDzT_LSH_LSz_
-LV4ADwgA-40f-wEAl1D-----Hw==
+My0zMCAyMDozNDoyMiIscmV2aXNpb249MTAwM11dbHo0ACQCAADWBwAA8CdweHUAAygAAAMABA9A
+EAIOAAGgASACoA4ADxAADfDKAQIDBAUGBwAP-5AICQoLDwwPDQ8ODw8QAPAADQ8RDxIPEw8UDxUP
+Fg8XEwDxAQ8YDxkPGg8bDxwPHQ8eDx8UAPEAIA8hDyIPIw8kDyUPJg8nFADxACgPKQ8qDysPLA8t
+Dy4PLxQA8QAwDzEPMg8zDzQPNQ82DzcUAP8FOA85DzoPOw88Dz0PPg8-AA--8P8BAOv-J1oBEAYP
+IBABIAEgAfAAAhACDBABIA8hIAEwD0Dwww8oD--wxg-4Cg--D4AP9w8NAfAJARAGDDAA-zkf-wEA
+3PCO_A9AAAUNMA9UD1UPUo9RD08PTA9HD0APLQ8nDx4PGQ8TDxFPD---FfEL-hUPQg9ADz0POw86
+DzgPNw82DzUfNA8zDzIPMQ8wDy8PLg8tDywPKx8qDykPKB8nDxIPDwkFAgFgCAYPGw8aHxgPFw8V
+DxMPEg8RDQ8PHw4PDAsKGUjwcA9AAA1A-ggfMA8yDzQPMg8wDyQPJg8oDg8nDxMAAAYABQoA9Bj_
+Dj-gHiMNDA8wHjEPIQ_hIQ6R-hx8DzoPPQ84Dy8PKg8lHyI8-gRVAE_w8HAECAAY9SUPMA82DzoP
+QQ9FD0gPQg8yDysfJw8qDzEPPA9DD0cPTQ9QD1EPRg85DzX_GvEG-hr8Bv4aOgC_Mg80-i0h-i0s
+-i1eAA8IAP_NH-8BAJdQ-----x8=
 :: sfx/test.sfx
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTE4LTA0IDEyOjE4OjUzIixtb2RpZmllZD0iMjAyNC00
 My0wNSAxNDo0MzowNyIscmV2aXNpb249MTE3XV1sejQAkQAAAMoGAADfcHh1AAMoAAADAATw-wEA
@@ -2242,7 +2208,7 @@ AP--XB--AQCXUP----8f
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTIzLTI4IDIzOjIzOjIxIixzdG9yZWQ9IjIwMjMtMjMt
 MjggMjM6MjM6MjEiXV1sejQABAAAAAMAAAAwbmls
 :: track.lua
---[[pod_format="raw",created="2023-49-27 18:49:18",modified="2024-03-26 19:03:46",revision=3350]]
+--[[pod_format="raw",created="2023-49-27 18:49:18",modified="2024-03-30 20:34:22",revision=4142]]
 --[[
 
 	track editor
@@ -2387,19 +2353,35 @@ function create_track_segment(el)
 	el.index   = el.index or ct -- sfx index
 	
 	el.rowstr={}
+	
+	
+	if (not tdat[el.index]) tdat[el.index] = {}
+	local ddat = tdat[el.index] -- decoration data
+	
+	-- recall per-sfx cursor
+	if (ddat.cur) then
+		cur_x = ddat.cur.x
+		cur_y = ddat.cur.y
+	end
+	
+	--tdat[el.index].sel={x0=0,y0=0,x1=3,y1=5}
 
-	-- e.g. 0x50008 for first element on first row of first track	
-	local base_addr = 0x50000 + (el.index * 328) + 8 + el.row0
-
+	-- e.g. 0x50008 for first element on first row of first track
+	-- add + el.row0 to get address of first row in segment	
+	local base_addr = 0x50000 + (el.index * 328) + 8
+	
 	function el:update()
 		if (el.live_index) then
 			el.index = peek(0x30100 + cp * 20 + el.chan_i)
-			base_addr = 0x50000 + (el.index * 328) + 8 + el.row0
+			base_addr = 0x50000 + (el.index * 328) + 8
 		end
+		ddat.cur={x=cur_x,y=cur_y} -- store per-sfx cursor
 	end
 	
 
 	function el:draw()
+	
+		local sel = ddat.sel
 		
 		rectfill(0,0,1000,1000,0)
 				
@@ -2413,12 +2395,20 @@ function create_track_segment(el)
 			
 			--print("c 3\-h\fe..\-h\fc..\-h\fd..0", 1, 1+i*7, 6)
 			
+			-- selected
+			if (sel and i + el.row0 >= sel.y0 and  i + el.row0 <= sel.y1 and
+				sel.y0 ~= sel.y1) 
+			then
+				print(render_selection(sel.x0, sel.x1), 1, 1+i*row_h, 10)
+			end
+			
 			-- single
-			if (cur_y == base_addr + i) then
+			
+			if (cur_y == base_addr + i + el.row0) then
 				print(render_selection(cur_x, cur_x), 1, 1+i*row_h, 10)
 			end
 			
-			print(render_row(base_addr + i, 64), 1, 2+i*row_h, 6)
+			print(render_row(base_addr + i + el.row0, 64), 1, 2+i*row_h, 6)
 			
 		end
 		
@@ -2428,9 +2418,10 @@ function create_track_segment(el)
 	
 	function el:click(msg)
 	
+		checkpoint()
 		
 		local i=(msg.my-2)\row_h
-		cur_y = base_addr + i
+		cur_y = base_addr + i + el.row0
 		ct = el.index
 		
 		--	printh(string.format("base_addr: %x i: %d", base_addr, i))
@@ -2441,15 +2432,36 @@ function create_track_segment(el)
 			if (msg.mx >= col_x[i]) cur_x = i
 		end
 
+		if (key"shift") then
+			ddat.sel=ddat.sel or {x0=cur_x, y0=i + el.row0, x1=cur_x, y1=i + el.row0}
+			ddat.sel.x1 = cur_x
+			ddat.sel.y1 = i + el.row0
+		else
+			ddat.sel = {x0=cur_x, y0=i + el.row0, x1=cur_x, y1=i + el.row0}
+		end
+		
+	
 	end
 	
+	function el:drag(msg)
+		local i=(msg.my-2)\row_h
+		cur_y = base_addr + i + el.row0
+		local col_x = {[0]=0,8,13,17,22,26,31,35,39}
+		for i=0,8 do
+			if (msg.mx >= col_x[i]) cur_x = i
+		end
+		ddat.sel.x1 = cur_x
+		ddat.sel.y1 = i + el.row0
+	
+	end
 	
 	return el
 end
 
 
 function create_pitch_scribbler(el)
-	el.index   = el.index or ct
+	el.index 	= el.index or ct
+	el.click 	= checkpoint
 	local y_offset = 12
 	function el:draw()
 		line(0,self.height-1,self.width,self.height-1,1)
@@ -2485,7 +2497,8 @@ end
 
 -- dupe
 function create_volume_scribbler(el)
-	el.index   = el.index or ct
+	el.index 	= el.index or ct
+	el.click  	= checkpoint
 	function el:draw()
 		line(0,self.height-1,self.width,self.height-1,1)
 		for i=0,63 do
@@ -2533,7 +2546,105 @@ function update_track_editor()
 			if (mode == "pattern") music(cp)
 		end
 	end
+	
+	-- select
+	
+	if (key("ctrl") and keyp("a")) then
+		checkpoint()
+		tdat[ct].sel = {x0=0,y0=0,x1=8,y1=63}
+	end
+	
+	-- paste notes
+	if key("ctrl") and keyp("v") then
+		checkpoint()
+		local dat = unpod(get_clipboard())
+		if (dat and type(dat.notes) == "userdata") then
+			local x0=tonum(dat.x0) or 0
+			local x1=tonum(dat.x1) or 8
+			local maxy = min(dat.notes:height()-1, 63-(cur_y-row0_addr))
+			notify(string.format("pasting %d %d %d",x0, x1, maxy))
+			for y=0,maxy do
+				if (x0<=1) poke(cur_y+y,dat.notes:get(0,y))
+				if (x0<=3 and x1>=2) poke(cur_y+y+64,dat.notes:get(1,y))
+				if (x0<=5 and x1>=4) poke(cur_y+y+128,dat.notes:get(2,y))
+				if (x0<=6 and x1>=6) poke(cur_y+y+192,dat.notes:get(3,y))
+				if (x0<=8 and x1>=7) poke(cur_y+y+256,dat.notes:get(4,y))
+			end
+		else
+			notify("could not find note data to paste")
+		end
+	end
+	
+	-- operations on selections
+	
+	if (tdat[ct] and tdat[ct].sel and tdat[ct].sel.y0 ~= tdat[ct].sel.y1) then
+		local sel = tdat[ct].sel
+		local x0,y0,x1,y1 = sel.x0,sel.y0,sel.x1,sel.y1
 		
+		-- remove selection
+		if (keyp("enter")) tdat[ct].sel = nil return
+		
+		local did_cut = false
+		
+		-- copy note data
+		-- always all vals but record range to write on paste
+		if key("ctrl") and (keyp("x") or keyp("c")) then
+			did_cut = keyp("x")
+			local ud = userdata("u8",5,y1-y0+1)
+			for x=0,4 do
+				for y=y0,y1 do
+					ud:set(x,y-y0,peek(row0_addr+x*64+y))
+				end
+			end
+			set_clipboard(pod({
+				notes=ud,
+				x0=x0, x1=x1
+			},7,{pod_type="notes"}))
+			notify("copied "..(y1-y0+1).." notes")
+		end
+		
+		-- clear (also use after cutting)
+		-- to do: allow clearing at the nibble level
+		if (keyp("backspace") or keyp("delete") or did_cut) then
+			checkpoint()
+			for y=y0, y1 do
+				if (x0<=1) poke(row0_addr+y,0xff)
+				if (x0<=3 and x1>=2) poke(row0_addr+y+64,0xff)
+				if (x0<=5 and x1>=4) poke(row0_addr+y+128,0xff)
+				if (x0<=6 and x1>=6) poke(row0_addr+y+192,0)
+				if (x0<=8 and x1>=7) poke(row0_addr+y+256,0)				
+			end
+		end
+		
+			
+		--------------------------------------
+		readtext(true) -- discard any leftover keypresses
+		return	
+		--------------------------------------
+	end
+	
+	-- might still copy pattern
+	if (mode == "pattern" and key"ctrl" and keyp"c") then
+		local addr = 0x30100 + cp*20
+		local ud=userdata("u8",20)
+		ud:set(0,peek(addr, 20))
+		set_clipboard(pod({
+			pattern=ud
+		},7,{pod_type="pattern"}))
+		notify("copied pattern")
+	end
+	
+	if (mode == "pattern" and key"ctrl" and keyp"v") then
+		checkpoint()
+		local dat = unpod(get_clipboard())
+		if (dat and type(dat.pattern) == "userdata") then
+			poke(0x30100 + cp*20, get(dat.pattern, 0, 20))
+			notify("pasted pattern")
+			refresh_gui = true
+		else
+			notify("could not paste pattern or track data")
+		end
+	end
 	
 	-- to do: cur_y per track
 	-- cursor isn't in current track; don't allow editing
@@ -2550,8 +2661,6 @@ function update_track_editor()
 
 	
 	if key"ctrl" then
-	
-		if (keyp("c")) printh"copy tracker region"
 	
 		readtext(true) -- clear buffer
 		
@@ -2599,8 +2708,8 @@ function update_track_editor()
 	end
 	
 	if (keyp("del") or (keyp("backspace") and cur_y > row0_addr)) then
-		if (keyp("backspace")) cur_y -= 1	
-		
+		checkpoint()
+		if (keyp("backspace")) cur_y -= 1
 		for addr = cur_y, max_addr-1 do
 			for j=0,4 do
 				poke(addr + j*stride, peek(addr+j*stride+1))
@@ -2612,6 +2721,7 @@ function update_track_editor()
 	end
 	
 	if (keyp("enter") and cur_y < max_addr) then
+		checkpoint()
 		for addr = max_addr, cur_y+1, -1 do
 			for j=0,4 do
 				poke(addr + j*stride, peek(addr+j*stride-1))
@@ -2628,10 +2738,9 @@ function update_track_editor()
 	while peektext() do
 	
 		local c = readtext()
-		
-		
-		
-		
+	
+		checkpoint()
+			
 		-- fx
 		if (cur_x >= 6) then
 			
@@ -2726,8 +2835,49 @@ end
 
 
 
+:: undo.lua
+--[[pod_format="raw",created="2024-03-30 19:03:19",modified="2024-03-30 20:34:22",revision=379]]
+--[[
+
+	single undo stack for whole .sfx file
+
+]]
+
+function init_undo()
+
+	undo_stack = create_undo_stack(
+		function()
+			local mem = userdata("u8",0x30000)
+			for i=0,2 do
+				set(mem,i*0x10000,peek(0x30000+i*0x10000, 0x10000))
+			end
+			return {mem,tdat,mode,ci,ct,cp}
+		end,
+		function(state)
+			for i=0,2 do
+				poke(0x30000+i*0x10000, get(state[1],i*0x10000,0x10000))
+			end
+			tdat,mode,ci,ct,cp=state[2],state[3],state[4],state[5],state[6]
+		end
+	)
+	
+end
+
+function checkpoint()
+	undo_stack:checkpoint()
+end
+
+function undo()
+	undo_stack:undo()
+	refresh_gui = true
+end
+
+function redo()
+	undo_stack:redo()
+	refresh_gui = true
+end
 :: update.lua
---[[pod_format="raw",created="2023-32-22 07:32:11",modified="2024-03-26 19:03:46",revision=7432,stored="2023-36-29 04:36:40"]]
+--[[pod_format="raw",created="2023-32-22 07:32:11",modified="2024-03-30 20:34:22",revision=8129,stored="2023-36-29 04:36:40"]]
 global_t = 0
 
 -- map keyboard letters to pitches
@@ -2769,12 +2919,16 @@ function _update()
 	
 	if (key"ctrl") then
 		-- can't play note when holding control
+		
+		if (keyp"z") undo()
+		if (keyp"y") redo()
+	
 	elseif (keyp"space") then
 		-- inst mode:always kill all audio
 		if mode == "instrument" then -- track has own handling
 			note() -- kill all channels
 		end
-	elseif mode == "instrument" then
+	elseif mode == "instrument" then	
 		
 		local pitch = -1
 		--if (keyp("space")) pitch = 48 -- middle c
@@ -2807,6 +2961,32 @@ function _update()
 
 	if (mode == "track" or mode == "pattern") then
 		update_track_editor()
+	end
+	
+	-- copy and paste instruments
+	if (key"ctrl" and mode == "instrument") then
+		if (keyp"c") then
+			local ud = userdata("u8",0x200)
+			set(ud,0,peek(0x40000+ci*0x200,0x200))
+			set_clipboard(pod({
+				instrument=ud
+			},7,{pod_type="instrument"}))
+			notify("copied instrument")
+		end
+		
+		if key("ctrl") and keyp("v") then
+			checkpoint()
+			local dat = unpod(get_clipboard())
+			
+			if (dat and type(dat.instrument) == "userdata") then
+				poke(0x40000+ci*0x200, get(dat.instrument,0,0x200))
+				notify("pasted instrument")
+				refresh_gui = true
+			else
+				notify("could not find instrument data to paste")
+			end
+		end
+	
 	end
 	
 	global_t += 1
@@ -2897,14 +3077,16 @@ MGQwZDA3MDEwMTA3MGQwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMDcwMTAxMDYwNzBkMGQwZDBkMGQw
 ZDBkMGQwZDBkMDcwNjAxMDEwNjA2MDcwNzA3MDcwNzA3MDcwNzA3MDcwNjA2MDEwMDAxMDYwNjA2
 MDYwNjA2MDYwNjA2MDYwNjA2MDEwMDAwMDAwMTA2MDYwNjA2MDYwNjA2MDYwNjA2MDEwMDAwMDAw
 MDAwMDEwMTAxMDEwMTAxMDEwMTAxMDEwMDAwMDAiKSxub3Rlcz0iIixydW50aW1lPTQsc3RvcmVk
-PSIyMDI0LTAzLTI2IDE5OjAzOjQ2Iix0aXRsZT0iUGljb3Ryb24gVHJhY2tlclwwMDkiLHZlcnNp
-b249IjAuMSIsd29ya3NwYWNlcz17e2xvY2F0aW9uPSJtYWluLmx1YSMxNiIsd29ya3NwYWNlX2lu
-ZGV4PTF9LHtsb2NhdGlvbj0idXBkYXRlLmx1YSM2NiIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2Nh
-dGlvbj0iZ3VpLmx1YSMxOTUiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249InRyYWNrLmx1
-YSMyMjMiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249ImRhdGEubHVhIzkiLHdvcmtzcGFj
-ZV9pbmRleD0xfSx7bG9jYXRpb249Imluc3QubHVhIzExIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xv
-Y2F0aW9uPSJnZngvMC5nZngiLHdvcmtzcGFjZV9pbmRleD0yfSx7bG9jYXRpb249InNmeC8wLnNm
-eCIsd29ya3NwYWNlX2luZGV4PTR9LHtsb2NhdGlvbj0ic2Z4LzAuc2Z4Iix3b3Jrc3BhY2VfaW5k
-ZXg9NH0se2xvY2F0aW9uPSJzZngvMC5zZngiLHdvcmtzcGFjZV9pbmRleD03fX1dXWx6NAAEAAAA
-AwAAADBuaWw=
+PSIyMDI0LTAzLTMwIDIwOjM0OjIyIix0aXRsZT0iUGljb3Ryb24gVHJhY2tlclwwMDkiLHZlcnNp
+b249IjAuMSIsd29ya3NwYWNlcz17e2xvY2F0aW9uPSJtYWluLmx1YSM1Iix3b3Jrc3BhY2VfaW5k
+ZXg9MX0se2xvY2F0aW9uPSJ1cGRhdGUubHVhIzEwNiIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2Nh
+dGlvbj0iZ3VpLmx1YSMzMDkiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249InRyYWNrLmx1
+YSM0MzEiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249Imluc3QubHVhIzI5NSIsd29ya3Nw
+YWNlX2luZGV4PTF9LHtsb2NhdGlvbj0idW5kby5sdWEjNiIsd29ya3NwYWNlX2luZGV4PTF9LHts
+b2NhdGlvbj0iZ2Z4LzAuZ2Z4Iix3b3Jrc3BhY2VfaW5kZXg9Mn0se2xvY2F0aW9uPSJzZngvMC5z
+ZngiLHdvcmtzcGFjZV9pbmRleD00fSx7bG9jYXRpb249InNmeC8wLnNmeCIsd29ya3NwYWNlX2lu
+ZGV4PTR9LHtsb2NhdGlvbj0ic2Z4LzAuc2Z4Iix3b3Jrc3BhY2VfaW5kZXg9NH0se2xvY2F0aW9u
+PSJzZngvMC5zZngiLHdvcmtzcGFjZV9pbmRleD00fSx7bG9jYXRpb249InNmeC8wLnNmeCIsd29y
+a3NwYWNlX2luZGV4PTR9LHtsb2NhdGlvbj0ic2Z4LzAuc2Z4Iix3b3Jrc3BhY2VfaW5kZXg9N319
+XV1sejQABAAAAAMAAAAwbmls
 :: [eoc]

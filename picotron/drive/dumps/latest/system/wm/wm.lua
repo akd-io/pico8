@@ -457,17 +457,22 @@ function _init()
 				last_input_activity_t = time()
 
 				-- alt + left,right,enter filtered out (used by window manager)
+				-- needs to be here (and not in events.lua) because key state is reset when switching tabs
 				if key("alt") then
 					if (msg.scancode == 79 or msg.scancode == 80 or msg.scancode == 40) return
 				end
 
-				-- filter ctrl combinations
+				-- fittfilter ctrl combinations
 				if key("ctrl") then
+					-- needs to be here (and not in events.lua) because key state is reset when switching tabs
 					if (msg.scancode == 43) return -- tab / ctrl+shift+tab
-					if (msg.scancode == 22) return -- ctrl+s
-					if (msg.scancode == 35) return -- ctrl+6 capture screenshot
-					if (msg.scancode == 36) return -- ctrl+7 capture label
+
+					-- moved to events.lua so that can be mapped; especially for ctrl-s
+					-- if (msg.scancode == 22) return -- ctrl+s 
+					-- if (msg.scancode == 35) return -- ctrl+6 capture screenshot
+					-- if (msg.scancode == 36) return -- ctrl+7 capture label
 				end
+
 			end
 
 
@@ -1226,8 +1231,7 @@ local xodat = {26,22,19,17,15,14,12,11,10,9,8,7,6,5,5,4,3,3,2,2,1,1,1,0,0,0,0,0,
 ppy = 0
 function _draw()
 
-	pal(1) -- reset colourtable but leave rgb display palette alone
-	palt() -- reset transparency 
+	pal(0) -- reset colourtable but leave rgb display palette alone
 
 	-- don't draw frame when changing window or workspace; allows messages to complete and prevents flicker
 	-- (e.g. switch through newly opened tabs, or gfx setting current sprite picked up by map editor)
@@ -1471,7 +1475,7 @@ function _draw()
 
 		if (not mag_bmp) mag_bmp = userdata("u8", 64, 64)
 		blit(get_display(), mag_bmp, mx-32, my-32)
-		palt(0)
+		palt(0) -- nothing is transparent
 
 		local sx,sy = mx-64, my-64
 		for y=0,63 do

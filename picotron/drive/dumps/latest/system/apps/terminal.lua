@@ -602,6 +602,9 @@ function _update()
 		cursor_pos = mid(0, cursor_pos + 1, #cmd)
 	end
 
+	if (keyp("home")) cursor_pos = 0
+	if (keyp("end")) cursor_pos = #cmd
+	if (key("ctrl") and keyp("e")) cursor_pos = #cmd
 
 
 	if (keyp("enter")) then

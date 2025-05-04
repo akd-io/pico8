@@ -51,7 +51,7 @@ for i=1,4 do flip() end
 store_metadata("/ram/cart", {runtime = stat(5)})
 
 -- copy /ram/cart to present working cartridge
-local result = cp("/ram/cart", save_as)
+local result = cp("/ram/cart", save_as, 0x1)
 
 
 if (result) then

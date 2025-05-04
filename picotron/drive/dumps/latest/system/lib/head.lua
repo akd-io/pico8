@@ -531,14 +531,12 @@ end
 
 		local meta_str = "--[["
 
---[[
-		if (meta.pod_type and type(meta.pod_type) == "string") then
-			meta_str ..= "pod_type=\""..meta.pod_type.."\""
-			meta.pod_type = nil -- don't write twice
-		else]]
 		if (meta.pod_format and type(meta.pod_format) == "string") then
 			meta_str ..= "pod_format=\""..meta.pod_format.."\""
 			meta.pod_format = nil -- don't write twice
+		elseif (meta.pod_type and type(meta.pod_type) == "string") then
+			meta_str ..= "pod_type=\""..meta.pod_type.."\""
+			meta.pod_type = nil -- don't write twice
 		else
 			meta_str ..= "pod"
 		end
@@ -693,11 +691,6 @@ end
 		if (fullpath(filename) == "/ram/system/settings.pod") then
 			-- printh("setting fullscreen: "..tostr(obj.fullscreen))
 			_apply_system_settings(obj)
---[[
-			for k,v in pairs(obj) do
-				if (type(k) == "string") _apply_system_setting(k, v)
-			end
-]]
 		end
 
 		-- printh("storing meta_str: "..meta_str)

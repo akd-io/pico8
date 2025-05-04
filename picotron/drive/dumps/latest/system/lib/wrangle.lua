@@ -223,7 +223,7 @@ function wrangle_working_file(save_state, load_state, untitled_filename, get_hlo
 
 		-- refuse to save over external changes. to do: nicer way to handle this
 		if (stale_filename == current_filename) then
-			notify("can not save over external changes. rename to save")
+			notify(stale_filename..": skipped saving over external changes")
 			return
 		end
 

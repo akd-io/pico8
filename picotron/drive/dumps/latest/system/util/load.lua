@@ -99,6 +99,10 @@ if (not dat) then
 	if (dat) printh("** fixme: found /workspaces.pod")
 end
 
+-- at the very least, open main.lua if it exists
+if ((type(dat) ~= "table" or #dat == 0) and fstat("/ram/cart/main.lua")) then
+	dat = {{location="main.lua"}} -- relative to /ram/cart/
+end
 
 if (type(dat) == "table") then
 
@@ -110,13 +114,7 @@ if (type(dat) == "table") then
 		local ti = dat[i]
 		local location = ti.location or ti.cproj_file -- cproj_file is dev legacy
 		if (location) then
-
-			-- separate the filename part of the location (/foo.lua#33 -> /foo.lua)
-			-- local filename = split(location, "#", false)[1]  -- commented; includes the location string
-
-			-- printh("@@ opening ".."/ram/cart/"..location)
 			add(edit_argv, "/ram/cart/"..location)
-
 		end
 	end
 

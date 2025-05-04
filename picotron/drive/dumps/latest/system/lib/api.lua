@@ -91,7 +91,10 @@ end
 local _cp = nil
 local _rm = nil
 
-function rm(f0)
+_rm = function(f0, flags, depth)
+
+	flags = flags or 0x0
+	depth = depth or 0
 
 	local attribs, size, origin = fstat(f0)
 
@@ -106,19 +109,31 @@ function rm(f0)
 		if (not origin) then -- dont recurse into origin!
 			local l = ls(f0)
 			for k,fn in pairs(l) do
-				_rm(f0.."/"..fn)
+				_rm(f0.."/"..fn, flags, depth+1)
 			end
 		end
 		-- remove metadata (not listed)
-		_rm(f0.."/.info.pod")
+		_rm(f0.."/.info.pod", flags, depth)
+
+		-- flag 0x1: remove everything except the folder itself (used by cp when copying folder -> folder)
+		-- for two reasons:
+
+		-- leave top level folder empty but stripped of metadata; used by cp to preserve .p64 that are folders on host
+		if (flags & 0x1 > 0 and depth == 0) then
+			return
+		end
 
 	end
+
 
 	-- delete single file / now-empty folder
 	return _fdelete(f0)
 end
 
-_rm = rm
+function rm(f0)
+	return _rm(f0, 0, 0)
+end
+
 
 
 
@@ -146,7 +161,9 @@ function cp(f0, f1)
 
 	-- explicitly delete in case is a folder -- want to make sure contents are removed
 	-- to do: should be an internal detail of delete_path()?
-	if (f1_type) _rm(f1)
+	-- 0.1.0e: 0x1 to keep dest as a folder when copying a folder over a folder
+	-- (e.g. dest.p64/ is a folder on host; preferable to keep it that way for some workflows)
+	if (f1_type) _rm(f1, f0_type == "folder" and 0x1 or 0x0) 
 
 	-- folder: recurse
 	if (f0_type == "folder") then

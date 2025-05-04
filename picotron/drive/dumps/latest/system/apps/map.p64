@@ -2,7 +2,7 @@ picotron cartridge // www.picotron.net
 version 2
 
 :: canvas.lua
---[[pod_format="raw",created="2023-04-11 02:04:02",modified="2024-03-23 19:41:53",revision=2644]]
+--[[pod_format="raw",created="2023-04-11 02:04:02",modified="2024-03-30 14:46:27",revision=2851]]
 
 local ww,hh=0,0
 local fill_cpu=0
@@ -92,10 +92,10 @@ function draw_layer(el, ii, pan_x, pan_y, scale)
 		
 	local x1,y1 = x0 + ww * scale, y0 + hh * scale
 		
-	local min_x = mid(0, (0 - x0) \ tile_ww - 1, lbmp:width())
-	local min_y = mid(0, (0 - y0) \ tile_hh - 1, lbmp:height())
-	local max_x = mid(0, min_x + (el.width \ tile_ww) + 2, lbmp:width())
-	local max_y = mid(0, min_y + (el.height \ tile_hh) + 2, lbmp:height())
+	local min_x = mid(0, (0 - x0) \ tile_ww - 1, lbmp:width()-1)
+	local min_y = mid(0, (0 - y0) \ tile_hh - 1, lbmp:height()-1)
+	local max_x = mid(0, min_x + (el.width \ tile_ww) + 2, lbmp:width()-1)
+	local max_y = mid(0, min_y + (el.height \ tile_hh) + 2, lbmp:height()-1)
 	
 	-- to do: use tline
 	-- this is too slow when zoomed out with small tiles
@@ -582,7 +582,7 @@ end
 
 
 :: draw.lua
---[[pod_format="raw",created="2023-26-12 03:26:20",modified="2024-03-23 19:41:53",revision=1568]]
+--[[pod_format="raw",created="2023-26-12 03:26:20",modified="2024-03-30 14:46:27",revision=1778]]
 function _draw()
 	cls(5)
 	-- operations during _update can request a
@@ -608,7 +608,7 @@ end
 
 
 :: gui.lua
---[[pod_format="raw",created="2023-05-11 02:05:16",modified="2024-03-23 19:41:53",revision=2378]]
+--[[pod_format="raw",created="2023-05-11 02:05:16",modified="2024-03-30 14:46:27",revision=2589]]
 
 show_pane = true
 
@@ -773,41 +773,8 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 :: main.lua
---[[pod_format="raw",created="2023-04-11 02:04:54",modified="2024-03-23 19:41:53",revision=2427]]
+--[[pod_format="raw",created="2023-04-11 02:04:54",modified="2024-03-30 14:46:27",revision=2658]]
 --[[
 	m6: multiple sprite banks
 	
@@ -906,16 +873,20 @@ end
 --[[
 	load everything in /ram/cart/gfx
 	to do: per bank invalidation
+	to do: gfx files relative to map file?
+		-- might want to make maps outside of cart context
 ]]
 function load_spritebanks()
 --	printh(" -- load_spritebanks() --")
-	gfx_files = ls("/ram/cart/gfx")
-	for i=1,#gfx_files do
-		local fn = gfx_files[i]
+	gfx_ls = ls("/ram/cart/gfx")
+	gfx_file = {}
+	for i=1,#gfx_ls do
+		local fn = gfx_ls[i]
 		local num = tonum(string.sub(fn,1,1))
-		fn = "/ram/cart/gfx/"..fn
+		fn = "/ram/cart/gfx/"..fn 
 --		printh("loading "..fn)
 		if (num) then
+			gfx_file[num] = fn
 			local gfx_dat = fetch(fn)
 			if (type(gfx_dat == "table") and gfx_dat[0] and gfx_dat[0].bmp) then
 				for i=0,#gfx_dat do
@@ -947,6 +918,8 @@ function _init()
 		"/ram/cart/map/0.map" -- default
 	)
 
+	load_spritebanks()
+	
 	set_current_item(1)
 	set_current_bank(0)
 	set_current_bank_page(0)
@@ -966,8 +939,6 @@ function _init()
 		pat=0x0
 	}
 	
-	load_spritebanks()
-	
 	refresh_gui = true
 	
 end
@@ -975,8 +946,24 @@ function set_current_bank_page(i)
 	--printh("setting bank: "..i)
 	current_bank_page = i
 end
-function set_current_bank(i)
+function set_current_bank(i, di)
+
+	i = i or current_bank
+
+	if (di) then
+		
+		local i0 = i
+		i += di
+		if (not gfx_file[i]) then
+			i = (i + di) % 64
+			while (not gfx_file[i] and i ~= i0) do
+				i = (i + di) % 64
+			end
+		end
+	end
+	
 	current_bank = i
+	refresh_gui = true
 end
 function set_current_item(i)
 
@@ -1048,7 +1035,7 @@ on_event("set_palette",
 
 
 :: nav.lua
---[[pod_format="raw",created="2023-18-11 02:18:48",modified="2024-03-23 19:41:53",revision=3160]]
+--[[pod_format="raw",created="2023-18-11 02:18:48",modified="2024-03-30 14:46:27",revision=3429]]
 --[[
 	navigate sprite bank
 ]]
@@ -1370,12 +1357,30 @@ function create_item_info(el)
 	-- maybe pin pages / files? 
 	-- (create primary set of tabs, where pages are secondary)
 	el:attach{
-		x=xx0 + 70,y=yy,width=80,height=7,
+		x=xx0 + 52,y=yy,width=48,height=7,
 		draw=function(self)
 			local b= item[current_item].bmp
-			--rectfill(0,0,self.width-1,self.height-1,13)
-			print(string.format("gfx/0.gfx",col),2,1,13)
+			rectfill(0,0,self.width-1,self.height-1,1)
+			
+			local gfx_fn = gfx_file[current_bank] or "??"
+			
+			print(string.format(gfx_fn:basename(),col),2,1,13)
+			
 		end
+	}
+	
+	el:attach{x=xx0 + 42,y=yy,width=8,height=7,cursor="pointer",
+		draw=function(self)
+			rectfill(0,0,self.width-1,self.height-1,13) print("<",2,1,7)
+		end,
+		tap=function(self) set_current_bank(nil, -1) end
+	}
+	
+	el:attach{x=xx0 + 101,y=yy,width=8,height=7,cursor="pointer",
+		draw=function(self)
+			rectfill(0,0,self.width-1,self.height-1,13) print(">",2,1,7)
+		end,
+		tap=function(self) set_current_bank(nil, 1) end
 	}
 	
 	return el
@@ -1405,7 +1410,7 @@ function create_bank_tabs(el)
 				print(self.index,5,1,13)
 			end,
 			click = function(self)
-				set_current_bank_page(self.index)
+				set_current_bank_page(self.index, 1)
 				refresh_gui = true
 			end
 			
@@ -1419,12 +1424,11 @@ function create_nav(el)
 		clip()
 		rectfill(-1,-1,self.width, self.height, 0)
 
-		
 		for y=0,7 do
 			for x=0,7 do
 				local scale = 1
 				
-				local bmp = get_spr(x + y*8 + current_bank_page*64)
+				local bmp = get_spr(x + y*8 + current_bank_page*64 + current_bank*256)
 				if (bmp) then -- maybe no sprite banks loaded [yet]
 					local ww,hh = bmp:width(), bmp:height()
 					-- to do: this makes very thin bmps invisible in preview
@@ -1459,7 +1463,7 @@ function create_nav(el)
 		local x = mid(0,msg.mx * 8 \ self.width,7)
 		local y = mid(0,msg.my * 8 \ self.height, 7)
 		local i = x + y * 8
-		col = i + current_bank_page*64
+		col = i + current_bank_page*64 + current_bank*256
 	end
 	return el
 end
@@ -1603,7 +1607,7 @@ end
 
 
 :: undo.lua
---[[pod_format="raw",created="2023-29-14 03:29:27",modified="2024-03-11 04:10:42",revision=1478]]
+--[[pod_format="raw",created="2023-29-14 03:29:27",modified="2024-03-30 14:46:27",revision=1534]]
 		
 function add_undo_stack(ii)
 	ii.undo_stack = create_undo_stack(undo_save_state, undo_load_state, 0x11, ii)
@@ -1652,41 +1656,8 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 :: update.lua
---[[pod_format="raw",created="2023-45-10 07:45:26",modified="2024-03-23 19:41:53",revision=2088]]
+--[[pod_format="raw",created="2023-45-10 07:45:26",modified="2024-03-30 14:46:27",revision=2294]]
 
 -- update layout without needing to regenerate gui
  -- to do: could also use this for handling changes in display size
@@ -1958,8 +1929,8 @@ MC0yNiAxNjoyMDo0MSIscmV2aXNpb249NDRdXWx6NAB5AAAAGwEAAPcae3tsb2NhdGlvbj0ibWFp
 bi5sdWEiLHdvcmtzcGFjZV9pbmRleD0xfSwoAE9kcmF3KAADGTIoAG91cGRhdGUqAAMZMyoAP25h
 dicAAxk0JwA-Z3VpJwADGTUnAG9jYW52YXMqAAMZNioAT3VuZG8oAAFQeD03
 :: .info.pod
-b64$LS1bW3BvZCxhdXRob3I9ImxleGFsb2ZmbGUiLGNyZWF0ZWQ9IjIwMjMtNTUtMTEgMDk6NTU6
-NTEiLGljb249dXNlcmRhdGEoInU4IiwxNiwxNiwiMDAwMDAwMDEwMTAxMDEwMTAxMDEwMTAxMDEw
+b64$LS1bW3BvZCxhdXRob3I9ImxleGFsb2ZmbGUiLGNyZWF0ZWQ9IjIwMjQtMDMtMjkgMTI6Mzk6
+NTMiLGljb249dXNlcmRhdGEoInU4IiwxNiwxNiwiMDAwMDAwMDEwMTAxMDEwMTAxMDEwMTAxMDEw
 MDAwMDAwMDAwMDEwNzA3MDcwNzA3MDcwNzA3MDcwNzAxMDAwMDAwMDEwNzBkMGQwZDBkMGQwZDBk
 MGQwZDBkMDcwMTAwMDEwNzBkMGQwZDBkMGQwZDBkMGQwZDBkMGQwZDA3MDEwMTA3MGQwZDBkMDcw
 NzA3MGQwNzA3MGQwZDBkMDcwMTAxMDcwZDBkMGQwNzA3MDcwZDA3MDcwZDBkMGQwNzAxMDEwNzBk
@@ -1968,16 +1939,13 @@ MTAxMDcwZDBkMGQwNzA3MGQwNzA3MDcwZDBkMGQwNzAxMDEwNzBkMGQwZDA3MDcwZDA3MDcwNzBk
 MGQwZDA3MDEwMTA3MGQwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMDcwMTAxMDYwNzBkMGQwZDBkMGQw
 ZDBkMGQwZDBkMDcwNjAxMDEwNjA2MDcwNzA3MDcwNzA3MDcwNzA3MDcwNjA2MDEwMDAxMDYwNjA2
 MDYwNjA2MDYwNjA2MDYwNjA2MDEwMDAwMDAwMTA2MDYwNjA2MDYwNjA2MDYwNjA2MDEwMDAwMDAw
-MDAwMDEwMTAxMDEwMTAxMDEwMTAxMDEwMDAwMDAiKSxub3Rlcz0iIixzdG9yZWQ9IjIwMjQtMDMt
-MjMgMTk6NDE6NTQiLHRpdGxlPSJQaWNvdHJvbiBNYXAgRWRpdG9yIix2ZXJzaW9uPSIwLjEiLHdv
-cmtzcGFjZXM9e3tsb2NhdGlvbj0ibWFpbi5sdWEjNzciLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9j
-YXRpb249InVwZGF0ZS5sdWEjMTUyIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJndWku
-bHVhIzQ0Iix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJjYW52YXMubHVhIzk2Iix3b3Jr
-c3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJkcmF3Lmx1YSMxIix3b3Jrc3BhY2VfaW5kZXg9MX0s
-e2xvY2F0aW9uPSJuYXYubHVhIzEwMiIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0iZ2Z4
-LzAuZ2Z4Iix3b3Jrc3BhY2VfaW5kZXg9Mn0se2xvY2F0aW9uPSJnZngvMGIuZ2Z4Iix3b3Jrc3Bh
-Y2VfaW5kZXg9Mn0se2xvY2F0aW9uPSJtYXAvMC5tYXAiLHdvcmtzcGFjZV9pbmRleD0zfSx7bG9j
-YXRpb249Im1hcC8wLm1hcCIsd29ya3NwYWNlX2luZGV4PTN9LHtsb2NhdGlvbj0ibWFwLzAubWFw
-Iix3b3Jrc3BhY2VfaW5kZXg9M30se2xvY2F0aW9uPSJtYXAvMC5tYXAiLHdvcmtzcGFjZV9pbmRl
-eD0zfX1dXWx6NAAEAAAAAwAAADBuaWw=
+MDAwMDEwMTAxMDEwMTAxMDEwMTAxMDEwMDAwMDAiKSxub3Rlcz0iIixydW50aW1lPTQsc3RvcmVk
+PSIyMDI0LTAzLTMwIDE1OjM4OjIzIix0aXRsZT0iUGljb3Ryb24gTWFwIEVkaXRvciIsdmVyc2lv
+bj0iMC4xZSIsd29ya3NwYWNlcz17e2xvY2F0aW9uPSJtYWluLmx1YSMxIix3b3Jrc3BhY2VfaW5k
+ZXg9MX0se2xvY2F0aW9uPSJkcmF3Lmx1YSMxIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9u
+PSJ1cGRhdGUubHVhIzEiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249Im5hdi5sdWEjMSIs
+d29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0iZ3VpLmx1YSMxIix3b3Jrc3BhY2VfaW5kZXg9
+MX0se2xvY2F0aW9uPSJjYW52YXMubHVhIzkzIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9u
+PSJ1bmRvLmx1YSM0OCIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0iZ2Z4LzBiLmdmeCIs
+d29ya3NwYWNlX2luZGV4PTJ9fV1dbHo0AAQAAAADAAAAMG5pbA==
 :: [eoc]

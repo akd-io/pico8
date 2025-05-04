@@ -1,3 +1,11 @@
+
+-- do this at start to avoid stutter; also helps to move code into wasm/js hot paths?
+bypass = false
+while (time()<0.5) do
+	flip(1)yield()
+	if (stat(988) > 0) bypass = true _signal(35)-- need to call within loop to pump messages
+end
+
 --[[pod_format="raw",created="2024-03-14 04:10:03",modified="2024-03-14 04:20:48",revision=8]]
 
 -- load settings
@@ -32,11 +40,28 @@ while (fstat("/untitled"..num..".p64") and num < 64) num += 1
 store("/ram/system/pwc.pod", "/untitled"..num..".p64")
 
 
-
 -- custom startup could opt to run different window / program manager
 create_process("/system/pm/pm.lua")
 create_process("/system/wm/wm.lua")
 
+
+------------------------------------------------------------------------------------------------
+-- 0.1.0e: hold down lctrl + rctrl on boot to start with a minimal terminal setup
+--         useful for recovering from borked /appdata/system/startup.lua
+------------------------------------------------------------------------------------------------
+
+
+if (bypass) then
+	create_process("/system/apps/terminal.lua", 
+		{
+			window_attribs = {fullscreen = true, pwc_output = true, immortal = true},
+			immortal   = true -- exit() is a NOP; separate from window attribute :/
+		}
+	)
+	return
+end
+
+------------------------------------------------------------------------------------------------
 
 
 local runtime_version, system_version = stat(5)

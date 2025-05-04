@@ -1669,7 +1669,7 @@ end
  	if (key("ctrl")) then
  
  	if keyp("c") or keyp("x") then
- 		set_clipboard(pod(copy_selected_region(),7,{pod_type="image"}))
+ 		set_clipboard(pod(copy_selected_region(),7,{pod_type="gfx"}))
 		if keyp("x") then
 			backup_state()
 			set_draw_target(cbmp)
