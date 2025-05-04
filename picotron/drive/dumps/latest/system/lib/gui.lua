@@ -700,7 +700,7 @@ do
 				sy1 = mid(py0, sy1, py1)
 			end
 
-			--printh("el_at_xy_recursive "..pod{tostr(el), {x, y}, {sx0, sy0, sx1, sy1}})
+			--printh("el_at_xy_recursive "..pod{tostring(el), {x, y}, {sx0, sy0, sx1, sy1}})
 
 			local is_inside = (x >= sx0 and x < sx1 and y >= sy0 and y < sy1)
 	
@@ -740,7 +740,7 @@ do
 
 			el = el_at_xy_recursive(gui, 0, 0, 480, 270, x, y ,0)
 			
-			--printh("--> el_at_xy: "..tostr(el).."  //  "..pod{el.sx,el.sy,el.width,el.height})
+			--printh("--> el_at_xy: "..tostring(el).."  //  "..pod{el.sx,el.sy,el.width,el.height})
 			return el
 
 		end
@@ -955,7 +955,7 @@ do
 					end
 
 					dragging_el:event(msg)
-					--printh("dragging_el: "..tostr(dragging_el))
+					--printh("dragging_el: "..tostring(dragging_el))
 				elseif (mb == 0) then            -- .. but stop dragging immediately when mouse button released
 
 					dragging_el = nil

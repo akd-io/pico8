@@ -59,7 +59,7 @@ function open_search_pane(container, search_func, prompt_str)
 
 	prompt_str = prompt_str or "Find:"
 
---	printh("opening search pane from container: "..tostr(container))
+--	printh("opening search pane from container: "..tostring(container))
 
 	local search_box = container.parent:attach({
 		x = container.x + container.width - search_box_width - 8, y = container.y, 
@@ -142,9 +142,9 @@ function attach_text_editor(g, parent)
 	end
 	
 	-- returns true when call back exists AND callback doesn't opt to pass-through
-	local function key_pressed_callback(k)
+	local function key_pressed_callback(self, k)
 		if (type(content.key_callback[k]) == "function") then
-			return not content.key_callback[k](k, text)
+			return not content.key_callback[k](self, text)
 		end
 		return false
 	end
@@ -649,8 +649,8 @@ function attach_text_editor(g, parent)
 
 	local function insert_string(orig, pos, str)
 		if (not orig or not pos or not str) return
-		str = tostr(str)
-		return sub(orig, 1, pos-1) .. tostr(str) .. sub(orig, pos)
+		str = tostring(str)
+		return sub(orig, 1, pos-1) .. str .. sub(orig, pos)
 	end
 
 	local function insert_multiline_string(str, y, x)
@@ -1129,7 +1129,7 @@ function attach_text_editor(g, parent)
 			if (container.search_box) then
 				close_search_pane(container)
 			else
-				key_pressed_callback("escape")
+				key_pressed_callback(self, "escape")
 			end
 		end
 
@@ -1156,7 +1156,7 @@ function attach_text_editor(g, parent)
 			-- tab
 			if (keyp("tab")) then
 
-				if key_pressed_callback("tab") then
+				if key_pressed_callback(self, "tab") then
 					-- skip
 				elseif (is_something_selected()) then
 					indent_selection()
@@ -1174,7 +1174,7 @@ function attach_text_editor(g, parent)
 			-- enter
 			if (keyp("enter")) then
 
-				if key_pressed_callback("enter") then
+				if key_pressed_callback(self, "enter") then
 					-- skip
 				else
 
@@ -1253,7 +1253,7 @@ function attach_text_editor(g, parent)
 			for i=1,#nav_keys do
 				local k = nav_keys[i]
 				if keyp(k) then
-					if key_pressed_callback(k) then
+					if key_pressed_callback(self, k) then
 						-- callback called for this navigation key: ignore following logic
 						clear_key(k)
 					else

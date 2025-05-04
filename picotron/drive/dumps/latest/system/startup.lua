@@ -1,4 +1,3 @@
-
 -- load settings
 local sdat = fetch"/appdata/system/settings.pod"
 if not sdat then
@@ -18,7 +17,6 @@ if (sdat.pixel_scale == nil) then
 	sdat.pixel_scale = 2
 	store("/appdata/system/settings.pod", sdat)
 end
-
 
 
 -- install default desktop items
@@ -49,6 +47,12 @@ store("/ram/system/pwc.pod", "/untitled"..num..".p64")
 create_process("/system/pm/pm.lua")
 create_process("/system/wm/wm.lua")
 
+if (stat(315) > 0) then
+	-- headless script
+	create_process(stat(316))
+	return
+end
+
 ------------------------------------------------------------------------------------------------
 --   hold down lctrl + rctrl on boot to start with a minimal terminal setup
 --   useful for recovering from borked /appdata/system/startup.lua
@@ -61,6 +65,7 @@ for i=1,20 do
 	if (stat(988) > 0) bypass = true _signal(35) 
 end
 
+
 if (bypass) then
 	create_process("/system/apps/terminal.lua", 
 		{
@@ -70,19 +75,16 @@ if (bypass) then
 	)
 	return
 end
-
 ------------------------------------------------------------------------------------------------
-
-
 local runtime_version, system_version = stat(5)
-local system_meta = fetch_metadata("/system") or {}
+local system_meta = _fetch_metadata_from_file("/system/.info.pod") or {}
 if (system_meta.version ~= system_version) then
 	printh("** version mismatch // /system: "..system_meta.version.." expects binaries: "..system_version)
 	send_message(3, {event="report_error", content = "** system version mismatch **"})
 	send_message(3, {event="report_error", content = "/system version is: "..system_meta.version})
 	send_message(3, {event="report_error", content = "this build expects: "..system_version})
 end
-
+------------------------------------------------------------------------------------------------
 
 
 -- starting userland programs (with blank untitled files)

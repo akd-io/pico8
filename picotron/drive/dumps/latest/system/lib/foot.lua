@@ -19,7 +19,7 @@ if (_init) then _init() end
 
 if (_draw and not get_display()) then
 
-	-- create window (use fullscreen by default unless overridden by env().window_attribs)
+	-- create fullscreen window
 	window()
 
 end
@@ -27,7 +27,7 @@ end
 if (pid() > 3) then
 	on_event("pause",       function() poke(0x547f, peek(0x547f) |  0x4) end)
 	on_event("unpause",     function() poke(0x547f, peek(0x547f) & ~0x4) end)
-	on_event("toggle_mute", function() poke(0x547f, peek(0x547f) ^^ 0x8) end)
+--	on_event("toggle_mute", function() poke(0x547f, peek(0x547f) ^^ 0x8) end) -- deleteme; mute should be system-wide (maybe later: per-app volume)
 end
 
 -- mainloop
@@ -40,14 +40,14 @@ while (_draw or _update) do
 
 
 	-- called once before every _update()  --  otherwise keyp() returns true for multiple _update calls
-	_process_event_messages()
-
+	-- ditto for button processing logic (_update_buttons now called from end of __process_event_messages)
+	-- note: when no _update callback, still called once per frame
+	__process_event_messages()
 
 	if (peek(0x547f) & 0x4) > 0 and pid() > 3 then
 
 		-- paused: nothing left to do this frame
-		-- still need to process buttons though
-		_update_buttons()
+
 		flip(0x3)
 
 	else
@@ -64,16 +64,12 @@ while (_draw or _update) do
 
 		if (peek(0x547f) & 0x1) > 0 then
 
-			-- always exactly one call to _update_buttons() before each _update() when it is defined (allows keyp to work)
-			-- when _update is not defined, still call once per draw.
-			_update_buttons()
-
 			if (_update) then
 				_update()
 
 				local fps = stat(7)
-				if (fps < 60) _process_event_messages() _update_buttons() _update()
-				if (fps < 30) _process_event_messages() _update_buttons() _update()
+				if (fps < 60) __process_event_messages() _update()
+				if (fps < 30) __process_event_messages() _update()
 
 				-- below 20fps, just start running slower. It might be that _update is slow, not _draw.
 			end

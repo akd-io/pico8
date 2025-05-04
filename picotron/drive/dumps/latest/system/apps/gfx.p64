@@ -1,30 +1,8 @@
 picotron cartridge // www.picotron.net
 version 2
 
-:: .info.pod
-b64$LS1bW3BvZCx3b3Jrc3BhY2VzPXt7bG9jYXRpb249Im1haW4ubHVhIzE2MSIsd29ya3NwYWNl
-X2luZGV4PTF9LHtsb2NhdGlvbj0iZHJhdy5sdWEjNCIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2Nh
-dGlvbj0ibmF2Lmx1YSMzMTQiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249Imd1aS5sdWEj
-MjQzIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJjYW52YXMubHVhIzMwOSIsd29ya3Nw
-YWNlX2luZGV4PTF9LHtsb2NhdGlvbj0idXBkYXRlLmx1YSMyNTUiLHdvcmtzcGFjZV9pbmRleD0x
-fSx7bG9jYXRpb249InBhbC5sdWEjMjMiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249InVu
-ZG8ubHVhIzY5Iix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJnZngvMC5nZngiLHdvcmtz
-cGFjZV9pbmRleD0yfSx7bG9jYXRpb249ImdmeC8wLmdmeCIsd29ya3NwYWNlX2luZGV4PTd9fSxy
-dW50aW1lPTgsbm90ZXM9IiIsaWNvbj11c2VyZGF0YSgidTgiLDE2LDE2LCIwMDAwMDAwMTAxMDEw
-MTAxMDEwMTAxMDEwMTAwMDAwMDAwMDAwMTA3MDcwNzA3MDcwNzA3MDcwNzA3MDEwMDAwMDAwMTA3
-MGQwZDBkMGQwZDBkMGQwZDBkMGQwNzAxMDAwMTA3MGQwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMDcw
-MTAxMDcwZDBkMGQwNzA3MGQwZDA3MDcwZDBkMGQwNzAxMDEwNzBkMGQwZDA3MDcwZDBkMDcwNzBk
-MGQwZDA3MDEwMTA3MGQwZDBkMDcwNzBkMGQwNzA3MGQwZDBkMDcwMTAxMDcwZDBkMGQwNzA3MDcw
-NzA3MDcwZDBkMGQwNzAxMDEwNzBkMGQwZDA3MGQwNzA3MGQwNzBkMGQwZDA3MDEwMTA3MGQwZDBk
-MDcwNzA3MDcwNzA3MGQwZDBkMDcwMTAxMDcwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMGQwNzAxMDEw
-NjA3MGQwZDBkMGQwZDBkMGQwZDBkMGQwNzA2MDEwMTA2MDYwNzA3MDcwNzA3MDcwNzA3MDcwNzA2
-MDYwMTAwMDEwNjA2MDYwNjA2MDYwNjA2MDYwNjA2MDYwMTAwMDAwMDAxMDYwNjA2MDYwNjA2MDYw
-NjA2MDYwMTAwMDAwMDAwMDAwMTAxMDEwMTAxMDEwMTAxMDEwMTAwMDAwMCIpLHRpdGxlPSJQaWNv
-dHJvbiBQaXhlbHMiLHN0b3JlZD0iMjAyNC0wMy0yMiAxMTo0MzoxMiIsbW9kaWZpZWQ9IjIwMjUt
-MDQtMjcgMTY6MDY6MTIiLHZlcnNpb249IjAuMWgiLGNyZWF0ZWQ9IjIwMjMtMTAtMTkgMTI6NTA6
-NTAiLGF1dGhvcj0ibGV4YWxvZmZsZSJdXWx6NAAEAAAAAwAAADBuaWw=
 :: canvas.lua
---[[pod_format="raw",created="2023-04-11 02:04:02",modified="2024-07-18 16:49:37",revision=3963,stored="2023-24-28 00:24:00"]]
+--[[pod_format="raw",created="2023-04-11 02:04:02",modified="2024-08-18 16:06:41",revision=4007,stored="2023-24-28 00:24:00"]]
 local ww,hh=0,0
 local fill_cpu=0
 local x0,y0=0,0
@@ -478,7 +456,7 @@ end
 
 
 :: draw.lua
---[[pod_format="raw",created="2023-10-12 03:26:20",modified="2024-07-18 16:49:37",revision=2861,stored="2023-24-28 00:24:00"]]
+--[[pod_format="raw",created="2023-10-12 03:26:20",modified="2024-08-18 16:06:41",revision=2907,stored="2023-24-28 00:24:00"]]
 function _draw()
 	
 	cls(5)
@@ -506,7 +484,7 @@ end
 
 
 :: gui.lua
---[[pod_format="raw",created="2023-05-11 02:05:16",modified="2024-07-18 16:49:37",revision=3721,stored="2023-24-28 00:24:00"]]
+--[[pod_format="raw",created="2023-05-11 02:05:16",modified="2024-08-18 16:06:41",revision=3778,stored="2023-24-28 00:24:00"]]
 --[[
 
 	should only need:
@@ -563,10 +541,10 @@ function generate_gui()
 	sidebar = gui:attach{x=480-144,y=0,width=150,height=250}
 	
 	-- a little space above palette for tabs (operation)
-	local pal_el = sidebar:attach(create_palette{x=8,y=14,width=128,height=32})
+	local pal_el = sidebar:attach(create_palette{x=8,y=16,width=128,height=32})
 
-	sidebar:attach(create_pal_tabs{x=112,y=4,width=48,height=9})
-	
+	sidebar:attach(create_pal_tabs{x=112,y=6,width=48,height=9})
+	sidebar:attach(create_pal_preview{x=7,y=4,width=30,height=9})
 --[[
 	sidebar:attach{
 		x=128,y=8,width=8,height=6,
@@ -761,7 +739,7 @@ end
 
 
 :: main.lua
---[[pod_format="raw",created="2023-04-11 02:04:54",modified="2024-07-18 16:49:37",revision=3781,stored="2023-24-28 00:24:00"]]
+--[[pod_format="raw",created="2023-04-11 02:04:54",modified="2024-08-18 16:06:41",revision=3825,stored="2023-24-28 00:24:00"]]
 --[[
 	gfx6: region selection / multi-copy/paste
 ]]
@@ -1022,7 +1000,7 @@ end)
 
 
 :: nav.lua
---[[pod_format="raw",created="2023-10-11 02:18:48",modified="2024-07-18 16:49:37",revision=4473,stored="2023-24-28 00:24:00"]]
+--[[pod_format="raw",created="2023-10-11 02:18:48",modified="2024-08-18 16:06:41",revision=4518,stored="2023-24-28 00:24:00"]]
 --[[
 	navigate sprite bank
 	+ top-level operations (resize bitmap)
@@ -1439,7 +1417,7 @@ end
 
 
 :: pal.lua
---[[pod_format="raw",created="2023-05-11 02:05:01",modified="2024-07-18 16:49:37",revision=1659,stored="2023-11-28 03:11:19"]]
+--[[pod_format="raw",created="2023-05-11 02:05:01",modified="2024-08-18 16:06:41",revision=1714,stored="2023-11-28 03:11:19"]]
 local pcols = {[0]=
 	0,19,3,27,  11,26,10,23,
 	1,17,12,28, 18,16,13,29,
@@ -1468,6 +1446,15 @@ function switch_col(dindex)
 	if (index>=0) col = pcols[(index+dindex)%64]
 end
 
+function create_pal_preview(el)
+	el = gui:new(el)
+	function el:draw()
+		rectfill(0,0,16,8,0)
+		rectfill(1,1,15,7,col)
+		print(col,20,2,6)
+	end
+	return el
+end
 
 function create_pal_tabs(el)
 
@@ -1582,7 +1569,7 @@ end
 
 
 :: undo.lua
---[[pod_format="raw",created="2023-10-14 03:29:27",modified="2024-07-18 16:49:37",revision=2037,stored="2023-24-28 00:24:00"]]
+--[[pod_format="raw",created="2023-10-14 03:29:27",modified="2024-08-18 16:06:41",revision=2083,stored="2023-24-28 00:24:00"]]
 local group_op_items = nil
 
 local function undo_save_state(ii)
@@ -1670,7 +1657,7 @@ end
 
 
 :: update.lua
---[[pod_format="raw",created="2023-10-10 07:45:26",modified="2024-07-18 16:49:37",revision=3619,stored="2023-24-28 00:24:00"]]
+--[[pod_format="raw",created="2023-10-10 07:45:26",modified="2024-08-18 16:06:41",revision=3663,stored="2023-24-28 00:24:00"]]
 	
 	function get_selected_rect()
 		local x0,y0 = 10000, 10000
@@ -2010,4 +1997,26 @@ function _update()
 	
  end
 
+:: .info.pod
+b64$LS1bW3BvZCx0aXRsZT0iUGljb3Ryb24gUGl4ZWxzIixtb2RpZmllZD0iMjAyNS0wNC0yNyAx
+NjowNToxMiIsbm90ZXM9IiIsc3RvcmVkPSIyMDI0LTAzLTIyIDExOjQzOjEyIixhdXRob3I9Imxl
+eGFsb2ZmbGUiLGljb249dXNlcmRhdGEoInU4IiwxNiwxNiwiMDAwMDAwMDEwMTAxMDEwMTAxMDEw
+MTAxMDEwMDAwMDAwMDAwMDEwNzA3MDcwNzA3MDcwNzA3MDcwNzAxMDAwMDAwMDEwNzBkMGQwZDBk
+MGQwZDBkMGQwZDBkMDcwMTAwMDEwNzBkMGQwZDBkMGQwZDBkMGQwZDBkMGQwZDA3MDEwMTA3MGQw
+ZDBkMDcwNzBkMGQwNzA3MGQwZDBkMDcwMTAxMDcwZDBkMGQwNzA3MGQwZDA3MDcwZDBkMGQwNzAx
+MDEwNzBkMGQwZDA3MDcwZDBkMDcwNzBkMGQwZDA3MDEwMTA3MGQwZDBkMDcwNzA3MDcwNzA3MGQw
+ZDBkMDcwMTAxMDcwZDBkMGQwNzBkMDcwNzBkMDcwZDBkMGQwNzAxMDEwNzBkMGQwZDA3MDcwNzA3
+MDcwNzBkMGQwZDA3MDEwMTA3MGQwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMDcwMTAxMDYwNzBkMGQw
+ZDBkMGQwZDBkMGQwZDBkMDcwNjAxMDEwNjA2MDcwNzA3MDcwNzA3MDcwNzA3MDcwNjA2MDEwMDAx
+MDYwNjA2MDYwNjA2MDYwNjA2MDYwNjA2MDEwMDAwMDAwMTA2MDYwNjA2MDYwNjA2MDYwNjA2MDEw
+MDAwMDAwMDAwMDEwMTAxMDEwMTAxMDEwMTAxMDEwMDAwMDAiKSxydW50aW1lPTgsY3JlYXRlZD0i
+MjAyMy0xMC0xOSAxMjo1MDo1MCIsdmVyc2lvbj0iMC4xaCIsd29ya3NwYWNlcz17e2xvY2F0aW9u
+PSJtYWluLmx1YSMxNjEiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249ImRyYXcubHVhIzQi
+LHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249Im5hdi5sdWEjOTMiLHdvcmtzcGFjZV9pbmRl
+eD0xfSx7bG9jYXRpb249Imd1aS5sdWEjNjAiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249
+ImNhbnZhcy5sdWEjMzA5Iix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJ1cGRhdGUubHVh
+IzI1NSIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0icGFsLmx1YSMzNCIsd29ya3NwYWNl
+X2luZGV4PTF9LHtsb2NhdGlvbj0idW5kby5sdWEjNjkiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9j
+YXRpb249ImdmeC8wLmdmeCIsd29ya3NwYWNlX2luZGV4PTJ9LHtsb2NhdGlvbj0iZ2Z4LzAuZ2Z4
+Iix3b3Jrc3BhY2VfaW5kZXg9N319XV0=
 :: [eoc]

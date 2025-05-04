@@ -43,7 +43,7 @@ function show_reported_error() -- happens when error is reported
 	infobar_y_target = 200 -- not too high, want to see code
 end
 
-
+-- to do: remove; can use a stat() and keep track at a lower level (do anyway for battery saver logic)
 local last_input_activity_t = 0
 
 -- store some things by process so that they can be manipulated before window is created
@@ -678,6 +678,8 @@ function update_window_paused_menu(win)
 
 	if (not win) return
 
+	poke(0x3, win.paused and 1 or 0) -- for shell
+
 	if (win.paused) then
 		local buttons = btnp()
 		if (win.pmenu) then
@@ -706,6 +708,17 @@ function update_window_paused_menu(win)
 
 end
 
+on_event("toggle_pause_menu", function(msg)
+	local win = get_active_window()
+	if (win.paused) then
+		win.paused = false
+		send_message(win.proc_id, {event = "unpause"})
+	else
+		win.paused = true
+		generate_paused_menu(win)
+		send_message(win.proc_id, {event = "pause"})
+	end
+end)
 
 
 
@@ -735,8 +748,10 @@ function generate_paused_menu(win)
 --	add(win.pmenu, {label = "Options", action = function() end}) -- later
 
 	add(win.pmenu,{
-		label  = function(self) return (_ppeek(win.proc_id, 0x547f) or 0) & 0x8 > 0 and "Sound: Off" or "Sound: On" end,
-		action = function(b) send_message(win.proc_id, {event = "toggle_mute"}) end
+		--label  = function(self) return (_ppeek(win.proc_id, 0x547f) or 0) & 0x8 > 0 and "Sound: Off" or "Sound: On" end,
+		-- action = function(b) send_message(win.proc_id, {event = "toggle_mute"}) end
+		label  = function(self) return (sdat.mute_audio and "Sound: Off" or "Sound: On") end,
+		action = function(b) send_message(pid(), {event = "toggle_mute"}) end
 	})
 
 --	add(win.pmenu, {label = "Favourite"}) -- later; need to decide what this means!
@@ -764,7 +779,8 @@ function generate_paused_menu(win)
 	-- add(win.pmenu, {label = "Exit to Splore", action = function() end})
 
 	-- useful when running locally -- often just want to close the whole workspace when done running a fullscreen cart
-	if haltable_proc_id ~= win.proc_id then
+	-- (doesn't happen for carts running via ctrl+r (just press ESC), exported carts, or carts running on bbs html player
+	if haltable_proc_id ~= win.proc_id and stat(317) == 0 then
 		add(win.pmenu, {label = "Exit", action = function()
 			if (haltable_proc_id == win.proc_id) then
 				-- halt program and enable command prompt (update: never happens -- menu item is not added in that case)
@@ -1207,56 +1223,58 @@ function create_window(target_ws, attribs)
 		end
 
 		-- resize bottom right
-		win:attach({
-			width = 8, height = 8,
-			clip_to_parent = false,
-			cursor  = 8,
+		if (win.resizeable) then
 
-			update = function(self)
-				self.x = win.width - 4
-				self.y = win.height - 4
-			end,
-			draw  = resize_draw,
-			click = resize_click,
-			drag = function(self, event)
-				if (win.resizeable and (event.dx ~= 0 or event.dy ~= 0)) then
-					-- use window manager mx, my because using relative event.mx,event.my will jump around as window resizes
-					-- hard-coded minimum window size: 64x32
-					local new_width  = max(64, win.start_w + (mx - win.start_mx))
-					local new_height = max(32, win.start_h + (my - win.start_my))
-					send_message(win.proc_id, {event="resize", width = new_width, height = new_height})
+			win:attach({
+				width = 8, height = 8,
+				clip_to_parent = false,
+				cursor  = 8,
+
+				update = function(self)
+					self.x = win.width - 4
+					self.y = win.height - 4
+				end,
+				draw  = resize_draw,
+				click = resize_click,
+				drag = function(self, event)
+					if (win.resizeable and (event.dx ~= 0 or event.dy ~= 0)) then
+						-- use window manager mx, my because using relative event.mx,event.my will jump around as window resizes
+						-- hard-coded minimum window size: 64x32
+						local new_width  = max(64, win.start_w + (mx - win.start_mx))
+						local new_height = max(32, win.start_h + (my - win.start_my))
+						send_message(win.proc_id, {event="resize", width = new_width, height = new_height})
+					end
 				end
-			end
-		})
+			})
 
-		-- resize bottom left
-		win:attach({
-			width = 8, height = 8,
-			clip_to_parent = false,
-			cursor  = 9,
+			-- resize bottom left
+			win:attach({
+				width = 8, height = 8,
+				clip_to_parent = false,
+				cursor  = 9,
 
-			update = function(self)
-				self.x = -4
-				self.y = win.height - 4
-			end,
-			draw  = resize_draw,
-			click = resize_click,
+				update = function(self)
+					self.x = -4
+					self.y = win.height - 4
+				end,
+				draw  = resize_draw,
+				click = resize_click,
 
-			drag = function(self, event) 
-				if (win.resizeable and (event.dx ~= 0 or event.dy ~= 0)) then
-					-- set x in same message so that visible change is simultaneously (otherwise jitters)
-					local new_width  = max(64, win.start_w\1 - (mx - win.start_mx))
-					local new_height = max(32, win.start_h + (my - win.start_my))
-					send_message(win.proc_id, {event="resize", 
-						width = new_width, 
-						height = new_height, 
-						x = win.start_x + (mx - win.start_mx)
-				})
+				drag = function(self, event) 
+					if (win.resizeable and (event.dx ~= 0 or event.dy ~= 0)) then
+						-- set x in same message so that visible change is simultaneously (otherwise jitters)
+						local new_width  = max(64, win.start_w\1 - (mx - win.start_mx))
+						local new_height = max(32, win.start_h + (my - win.start_my))
+						send_message(win.proc_id, {event="resize", 
+							width = new_width, 
+							height = new_height, 
+							x = win.start_x + (mx - win.start_mx)
+					})
 
+					end
 				end
-			end
-		})
-
+			})
+		end
 --[[
 		-- commented; maybe nice to have just bottom left, bottom right widgets.
 
@@ -1338,6 +1356,7 @@ function create_window(target_ws, attribs)
 			argv = {"-desktop", win.desktop_path or "/desktop"},
 			window_attribs = {
 				workspace = filenav_workspace, -- same workspace as the wallpaper
+				show_in_workspace = false, -- don't become active
 				width = win.width, height = win.height,
 				x = win.x, y = win.y, z = win.z + 1, -- desktop is -1000 (head.lua)
 				has_frame = false,
@@ -1347,7 +1366,6 @@ function create_window(target_ws, attribs)
 			}
 		})
 	end
-
 
 	
 	return win	
@@ -1388,6 +1406,25 @@ boot_messages = {}
 
 local xodat = {26,22,19,17,15,14,12,11,10,9,8,7,6,5,5,4,3,3,2,2,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,2,2,3,3,4,5,5,6,7,8,9,10,11,12,14,15,17,19,22,26}
 
+function polaroid(x0,y0,x1,y1,q0,q1)
+	rectfill(x0-4,y0-4,x1+4,y0-1,7)
+	rectfill(x0-4,y0,x0-1,y1,7)
+	rectfill(x1+1,y0,x1+4,y1,7)
+	rectfill(x0-4,y1+1,x1+4,y1+15,7)
+	rect(x0-5,y0-5,x1+5,y1+16,1)
+	rect(x0-1,y0-1,x1+1,y1+1,1)
+	
+	rectfill(x0-1,y1+3,x1+1,y1+4,6)
+	
+	rectfill(x0-1,y1+3,x0+(x1-x0+1)*mid(0,q0/max(1,q1),1),y1+4,13)
+	
+	if (x1-x0 > 34) then
+		print("\014frame "..flr(q0),x0+1,y1+8,13)
+	end
+	if (x1-x0 > 80) then
+		print("\014\^ifin:\^-i ctrl-9",x1-42,y1+8,13)
+	end
+end
 
 function _draw()
 
@@ -1584,23 +1621,7 @@ function _draw()
 		spr(gfx, mx - (gfx_w+1)\2, my - (gfx_h+1)\2)  -- +1 so exactly at center for odd-sizes bitmaps. ref: paint bucket
 	end
 
-	-- notifications  --  show for 2~3 seconds (to do: customisable)
-
-	local notify_duration = 2
-	if (user_notification_message and #user_notification_message > 15) notify_duration = 3
-	if (time() < 3) notify_duration = 5 -- startup message; e.g. mended drive.loc
-
-	if (user_notification_message and time() < user_notification_message_t + notify_duration) then
-		local y = 270
-		if (@0x547c == 3) y = 135
-		if (@0x547c == 4) y = 90
-
-		rectfill(0,y-11,479,y-1,32)
-		print(user_notification_message, 4,y-9, 7)
-	end
-
 	
-
 	-- fps
 
 	if (show_fps) then
@@ -1626,8 +1647,11 @@ function _draw()
 
 			-- grab the rgb display palette and video mode from that process
 			-- to do: cross-process memcpy
-			for i=0x5000,0x54ff,4 do
-				poke4(i, _ppeek4(awin.proc_id, i))
+
+			if (awin.display_palette != false) then -- window can opt to leave palette alone (ref: capture.p64)
+				for i=0x5000,0x54ff,4 do
+					poke4(i, _ppeek4(awin.proc_id, i))
+				end
 			end
 			poke(0x547c, _ppeek(awin.proc_id, 0x547c))
 
@@ -1645,6 +1669,40 @@ function _draw()
 		--printh("** default rgb palette "..time())
 		pal(2) -- otherwise use default palette
 	end
+
+	-- notifications  --  show for 2~3 seconds (to do: customisable)
+	-- happens after grabbing palette because modify display palette 3
+
+	local notify_duration = 2
+	if (user_notification_message and #user_notification_message > 15) notify_duration = 3
+	if (time() < 3) notify_duration = 5 -- startup message; e.g. mended drive.loc
+
+	if (user_notification_message and time() < user_notification_message_t + notify_duration) then
+		local y = 270
+		if (@0x547c == 3) y = 135
+		if (@0x547c == 4) y = 90
+		
+		--rectfill(0,y-11,479,y-1,32)
+
+		-- tint: wm is allowed to temporarily modify palette 3 per frame for displaying system elements (to do: toolbar)
+
+		for yy = y-11, min(y-1,269) do
+			local addr = 0x5400 + (yy>>2)
+			local bits = (yy & 3)
+			poke(addr, peek(addr) | (0x3 << ((yy & 3)*2)))
+		end
+
+		memcpy(0x5300, 0x5000, 0x100)
+		
+		for i=0x5300,0x53fb, 4 do
+			poke4(i, (peek4(i) >> 1) & 0x7f7f7f)
+		end 
+
+		poke4(0x53fc, 0x00fff1e8) -- P8 white
+		print(user_notification_message, 4,y-9, 63)
+
+	end
+
 
 	-- magnify
 
@@ -1679,6 +1737,40 @@ function _draw()
 		if (not sent_presentable_signal) _signal(37) -- wm is presentable
 		sent_presentable_signal = true
 	end
+
+	-- show gif capture (don't draw inside captured area!)
+	if (stat(320) > 0) then
+		local x,y,width,height,scale = peek2(0x40,5)
+
+
+		polaroid(x,y,x+width-1,y+height-1, stat(321), max_gif_frames())
+--[[
+
+		rect(x-1,y-1,x+width,y+height,7)
+		rect(x-2,y-2,x+width+1,y+height+1,7)
+		rect(x-3,y-3,x+width+2,y+height+2,1)
+
+		rectfill(x-2,y+height+1, x+width+1,y+height+9, 1)
+		local maxf = max_gif_frames()
+		local q = stat(321) * 32 / maxf
+		local x0 = x + width - 40
+		local y0 = y + height + 3
+
+		if (width > 100) then
+			print("\014frame "..flr(stat(321)).." / "..maxf, x+4,y+height+3, 7)
+		else
+			-- tiny mode: center capacity bar
+			x0 = x + width/2 - 34/2
+		end
+		
+		rect(x0-2, y0, x0 + 34, y0 +5, 7)
+		rectfill(x0, y0+2, x0 + q, y0 +3, 7)
+]]
+	end
+
+
+	-- debug: show when battery saver is being applied
+	-- if (stat(330) > 0) circfill(20,20,10,8) circfill(20,20,5,1)
 
 end
 
@@ -1745,6 +1837,15 @@ on_event("run_pwc", function(msg)
 	run_pwc(msg.argv, false, msg.path)
 end)
 
+function max_gif_frames()
+	local _,_,w,h,scale,frames = peek2(0x40,6)
+	w = max(w, 32)
+	h = max(h, 32)
+	if (frames == 0) frames = 30*120 -- max: 2 minutes
+	return min(frames, (480*270*30*16) \ (w * h)) -- max: 16 seconds at fullscreen
+	--return frames
+end
+
 
 function _update()
 
@@ -1767,7 +1868,8 @@ function _update()
 						fullscreen = true,
 						pwc_output = true,        -- run present working cartridge in this window
 						immortal   = true,        -- no close pulldown
-						workspace = workspace[i].index
+						workspace = workspace[i].index,
+						show_in_workspace = false
 					},
 					immortal   = true, -- exit() is a NOP
 					reload_history = true,
@@ -1980,58 +2082,53 @@ function _update()
 	if (key("ctrl") and keyp("2")) ws_gui.show_infobar = not ws_gui.show_infobar
 
 
+	
+	--============================================== capture =========================================================
+
+	if key("ctrl") and keyp("6") then
+		if key("shift") then
+			-- select first
+			create_process("/system/apps/capture.p64", {
+				window_attribs = {workspace="current", autoclose = true}, 
+				intention = "capture_screenshot"
+			})
+		else
+			capture_screenshot()
+		end
+	end
+
+	if key("ctrl") and keyp("7") then
+		capture_screenshot{as_label=true}
+	end
+
+	
+	-- capture gif
+	if key("ctrl") and keyp("8") then
+		if key("shift") then
+			-- select first
+			create_process("/system/apps/capture.p64", {
+				window_attribs = {workspace="current", autoclose = true}, 
+				intention = "record_video"
+			})
+		else
+			capture_video()
+		end
+	end
+
+	-- finish capturing gif
+	if (stat(320) > 0) then
+		if (key("ctrl") and keyp("9") or stat(321) >= max_gif_frames()) then	
+			_signal(19)
+		end
+	end
+
 	-- audio capture
 	if (key("ctrl") and keyp("0")) then
 		if (not fstat("/desktop/host")) _signal(65)
-		_signal(16)
+		_signal(16) -- placeholder mechanism
 	end
 
-	-- screenshot
-
-	if (key("ctrl") and keyp("6")) then
-
-		local dd = get_display()
-		local w,h = 480,270
-		if (awin and _ppeek(awin.proc_id, 0x547c) == 3) w,h = 240,135
-		if (awin and _ppeek(awin.proc_id, 0x547c) == 4) w,h = 160,90
-		
-		local screen = userdata("u8", 480*2,270*2)
-		set_draw_target(screen)
-		sspr(dd,0,0,w,h,0,0,480*2,270*2)
-		set_draw_target()
-
-		if (not fstat("/desktop/host")) _signal(65) -- /desktop/host
-
-		local num=0
-		while (fstat("/desktop/host/sshot"..num..".png") and num < 64) do
-			num += 1
-		end
-		store("/desktop/host/sshot"..num..".png", screen)
-
-		notify("captured screenshot to /desktop/host/sshot"..num..".png")
-	end
-
-	-- capture label
-
-	if (key("ctrl") and keyp("7")) then
-
-		-- to do: custom desktop location from settings?
-
-		local dd = get_display()
-
-		local w,h = 480,270
-		if (awin and _ppeek(awin.proc_id, 0x547c) == 3) w,h = 240,135
-		if (awin and _ppeek(awin.proc_id, 0x547c) == 4) w,h = 160,90
-
-		local label = userdata("u8", 480,270)
-		set_draw_target(label)
-		sspr(dd,0,0,w,h,0,0,480,270)
-		set_draw_target()
-
-		store("/ram/cart/label.png", label)
-		notify("captured label")
-	end
-
+	--================================================================================================================
 
 	-- window focus messages
 
@@ -2065,7 +2162,7 @@ function _update()
 	if (win and win.proc_id) then
 		if (mx ~= last_mx or my ~= last_my or mb ~= last_mb or win.send_mouse_update) then
 
-			last_input_activity_t = time()
+			last_input_activity_t = time() 
 
 			--printh("mouse event "..pod{proc_id = win.proc_id, mx, my, mb})
 
@@ -2077,7 +2174,6 @@ function _update()
 			if (@0x547c > 0) pointer_el = win -- video mode set -> assume pointing at active window
 			for i=1,#ws_gui.child + #tooltray_gui.child do
 				local win2 = i <= #ws_gui.child and ws_gui.child[i] or tooltray_gui.child[i - #ws_gui.child]
-
 					send_message(win2.proc_id, {event="mouse",dx = mdx, dy = mdy, mx_abs = mx, my_abs = my, mx = mx-win2.sx, my=my-win2.sy, 
 						-- only active window is allowed to read mouse button (title bar / resizer widget doesn't count)
 						mb = (win == win2 and win == pointer_el) and mb or 0
@@ -2152,7 +2248,7 @@ function _update()
 
 	end
 
-	-- toggle fullscreen
+	-- toggle (host) fullscreen
 
 	if (key("alt") and key("enter") and not last_enter_key_state) then		
 		sdat.fullscreen = not sdat.fullscreen
@@ -2162,6 +2258,11 @@ function _update()
 	end
 	last_enter_key_state = key("enter")
 
+	-- toggle mute
+
+	if key("ctrl") and keyp("m") then		
+		send_message(pid(), {event = "toggle_mute", notify=true})
+	end
 
 
 	local dtab_index = 0
@@ -2263,19 +2364,35 @@ function _update()
 	end
 
 
-	-- update
+	-- update gui
 	if (not screensaver_proc_id) then
 		head_gui:update_all()
 	end
 
-	-- store state of windows data
-	-- store("/ram/shared/windows.pod", generate_windat()) -- commented during dev because noisy
+	-- store state of windows data // to do: pm could wm know if anyone is subscribed to alter frequency
+	
+	if (not last_windat_t or time() > last_windat_t + 0.125) then
+		last_windat_t = time()
+		store("/ram/shared/windows.pod", generate_windat())
+	end
 
 	if (sdat.sparkles) then
 		update_sparkles()
 	else
 		init_sparkles() -- reset. to do: existing sparkles should be allowed to live out their life? anti-module pattern though!
 	end
+
+	-- battery saver shouldn't kick in while running a fullcsreen app (unless it is terminal)
+	-- exception: pwc_output should  always run full speed even if windowed
+	-- to do: configurable -- user should be able to test the effect of battery saver on pwc_output
+	if (ws_gui.style == "fullscreen" and not ws_gui.pwc_output) or 
+		(awin and awin.proc_id == haltable_proc_id)
+ 	then
+		if (not screensaver_proc_id) then
+			_signal(22) -- stay awake
+		end
+	end
+
 
 end
 
@@ -2485,8 +2602,8 @@ on_event("set_window", function(msg)
 			add(target_ws.tabs, win)
 		end
 
-		-- 6. show in workspace if requested
-		if (msg.attribs.show_in_workspace) then
+		-- 6. show in workspace if requested ** 0.1.1: if not specified then assume true 
+		if (msg.attribs.show_in_workspace ~= false) then
 			previous_workspace = ws_gui
 			set_workspace(target_ws)
 			target_ws.active_window = win -- give focus immediately
@@ -2504,6 +2621,10 @@ on_event("set_window", function(msg)
 		if (workspace_index ~= workspace_index1 or ws_gui ~= workspace[workspace_index1]) then
 			set_workspace(workspace_index1)
 		end
+
+		-- 9. let window know where it is to start with
+		-- (e.g. might want to preserve original window position)
+		send_message(win.proc_id, {event="move", x = win.x, y = win.y, dx = 0, dy = 0})
 
 
 		generate_head_gui()
@@ -2527,6 +2648,8 @@ on_event("set_window", function(msg)
 			--printh("updating icon "..pod(win.icon))
 		end
 	end
+
+	
 
 
 	-- when changing location or creating new window, apply unique location logic:
@@ -2554,8 +2677,8 @@ on_event("set_window", function(msg)
 						del(ws_gui, target_ws)
 					end
 
-					-- go to other window
-					if (win.show_in_workspace) then
+					-- go to other window (when not specified, taken to be true)
+					if (win.show_in_workspace ~= false) then
 						set_workspace(i)
 						win2:bring_to_front()
 					end
@@ -2730,6 +2853,68 @@ on_event("toggle_app_menu",
 		toggle_app_menu(msg.x, msg.y, get_window_by_proc_id(msg.proc_id))
 	end
 )
+
+on_event("toggle_mute",
+	function(msg)
+		sdat.mute_audio = not sdat.mute_audio
+		store("/appdata/system/settings.pod", sdat)
+
+		if (msg.notify) then
+			notify("Sound: "..(sdat.mute_audio and "Off" or "On"))		
+		end
+
+		-- let active window know // deleteme -- mute is system-wide
+		--[[
+			if (msg.proc_id and msg.proc_id ~= 3) then
+				send_message(msg.proc_id, {event = "toggle_mute"})
+			end
+		]]
+	end
+)
+
+function capture_video(cdat)
+
+	if (not fstat("/desktop/host")) _signal(65)
+
+	-- local cdat = fetch"/ram/system/capture.pod" or {}
+	local cdat = cdat or {}
+	poke2(0x40, 
+		tonum(cdat.x)      or 0,
+		tonum(cdat.y)      or 0,
+		tonum(cdat.width)  or 480,
+		tonum(cdat.height) or 270,
+		tonum(cdat.scale)  or 2,
+		tonum(cdat.frames) or 30*120, -- max: 2 minutes (to do: configurable)
+		-- delay: +1 because want to start on the display data that is /going to/ be send to video out this frame
+		(tonum(cdat.delay) or 0) + 1 -- frames to skip at start.
+	)
+	
+	_signal(18)
+end
+
+function capture_screenshot(cdat)
+
+	if (not fstat("/desktop/host")) _signal(65)
+
+	local cdat = cdat or {}
+	poke2(0x50,
+		tonum(cdat.x)      or 0,
+		tonum(cdat.y)      or 0,
+		tonum(cdat.width)  or 480,
+		tonum(cdat.height) or 270,
+		tonum(cdat.scale)  or 2,
+		cdat.as_label and 1 or 0,
+		-- delay: +1 because want to start on the display data that is /going to/ be send to video out this frame
+		(tonum(cdat.delay) or 0) + 1 -- frames to skip at start.
+	)
+	
+	_signal(21)
+end
+
+-- security: sandboxed apps can request captures, but can't read them back (/desktop/* is not visible to them)
+
+on_event("capture_video", capture_video)
+on_event("capture_screenshot", capture_screenshot)
 
 
 function save_open_locations_metadata()
@@ -2946,48 +3131,53 @@ function toggle_picotron_menu()
 		{"\^:307f3000067f0600 System Settings",	function() create_process("/system/apps/settings.p64", 
 			{prog="/system",window_attribs={workspace="current", autoclose = true}}) end},
 
---		{"\^:3f7f5077057f7e00 New Desktop", function() end},
+		{"\^:7f77777f777f0301 Show Messages", show_reported_error}
+	}
 
---[[	
-		"\^:fec7838383c7fe00\^:1f3f3f3f3f3f1f00\-f Audio",
-		"\^:fec7838383c7fe00\^:1f3f3f3f3f3f1f00\-f Fullscreen",
-		"\^:fec7838383c7fe00\^:1f3f3f3f3f3f1f00\-f Battery Saver",
-]]
 
-		{"\^:7f77777f777f0301 Show Messages", show_reported_error},
 
-		"---",
+	if (stat(320) > 0) then
+		add(item, {"\^:06ff81b5b181ff00 End Recording", function() _signal(19) end})
+	else
+		add(item, {"\^:06ff81b5b181ff00 Capture", function() create_process("/system/apps/capture.p64", 
+			{window_attribs={workspace="current", autoclose = true}}) end})
+	end
 
---		{"\^:00387f7f7f7f7f00 Apps", function() create_process("/system/apps/filenav.p64", {argv={"/apps"}, window_attribs={show_in_workspace=true}}) end},
-		{"\^:00387f7f7f7f7f00 Files", function() create_process("/system/apps/filenav.p64", {argv={"/"}, window_attribs={show_in_workspace=true}}) end},
-		{"\^:7f7d7b7d7f083e00 Terminal", function() create_process("/system/apps/terminal.lua", {window_attribs={show_in_workspace=true}}) end},
---		{"\^:00387f7f7f7f7f00 Host Desktop", function() _signal(65) end},
 
-		--[[ underlay test; -10 means always under regular windows
-		{"\^:7f7d7b7d7f083e00 Terminal2", function() create_process("/system/apps/terminal.lua", 
-			{window_attribs={moveable=false,width=100,height=100,x=50,y=50,z=-10}}) end},
-		--]]
+	add(item, "---")
+
+--	add(item, {"\^:00387f7f7f7f7f00 Apps", function() create_process("/system/apps/filenav.p64", {argv={"/apps"}}) end})
+	add(item, {"\^:00387f7f7f7f7f00 Files", function() create_process("/system/apps/filenav.p64", {argv={"/"}}) end})
 
 --[[
-		-- later (using filenav intention); use load / save commands for now
-
-		"---",
-		"\^:00ff8181ffc17f00 Load Cartridge",
-		-- "Save Cartridge  (Ctrl-S)",  --  can show shortcut in message bar
-		"\^:00ff8181ffc17f00 Save Cartridge",
-		"\^:00ff8181ffc17f00 Save Cartridge As",
-		"\^:1c367f7777361c00 Cartridge Info",
+	-- test: should at least be able to browse /system (but not alter anything) while sandboxed
+	add(item, {"\^:00387f7f7f7f7f00 Files (sandboxed)", function() create_process("/system/apps/filenav.p64", 
+		{argv={"/"}, sandboxed = true, cart_id = "_filenav"}) end})
 ]]
 
-		"---",
-		 -- pop up menu: [Shutdown] [Reboot] [Cancel] 
-		 -- perhaps show unsaved changes 
-		 -- (checkbox: "discard unsaved changes" ~ once checked, buttons clickable)
+	add(item, {"\^:7f7d7b7d7f083e00 Terminal", function() create_process("/system/apps/terminal.lua") end})
+--	add(item, {"\^:00387f7f7f7f7f00 Host Desktop", function() _signal(65) end})
+
+		
+	-- later (using filenav intention); use load / save commands for now
+--[[
+	add(item, "---")
+	add(item, "\^:00ff8181ffc17f00 Load Cartridge")
+	add(item, "\^:00ff8181ffc17f00 Save Cartridge")
+	add(item, "\^:00ff8181ffc17f00 Save Cartridge As")
+	add(item, {"\^:1c367f7777361c00 Cartridge Info", function() create_process("/system/apps/about.p64") end})
+]]
+
+	add(item, "---")
+	 -- pop up menu: [Shutdown] [Reboot] [Cancel] 
+	 -- perhaps show unsaved changes 
+	 -- (checkbox: "discard unsaved changes" ~ once checked, buttons clickable)
 
 
-		{"\^:1c22494949221c00 Reboot", function() send_message(2, {event="reboot"}) end},
-		{"\^:082a494141221c00 Shutdown", function() send_message(2, {event="shutdown"}) end}
-	}
+	add(item, {"\^:1c22494949221c00 Reboot", function() send_message(2, {event="reboot"}) end})
+	add(item, {"\^:082a494141221c00 Shutdown", function() send_message(2, {event="shutdown"}) end})
+	
+
 
 
 	local pulldown = create_modal_gui():attach_pulldown{

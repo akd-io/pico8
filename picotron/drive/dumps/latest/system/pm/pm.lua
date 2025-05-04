@@ -14,6 +14,12 @@ function _update()
 
 	-- to do: adjust process cpu allocations based on previous frame
 	
+	-- headless script: shutdown when no userland processes remaining
+	if (stat(315) > 0 and #_get_process_list() <= 3) _signal(33)
+
+	-- exported player: shutdown when no userland processes remaining
+	if (stat(317) > 0 and #_get_process_list() <= 3) _signal(33)
+
 end
 
 

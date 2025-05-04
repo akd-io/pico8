@@ -46,7 +46,7 @@ local function _autoload_resources()
 					end
 				end
 
-			elseif (type(gfx_dat == "table") and gfx_dat[0] and gfx_dat[0].bmp) then
+			elseif (type(gfx_dat) == "table" and gfx_dat[0] and gfx_dat[0].bmp) then
 
 				-- format saved by sprite editor
 				-- sprite flags are written to 0xc000 + index
@@ -94,13 +94,8 @@ local function _autoload_resources()
 end
 
 
--- only autoload in the context of running cproj or a .p64?
--- update: can autoload when running a .lua file -- can run main.lua from commandline
+-- always autoload resources (even for a .lua file -- might be running main.lua from commandline)
 
---if pwd() == "/ram/cart" or sub(pwd(),-4) == ".p64" then -- update: wrong now anyway
-	if (_autoload_resources) then
-		_autoload_resources()
-	end
---end 
-
+_autoload_resources()
+	
 

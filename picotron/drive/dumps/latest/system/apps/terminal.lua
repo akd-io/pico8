@@ -75,7 +75,10 @@ function _init()
 
 	-- don't pause fullscreen terminal when not corunning pwc
 	if (not env().corun_program) then
-		window{pauseable = false}
+		window{
+			pauseable = false,
+			title = "Terminal"
+		}
 	end
 
 	-- add_line("picotron terminal // "..flr(stat(0)).." bytes used")
@@ -199,6 +202,12 @@ local function resolve_program_path(prog_name)
 
 	-- /appdata/system/util/ can be used to extend built-in apps (same pattern as other collections)
 	-- update: not true, other collections (wallpapers) are replaced rather than extended by /appdata
+
+	if (type(prog_name) == "string" and prog_name[1] == ".") then
+		-- 0.1.1:  ./foo.lua, ../foo.lua -> don't search other paths
+		return try_multiple_extensions(prog_name) 
+	end
+
 
 	return
 		try_multiple_extensions("/system/util/"..prog_name) or

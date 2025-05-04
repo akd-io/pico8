@@ -27,12 +27,12 @@ local last_known_meta      = nil
 -- ( --> stop auto-saving)
 local stale_filename       = nil
 
+local _env = env
+
 
 function pwf()
 	return current_filename
 end
-
-
 
 
 
@@ -72,9 +72,9 @@ local function update_menu_items()
 			local path = string.sub(current_filename, 1, -#segs[#segs] - 2) -- same folder as current file
 			--create_process("/system/apps/filenav.p64", {path = path, window_attribs= {workspace = "current", autoclose=true}})
 
-			printh("Open File // env().prog_name: "..env().prog_name)
+			--printh("Open File // _env().prog_name: ".._env().prog_name)
 			-- can assume when program is terminal, co-running /ram/cart and should use that to open the file (useful for developing tools that use file wrangler)
-			local open_with = env().prog_name
+			local open_with = _env().prog_name
 
 			-- when opening with terminal, can assume co-running ram/cart
 			--> use /ram/cart to run it.   //  allows wrangling files from load'ed cartridge; useful for tool dev
@@ -197,9 +197,9 @@ function wrangle_working_file(save_state, load_state, untitled_filename, get_hlo
 	
 	-- derive current_file
 	
-	cd(env().path)
+	cd(_env().path)
 
-	current_filename = (env().argv and env().argv[1]) or untitled_filename
+	current_filename = (_env().argv and _env().argv[1]) or untitled_filename
 	current_filename = fullpath(current_filename)
 
 

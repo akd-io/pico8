@@ -1,37 +1,11 @@
 picotron cartridge // www.picotron.net
 version 2
 
-:: .info.pod
-b64$LS1bW3BvZCxyZXZpc2lvbj0wLG5vdGVzPSIoYykgTGV4YWxvZmZsZSBHYW1lcyBMTFAiLGlj
-b249dXNlcmRhdGEoInU4IiwxNiwxNiwiMDAwMDAwMDEwMTAxMDEwMTAxMDEwMTAxMDEwMDAwMDAw
-MDAwMDEwNzA3MDcwNzA3MDcwNzA3MDcwNzAxMDAwMDAwMDEwNzBkMGQwZDBkMGQwZDBkMGQwZDBk
-MDcwMTAwMDEwNzBkMGQwZDBkMGQwZDBkMGQwZDBkMGQwZDA3MDEwMTA3MGQwNzA3MDcwNzBkMGQw
-ZDBkMGQwZDBkMDcwMTAxMDcwZDA3MDcwNzA3MGQwZDBkMGQwZDBkMGQwNzAxMDEwNzBkMDcwZDA3
-MDcwNzA3MDcwZDBkMGQwNzA3MDEwMTA3MGQwNzA3MDcwNzBkMGQwZDBkMDcwZDA3MDcwMTAxMDcw
-ZDA3MDcwZDBkMDcwZDBkMGQwNzBkMDcwNzAxMDEwNzBkMDcwNzBkMGQwZDA3MGQwZDBkMGQwZDA3
-MDEwMTA3MGQwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMDcwMTAxMDYwNzBkMGQwZDBkMGQwZDBkMGQw
-ZDBkMDcwNjAxMDEwNjA2MDcwNzA3MDcwNzA3MDcwNzA3MDcwNjA2MDEwMDAxMDYwNjA2MDYwNjA2
-MDYwNjA2MDYwNjA2MDEwMDAwMDAwMTA2MDYwNjA2MDYwNjA2MDYwNjA2MDEwMDAwMDAwMDAwMDEw
-MTAxMDEwMTAxMDEwMTAxMDEwMDAwMDAiKSxtb2RpZmllZD0iMjAyNS0wNC0yNyAxNjowNjoxMiIs
-Y3JlYXRlZD0iMjAyMy0xMC0xOSAxNjo1MDowNyIsYXV0aG9yPSJ6ZXAiLHJ1bnRpbWU9OCx0aXRs
-ZT0iUGljb3Ryb24gVHJhY2tlciIsdmVyc2lvbj0iMC4xaCIsd29ya3NwYWNlcz17e2xvY2F0aW9u
-PSJtYWluLmx1YSMxNDgiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249Imd1aS5sdWEjODM3
-Iix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJpbnN0Lmx1YSMxNzkiLHdvcmtzcGFjZV9p
-bmRleD0xfSx7bG9jYXRpb249ImVudi5sdWEjMjcwIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0
-aW9uPSJ0cmFjay5sdWEjNDciLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249InVwZGF0ZS5s
-dWEjMzIiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249ImRhdGEubHVhIzc2Iix3b3Jrc3Bh
-Y2VfaW5kZXg9MX0se2xvY2F0aW9uPSJ1bmRvLmx1YSM2Iix3b3Jrc3BhY2VfaW5kZXg9MX0se2xv
-Y2F0aW9uPSJnZngvMC5nZngiLHdvcmtzcGFjZV9pbmRleD0yfSx7bG9jYXRpb249Im1hcC8wLm1h
-cCIsd29ya3NwYWNlX2luZGV4PTN9LHtsb2NhdGlvbj0ic2Z4LzAuc2Z4Iix3b3Jrc3BhY2VfaW5k
-ZXg9NH19XV1sejQABAAAAAMAAAAwbmls
 :: gfx/
-:: gfx/.info.pod
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTA0LTA5IDAyOjM2OjAxIixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjowNjoxMiIscmV2aXNpb249MF1dbHo0AAQAAAADAAAAMG5pbA==
 :: gfx/0.gfx
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTIyIDA3OjMwOjA0Iixtb2RpZmllZD0iMjAyNC0w
-Ny0xOCAxMzo1NjowMCIscmV2aXNpb249MTE5MDksc3RvcmVkPSIyMDIzLTM2LTI5IDA0OjM2OjQw
-Il1dbHo0AMsFAACFNgAA8Qp7WzBdPXtibXA9cHh1AEMgBQUEIAcwBwBHBgDxASxmbGFncz0wLHBh
+OC0xOCAxNjoxMToxOSIscmV2aXNpb249MTIwODQsc3RvcmVkPSIyMDIzLTM2LTI5IDA0OjM2OjQw
+Il1dbHo0APAFAACbNgAA8Qp7WzBdPXtibXA9cHh1AEMgBQUEIAcwBwBHBgDxASxmbGFncz0wLHBh
 bl94PTYIANp5PS00LHpvb209OH0sOwBXJwAXAAcEAB8nQQAdvwcANzAHIAcwNwAHOwAdMBAHIH8A
 TycgB0A7AB9-MAeABzAHEDkAGlsQEATw8DIAEzAyAB8wMQAFcBEXEBcgJ0DkAPADFzAnEBcQJ-AE
 BwAHEBcQB1AnwwD-AFAHABcgJ-AEJ_AH4AfwLGAAGSAgEIEBAFQAEQBTADIAByAKAPEDByAHIBcA
@@ -53,21 +27,24 @@ QWCBGABwUfAEUfACcXEBsDCh4GFQQUCR8AdRGADwCAVB8AOBYFEgUTCh8ABBYEEgsfAGYfAJtgLA
 8APxBRBhMJHwDfEDLgAgCWEVAGAE8QMQYUAVABABJwDzBAlR8AhB8AXxASBRUJHwDtHwC0EXADAG
 0TB-AHEQkfAPIfAJVADxJwihUCGAUfATYfAscfAKQfCRYfALUfCQUfAMUfCRMfAOUfCyUfCzUfCy
 YfCycfCwgfCwcfCxYRUAOjHw-wEAH2X3AwseMigED-cHHg8xAP91EzI_CJMAB1AHECcAJ0BbBiDw
-BQkAgxcQB3AHIAcQFwBPACfwQ0IGSjAICASAC28wRyBH8BM5AByfRyBHMCdQB-AVNAEeDzEA--82
-YwcHBCAXMEUOBAQAABAAL0AXqQkMLDE2SQDxAA4QHQAOAA4NAA0OAB0OAA8AIA0QCgASIBUAARIA
-D1YAHWOQB1AXEFehAC8HkD8AHSKAB9QAfwBXEBdQB6A-AB0zcEcQAgAfcDsADQ_6AS--AzQX0Dew
-V5B3cHdwV5A3sBfwOkIAHil3cAIAL-A0PgIeDzEA------------------------------------
-------------vFBtPTh9fQ==
-:: map/
-:: map/.info.pod
+BQkAgxcQB3AHIAcQFwBPACfwQ0IGSjAICASAC28wRyBH8BM5AByfRyBHMCdQB-AVNAEeDzEArMAH
+BwSQDUANMB0QDWACAA88AB2AB0AHMBcQB2ACAA-aAB4PMQD-D2MHBwQgFzBbDgQEAAAQAC9AF78J
+DCwxNkkA8QAOEB0ADgAODQANDgAdDgAPACANEAoAEiAVAAESAA9WAB1jkAdQFxBXoQAvB5A-AB0i
+gAfUAH8AVxAXUAegPwAdM3BHEAIAH3A7AA0PugEv-wM0F9A3sFeQd3B3cFeQN7AX8DpCAB4pd3AC
+AC-wND4CHg8xAP-----------------------------------------------7xQbT04fX0=
+:: gfx/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTA0LTA5IDAyOjM2OjAxIixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjowNjoxMiIscmV2aXNpb249MF1dbHo0AAQAAAADAAAAMG5pbA==
+NC0yNyAxNjowNToxMyIscmV2aXNpb249MF1d
+:: map/
 :: map/0.map
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTIyIDA3OjMwOjA0Iixtb2RpZmllZD0iMjAyNC0w
-Ny0xOCAxMzo1NjowMCIscmV2aXNpb249ODgyNyxzdG9yZWQ9IjIwMjMtMzYtMjkgMDQ6MzY6NDAi
+OC0xOCAxNjoxMToxOSIscmV2aXNpb249ODk5OCxzdG9yZWQ9IjIwMjMtMzYtMjkgMDQ6MzY6NDAi
 XV1sejQAcAAAAF8QAADwCHt7Ym1wPXVzZXJkYXRhKCJpMTYiLDMyAwAvIjABAP--------------
 ------vxESIpLGhpZGRlbj1mYWxzZSxuYW1lPSJmIixwYW5feD0wCADCeT0wLHRpbGVfaD01CQDA
 dz01LHpvb209MX19
+:: map/.info.pod
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTA0LTA5IDAyOjM2OjAxIixtb2RpZmllZD0iMjAyNS0w
+NC0yNyAxNjowNToxMyIscmV2aXNpb249MF1d
 :: amp.lua
 --[[pod_format="raw",created="2023-29-17 13:29:48",revision=257,stored="2023-27-19 23:27:17"]]
 -- amp filter
@@ -146,7 +123,7 @@ dz01LHpvb209MX19
 
 
 :: data.lua
---[[pod_format="raw",created="2023-10-24 00:36:58",modified="2024-07-18 13:56:00",revision=10792,stored="2023-36-29 04:36:40"]]
+--[[pod_format="raw",created="2023-10-24 00:36:58",modified="2024-08-18 16:11:19",revision=10982,stored="2023-36-29 04:36:40"]]
 
 function init_track(addr)
 --	printh("init_track "..addr)
@@ -356,7 +333,7 @@ function draw_mudo_state(x,y)
 end
 
 :: env.lua
---[[pod_format="raw",created="2023-10-08 03:32:58",modified="2024-07-18 13:56:00",revision=7686,stored="2023-36-29 04:36:40"]]
+--[[pod_format="raw",created="2023-10-08 03:32:58",modified="2024-08-18 16:11:19",revision=7879,stored="2023-36-29 04:36:40"]]
 
 -- flags: lerp, random start position
 -- used by DATA envelope
@@ -735,7 +712,7 @@ end
 
 
 :: gui.lua
---[[pod_format="raw",created="2023-10-22 07:32:11",modified="2024-07-18 13:56:00",revision=15231,stored="2023-36-29 04:36:40"]]
+--[[pod_format="raw",created="2023-10-22 07:32:11",modified="2024-08-18 16:11:19",revision=15421,stored="2023-36-29 04:36:40"]]
 
 function create_pane(title, x, y, w, h, col, ontap)
 
@@ -1776,7 +1753,7 @@ end
 
 
 :: inst.lua
---[[pod_format="raw",created="2023-10-27 18:16:38",modified="2024-07-18 13:56:00",revision=9217]]
+--[[pod_format="raw",created="2023-10-27 18:16:38",modified="2024-08-18 16:11:19",revision=9437]]
 
 function get_inst_name(i)
 	local inst_addr = 0x40000 + i*0x200
@@ -2051,10 +2028,9 @@ function create_mval_knob(label,node_type,mval_index,addr,x,y)
 		
 			-- change parent operator
 			
-			if node_type >= 8 then
-				--if node_type >= 8 and (node_type!=10 or (self.mval_index!=3)) then
-				-- fx filters shouldn't have any parent operators
-				-- (except gain(10):mix(3)) -- update: not a useful exception; deleteme
+			if node_type >= 8 and self.label ~= "res" and self.label ~= "mix" then
+				-- filter:res and shape:mix can multiply with parent.
+				-- any other fx filter mvals shouldn't have any parent operators
 				poke(addr, flags & ~0x3)
 			elseif (flags & 0x3 > 0) then
 				if (self.label == "tune") then
@@ -2063,7 +2039,8 @@ function create_mval_knob(label,node_type,mval_index,addr,x,y)
 					poke(addr, flags & ~0x3) -- clear add / mult bit
 				end
 			else
-				if (self.label == "vol" or self.label == "mix") then
+				if (self.label == "vol" or self.label == "mix" or self.label == "res")
+				then
 					-- set bit: mult parent
 					poke(addr, flags | 0x2)
 				else
@@ -2336,6 +2313,7 @@ function create_muted_node_toggle(addr,x,y)
 	return el
 end
 
+
 function delete_node(index)
 	local tr = read_node_tree(0x40000 + ci*0x200, 0, nil)
 	checkpoint()
@@ -2398,6 +2376,8 @@ function create_child_node(parent_index, node_type, is_modulator, copy_from_pare
 			parent_index, node_type, 0, 0
 			-- all zero: fx knobs are all uint8, so don't need 0x8 flags set
 		)
+		-- ..except for fx:filter
+		set(n.content, 4+2*4, 0x2)
 	end
 	
 	-- copy data from parent when both are osc
@@ -2472,6 +2452,14 @@ function create_fx_type_toggle(addr,x,y)
 		val = 8 + (((val-8) + 1) % 3) -- only need filter, echo, gain
 		poke(self.addr, (peek(self.addr) & 0xf0) | (val & 0x0f))
 		refresh_gui = true
+		
+		-- reset parent operator bits to defaults (0 except for FX:FILTER:RES)
+		for i=0,6 do
+			local mval_addr = self.addr + 3 + i*4 -- first byte of mval (flags)
+			poke(mval_addr, peek(mval_addr) & ~0x03) -- strip low 2 bits (op)
+			-- only FX:FILTER:RES (type 8, node 2) has MF_MUL_PARENT set
+			if (i == 2 and val == 8) poke(mval_addr,peek(mval_addr) | 0x2)
+		end
 	end
 	
 	return el
@@ -2803,7 +2791,7 @@ end
 
 
 :: main.lua
---[[pod_format="raw",created="2023-10-22 07:30:04",modified="2024-07-18 13:56:00",revision=14011,stored="2023-36-29 04:36:40"]]
+--[[pod_format="raw",created="2023-10-22 07:30:04",modified="2024-08-18 16:11:19",revision=14199,stored="2023-36-29 04:36:40"]]
 --[[
 	Picotron Tracker
 	(c) Lexaloffle Games LLP
@@ -2978,7 +2966,7 @@ end
 
 
 :: track.lua
---[[pod_format="raw",created="2023-10-27 18:49:18",modified="2024-07-18 13:56:00",revision=10147]]
+--[[pod_format="raw",created="2023-10-27 18:49:18",modified="2024-08-18 16:11:19",revision=10343]]
 --[[
 
 	track editor
@@ -3874,7 +3862,7 @@ function update_pattern_editor()
 end
 
 :: undo.lua
---[[pod_format="raw",created="2024-03-30 19:03:19",modified="2024-07-18 13:56:00",revision=1974]]
+--[[pod_format="raw",created="2024-03-30 19:03:19",modified="2024-08-18 16:11:19",revision=2180]]
 --[[
 
 	single undo stack for whole .sfx file
@@ -3917,7 +3905,7 @@ function redo()
 	refresh_gui = true
 end
 :: update.lua
---[[pod_format="raw",created="2023-10-22 07:32:11",modified="2024-07-18 13:56:00",revision=13806,stored="2023-36-29 04:36:40"]]
+--[[pod_format="raw",created="2023-10-22 07:32:11",modified="2024-08-18 16:11:19",revision=14000,stored="2023-36-29 04:36:40"]]
 global_t = 0
 
 -- map keyboard letters to pitches
@@ -4068,7 +4056,12 @@ function _update()
 	end
 	
 	-- navigate items
-	if (keyp("-") or keyp("+")) then
+	
+	if (cur_x == 6 and (mode == "track" or mode == "pattern")) then
+		-- can't navigate when in fx channel!
+		-- -,+ mean slide
+	elseif (keyp("-") or keyp("+")) then
+
 		local dd = keyp("-") and -1 or 1
 		if (mode == "instrument") ci += dd
 		if (mode == "track")      ct += dd
@@ -4090,4 +4083,27 @@ end
 
 
 
+:: .info.pod
+b64$LS1bW3BvZCx0aXRsZT0iUGljb3Ryb24gVHJhY2tlciIsbW9kaWZpZWQ9IjIwMjUtMDQtMjcg
+MTY6MDU6MTMiLG5vdGVzPSIoYykgTGV4YWxvZmZsZSBHYW1lcyBMTFAiLHJ1bnRpbWU9OCxyZXZp
+c2lvbj0wLGF1dGhvcj0iemVwIixjcmVhdGVkPSIyMDIzLTEwLTE5IDE2OjUwOjA3IixpY29uPXVz
+ZXJkYXRhKCJ1OCIsMTYsMTYsIjAwMDAwMDAxMDEwMTAxMDEwMTAxMDEwMTAxMDAwMDAwMDAwMDAx
+MDcwNzA3MDcwNzA3MDcwNzA3MDcwMTAwMDAwMDAxMDcwZDBkMGQwZDBkMGQwZDBkMGQwZDA3MDEw
+MDAxMDcwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMGQwNzAxMDEwNzBkMDcwNzA3MDcwZDBkMGQwZDBk
+MGQwZDA3MDEwMTA3MGQwNzA3MDcwNzBkMGQwZDBkMGQwZDBkMDcwMTAxMDcwZDA3MGQwNzA3MDcw
+NzA3MGQwZDBkMDcwNzAxMDEwNzBkMDcwNzA3MDcwZDBkMGQwZDA3MGQwNzA3MDEwMTA3MGQwNzA3
+MGQwZDA3MGQwZDBkMDcwZDA3MDcwMTAxMDcwZDA3MDcwZDBkMGQwNzBkMGQwZDBkMGQwNzAxMDEw
+NzBkMGQwZDBkMGQwZDBkMGQwZDBkMGQwZDA3MDEwMTA2MDcwZDBkMGQwZDBkMGQwZDBkMGQwZDA3
+MDYwMTAxMDYwNjA3MDcwNzA3MDcwNzA3MDcwNzA3MDYwNjAxMDAwMTA2MDYwNjA2MDYwNjA2MDYw
+NjA2MDYwNjAxMDAwMDAwMDEwNjA2MDYwNjA2MDYwNjA2MDYwNjAxMDAwMDAwMDAwMDAxMDEwMTAx
+MDEwMTAxMDEwMTAxMDAwMDAwIiksdmVyc2lvbj0iMC4xaCIsd29ya3NwYWNlcz17e2xvY2F0aW9u
+PSJtYWluLmx1YSMxNDgiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249Imd1aS5sdWEjOTY0
+Iix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJpbnN0Lmx1YSMyNzYiLHdvcmtzcGFjZV9p
+bmRleD0xfSx7bG9jYXRpb249ImVudi5sdWEjMjM0Iix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0
+aW9uPSJ0cmFjay5sdWEjNzI1Iix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJ1cGRhdGUu
+bHVhIzE1NCIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0iZGF0YS5sdWEjNzYiLHdvcmtz
+cGFjZV9pbmRleD0xfSx7bG9jYXRpb249InVuZG8ubHVhIzgiLHdvcmtzcGFjZV9pbmRleD0xfSx7
+bG9jYXRpb249ImdmeC8wLmdmeCIsd29ya3NwYWNlX2luZGV4PTJ9LHtsb2NhdGlvbj0ibWFwLzAu
+bWFwIix3b3Jrc3BhY2VfaW5kZXg9M30se2xvY2F0aW9uPSJzZngvMC5zZngiLHdvcmtzcGFjZV9p
+bmRleD00fSx7bG9jYXRpb249InNmeC8wLnNmeCIsd29ya3NwYWNlX2luZGV4PTd9fV1d
 :: [eoc]

@@ -1,17 +1,14 @@
 picotron cartridge // www.picotron.net
 version 2
 
-:: .info.pod
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTE1IDA1OjI3OjE3Iixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjowNjoxMiJdXWx6NAAEAAAAAwAAADBuaWw=
 :: _meta/
-:: _meta/.info.pod
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTE1IDA1OjI3OjE3Iixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjowNjoxMiJdXWx6NAAEAAAAAwAAADBuaWw=
 :: _meta/workspaces.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTI3LTE1IDA1OjI3OjE3Iixtb2RpZmllZD0iMjAyMy00
 Ny0xNSAwNzo0Nzo0MSIscmV2aXNpb249MjE3XV1sejQALQAAACsAAADwHHt7Y3Byb2pfZmlsZT0i
 bWFpbi5sdWEiLHdvcmtzcGFjZV9pbmRleD0xfX0=
+:: _meta/.info.pod
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTE1IDA1OjI3OjE3Iixtb2RpZmllZD0iMjAyNS0w
+NC0yNyAxNjowNToxMyJdXQ==
 :: main.lua
 --[[pod_format="raw",created="2023-27-15 05:27:24",modified="2023-47-15 07:47:41",revision=850]]
 --[[
@@ -102,4 +99,7 @@ function _update()
 	pl.dx *= .98
 	pl.dy *= .98
 end
+:: .info.pod
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTE1IDA1OjI3OjE3Iixtb2RpZmllZD0iMjAyNS0w
+NC0yNyAxNjowNToxMyJdXQ==
 :: [eoc]

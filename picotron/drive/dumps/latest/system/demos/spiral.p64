@@ -1,16 +1,13 @@
 picotron cartridge // www.picotron.net
 version 2
 
-:: .info.pod
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTA3LTE5IDE4OjE5OjIxIixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjowNjoxMiJdXWx6NAAEAAAAAwAAADBuaWw=
 :: _meta/
-:: _meta/.info.pod
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTA3LTE5IDE4OjE5OjIxIixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjowNjoxMiJdXWx6NAAEAAAAAwAAADBuaWw=
 :: _meta/workspaces.pod
 b64$LS0gcGljb3Ryb24gb2JqZWN0IGRhdGEKe3t3b3Jrc3BhY2VfaW5kZXg9MSxjcHJval9maWxl
 PSJtYWluLmx1YSJ9fQ==
+:: _meta/.info.pod
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTA4LTIwIDAyOjEyOjQ0Iixtb2RpZmllZD0iMjAyNS0w
+NC0yNyAxNjowNToxMyJdXQ==
 :: main.lua
 -- spiral
 -- by zep
@@ -25,4 +22,7 @@ function _draw()
 	end
 	print(string.format("%.5f",stat(1)),2,2,7)
 end
+:: .info.pod
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTA4LTIwIDAyOjEyOjQ0Iixtb2RpZmllZD0iMjAyNS0w
+NC0yNyAxNjowNToxMyJdXQ==
 :: [eoc]

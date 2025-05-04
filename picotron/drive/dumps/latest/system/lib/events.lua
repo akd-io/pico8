@@ -8,8 +8,9 @@
 
 do
 
+	local _env = env
 	local _read_message = _read_message
-
+	local _update_buttons = _update_buttons
 
 	local message_hooks = {}
 	local message_subscriber = {}
@@ -46,9 +47,10 @@ do
 	function mouselock(do_lock, event_sensitivity, move_sensitivity)
 		if (event_sensitivity) poke(0x5f28, mid(0,event_sensitivity*64, 255)) -- controls scale of deltas (64 == 1 per picotron pixel)
 		if (move_sensitivity)  poke(0x5f29, mid(0,move_sensitivity *64, 255)) -- controls speed of cursor while locked (64 == 1 per host pixel)
-		if (type(do_lock) == "number") poke(0x5f2d, do_lock)
+		if (type(do_lock) == "number") poke(0x5f2d, do_lock)    -- set all flags
 		if (do_lock == true)  poke(0x5f2d, peek(0x5f2d) | 0x4)  -- don't alter flags, just set the lock bit
 		if (do_lock == false) poke(0x5f2d, peek(0x5f2d) & ~0x4) -- likewise
+		if ((peek(0x5f2d) & 0x4) == 0) return 0, 0               -- when not locked, always return 0,0
 		return locked_dx, locked_dy -- wheel, locked is since last frame
 	end
 
@@ -374,10 +376,11 @@ do
 	local future_messages = {}
 
 	--[[
-		called once before each _update
+		called in foot exactly once before each _update
+		(and once per frame if no _update defined)
 	]]
 	
-	function _process_event_messages()
+	function __process_event_messages()
 
 		frame_keypressed_result = {}
 
@@ -535,6 +538,8 @@ do
 		end
 
 
+		_update_buttons()
+
 	end
 
 
@@ -543,15 +548,22 @@ do
 
 	function on_event(event, f)
 		if (not message_hooks[event]) message_hooks[event] = {}
-		add(message_hooks[event], f)
 
 		-- for file modification events: let pm know this process is listening for that file
 		if (sub(event, 1, 9) == "modified:") then
+			local filename = sub(event, 10)
+
+			-- for simplicity, sandboxed processes can't subscribe to anything except /ram/shared/* 
+			-- (otherwise need to handle location rewrites) in message contents
+			if (_env()._sandboxed and filename:sub(1,12) ~= "/ram/shared/") return
+
 			send_message(2, {
 				event = "_subscribe_to_file",
-				filename = sub(event, 10)
+				filename = fullpath(filename)
 			})
 		end
+
+		add(message_hooks[event], f)
 	end
 
 	-- kernel space for now -- used by wm (jettisoned)

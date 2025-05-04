@@ -28,19 +28,21 @@ mkdir("/desktop")
 mkdir("/appdata")
 mkdir("/appdata/system")
 mkdir("/appdata/system/desktop2") -- for the tooltray
+mkdir("/appdata/bbs")
+
 
 --mkdir("/ram/dev") -- experimental; devices are an extraneous concept if have messages and ram file publishing
 
 
 local head_func, err = load(fetch("/system/lib/head.lua"))
-if (not head_func) io.write ("** could not load head ** "..err)
+if (not head_func) _printh("** could not load head ** "..err)
 head_func()
 
 
 -- user can extend this with /appdata/system/startup.lua (is daisy-chained)
 
-local startup_src  = fetch("/system/startup.lua")
 
+local startup_src  = fetch("/system/startup.lua")
 if (type(startup_src) ~= "string") then
 	printh("** could not read startup.lua")
 else
@@ -51,6 +53,10 @@ else
 		startup_func()
 	end
 end
+
+-- better: run as a process; want userland processes to run during startup
+-- create_process("/system/startup.lua")
+
 
 local last_processes_list_publish = 0
 
@@ -88,7 +94,6 @@ function run_userland_processes(allotment)
 		local cpu = remaining / num
 		
 		-- tiny slices for debugging -- find issues caused due to process switching
-		-- 0.0001 is only ~30/slices (and very slow because of switching overhead) but should still work (need 
 		-- cpu = 0.0001 -- 30 insts/slice. need high safety value (4096) to prevent flickering on desktop
 
 		for i = 1, max do
@@ -101,7 +106,6 @@ function run_userland_processes(allotment)
 				if (cpu_spent) remaining -= cpu_spent
 
 				if (completed) then
-					-- completed
 					-- printh("    completed "..p.name.." cpu:"..string.format("%3.3f",cpu_spent))
 					pl[i] = nil
 					num -= 1
@@ -151,8 +155,9 @@ while (true) do -- \m/
 --	printh("------------ mainloop "..total_frames.." ----------------")
 	total_frames += 1
 
-	-- use time() for better sync
-	if not played_boot_sound and stat(987) >= sfx_delay then
+	-- play boot sound when not running a headless script
+	-- to do: use time() for better sync
+	if not played_boot_sound and stat(987) >= sfx_delay and stat(315) == 0 then
 		played_boot_sound = true
 		sfx(sfx_index)
 	end
@@ -234,6 +239,7 @@ while (true) do -- \m/
 	-- (let emscripten mainloop function end to return control to the browser)
 
 --	coroutine.yield()
+
 	flip() -- reset cpu_cycles for next frame? doesn't matter now that using stat(301) though.
 
 end

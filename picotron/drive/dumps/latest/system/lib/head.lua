@@ -1,3 +1,4 @@
+--[[pod_format="raw",created="2025-04-27 16:05:05",modified="2025-04-27 16:05:05",revision=0]]
 --[[
 
 	head.lua -- kernal space header for each process
@@ -7,43 +8,38 @@
 
 do
 
+-- bootstrap
+local _env = function() return env() end
+
 local _stop = _stop
-local _mkdir = _mkdir
 local _print_p8scii = _print_p8scii
 local _map_ram = _map_ram
 local _ppeek = _ppeek
 local _create_process_from_code = _create_process_from_code
 local _unmap_ram = _unmap_ram
-local _store_metadata = _store_metadata
-local _fdelete = _fdelete
-local _apply_system_settings = _apply_system_settings
 local _get_process_display_size = _get_process_display_size
 local _run_process_slice = _run_process_slice
-local _fetch_local = _fetch_local
+
 local _get_clipboard_text = _get_clipboard_text
 local _blit_process_video = _blit_process_video
 local _set_clipboard_text = _set_clipboard_text
 local _req_clipboard_text = _req_clipboard_text
 local _set_spr = _set_spr
 local _ppeek4 = _ppeek4
-local _fetch_metadata = _fetch_metadata
-local _store_local = _store_local
 local _set_draw_target = _set_draw_target
 local _get_process_list = _get_process_list
 local _pod = _pod
 local _kill_process = _kill_process
 local _read_message = _read_message
-local _fcopy = _fcopy
 local _draw_map = _draw_map
 local _halt = _halt
 
-local _fetch_local = _fetch_local
-local _fetch_remote = _fetch_remote
-local _fetch_anywhen = _fetch_anywhen
-local _fetch_remote_result = _fetch_remote_result
-local _store_local = _store_local
+
 local _signal = _signal
 local _unmap
+local _split = split
+local _printh = _printh
+local _tostring  = tostring
 
 -- sprites are owned by head -- process can assume exists
 local _spr = {} 
@@ -99,7 +95,7 @@ end
 -- want to nudge users towards creating / curating their own starter set
 -- a common set instruments that become the "picotron sound" will likely form either way // ref: jungle_flute.xi
 
-function clear_instrument(i)
+local function clear_instrument(i)
 	local addr = 0x40000 + i * 0x200
 	memset(addr, 0, 0x200)
 	
@@ -178,15 +174,15 @@ end
 
 local function get_short_prog_name(p)
 	if (not p) then return "no_prog_name" end
-	--p = split0(p, "/")
-	p = split(p, "/", false)
-	p = p[#p]
-	--p = split0(p, ".")[1]
-	p = split(p, ".", false)[1]
+	p = _split(p, "/", false)
+	p = _split(p[#p], ".", false)[1]
 	return p
 end
 
+
 function create_process(prog_name, env_patch, do_debug)
+
+	if (_env().sandboxed) return nil, "sandboxed process can not create_process()"
 
 	prog_name = fullpath(prog_name)
 
@@ -199,26 +195,27 @@ function create_process(prog_name, env_patch, do_debug)
 		boot_file ..= "/main.lua"
 
 		-- only check runtime on carts; not stored on lua files
+		--[[
+			** commented: fetch_metadata not available
+
 		local meta = fetch_metadata(prog_name)
 		if (meta and type(meta.runtime) == "number" and meta.runtime > stat(5)) then
 			notify("** warning: running cartridge with future runtime version **")
 		end
+		]]
 	end
 
 --	printh("create_process "..prog_name.." ("..boot_file..") env: "..pod(env_patch))
 
 	--===== construct new environment table if needed ======
 
---	local new_env = env() and unpod(pod(env())) or {}
+--	local new_env = env() and unpod(pod(_env())) or {}
 	local new_env = {} -- don't inherit anything! env means "launch parameters"
 
 	-- default path is same directory as boot file
-	local segs = split(boot_file,"/",false)
+	local segs = _split(boot_file,"/",false)
 	local program_path = string.sub(boot_file, 1, -#segs[#segs] - 2)
 
-
-	-- deleteme
---	new_env.pwd = string.sub(boot_file, 1, -#segs[#segs] - 2)
 
 	-- add new attributes from env_patch (note: can copy trees)
 	if (env_patch) then
@@ -233,7 +230,7 @@ function create_process(prog_name, env_patch, do_debug)
 	-- to do: shouldn't terminal be able to have its own resources / includes?
 	if (new_env.corun_program) then
 		local ppath = fullpath(new_env.corun_program)
-		local segs = split(ppath,"/",false)
+		local segs = _split(ppath,"/",false)
 		program_path = string.sub(ppath, 1, -#segs[#segs] - 2)
 	end
 
@@ -241,22 +238,33 @@ function create_process(prog_name, env_patch, do_debug)
 	
 	-- add system env info
 
-
 	new_env.prog_name = prog_name
 	new_env.title = get_short_prog_name(prog_name)
 	new_env.parent_pid = pid()
 	new_env.argv = new_env.argv or {} -- guaranteed to exist at least as an empty table
 
+	-- sandboxed cart must have a cart_id for /appdata to map to
+	if (new_env.sandboxed and not new_env.cart_id) printh("bad cart_id -- can't sandbox") return nil
+	if (new_env.sandboxed) then
+		--printh("creating new sandboxed process with appdata: ".."/appdata/bbs/"..new_env.cart_id)
+		mkdir("/appdata/bbs")
+		-- mkdir("/appdata/bbs/"..new_env.cart_id) -- create on write;
+	end
+
+
 	local str = [[
-		
-		do
-			local head_code = load(fetch("/system/lib/head.lua", "@/system/lib/head.lua", "t", _ENV))
-			if (not head_code) then printh"*** ERROR: could not load head. borked file system / out of pfile slots? ***" end
-			head_code()
+
+		local head_code = load(fetch("/system/lib/head.lua"), "@/system/lib/head.lua", "t", _ENV)
+		if (not head_code) then printh"*** ERROR: could not load head. borked file system / out of pfile slots? ***" end
+		head_code()
+
+		env = function() 
+			return ]].._pod(new_env,0x0)..[[
 		end
 
 		include("/system/lib/legacy.lua")
-		include("/system/lib/api.lua")
+		include("/system/lib/fs.lua")
+		include("/system/lib/api.lua")		
 		include("/system/lib/events.lua")
 		include("/system/lib/gui.lua")
 		include("/system/lib/app_menu.lua")
@@ -265,14 +273,8 @@ function create_process(prog_name, env_patch, do_debug)
 
 		_signal(38) -- start of userland code (for memory accounting)
 
-		include("/system/lib/jettison.lua")
 		
 		
-		-- pass along environment. env() return value is read-only-ish
-		
-		function env() 
-			return ]]..pod(new_env,0x0)..[[
-		end
 		
 		-- always start in program path
 		cd("]]..program_path..[[")
@@ -304,6 +306,12 @@ function create_process(prog_name, env_patch, do_debug)
 		store("/ram/system/pop.pod", proc_id) -- present output process
 	end
 
+	if (env_patch and env_patch.blocking) then
+		-- this process should stop running until proc_id is completed
+		
+	end
+
+
 	return proc_id
 
 end
@@ -324,7 +332,6 @@ end
 		
 		d = d or _disp
 
-		--printh("setting draw target to:"..tostr(d))
 		local ret = _target
 		_target = d
 		_set_draw_target(d)
@@ -370,15 +377,16 @@ end
 
 			first_set_window_call = false
 		
-			if type(env().window_attribs) == "table" then
-				for k,v in pairs(env().window_attribs) do
+			-- ** _env not defined yet!
+			if type(_env().window_attribs) == "table" then
+				for k,v in pairs(_env().window_attribs) do
 					attribs[k] = v
 				end
 			end
 
 			-- set the program this window was created with (for workspace matching)
 
-			attribs.prog = env().prog_name
+			attribs.prog = _env().prog_name
 
 			-- special case: when corunning a program under terminal, program name is /ram/cart/main.lua
 			-- (search /ram/cart/main.lua in wrangle.lua -- works with workspace matching for tabs)
@@ -538,7 +546,7 @@ end
 
 	-- immediately close program & window
 	function exit(exit_code)
-		if (env().immortal) return
+		if (_env().immortal) return
 		
 		--send_message(pid(), {event="halt"})
 		send_message(2, {event="kill_process", proc_id=pid()})
@@ -584,277 +592,10 @@ end
 		return _set_clipboard_text(...)
 	end
 
-	-- generate metadata string in plain text pod format
-	local function generate_meta_str(meta_p)
-
-		-- use a copy so that can remove pod_format without sideffect
-		local meta = unpod(pod(meta_p)) or {}
-
-		local meta_str = "--[["
-
-		if (meta.pod_format and type(meta.pod_format) == "string") then
-			meta_str ..= "pod_format=\""..meta.pod_format.."\""
-			meta.pod_format = nil -- don't write twice
-		elseif (meta.pod_type and type(meta.pod_type) == "string") then
-			meta_str ..= "pod_type=\""..meta.pod_type.."\""
-			meta.pod_type = nil -- don't write twice
-		else
-			meta_str ..= "pod"
-		end
-
-		local meta_str1 = _pod(meta, 0x0) -- 0x0: metadata always plain text. want to read it!
-
-		if (meta_str1 and #meta_str1 > 2) then
-			meta_str1 = sub(meta_str1, 2, #meta_str1-1) -- remove {}
-			meta_str ..= ","
-			meta_str ..= meta_str1
-		end
-
-		meta_str..="]]"
-
-		return meta_str
-
-	end
 
 
-	function pod(obj, flags, meta)
-
-		-- safety: fail if there are multiple references to the same table
-		-- to do: allow this but write a reference marker in C code? maybe don't need to support that!
-		local encountered = {}
-		local function check(n)
-			local res = false
-			if (encountered[n]) return true
-			encountered[n] = true
-			for k,v in pairs(n) do
-				if (type(v) == "table") res = res or check(v)
-			end
-			return res
-		end
-		if (type(obj) == "table" and check(obj)) then
-			-- table is not a tree
-			return nil, "error: multiple references to same table"
-		end
-
-		if (meta) then
-			local meta_str = generate_meta_str(meta)
-			return _pod(obj, flags, meta_str) -- new meaning of 3rd parameter!
-		end
-
-		return _pod(obj, flags)
-	end
 
 	
-	local function fix_metadata_dates(result)
-		if (result) then
-			
-			-- time string generation bug that happened 2023-10! (to do: fix files in /system)
-			if (type(result.modified) == "string" and tonumber(result.modified:sub(6,7)) > 12) then
-				result.modified = result.modified:sub(1,5).."10"..result.modified:sub(8)
-			end
-			if (type(result.created) == "string" and tonumber(result.created:sub(6,7)) > 12) then
-				result.created = result.created:sub(1,5).."10"..result.created:sub(8)
-			end
-
-			-- use legacy value .stored if .modified was not set
-			if (not result.modified) result.modified = result.stored
-
-		end
-	end
-
-
-
-	-- fetch and store can be passed locations instead of filenames
-
-	function fetch(location, do_yield, ...)
-		if (type(location) != "string") return nil
-
-		local filename, hash_part = table.unpack(split(location, "#", false))
-
-		-- anywhen: used for testing rollback (please don't use this for anything important yet!)
-		-- fetch("anywhen://foo.txt@2024-04-05_13:02:27"
-		-- to do: allow fetch("foo.txt@2024-04-05_13:02:27") -- shorthand for anywhen://..
-		if (string.sub(location, 1, 10) == "anywhen://") then
-			local ret, meta = _fetch_anywhen(filename:sub(10)) -- include second '/' to give absolute path 
-			return ret, meta, hash_part
-		end
-
-
-		--[[
-			remote fetches are logically the same as local ones -- they block the thread
-			but.. can be put into a coroutine and polled
-		]]
-		if (string.sub(location, 1, 8) == "https://" or string.sub(location, 1, 7) == "http://" ) then
-			-- blocking call: download
-
-			-- printh("[fetch] calling _fetch_remote: "..filename)
-			local job_id, err = _fetch_remote(filename, ...)
-			-- printh("[fetch] job id: "..job_id)
-
-			if (err) return nil, err
-
-			local tt = time()
-
-			while time() < tt + 10 do -- to do: configurable timeout.
-
-				-- printh("[fetch] about to fetch result for job id "..job_id)
-
-				local result, meta, hash_part, err = _fetch_remote_result(job_id)
-
-				-- printh("[fetch] result: "..type(result))
-
-				if (result or err) then
-					--printh("[fetch remote] returned an obj type: "..type(result).."  // err: "..tostring(err))
-					--printh("[fetch remote] err: "..pod(err))
-					return result, meta, hash_part, err
-				end
-
-				flip(0x1)
-				yield() -- allow pollable pattern from program.  to do: review cpu hogging
-
-			end
-			return nil, nil, nil, "timeout"
-
-		else
-			-- local file
-			local ret, meta = _fetch_local(filename, do_yield, ...)
-			fix_metadata_dates(meta)
-			return ret, meta, hash_part  -- no error
-		end
-	end
-
-	function mkdir(p)
-		if (fstat(p)) return -- is already a file or directory
-		local ret = _mkdir(p)
-		store_metadata(p, {created = date(), modified = date()}) -- 0.1.0f: replaced stored with modified; not useful as a separate concept
-		return ret
-	end
-
-
-	function store(location, obj, meta)
-
-		-- treat web as read-only!
-		if (string.sub(location, 1, 8) == "https://") then
-			return nil
-		end
-
-		-- special case: can write raw .p64 / .p64.rom / .p64.png binary data out to host file without mounting it
-		local ext = location:ext()
-
-		if (type(obj) == "string" and (ext == "p64" or ext == "p64.rom" or ext == "p64.png")) then
-			rm(location:path()) -- unmount existing cartridge // to do: be more efficient
-			return _store_local(location, obj)
-		end
-
-		-- ignore location string
-		local filename = split(location, "#", false)[1]
-		
-		-- grab old metadata
-		local old_meta = fetch_metadata(filename)
-		
-		if (type(old_meta) == "table") then
-			if (type(meta) == "table") then			
-				-- merge with existing metadata.   // to do: how to remove an item?			
-				for k,v in pairs(meta) do
-					old_meta[k] = v
-				end
-			end
-			meta = old_meta
-		end
-
-		if (type(meta) != "table") meta = {}
-		if (not meta.created) meta.created = date()
-		if (not meta.revision or type(meta.revision) ~= "number") meta.revision = -1
-		meta.revision += 1   -- starts at 0
-		meta.modified = date()
-
-		-- use pod_format=="raw" if is just a string
-		-- (_store_local()  will see this and use the host-friendly file format)
-
-		if (type(obj) == "string") then
-			meta.pod_format = "raw"
-		else
-			-- default pod format otherwise
-			-- (remove pod_format="raw", otherwise the pod data will be read in as a string!)
-			meta.pod_format = nil 
-		end
-
-
-		local meta_str = generate_meta_str(meta)
-
-		-- /ram/system/settings.pod is special
---[[
-		if (fullpath(filename) == "/ram/system/settings.pod") then
-			-- printh("setting fullscreen: "..tostr(obj.fullscreen))
-			_apply_system_settings(obj)
-		end
-]]
-		-- printh("storing meta_str: "..meta_str)
-
-		local result, err_str = _store_local(filename, obj, meta_str)
-
-		-- notify program manager (handles subscribers to file changes)
-		send_message(2, {
-			event = "_file_stored",
-			filename = fullpath(filename),
-			proc_id = pid()
-		})
-		
-		-- no error
-		return nil
-
-	end
-
-	
-	
-	function fetch_metadata(filename)
-		local result = _fetch_metadata(fstat(filename) == "folder" and filename.."/.info.pod" or filename)
-		fix_metadata_dates(result)
-		return result
-	end
-
-	function store_metadata(filename, meta)
-
-		local old_meta = fetch_metadata(filename)
-		
-		if (type(old_meta) == "table") then
-			if (type(meta) == "table") then			
-				-- merge with existing metadata.   // to do: how to remove an item? maybe can't! just recreate from scratch if really needed.
-				for k,v in pairs(meta) do
-					old_meta[k] = v
-				end
-			end
-			meta = old_meta
-		end
-
-		if (type(meta) != "table") meta = {}
-		meta.modified = date() -- 0.1.0f: was ".stored", but nicer just to have a single, more general "file was modified" value.
-
-
-		local meta_str = generate_meta_str(meta)
-
-		if (fstat(filename) == "folder") then
-			-- directory
-			-- printh("writing meta_str to directory: "..meta_str)
-			local info_filename = filename.."/.info.pod" 
---			if fstat(info_filename) then
-			if false then
-
-				-- modify existing file metadata
-				_store_metadata(info_filename, meta_str)
-				
-			else
-				-- create new .info.pod file containing only metadata + content of nil
-				_store_local(info_filename, nil, meta_str) 
-			end
-		else
-			_store_metadata(filename, meta_str)
-		end
-	end
-
-
-	local _printh = _printh
-	local _tostring  = tostring
 	function printh(str)
 		_printh(string.format("[%03d] %s", pid(), _tostring(str)))
 	end
@@ -867,10 +608,16 @@ end
 			return _print_p8scii(str, x, y, col)
 		end
 
-		-- when print_to_proc_id is not set, send to self (e.g. printing to terminal)
-		send_message(env().print_to_proc_id or pid(), {event="print",content=tostr(str)})
-		
+		if (stat(315) > 0) then
+			_printh(_tostring(str)) 
+		else
+			-- when print_to_proc_id is not set, send to self (e.g. printing to terminal)
+			send_message(_env().print_to_proc_id or pid(), {event="print",content=_tostring(str)})
+		end
+
 	end
+
+	
 
 
 	sub = string.sub
@@ -880,7 +627,7 @@ end
 	-- "" is also a legit extension distinct from no extension ("wut." vs "wut")
 
 	function string:ext()
-		local loc = split(self,"#",false)[1]
+		local loc = _split(self,"#",false)[1]
 		-- max extension length: 16
 		for i = 1,16 do
 			if (string.sub(loc,-i,-i) == ".") then
@@ -896,48 +643,35 @@ end
 	end
 
 	function string:path()
-		return split(self,"#")[1]
+		return _split(self,"#")[1]
 	end
 
 	function string:hloc()
-		return split(self,"#")[2]
+		return _split(self,"#")[2]
 	end
 
 	function string:basename()
-		local segs = split(self:path(),"/")
+		local segs = _split(self:path(),"/")
 		return segs[#segs]
 	end
 
 	function string:dirname()
-		local segs = split(self:path(),"/")
+		local segs = _split(self:path(),"/")
 		return self:sub(1,-#segs[#segs]-2)
+	end
+
+	function string:prot()
+		local segs = _split(self:path(),":")
+		return (type(segs[2]) == "string" and segs[2]:sub(1,2) == "//") and segs[1] or nil
 	end
 
 	-- PICO-8 style string indexing;  ("abcde")[2] --> "b"  
 	-- to do: implement in lvm.c?
 	local string_mt_index=getmetatable('').__index
+	local _strindex = _strindex
 	getmetatable('').__index = function(str,i) 
 		return string_mt_index[i] or _strindex(str,i)
 	end
-
---[[
-	local string_mt = getmetatable("")
-
-	setmetatable(string_mt.__index, {__index = function(a,b) return pod{a,b} end})
-]]
-
---	setmetatable(string_mt.__index, {__index = function(a,b) return a end})
-
---[[
-	function string:__index()
-		return "zxc"
-	end
-]]
-
---	local string_mt = getmetatable("")
---	string_mt.__index.__index = function() return "#" end
-
---	setmetatable(getmetatable("").__index, {__index=function(s, i) return pod(i) end})
 
 	--[[
 		** experimental -- perhaps a bad idea **  
@@ -970,8 +704,6 @@ end
 			return
 		end
 
-		local pwd0 = pwd()
-		
 		-- https://www.lua.org/manual/5.4/manual.html#pdf-load
 		-- chunk name (for error reporting), mode ("t" for text only -- no binary chunk loading), _ENV upvalue
 		-- @ is a special character that tells debugger the string is a filename
@@ -979,10 +711,8 @@ end
 
 		-- syntax error while loading
 		if (not func) then 
-			-- printh("** syntax error in "..filename..": "..tostr(err))
-			--notify("syntax error in "..filename.."\n"..tostr(err))
 			send_message(3, {event="report_error", content = "*syntax error"})
-			send_message(3, {event="report_error", content = tostr(err)})
+			send_message(3, {event="report_error", content = _tostring(err)})
 
 			stop()
 			return
@@ -1009,7 +739,6 @@ end
 		-- hrrm
 		-- if (filename:sub(1,12) ~= "/system/lib/") cd(filename:dirname())
 			func()
-		--cd(pwd0)
 
 		return true -- ok, no error including   -- to do: shouldn't a successful include just return nil?
 	end
@@ -1113,7 +842,7 @@ function coresume(c,...)
 	
 	_yielded_to_escape_slice(0)
 	local r0,r1 =_coresume(c,...)
-	--printh("coresume() -> _yielded_to_escape_slice():"..tostr(_yielded_to_escape_slice()))
+	--printh("coresume() -> _yielded_to_escape_slice():"..tostring(_yielded_to_escape_slice()))
 	while (_yielded_to_escape_slice() and costatus(c) == "suspended") do
 		_yielded_to_escape_slice(0)
 		r0,r1 = _coresume(c,...)
