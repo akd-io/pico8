@@ -430,7 +430,7 @@ do
 			clear_key("tab")
 		end
 
-		-- 0.1.1e: handle ctrl-v
+		-- 0.1.1e: handle ctrl-v (message only sent by wm when window has focus)
 		if (pressed_ctrl_v) then
 
 --			printh("@@ event:pressed_ctrl_v ~ simulate ctrl-v keyress")
@@ -630,7 +630,10 @@ do
 
 		--------------------------------------------------------------------------------------------------------------------------------
 
-		_update_buttons()
+		-- when window does not have focus, ignore controller
+		-- window manager can always read controller (need for pause menu control)
+		-- to do: app can request background buttons in window()
+		_update_buttons(_window_has_focus or pid() <= 3)
 
 		--------------------------------------------------------------------------------------------------------------------------------
 

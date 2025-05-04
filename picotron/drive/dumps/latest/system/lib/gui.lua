@@ -27,8 +27,9 @@ do
 	local next_id = 0
 
 	-- 0.1.1e: moved here so can be used by helper class
+	-- 0.1.1f: only used for constructing msg tbl in helper
 	-- grabbed once per frame at start of update_all (once for each gui, but is harmless)
-	local mx, my, mb, wheel_x, wheel_y = 0,0,0,0,0
+	local global_mx, global_my, global_mb = 0,0,0
 	
 	-- 0.1.1e a dummy draw function always exists; simplifies clipping / hiding logic
 	function GuiElement:draw() end
@@ -502,7 +503,7 @@ do
 		-- this helper is not scoped to a particular Gui -- need to pass in pointer_element via head
 	
 		if (self.head.pointer_element == self) then
-			-- local mx, my = mouse()
+			local mx, my = mouse()
 			msg.has_pointer = (mx >= self.sx and my >= self.sy and mx < self.sx + self.width and my < self.sy + self.height)
 		else
 			msg.has_pointer = nil
@@ -529,8 +530,8 @@ do
 				-- 0.1.1e: always set mx,my,mb in message // was confused when tried to use if from an update callback
 				-- to do: settle on which events get which state values
 				-- local mx, my, mb = mouse() 
-				msg.mx, msg.my = mx - self.sx, my - self.sy
-				msg.mb = mb
+				msg.mx, msg.my = global_mx - self.sx, global_my - self.sy
+				msg.mb = global_mb
 
 				if (msg.event == "draw") then
 					-- draw is special: optionally clip children and set camera position
@@ -550,11 +551,6 @@ do
 							fin = self[msg.event](self, msg)
 						end
 					]]
-
-					-- deleteme -- set above for all messages
-					-- 0.1.0c: mouse position should be relative to element
-					-- local mx, my, mb = mouse()
-					-- msg.mx, msg.my = mx - self.sx, my - self.sy
 
 
 					-- 0.1.1c: only bother drawing when state that this element depends on has changed
@@ -640,7 +636,7 @@ do
 
 		local gui = GuiElement:new(head_el)
 
-		-- local mx, my, mb, wheel_x, wheel_y = 0,0,0,0,0 -- moved to top level; only need to grab once per frame
+		local mx, my, mb, wheel_x, wheel_y = 0,0,0,0,0 -- 0.1.1f: made local again; sometimes want to clobber this state per-gui
 		local last_mx, last_my, last_mb = 0,0,0
 		local dx, dy = 0
 		local start_mx, start_my,start_el,tap0_mx,tap0_my = 0,0,nil,0,0
@@ -951,6 +947,7 @@ do
 
 			last_mx, last_my, last_mb = mx, my, mb
 			mx, my, mb, wheel_x, wheel_y = mouse() -- screen space
+			global_mx, global_my, global_mb = mouse() -- optimisation: only fetch once per frame; for constructing msg
 
 			dx = mx - last_mx
 			dy = my - last_my
@@ -1103,8 +1100,8 @@ do
 				if (mb > 0) then  -- what's wrong with dragging from first frame? need that interactivity! e.g. pick up colour in sprite editor
 					msg.event="drag" 
 					-- common to want to know where drag started from
-					msg.mx0 = start_mx - el.sx
-					msg.my0 = start_my - el.sy
+					msg.mx0 = start_mx - dragging_el.sx -- 0.1.1f: was el.sx, el.sy
+					msg.my0 = start_my - dragging_el.sy
 
 					-- locked pointer? use that for dx, dy. ref: instrument designer envelope knob
 					if (peek(0x5f2d) & 0x4) > 0 then

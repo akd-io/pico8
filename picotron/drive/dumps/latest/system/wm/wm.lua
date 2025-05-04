@@ -845,16 +845,22 @@ function generate_paused_menu(win)
 		end
 	end
 
---	add(win.pmenu, {label = "Options", action = function() end}) -- later
 
+--[[
+	add(win.pmenu, {
+		label = function() return "Favourite "..(win.favourited and "\^:367f7f7f3e1c0800" or "\^:3649414122140800") end,
+		action = function(b)
+			win.favourited = not win.favourited -- to do: keep in sync with favourites.pod
+		end 
+	}) 
+]]
+
+	-- to do: options menu. for now, just sound
 	add(win.pmenu,{
-		--label  = function(self) return (_ppeek(win.proc_id, 0x547f) or 0) & 0x8 > 0 and "Sound: Off" or "Sound: On" end,
-		-- action = function(b) send_message(win.proc_id, {event = "toggle_mute"}) end
 		label  = function(self) return (sdat.mute_audio and "Sound: Off" or "Sound: On") end,
 		action = function(b) send_message(pid(), {event = "toggle_mute"}) end
 	})
 
---	add(win.pmenu, {label = "Favourite"}) -- later; need to decide what this means!
 	add(win.pmenu, {label = "Reset Cartridge", action = function() 
 
 		if (haltable_proc_id == win.proc_id) then
@@ -2497,12 +2503,14 @@ function _update()
 	end
 
 
-	-- :: ctrl-p: open tooltray
---[[
+	-- :: ctrl-p: toggle picotron menu
+	-- doesn't mean much now, but later might want to add keyboard navigation [and search]
+	-- so should reserve early, as is system-wide
+	
 	if (key("ctrl") and keyp("p")) then
-		toolbar_y_target = tooltray_default_h
+		toggle_picotron_menu()
+		--toolbar_y_target = tooltray_default_h
 	end
-]]
 
 	-- :: ctrl-o: open file (update: and other custom shortcuts)
 	-- to do: more general rules for specifying shortcuts? e.g. not ctrl-
@@ -3819,13 +3827,22 @@ function toggle_picotron_menu()
 
 	add(item, "---")
 
-	--	add(item, {"\^:00387f7f7f7f7f00 Apps", function() create_process("/system/apps/filenav.p64", {argv={"/apps"}}) end})
+
+--	add(item, {"\^:00367f7f3e1c0800 Favourites", function() create_process("/system/apps/filenav.p64", {argv={"bbs://"}}) end})		
+--	add(item, {"\^:00387f7f7f7f7f00 Apps", function() create_process("/system/apps/filenav.p64", {argv={"/apps"}}) end})
+
 	add(item, {"\^:00387f7f7f7f7f00 Files", function() create_process("/system/apps/filenav.p64", {argv={"/"}}) end})
+
+	
 
 --		add(item, {"\^:7e9f9dfd7a341800 BBS", function() create_process("/system/apps/filenav.p64", {argv={"bbs://"}}) end})
 
 	-- bbs:// not available for exports (and hide for bbs player)
 	if (stat(317) == 0) then
+		-- to do: cartridges should launch splore (doubles as Favourites). Naming matches "Files" -- the objects you want to look through
+		-- add(item, {"\^:007f41417f613f00 Cartridges", function() create_process("/desktop/splore.p64") end})
+		-- can keep bbs://new/0 style browsing, but just a by-product of protocol generality
+		-- (nice comment on bsky: feels like looking through shareware catalogue CDs)
 		add(item, {"\^:007f41417f613f00 BBS Carts", function() create_process("/system/apps/filenav.p64", {argv={"bbs://"}}) end})
 	end
 

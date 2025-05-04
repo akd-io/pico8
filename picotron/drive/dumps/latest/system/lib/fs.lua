@@ -89,11 +89,13 @@ do
 ]==]
 	
 	local function get_bbs_host()
-		-- bbs web player: works with empty host string as url is relative to lexaloffle.com
+		-- bbs web player
 --		if ((stat(317) & 0x3) == 0x1) return "http://localhost" -- dev test
-		if ((stat(317) & 0x3) == 0x1) return "https://www.lexaloffle.com"
+		if ((stat(317) & 0x3) == 0x1) return "https://www.lexaloffle.com" 
+
 		-- any other exports: bbs:// is not supported (to do: explicit error codepath -- just disable bbs:// ? )		
 		if (stat(317) > 0) return "" 
+
 		-- binaries: main server
 		return "https://www.lexaloffle.com"
 	end
@@ -134,7 +136,7 @@ do
 				-- never changes on server, so can use this if it exists
 				if (is_versioned) then
 					local cached_cart_png = _cache_fetch("carts", bbs_id..".p64.png")
-					if (cached_cart_png and #cached_cart_png > 0) then
+					if (cached_cart_png and #cached_cart_png >= 512) then
 						--printh("copying cached cart to ram: "..fn)
 						_store_local(fn, cached_cart_png, "format=\"raw\"")
 						return fn
@@ -145,16 +147,22 @@ do
 	
 				-- printh("[bbs://] fetching cart from carts.lexaloffle.com/"..bbs_id..".p64.png -> "..fn)
 
-				local cart_png, meta, err = fetch(get_versioned_cart_url(bbs_id))
+				local cart_png, meta, err 
 
-				if (type(cart_png) ~= "string" or #cart_png == 0) then
+				if (is_versioned) then
+					cart_png, meta, err = fetch(get_versioned_cart_url(bbs_id))
+				end
+
+				-- 0.1.1f "< 512": when response is an error message / too short; no legit cart png is < 512 bytes
+				-- (happens in several nearyy locations)
+				if (type(cart_png) ~= "string" or #cart_png < 512) then 
 					-- fall back to origin; might not be on cdn yet?, or cdn is down? or cloudflare rate-limiting requests?
-					printh("get_cart fallback: "..bbs_id)
+					--printh("get_cart fallback: "..bbs_id)
 					cart_png, meta, err = fetch(get_bbs_host().."/bbs/get_cart.php?cat=8&lid="..bbs_id)
 				end
 
 				--if(err)printh("bbs prot error on fetch: "..err)
-				if (type(cart_png) == "string" and #cart_png > 0) then
+				if (type(cart_png) == "string" and #cart_png >= 512) then
 					-- printh("[bbs://] fetched and cache: "..#cart_png.." bytes")
 					-- store(fn, cart_png, meta) -- wrong! can't access when sandboxed
 					_store_local(fn, cart_png, "format=\"raw\"")
@@ -168,7 +176,7 @@ do
 				if (not is_versioned) then
 					-- printh("[bbs://] attempting to use non-versioned cart from cache")
 					local cached_cart_png = _cache_fetch("carts", bbs_id..".p64.png")
-					if (cached_cart_png and #cached_cart_png > 0) then
+					if (cached_cart_png and #cached_cart_png >= 512) then
 						store(fn, cached_cart_png, {format="raw"})
 						return fn
 					end
@@ -516,7 +524,7 @@ do
 		if (fileview) then -- safety; should always exist
 			for i=1,#fileview do
 				local rule = fileview[i]
-				if (rule.mode == "RW" or (not mode_p ~= "W" and rule.mode == "R") or (mode_p == "X" and rule.mode == "X")) then
+				if (rule.mode == "RW" or (mode_p == "R" and rule.mode == "R") or (mode_p == "X" and rule.mode == "X")) then
 					if path_is_inside(path, rule.location) then
 						if (rule.target) then
 							-- allow but rewrite
@@ -839,6 +847,7 @@ do
 		end
 
 		location = _userland_to_kernal_path(location, "W")
+
 		if (not location) return "could not store to path"
 
 		-- special case: can write raw .p64 / .p64.rom / .p64.png binary data out to host file without mounting it
@@ -959,8 +968,10 @@ do
 			-- e.g. rm /desktop/host will just unmount that host folder, not delete its contents
 			if (not origin or (origin:sub(1,11) == "/ram/mount/")) then 
 				local l = ls(f0)
-				for k,fn in pairs(l) do
-					_rm(f0.."/"..fn, flags, depth+1)
+				if (type(l) == "table") then
+					for k,fn in pairs(l) do
+						_rm(f0.."/"..fn, flags, depth+1)
+					end
 				end
 			end
 			-- remove metadata (not listed)

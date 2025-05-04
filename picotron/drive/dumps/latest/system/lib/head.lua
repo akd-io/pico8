@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2025-04-27 15:59:10",modified="2025-04-27 15:59:10",revision=0]]
+--[[pod_format="raw",created="2025-04-27 15:57:53",modified="2025-04-27 15:57:53",revision=0]]
 -- **** head.lua should not have any metadata; breaks load during bootstrapping // to do: why? ****
 --[[
 
@@ -388,7 +388,7 @@ function create_process(prog_name_p, env_patch, do_debug)
 		
 		-- can read/write /ram/cart 
 		--[[
-			UPDATE: user must grant permission explicitly by choosing file in filenav
+			UPDATE: user must grant write permission explicitly by choosing file in filenav
 			(filenav has the authority to extend another process's fileview)
 			means default file location (/ram/cart/gfx/0.pal) needs to be bumped to /appdata, but that's
 			not a terrible thing esp when just quickly trying out a tool ~ get a persistent demo file.
@@ -396,6 +396,7 @@ function create_process(prog_name_p, env_patch, do_debug)
 		-- add(new_env.fileview, {location = "/ram/cart", mode = "RW"})
 
 		-- but can read it if running /ram/cart/main.lua (e.g. using bbs dummy id during dev)
+
 		if (running_pwc) add(new_env.fileview, {location = "/ram/cart", mode = "R"})
 
 		-- (dev) read/write mounted bbs:// cart while sandboxed
@@ -877,9 +878,21 @@ end
 			https://web.archive.org/web/20170703165506/https://lua-users.org/wiki/LuaModuleFunctionCritiqued
 	]]
 
+	local included_files = {}
+
 	function include(filename)
 		local filename = fullpath(filename)
 		local src = fetch(filename)
+
+		-- temporary safety: each file can only be included up to 256 times
+		-- to do: why do recursive includes cause a system-level out of memory before a process memory error?
+		if (included_files[filename] and included_files[filename] > 256) then
+			--printh("** too many includes of "..filename)
+			--printh(stat(0))
+			return nil
+		end
+		included_files[filename] = included_files[filename] and included_files[filename]+1 or 1
+
 
 		if (type(src) ~= "string") then 
 			if (_pid() <= 3) printh("** could not include "..filename)
@@ -997,14 +1010,24 @@ local _yielded_to_escape_slice = _yielded_to_escape_slice
 function coresume(c,...)
 	
 	_yielded_to_escape_slice(0)
-	local r0,r1 =_coresume(c,...)
+	local res,err =_coresume(c,...)
 	--printh("coresume() -> _yielded_to_escape_slice():"..tostring(_yielded_to_escape_slice()))
 	while (_yielded_to_escape_slice() and costatus(c) == "suspended") do
 		_yielded_to_escape_slice(0)
-		r0,r1 = _coresume(c,...)
+		res,err = _coresume(c,...)
 	end
 	_yielded_to_escape_slice(0)
-	return r0,r1
+
+	-- ** test: report runtime errors inside coroutines no matter where they were run from?
+	--[[
+	if (err) then
+		send_message(3, {event="report_error", content = "*runtime error"})
+		send_message(3, {event="report_error", content = err})
+		send_message(3, {event="report_error", content = debug.traceback()})
+	end
+	]]
+
+	return res,err
 end
 
 -- 0.1.1e library version should do the same

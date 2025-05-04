@@ -5,19 +5,19 @@ version 2
 :: gfx/delme2/
 :: gfx/delme2/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTAyLTExIDA4OjAyOjIwIixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNTo1OToyMCIsc3RvcmVkPSIyMDIzLTAyLTExIDA4OjAyOjIwIl1d
+NC0yNyAxNTo1ODowNSIsc3RvcmVkPSIyMDIzLTAyLTExIDA4OjAyOjIwIl1d
 :: gfx/delme/
 :: gfx/delme/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTExIDA3OjU0OjA2Iixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNTo1OToyMCIsc3RvcmVkPSIyMDIzLTU0LTExIDA3OjU0OjA2Il1d
+NC0yNyAxNTo1ODowNSIsc3RvcmVkPSIyMDIzLTU0LTExIDA3OjU0OjA2Il1d
 :: gfx/ha/
 :: gfx/ha/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTA5LTExIDA4OjA5OjQ0Iixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNTo1OToyMCIsc3RvcmVkPSIyMDIzLTA5LTExIDA4OjA5OjQ0Il1d
+NC0yNyAxNTo1ODowNSIsc3RvcmVkPSIyMDIzLTA5LTExIDA4OjA5OjQ0Il1d
 :: gfx/zxc/
 :: gfx/zxc/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTExIDA3OjQxOjQxIixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNTo1OToyMCIsc3RvcmVkPSIyMDIzLTQxLTExIDA3OjQxOjQxIl1d
+NC0yNyAxNTo1ODowNSIsc3RvcmVkPSIyMDIzLTQxLTExIDA3OjQxOjQxIl1d
 :: gfx/0.gfx
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTIwIDA2OjM4OjU2Iixtb2RpZmllZD0iMjAyNS0w
 Mi0xNSAwMjo0OToyOCIscmV2aXNpb249MzEwMSxzdG9yZWQ9IjIwMjMtMzQtMDkgMTk6MzQ6NTMi
@@ -49,7 +49,7 @@ BwQAL1eQRwAuj1eQBwAHAAcgSQAODvIADzEA----------------------------------------
 ------------------------QlBtPTh9fQ==
 :: gfx/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTExLTE1IDA3OjExOjMwIixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNTo1OToyMCIsc3RvcmVkPSIyMDIzLTExLTE1IDA3OjExOjMwIl1d
+NC0yNyAxNTo1ODowNSIsc3RvcmVkPSIyMDIzLTExLTE1IDA3OjExOjMwIl1d
 :: map/
 :: map/map0.map
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Iixtb2RpZmllZD0iMjAyNC0w
@@ -58,7 +58,7 @@ PXVzZXJkYXRhKCJpMTYiLDE2AwAvIjABAP---__hIikscGFuX3g9MAgA8gZ5PTAsc2NhbGU9MSx0
 aWxlX2g9MTYKAG93PTE2fSxLBP----84UDE2fX19
 :: map/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Iixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNTo1OToyMCIsc3RvcmVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Il1d
+NC0yNyAxNTo1ODowNSIsc3RvcmVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Il1d
 :: sfx/
 :: sfx/sfx0.sfx
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Iixtb2RpZmllZD0iMjAyNC0w
@@ -70,7 +70,7 @@ IAEgAfAAAhACDBABIA8hIAEwD0Dwww8oD--wxg-4Cg--D4AP9w8NAfAJARAGDDAA-zkf-wEA3L-4
 D0AADUD--7DwcAoA--9kH-8BAJdQ-----x8=
 :: sfx/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Iixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNTo1OToyMCIsc3RvcmVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Il1d
+NC0yNyAxNTo1ODowNSIsc3RvcmVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Il1d
 :: desktop.lua
 --[[pod_format="raw",created="2023-10-04 15:13:41",modified="2025-02-15 02:49:28",revision=3194,stored="2023-21-29 09:21:19"]]
 -- mode: desktop
@@ -2817,7 +2817,10 @@ function _init()
 	
 	poke(0x4000,get(fetch"/system/fonts/lil.font"))
 	poke(0x5600,get(fetch"/system/fonts/p8.font"))
-	
+
+--	poke(0x4000,get(fetch"/system/fonts/pug3.font")) -- test
+--	poke(0x4000,get(fetch"/system/fonts/p8.font")) -- test
+
 	window{
 		width = 272, height = 160,
 		--squashable = true,   -- commented: jumps around too much. maybe later
@@ -3147,7 +3150,7 @@ MGQwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMDEwMTBkMGQwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMGQw
 MTAxMGQwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMGQwZDAxMDEwZDBkMDEwMTAxMDEwMTAxMDEwMTAx
 MDEwZDBkMDEwMTBkMGQwMTAxMDEwMTA3MDcwNzA3MDcwMTBkMGQwMTAxMGQwZDAxMDEwMTAxMDcw
 NzA3MDcwNzAxMGQwZDAxMDEwZDBkMDEwMTAxMDEwNzA3MDcwNzA3MDEwZDAxMDAwMTAxMDEwMTAx
-MDEwMTAxMDEwMTAxMDEwMTAxMDAwMCIpLG1vZGlmaWVkPSIyMDI1LTA0LTI3IDE1OjU5OjIwIixu
+MDEwMTAxMDEwMTAxMDEwMTAxMDAwMCIpLG1vZGlmaWVkPSIyMDI1LTA0LTI3IDE1OjU4OjA1Iixu
 b3Rlcz0iKGMpIExleGFsb2ZmbGUgR2FtZXMgTExQIixydW50aW1lPTEzLHN0b3JlZD0iMjAyNC0w
 My0yNCAxNTozNTo1NiIsdGl0bGU9IlBpY290cm9uIEZpbGUgTmF2aWdhdG9yIix2ZXJzaW9uPSIw
 LjEuMWQiLHdvcmtzcGFjZXM9e3tsb2NhdGlvbj0ibWFpbi5sdWEjMSIsd29ya3NwYWNlX2luZGV4

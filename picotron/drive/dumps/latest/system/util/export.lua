@@ -1,34 +1,61 @@
 --[[pod_format="raw",created="2024-08-02 21:52:44",modified="2024-08-05 01:31:27",revision=149]]
 --[[
 
-	html exporter
+	export:
 
+		foo.html 
+		foo.p64.png
+		foo.bin
 ]]
 
 cd(env().path)
 
-p64_file = "/ram/cart" -- to do: allow export something else
+src_cart = "/ram/cart" -- to do: allow export something else
 
-pwc = fetch"/ram/system/pwc.pod"
-if (pwc) then
-	out_file = pwc:basename()..".html"
-else
-	out_file = "out.html"
+local outfile = nil
+
+for i=1,#env().argv do
+	local val = env().argv[i]
+	if (val[1] == "-") then
+		-- some option
+	else
+		outfile = val
+	end
 end
 
-if (env().argv[1]) out_file = env().argv[1]
+outfile = fullpath(outfile)
 
+ext = type(outfile) == "string" and outfile:ext() or ""
+
+supported_ext = {
+	["p64.png"] = true,
+	["html"] = true,
+	["bin"] = true
+}
+
+if (not outfile or not supported_ext[ext]) then
+	print("export usage: export [outfile]")
+	print("outfile format is depermined by extension:")
+	print("  .p64.png\t png cartridge (bbs format)")
+	print("  .html   \t single html file")
+	print("  .bin    \t windows, linux and mac binaries")
+	exit()
+end
+
+-- export .p64.png -- just copy
+if (ext == "p64.png") then
+	rm(outfile) -- to require -f to copy over cart?
+	cp(src_cart, outfile)
+	print("saved a copy as "..outfile)
+	exit()
+end
+
+
+--- html
 
 -- make sure it is .p64.rom
 rm("/ram/expcart.p64.rom") -- safety; to do: shouldn't be necessary
-cp(p64_file, "/ram/expcart.p64.rom")
-
-
--- *** need to flush here! ***
---[[
-print("waiting to flush..")
-for i=1,120 do flip() end
-]]
+cp(src_cart, "/ram/expcart.p64.rom")
 
 dat = fetch"/ram/expcart.p64.rom"
 
@@ -36,7 +63,7 @@ local shell_str = fetch("/system/exp/exp_html.p64.rom/shell.html")
 
 -- grab metadata
 
-meta = fetch_metadata(p64_file) or {}
+meta = fetch_metadata(src_cart) or {}
 title = meta.title or "Picotron Cartridge"
 
 print(title)
@@ -44,8 +71,8 @@ print(title)
 shell_str = shell_str:gsub("##page_title##", title)
 
 -- generate label if there is one
-if (fstat(p64_file.."/label.png")) then
-	cp(p64_file.."/label.png", "/ram/label.bin")
+if (fstat(src_cart.."/label.png")) then
+	cp(src_cart.."/label.png", "/ram/label.bin")
 	labelpng = fetch"/ram/label.bin" -- fetch raw bytes without .png extension
 	
 	-- abuse pod() format to get base64 suitable for data url
@@ -88,7 +115,7 @@ picotron_js = table.concat(strs)
 strs = nil -- free some memory for the file write
 
 -- why doesn't this work? too big? ("invalid capture index %8")
---store(out_file, 
+--store(outfile, 
 --	shell_str:gsub("##pcart##", picotron_js),
 --	{metadata_format="none"})
 
@@ -97,9 +124,9 @@ strs = nil -- free some memory for the file write
 
 local q = string.find(shell_str, "##pcart##") + 10
 
-store(out_file, 
+store(outfile, 
 	shell_str:sub(1,q)..picotron_js..shell_str:sub(q+1),
 	{metadata_format="none"})
 
 
-print("wrote: "..out_file)
+print("wrote: "..outfile)

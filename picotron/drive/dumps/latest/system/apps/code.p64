@@ -11,7 +11,7 @@ VwoDHwCcASM-AAcAngH-SVVnAAcQNwQAP2fwAUEAHzU3EAcEAA5BAA-kAA8PMQD-------------
 ------------------------------------------_AUG09OH19
 :: gfx/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTAxLTI0IDE5OjAxOjU2Iixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNTo1OToyMCIsc3RvcmVkPSIyMDIzLTAxLTI0IDE5OjAxOjU2Il1d
+NC0yNyAxNTo1ODowNSIsc3RvcmVkPSIyMDIzLTAxLTI0IDE5OjAxOjU2Il1d
 :: map/
 :: map/0.map
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTI1IDA3OjQ3OjUwIixtb2RpZmllZD0iMjAyNC0w
@@ -20,11 +20,11 @@ KCJpMTYiLDMyAwAvIjABAP--------------------vxCCIpLGhpZGRlbj1mYWxzZSxwYW5feD0w
 CADSeT0wLHRpbGVfaD0xNgoAEHcKAIB6b29tPTF9fQ==
 :: map/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTAxLTI0IDE5OjAxOjU2Iixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNTo1OToyMCIsc3RvcmVkPSIyMDIzLTAxLTI0IDE5OjAxOjU2Il1d
+NC0yNyAxNTo1ODowNSIsc3RvcmVkPSIyMDIzLTAxLTI0IDE5OjAxOjU2Il1d
 :: sfx/
 :: sfx/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTAxLTI0IDE5OjAxOjU2Iixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNTo1OToyMCIsc3RvcmVkPSIyMDIzLTAxLTI0IDE5OjAxOjU2Il1d
+NC0yNyAxNTo1ODowNSIsc3RvcmVkPSIyMDIzLTAxLTI0IDE5OjAxOjU2Il1d
 :: main.lua
 --[[pod_format="raw",created="2023-02-24 19:02:00",modified="2024-06-06 06:13:11",revision=330]]
 local ce
@@ -51,6 +51,9 @@ function apply_settings()
 		fetch("/system/fonts/lil_mono.font") or		
 		fetch("/system/fonts/lil.font")
 	))
+
+	-- poke(0x4000,get(fetch"/system/fonts/pug3.font")) -- test  // result: so unreadable
+
 	
 	-- update menu items
 	menuitem{id="monospace", label = sdat.monospace and
@@ -204,7 +207,7 @@ MGQwZDA3MDEwMTA3MGQwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMDcwMTAxMDYwNzBkMGQwZDBkMGQw
 ZDBkMGQwZDBkMDcwNjAxMDEwNjA2MDcwNzA3MDcwNzA3MDcwNzA3MDcwNjA2MDEwMDAxMDYwNjA2
 MDYwNjA2MDYwNjA2MDYwNjA2MDEwMDAwMDAwMTA2MDYwNjA2MDYwNjA2MDYwNjA2MDEwMDAwMDAw
 MDAwMDEwMTAxMDEwMTAxMDEwMTAxMDEwMDAwMDAiKSxtb2RpZmllZD0iMjAyNS0wNC0yNyAxNTo1
-OToyMCIsbm90ZXM9IiIscnVudGltZT04LHN0b3JlZD0iMjAyMy01NC0xMiAxMDo1NDowNiIsdGl0
+ODowNSIsbm90ZXM9IiIscnVudGltZT04LHN0b3JlZD0iMjAyMy01NC0xMiAxMDo1NDowNiIsdGl0
 bGU9IlBpY290cm9uIENvZGUgRWRpdG9yIix2ZXJzaW9uPSIwLjEiLHdvcmtzcGFjZXM9e3tsb2Nh
 dGlvbj0ibWFpbi5sdWEjNjAiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249ImdmeC8wLmdm
 eCIsd29ya3NwYWNlX2luZGV4PTJ9LHtsb2NhdGlvbj0ibWFwLzAubWFwIix3b3Jrc3BhY2VfaW5k
