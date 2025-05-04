@@ -9,7 +9,6 @@ do
 
 local _stop = _stop
 local _mkdir = _mkdir
-local _date = _date
 local _print_p8scii = _print_p8scii
 local _map_ram = _map_ram
 local _ppeek = _ppeek
@@ -40,6 +39,8 @@ local _halt = _halt
 
 local _fetch_local = _fetch_local
 local _fetch_remote = _fetch_remote
+local _fetch_anywhen = _fetch_anywhen
+
 local _store_local = _store_local
 local _signal = _signal
 
@@ -80,6 +81,10 @@ function reset()
 
 	poke(0x5606, (@0x5600) * 4)
 	poke(0x5605, 0x2)             -- apply tabs relative to home
+
+	-- mouselock event sensitivity, move sensitivity (64 means x1.0)
+	poke(0x5f28, 64)
+	poke(0x5f29, 64)
 
 
 end
@@ -519,10 +524,6 @@ end
 		return _set_clipboard_text(...)
 	end
 
-	function date(format)
-		return _date(format or "!%Y-%m-%d %H:%M:%S")
-	end
-
 	-- generate metadata string in plain text pod format
 	local function generate_meta_str(meta_p)
 
@@ -583,10 +584,39 @@ end
 		return _pod(obj, flags)
 	end
 
+	
+	local function fix_metadata_dates(result)
+		if (result) then
+			
+			-- time string generation bug that happened 2023-10! (to do: fix files in /system)
+			if (type(result.modified) == "string" and tonumber(result.modified:sub(6,7)) > 12) then
+				result.modified = result.modified:sub(1,5).."10"..result.modified:sub(8)
+			end
+			if (type(result.created) == "string" and tonumber(result.created:sub(6,7)) > 12) then
+				result.created = result.created:sub(1,5).."10"..result.created:sub(8)
+			end
+
+			-- use legacy value .stored if .modified was not set
+			if (not result.modified) result.modified = result.stored
+
+		end
+	end
+
+
+
 	-- fetch and store can be passed locations instead of filenames
 
 	function fetch(location, do_yield, ...)
 		local filename, hash_part = table.unpack(split(location, "#", false))
+
+		-- anywhen: used for testing rollback (please don't use this for anything important yet!)
+		-- fetch("anywhen://foo.txt@2024-04-05_13:02:27"
+		-- to do: allow fetch("foo.txt@2024-04-05_13:02:27") -- shorthand for anywhen://..
+		if (string.sub(location, 1, 10) == "anywhen://") then
+			local ret, meta = _fetch_anywhen(filename:sub(10)) -- include second '/' to give absolute path 
+			return ret, meta, hash_part
+		end
+
 
 		--[[
 			remote fetches are logically the same as local ones -- they block the thread
@@ -626,6 +656,7 @@ end
 		else
 			-- local file
 			local ret, meta = _fetch_local(filename, do_yield, ...)
+			fix_metadata_dates(meta)
 			return ret, meta, hash_part  -- no error
 		end
 	end
@@ -633,7 +664,7 @@ end
 	function mkdir(p)
 		if (fstat(p)) return -- is already a file or directory
 		local ret = _mkdir(p)
-		store_metadata(p, {created = date(), stored = date()})
+		store_metadata(p, {created = date(), modified = date()}) -- 0.1.0f: replaced stored with modified; not useful as a separate concept
 		return ret
 	end
 
@@ -645,8 +676,10 @@ end
 			return nil
 		end
 
-		-- special case: can write raw .p64.png binary data out to host file without mounting it
-		if (location:ext() == "p64.png" and type(obj) == "string") then
+		-- special case: can write raw .p64 / .p64.rom / .p64.png binary data out to host file without mounting it
+		local ext = location:ext()
+
+		if (type(obj) == "string" and (ext == "p64" or ext == "p64.rom" or ext == "p64.png")) then
 			rm(location:path()) -- unmount existing cartridge // to do: be more efficient
 			return _store_local(location, obj)
 		end
@@ -671,7 +704,7 @@ end
 		if (not meta.created) meta.created = date()
 		if (not meta.revision or type(meta.revision) ~= "number") meta.revision = -1
 		meta.revision += 1   -- starts at 0
-		meta.modified = date() -- was .stored
+		meta.modified = date()
 
 		-- use pod_format=="raw" if is just a string
 		-- (_store_local()  will see this and use the host-friendly file format)
@@ -696,16 +729,19 @@ end
 		-- printh("storing meta_str: "..meta_str)
 
 		local result, err_str = _store_local(filename, obj, meta_str)
-
+		
 		-- dev: assume no error for now! return stored metadata
-		return meta
+		-- return meta -- 0.1.0f: removed; was for debugging
+		return nil
+
 	end
 
 	
+	
 	function fetch_metadata(filename)
-		-- .metadata.pod is legacy name
-		if (fstat(filename) == "folder") return _fetch_metadata(filename.."/.info.pod") -- or _fetch_metadata(filename.."/.metadata.pod")
-		return _fetch_metadata(filename)
+		local result = _fetch_metadata(fstat(filename) == "folder" and filename.."/.info.pod" or filename)
+		fix_metadata_dates(result)
+		return result
 	end
 
 	function store_metadata(filename, meta)
@@ -723,7 +759,8 @@ end
 		end
 
 		if (type(meta) != "table") meta = {}
-		meta.stored = date()
+		meta.modified = date() -- 0.1.0f: was ".stored", but nicer just to have a single, more general "file was modified" value.
+
 
 		local meta_str = generate_meta_str(meta)
 
@@ -731,7 +768,9 @@ end
 			-- directory
 			-- printh("writing meta_str to directory: "..meta_str)
 			local info_filename = filename.."/.info.pod" 
-			if fstat(info_filename) then
+--			if fstat(info_filename) then
+			if false then
+
 				-- modify existing file metadata
 				_store_metadata(info_filename, meta_str)
 				
@@ -805,7 +844,31 @@ end
 		return self:sub(1,-#segs[#segs]-2)
 	end
 
+	-- PICO-8 style string indexing;  ("abcde")[2] --> "b"  
+	-- to do: implement in lvm.c?
+	local string_mt_index=getmetatable('').__index
+	getmetatable('').__index = function(str,i) 
+		return string_mt_index[i] or _strindex(str,i)
+	end
 
+--[[
+	local string_mt = getmetatable("")
+
+	setmetatable(string_mt.__index, {__index = function(a,b) return pod{a,b} end})
+]]
+
+--	setmetatable(string_mt.__index, {__index = function(a,b) return a end})
+
+--[[
+	function string:__index()
+		return "zxc"
+	end
+]]
+
+--	local string_mt = getmetatable("")
+--	string_mt.__index.__index = function() return "#" end
+
+--	setmetatable(getmetatable("").__index, {__index=function(s, i) return pod(i) end})
 
 	--[[
 		** experimental -- perhaps a bad idea **  
@@ -904,11 +967,11 @@ end
 	function unmap(a)
 		if (type(a) == "userdata") then
 				-- remove c-side pointer references
-			if _unmap_ram(a, addr) then
+			if _unmap_ram(a) then
 				-- _unmap_ram refused to unmap because used in base ram
 				return
 			end
-	
+			
 			 -- can release reference and be garbage collected 	
 			userdata_ref[a] = nil              
 		end

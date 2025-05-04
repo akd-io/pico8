@@ -1,4 +1,3 @@
---[[pod_format="raw",created="2024-03-08 02:33:40",modified="2024-03-14 04:15:12",revision=17]]
 --[[
 	cp src dest
 
@@ -13,13 +12,13 @@ local argv = env().argv
 if (argv[1] == "--help") then
 	?"usage: cp [options] src dest"
 	?"options:"
-	?"-o overwrite folders (instead of copying inside)"
+	?"-f force overwrite of a folder"
 	?"-n no clobber (do not overwrite existing files)"
 	exit(0)
 end
 
 
-local overwrite_folder = false
+local force_folder_overwrite = false
 local no_clobber = false
 
 local files = {}
@@ -27,7 +26,7 @@ local files = {}
 for i=1,#argv do
 	local v = argv[i]
 	if (sub(v,1,1) == "-") then
-		if (v == "-o") overwrite_folder = true
+		if (v == "-f") force_folder_overwrite = true
 		if (v == "-n") no_clobber = true
 	else
 		add(files, v)
@@ -45,6 +44,7 @@ end
 local src_type  = fstat(src)
 local dest_type = fstat(dest)
 
+
 if (not src_type) then
 	print("could not find "..src)
 	exit(1)
@@ -52,15 +52,20 @@ end
 
 -------
 
--- when destination is a folder, put /inside/ the folder instead of copying over it
-if (dest_type == "folder" and not overwrite_folder) then
+-- using . or .. always means copy inside
+if (dest == "." or dest == "..") dest ..= "/"
+
+-- when destination is a folder, put inside the folder instead of copying over it
+if (dest_type == "folder" and not force_folder_overwrite) then
 	if (sub(dest,-1,-1) == "/") then
+
 		copy_inside = true -- take as an explicit indication (when copying p64)
 		dest = sub(dest,1,-2) -- cut off trailing /
+	
+		local segs = split(fullpath(src),"/",false)
+		dest = dest .. "/" .. segs[#segs]
+		dest_type = fstat(dest) -- update 
 	end
-	local segs = split(src,"/",false)
-	dest = dest .. "/" .. segs[#segs]
-	dest_type = fstat(dest) -- update 
 end
 
 if (no_clobber and fstat(dest)) then
@@ -68,20 +73,24 @@ if (no_clobber and fstat(dest)) then
 	exit(0)
 end
 
--- refuse to copy a folder over a folder
-if src_type  == "folder" and sub(src:ext(), 1,3) == "p64" and 
-   dest_type == "folder" and sub(dest:ext(),1,3) == "p64" and
-   not overwrite_folder and
-   not copy_inside
+if dest_type == "folder" and 
+	not force_folder_overwrite and not copy_inside
 then
 
-	print("ambiguous! no action taken")
+	-- refuse to copy over a folder
+
+	print("can not copy over a folder / cartridge.")
 	print("  to copy inside: cp a.p64 b.p64/")
-	print("  to overwrite: cp -o a.p64 b.p64")
+	print("  to force overwrite: cp -f a.p64 b.p64")
 	exit(1)
-	
+
 else
-	print("copying "..src.." to "..dest)
+
+	if (fstat(dest)) then
+		print("copying "..src.." \feover\f7 "..dest)
+	else
+		print("copying "..src.." to "..dest)
+	end
 
 	local err = cp(src, dest)
 	if (err) print(err)

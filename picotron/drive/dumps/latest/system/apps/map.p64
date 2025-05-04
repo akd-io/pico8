@@ -1,8 +1,29 @@
 picotron cartridge // www.picotron.net
 version 2
 
+:: .info.pod
+b64$LS1bW3BvZCx0aXRsZT0iUGljb3Ryb24gTWFwIEVkaXRvciIsYXV0aG9yPSJsZXhhbG9mZmxl
+IixzdG9yZWQ9IjIwMjQtMDQtMDMgMDY6MDQ6MjgiLG5vdGVzPSIiLGNyZWF0ZWQ9IjIwMjQtMDMt
+MjkgMTI6Mzk6NTMiLHJ1bnRpbWU9NSxpY29uPXVzZXJkYXRhKCJ1OCIsMTYsMTYsIjAwMDAwMDAx
+MDEwMTAxMDEwMTAxMDEwMTAxMDAwMDAwMDAwMDAxMDcwNzA3MDcwNzA3MDcwNzA3MDcwMTAwMDAw
+MDAxMDcwZDBkMGQwZDBkMGQwZDBkMGQwZDA3MDEwMDAxMDcwZDBkMGQwZDBkMGQwZDBkMGQwZDBk
+MGQwNzAxMDEwNzBkMGQwZDA3MDcwNzBkMDcwNzBkMGQwZDA3MDEwMTA3MGQwZDBkMDcwNzA3MGQw
+NzA3MGQwZDBkMDcwMTAxMDcwZDBkMGQwNzA3MDcwZDBkMGQwZDBkMGQwNzAxMDEwNzBkMGQwZDBk
+MGQwZDA3MDcwNzBkMGQwZDA3MDEwMTA3MGQwZDBkMDcwNzBkMDcwNzA3MGQwZDBkMDcwMTAxMDcw
+ZDBkMGQwNzA3MGQwNzA3MDcwZDBkMGQwNzAxMDEwNzBkMGQwZDBkMGQwZDBkMGQwZDBkMGQwZDA3
+MDEwMTA2MDcwZDBkMGQwZDBkMGQwZDBkMGQwZDA3MDYwMTAxMDYwNjA3MDcwNzA3MDcwNzA3MDcw
+NzA3MDYwNjAxMDAwMTA2MDYwNjA2MDYwNjA2MDYwNjA2MDYwNjAxMDAwMDAwMDEwNjA2MDYwNjA2
+MDYwNjA2MDYwNjAxMDAwMDAwMDAwMDAxMDEwMTAxMDEwMTAxMDEwMTAxMDAwMDAwIiksbW9kaWZp
+ZWQ9IjIwMjUtMDQtMjcgMTY6NDc6MjAiLHZlcnNpb249IjAuMWUiLHdvcmtzcGFjZXM9e3tsb2Nh
+dGlvbj0ibWFpbi5sdWEjMiIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0iZHJhdy5sdWEj
+MSIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0idXBkYXRlLmx1YSMxIix3b3Jrc3BhY2Vf
+aW5kZXg9MX0se2xvY2F0aW9uPSJuYXYubHVhIzYiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRp
+b249Imd1aS5sdWEjMSIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0iY2FudmFzLmx1YSM5
+MyIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0idW5kby5sdWEjNDgiLHdvcmtzcGFjZV9p
+bmRleD0xfSx7bG9jYXRpb249ImdmeC8wYi5nZngiLHdvcmtzcGFjZV9pbmRleD0yfSx7bG9jYXRp
+b249Im1hcC8wLm1hcCIsd29ya3NwYWNlX2luZGV4PTd9fV1dbHo0AAQAAAADAAAAMG5pbA==
 :: canvas.lua
---[[pod_format="raw",created="2023-04-11 02:04:02",modified="2024-03-30 14:46:27",revision=2851]]
+--[[pod_format="raw",created="2023-04-11 02:04:02",modified="2024-04-03 06:04:28",revision=2864]]
 
 local ww,hh=0,0
 local fill_cpu=0
@@ -582,7 +603,7 @@ end
 
 
 :: draw.lua
---[[pod_format="raw",created="2023-26-12 03:26:20",modified="2024-03-30 14:46:27",revision=1778]]
+--[[pod_format="raw",created="2023-26-12 03:26:20",modified="2024-04-03 06:04:28",revision=1791]]
 function _draw()
 	cls(5)
 	-- operations during _update can request a
@@ -608,7 +629,7 @@ end
 
 
 :: gui.lua
---[[pod_format="raw",created="2023-05-11 02:05:16",modified="2024-03-30 14:46:27",revision=2589]]
+--[[pod_format="raw",created="2023-05-11 02:05:16",modified="2024-04-03 06:04:28",revision=2602]]
 
 show_pane = true
 
@@ -774,20 +795,9 @@ end
 
 
 :: main.lua
---[[pod_format="raw",created="2023-04-11 02:04:54",modified="2024-03-30 14:46:27",revision=2658]]
+--[[pod_format="raw",created="2023-04-11 02:04:54",modified="2024-04-03 06:04:28",revision=2672]]
 --[[
-	m6: multiple sprite banks
-	
-	-> interesting design problem:
-		from the map editor point of view, banks and pages
-		serve the same kind of function, and shouldn't be
-		two separate things. Just want "tabs of stuff"
-		
-		although, perhaps can feel like heirchy. can flip
-		between "items" and "monsters" banks more easily
-		but in practice: shouldn't have more than ~20 pages
-		(1280 sprites), which is fine for flipping through.
-		
+	Picotron Map Editor
 ]]
 include "draw.lua"
 include "update.lua"
@@ -1035,9 +1045,13 @@ on_event("set_palette",
 
 
 :: nav.lua
---[[pod_format="raw",created="2023-18-11 02:18:48",modified="2024-03-30 14:46:27",revision=3429]]
+--[[pod_format="raw",created="2023-18-11 02:18:48",modified="2024-04-03 06:04:28",revision=3444]]
 --[[
 	navigate sprite bank
+	
+	to do: pin tabs from multiple sprite banks at once
+	(but 4 tabs on the right "0".."3" are always from selected .gfx file)
+
 ]]
 icons =
 {
@@ -1419,6 +1433,7 @@ function create_bank_tabs(el)
 	
 	return el
 end
+
 function create_nav(el)
 	function el:draw()
 		clip()
@@ -1607,7 +1622,7 @@ end
 
 
 :: undo.lua
---[[pod_format="raw",created="2023-29-14 03:29:27",modified="2024-03-30 14:46:27",revision=1534]]
+--[[pod_format="raw",created="2023-29-14 03:29:27",modified="2024-04-03 06:04:28",revision=1548]]
 		
 function add_undo_stack(ii)
 	ii.undo_stack = create_undo_stack(undo_save_state, undo_load_state, 0x11, ii)
@@ -1657,7 +1672,7 @@ end
 
 
 :: update.lua
---[[pod_format="raw",created="2023-45-10 07:45:26",modified="2024-03-30 14:46:27",revision=2294]]
+--[[pod_format="raw",created="2023-45-10 07:45:26",modified="2024-04-03 06:04:28",revision=2307]]
 
 -- update layout without needing to regenerate gui
  -- to do: could also use this for handling changes in display size
@@ -1928,24 +1943,4 @@ b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTE3LTI2IDE0OjE3OjE2Iixtb2RpZmllZD0iMjAyMy0y
 MC0yNiAxNjoyMDo0MSIscmV2aXNpb249NDRdXWx6NAB5AAAAGwEAAPcae3tsb2NhdGlvbj0ibWFp
 bi5sdWEiLHdvcmtzcGFjZV9pbmRleD0xfSwoAE9kcmF3KAADGTIoAG91cGRhdGUqAAMZMyoAP25h
 dicAAxk0JwA-Z3VpJwADGTUnAG9jYW52YXMqAAMZNioAT3VuZG8oAAFQeD03
-:: .info.pod
-b64$LS1bW3BvZCxhdXRob3I9ImxleGFsb2ZmbGUiLGNyZWF0ZWQ9IjIwMjQtMDMtMjkgMTI6Mzk6
-NTMiLGljb249dXNlcmRhdGEoInU4IiwxNiwxNiwiMDAwMDAwMDEwMTAxMDEwMTAxMDEwMTAxMDEw
-MDAwMDAwMDAwMDEwNzA3MDcwNzA3MDcwNzA3MDcwNzAxMDAwMDAwMDEwNzBkMGQwZDBkMGQwZDBk
-MGQwZDBkMDcwMTAwMDEwNzBkMGQwZDBkMGQwZDBkMGQwZDBkMGQwZDA3MDEwMTA3MGQwZDBkMDcw
-NzA3MGQwNzA3MGQwZDBkMDcwMTAxMDcwZDBkMGQwNzA3MDcwZDA3MDcwZDBkMGQwNzAxMDEwNzBk
-MGQwZDA3MDcwNzBkMGQwZDBkMGQwZDA3MDEwMTA3MGQwZDBkMGQwZDBkMDcwNzA3MGQwZDBkMDcw
-MTAxMDcwZDBkMGQwNzA3MGQwNzA3MDcwZDBkMGQwNzAxMDEwNzBkMGQwZDA3MDcwZDA3MDcwNzBk
-MGQwZDA3MDEwMTA3MGQwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMDcwMTAxMDYwNzBkMGQwZDBkMGQw
-ZDBkMGQwZDBkMDcwNjAxMDEwNjA2MDcwNzA3MDcwNzA3MDcwNzA3MDcwNjA2MDEwMDAxMDYwNjA2
-MDYwNjA2MDYwNjA2MDYwNjA2MDEwMDAwMDAwMTA2MDYwNjA2MDYwNjA2MDYwNjA2MDEwMDAwMDAw
-MDAwMDEwMTAxMDEwMTAxMDEwMTAxMDEwMDAwMDAiKSxub3Rlcz0iIixydW50aW1lPTQsc3RvcmVk
-PSIyMDI0LTAzLTMwIDE1OjM4OjIzIix0aXRsZT0iUGljb3Ryb24gTWFwIEVkaXRvciIsdmVyc2lv
-bj0iMC4xZSIsd29ya3NwYWNlcz17e2xvY2F0aW9uPSJtYWluLmx1YSMxIix3b3Jrc3BhY2VfaW5k
-ZXg9MX0se2xvY2F0aW9uPSJkcmF3Lmx1YSMxIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9u
-PSJ1cGRhdGUubHVhIzEiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249Im5hdi5sdWEjMSIs
-d29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0iZ3VpLmx1YSMxIix3b3Jrc3BhY2VfaW5kZXg9
-MX0se2xvY2F0aW9uPSJjYW52YXMubHVhIzkzIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9u
-PSJ1bmRvLmx1YSM0OCIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0iZ2Z4LzBiLmdmeCIs
-d29ya3NwYWNlX2luZGV4PTJ9fV1dbHo0AAQAAAADAAAAMG5pbA==
 :: [eoc]

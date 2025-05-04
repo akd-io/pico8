@@ -1,14 +1,19 @@
 picotron cartridge // www.picotron.net
 version 2
 
+:: .info.pod
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTEwLTA5IDAyOjUwOjQ1Iixtb2RpZmllZD0iMjAyNS0w
+NC0yNyAxNjo0NzoyMCIsc3RvcmVkPSIyMDI0LTA5LTAyIDE3OjA5OjU3Iix3b3Jrc3BhY2VzPXt7
+bG9jYXRpb249Im1haW4ubHVhIix3b3Jrc3BhY2VfaW5kZXg9MX19XV1sejQABAAAAAMAAAAwbmls
 :: _meta/
+:: _meta/.info.pod
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTEwLTA5IDAyOjUwOjQ1Iixtb2RpZmllZD0iMjAyNS0w
+NC0yNyAxNjo0NzoyMCIsc3RvcmVkPSIyMDI0LTUwLTA5IDAyOjUwOjQ1Il1dbHo0AAQAAAADAAAA
+MG5pbA==
 :: _meta/workspaces.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTI4LTIyIDA5OjI4OjMyIixtb2RpZmllZD0iMjAyMy0z
 Ni0wNCAwNjozNjoyOCIscmV2aXNpb249NDU3Nl1dbHo0AC0AAAArAAAA8Bx7e2Nwcm9qX2ZpbGU9
 Im1haW4ubHVhIix3b3Jrc3BhY2VfaW5kZXg9MX19
-:: _meta/.info.pod
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTUwLTA5IDAyOjUwOjQ1IixzdG9yZWQ9IjIwMjQtNTAt
-MDkgMDI6NTA6NDUiXV1sejQABAAAAAMAAAAwbmls
 :: main.lua
 --[[pod_format="raw",created="2023-29-22 09:29:33",modified="2024-09-02 17:09:57",revision=2817]]
 --[=[
@@ -150,8 +155,4 @@ end
 
 
 
-:: .info.pod
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTUwLTA5IDAyOjUwOjQ1IixzdG9yZWQ9IjIwMjQtMDkt
-MDIgMTc6MDk6NTciLHdvcmtzcGFjZXM9e3tsb2NhdGlvbj0ibWFpbi5sdWEiLHdvcmtzcGFjZV9p
-bmRleD0xfX1dXWx6NAAEAAAAAwAAADBuaWw=
 :: [eoc]

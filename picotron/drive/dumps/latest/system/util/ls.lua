@@ -1,20 +1,23 @@
---[[pod_format="raw",created="2023-17-26 21:17:14",modified="2024-03-13 19:59:24",revision=4]]
+--[[pod_format="raw",created="2023-17-26 21:17:14",modified="2024-04-04 08:23:25",revision=6]]
 cd(env().path)
 
-local path = env().argv[1] or "."
+local path0 = env().argv[1] or "."
 
 -- to do: why is this resolving to / when directory no longer exists? maybe terminal is validating pwd?
-path = fullpath(path)
+path = fullpath(path0)
 
-
---printh("ls ["..path.."]")
+if (not path) then
+	print("could not resolve path "..tostr(path0))
+	exit(0)
+end
 
 local res=ls(path)
 
 if (not res) then
-	print("could not open path "..tostr(path))
+	print("could not find path "..tostr(res))
 	exit(0)
 end
+
 
 -- stat each file and show which ones are directories (except for .p64s)
 for i=1,#res do

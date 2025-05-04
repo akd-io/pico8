@@ -5,6 +5,6 @@ cp("/ram/cart", "/ram/temp/cartsize.p64.rom")
 kind, size = fstat("/ram/temp/cartsize.p64.rom")
 
 
-print("current cartridge: "..pwc)
+print("\fecurrent cartridge: "..pwc)
 if (size) print(size.." bytes")
 

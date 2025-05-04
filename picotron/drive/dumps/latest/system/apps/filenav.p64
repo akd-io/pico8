@@ -1,17 +1,158 @@
 picotron cartridge // www.picotron.net
 version 2
 
+:: .info.pod
+b64$LS1bW3BvZCx0aXRsZT0iUGljb3Ryb24gRmlsZSBOYXZpZ2F0b3IiLGF1dGhvcj0iemVwIixz
+dG9yZWQ9IjIwMjQtMDMtMjQgMTU6MzU6NTYiLG5vdGVzPSIoYykgTGV4YWxvZmZsZSBHYW1lcyBM
+TFAiLGNyZWF0ZWQ9IjIwMjMtMTEtMTUgMDc6MTE6MzAiLHJ1bnRpbWU9NSxpY29uPXVzZXJkYXRh
+KCJ1OCIsMTYsMTYsIjAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwZDBkMDcwNzA3
+MDcwNzA3MDcwNzA3MDcwZDBkMDEwMTBkMGQwNzAxMDcwNzA3MDcwNzA3MDEwNzBkMGQwMTAxMGQw
+ZDA3MDEwNzA3MDcwNzA3MDcwMTA3MGQwZDAxMDEwZDBkMDcwNzA3MDcwNzA3MDcwNzA3MDcwZDBk
+MDEwMTBkMGQwNzA3MGQwNzA3MDcwNzBkMDcwNzBkMGQwMTAxMGQwZDA3MDcwNzBkMGQwZDBkMDcw
+NzA3MGQwZDAxMDEwZDBkMDcwNzA3MDcwNzA3MDcwNzA3MDcwZDBkMDEwMTBkMGQwZDBkMGQwZDBk
+MGQwZDBkMGQwZDBkMGQwMTAxMGQwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMGQwZDAxMDEwZDBkMGQw
+ZDBkMGQwZDBkMGQwZDBkMGQwZDBkMDEwMTBkMGQwMTAxMDEwMTAxMDEwMTAxMDEwMTBkMGQwMTAx
+MGQwZDAxMDEwMTAxMDcwNzA3MDcwNzAxMGQwZDAxMDEwZDBkMDEwMTAxMDEwNzA3MDcwNzA3MDEw
+ZDBkMDEwMTBkMGQwMTAxMDEwMTA3MDcwNzA3MDcwMTBkMDEwMDAxMDEwMTAxMDEwMTAxMDEwMTAx
+MDEwMTAxMDEwMDAwIiksbW9kaWZpZWQ9IjIwMjUtMDQtMjcgMTY6NDc6MjAiLHZlcnNpb249IjAu
+MWYiLHdvcmtzcGFjZXM9e3tsb2NhdGlvbj0ibWFpbi5sdWEjMSIsd29ya3NwYWNlX2luZGV4PTF9
+LHtsb2NhdGlvbj0ib3Blbi5sdWEjOCIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0iaW50
+ZXJmLmx1YSMxIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJpbnRlbnRpb24ubHVhIzEi
+LHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249ImRlc2t0b3AubHVhIzIzOCIsd29ya3NwYWNl
+X2luZGV4PTF9LHtsb2NhdGlvbj0iZmluZm8ubHVhIzEiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9j
+YXRpb249ImdyaWQubHVhIzEiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249Imxpc3QubHVh
+IzEiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249ImdmeC8wLmdmeCIsd29ya3NwYWNlX2lu
+ZGV4PTJ9LHtsb2NhdGlvbj0iZ2Z4LzEuZ2Z4Iix3b3Jrc3BhY2VfaW5kZXg9Mn19XV1sejQABAAA
+AAMAAAAwbmls
+:: gfx/
+:: gfx/.info.pod
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTExLTE1IDA3OjExOjMwIixtb2RpZmllZD0iMjAyNS0w
+NC0yNyAxNjo0NzoyMCIsc3RvcmVkPSIyMDIzLTExLTE1IDA3OjExOjMwIl1dbHo0AAQAAAADAAAA
+MG5pbA==
+:: gfx/delme/
+:: gfx/delme/.info.pod
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTExIDA3OjU0OjA2Iixtb2RpZmllZD0iMjAyNS0w
+NC0yNyAxNjo0NzoyMCIsc3RvcmVkPSIyMDIzLTU0LTExIDA3OjU0OjA2Il1dbHo0AAQAAAADAAAA
+MG5pbA==
+:: gfx/delme2/
+:: gfx/delme2/.info.pod
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTAyLTExIDA4OjAyOjIwIixtb2RpZmllZD0iMjAyNS0w
+NC0yNyAxNjo0NzoyMCIsc3RvcmVkPSIyMDIzLTAyLTExIDA4OjAyOjIwIl1dbHo0AAQAAAADAAAA
+MG5pbA==
+:: gfx/ha/
+:: gfx/ha/.info.pod
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTA5LTExIDA4OjA5OjQ0Iixtb2RpZmllZD0iMjAyNS0w
+NC0yNyAxNjo0NzoyMCIsc3RvcmVkPSIyMDIzLTA5LTExIDA4OjA5OjQ0Il1dbHo0AAQAAAADAAAA
+MG5pbA==
+:: gfx/zxc/
+:: gfx/zxc/.info.pod
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTExIDA3OjQxOjQxIixtb2RpZmllZD0iMjAyNS0w
+NC0yNyAxNjo0NzoyMCIsc3RvcmVkPSIyMDIzLTQxLTExIDA3OjQxOjQxIl1dbHo0AAQAAAADAAAA
+MG5pbA==
+:: gfx/0.gfx
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTIwIDA2OjM4OjU2Iixtb2RpZmllZD0iMjAyNC0w
+NC0xMSAyMjoyNjoxMyIscmV2aXNpb249MjI4MyxzdG9yZWQ9IjIwMjMtMzQtMDkgMTk6MzQ6NTMi
+XV1sejQAdwQAAI06AADzFHtbMF09e2JtcD1weHUAQyAQEATw8CxmbGFncz0wLHBhbl94CADKeT0w
+LHpvb209OH0sMQDzCgCRUAF3BgFAAXcWATABdyYBIAF3NgEQAbcEADQXJmcKAC1GRwoAAwQAL9EA
+dgAc7-AJUYABLSYBAGEtNhHWAgABTwEA0QDLADggJz2zADU3LUcMAEEXLQcNCAAgHXcGACBdNxoA
+I003MAAP1QAhb-EBFpcWEQQABQLYAIMmgRYRJgE3MQYAQQEAARYIAC8Q0W0AHJAQoTABrQEQAQcG
+ABARCgCfvQEAAQcBHVEtEAAK-wOdERCxBwEQEZcNASABnQFAkSB5ABzyBfAKQZAxHQEAoS0R3REt
+dy0RHZcdBABXFx0nHQcIACGXHSAA-wBNRz0RTQcNBw0HPRHdAQAsAiKAMS0BAJE9Ed1zAIFXTREt
+Zz0RbVEAsS0nDSc9ES0HDQd9FgAhPVcmAA8_AiH6AqFAAXcGETABdxYRIAF3JhEQCQMA1AARNzAC
+PycdJwgACAQoAA5GAg_IADNfFx0XHTcIAAEBwgJmFw0HHQcNEAAOhgAPFwQ0Ey0OAQUIAAAnBCFH
+LQwAKR0HCAAPhABBIDdNbAFPNw0nDQgAAzIHLSeeACUtJ54AD4gAQRJn-AEabQoCSQcNBx0SACVt
+J2oED4YAQRG3XgA0Bx1HDAADlgEet4YBD3wAFA9WBixgEIFQAXcNrQAQHa0AEC2tABY9gQBFAVcW
+NwYAAmIGWAcWFwZXCAAnRld_Bj8gsRCzAB2fAdEAAdcRB70HBAAC-wfXEReGJxEXhhcGEbcGAQAB
+tgEgsfADZAAdjwDxAdYRBr0GBAAC-wXWERaHJhEWhxYNEbYNAQABvQEQwWMAH38IcWARLSaBJwcF
+L-EBGAEgWBG3IdcRAgAhBrevAJ8dliG2EQDR8AH5BidTBw1XDQcMADMXXRcKAA--Bj8v8PAxAH8P
+DgIMEtYMASGHFm8CDgwCD5IAQBEHPQKcEQBRLUYhxhHWAgAB7gEfAIYATg8xAB1iELEgEZcRKQQE
+BAAP3gQVUAaXBgEQXwE_EZYRNQQPegAdMycdF8gFPzcdFwgACAQoAA_GAAQPegJUL7EGBAACldYR
+BhcGXQYXBggAPzZdJoQCJw8xAK8vAJGdBgsABABFFxYHFnACRiYHFjcYAC4mN8YHD3wAQl8HFicW
+NwgACAekAA-SB08AZAJf3RENsQ0EAAYAnQtzDacdEQ2XHe4GHyAdAaYPMQD-Eg_uAXUPiAARXwcW
+FxZHCAABEVYGAFYGBxYHBhAAD4YARhMmDgEFCAAAEQwhNyYMACkWBwgAD4QAQSAnRmwBTycGJwYI
+AAMC2wQkByYIAB93iABEAvgLKgdmCgIAhgEJEgADIAAfh4YARBq3eAIP5wULD34DfgCQBQ-fDBQC
+1QsfAsMAf2ACsSABtwGnDQ_NDAIElw0PugAfDzEA------------------------------------
+-------------4FQbT04fX0=
+:: gfx/1.gfx
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTExIDAzOjEzOjAxIixtb2RpZmllZD0iMjAyNC0w
+NC0xMSAyMjoyNjoxMyIscmV2aXNpb249NDU2XV1sejQAmgAAADMxAADzFHtbMF09e2JtcD1weHUA
+QyAQEATw8CxmbGFncz0wLHBhbl94CADPeT0wLHpvb209OH0sMQAp9QEICAQ3MAcQFyAHECcQBzAH
+BAAvV5BHAC6PV5AHAAcAByBJAA4O8gAPMQD-----------------------------------------
+----------------------9CUG09OH19
+:: map/
+:: map/.info.pod
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Iixtb2RpZmllZD0iMjAyNS0w
+NC0yNyAxNjo0NzoyMCIsc3RvcmVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Il1dbHo0AAQAAAADAAAA
+MG5pbA==
+:: map/map0.map
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Iixtb2RpZmllZD0iMjAyNC0w
+My0wNyAxMDoxMjowMSIscmV2aXNpb249MV1dbHo0AGkAAACjCAAA8BN7bGF5ZXI9e1swXT17Ym1w
+PXVzZXJkYXRhKCJpMTYiLDE2AwAvIjABAP---__hIikscGFuX3g9MAgA8gZ5PTAsc2NhbGU9MSx0
+aWxlX2g9MTYKAG93PTE2fSxLBP----84UDE2fX19
+:: sfx/
+:: sfx/.info.pod
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Iixtb2RpZmllZD0iMjAyNS0w
+NC0yNyAxNjo0NzoyMCIsc3RvcmVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Il1dbHo0AAQAAAADAAAA
+MG5pbA==
+:: sfx/sfx0.sfx
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Iixtb2RpZmllZD0iMjAyNC0w
+My0wNyAxMDoxMjowMSIscmV2aXNpb249MV1dbHo0ABABAABRBwAA8CdweHUAAygAAAMABA9AEAIO
+AAGgASACoA4ADxAADfDKAQIDBAUGBwEP-5AICQoLDwwPDQ8ODw8QAPAADQ8RDxIPEw8UDxUPFg8X
+EwDxAQ8YDxkPGg8bDxwPHQ8eDx8UAPEAIA8hDyIPIw8kDyUPJg8nFADxACgPKQ8qDysPLA8tDy4P
+LxQA8QAwDzEPMg8zDzQPNQ82DzcUAP8FOA85DzoPOw88Dz0PPg8-AQ--8P8BAOv-J1oBEAYPIBAB
+IAEgAfAAAhACDBABIA8hIAEwD0Dwww8oD--wxg-4Cg--D4AP9w8NAfAJARAGDDAA-zkf-wEA3L-4
+D0AADUD--7DwcAoA--9kH-8BAJdQ-----x8=
 :: desktop.lua
---[[pod_format="raw",created="2023-13-04 15:13:41",modified="2024-03-24 15:04:52",revision=2086,stored="2023-21-29 09:21:19"]]
+--[[pod_format="raw",created="2023-10-04 15:13:41",modified="2024-04-11 22:26:13",revision=2093,stored="2023-21-29 09:21:19"]]
 -- mode: desktop
 local desktop_items = nil
 local desktop_content = nil
 local sel
 function set_desktop_item_position(filename, x, y)
-	desktop_items[filename] = {
-		x = x - 32, 
-		y = y - 16
-	}
+	if (not desktop_items[filename]) desktop_items[filename] = {}
+
+	if (not x or not y) then
+
+		-- find an unused spot
+
+		local used = userdata("u8",48,27)
+		
+		for k,item in pairs(desktop_items) do
+			if (item.x and item.y) then
+				local xx = item.x \ 10
+				local yy = item.y \ 10
+				used:set(xx,yy,1)
+			end
+		end
+		
+		for xx = 5, 47 do
+				for yy = 2, 22 do			
+				if used:get(xx,yy) == 0 then
+
+					local empty = true
+					for dx=-3,3 do
+						for dy=-3,3 do
+							if (used:get(xx+dx,yy+dy) > 0) empty = false
+						end
+					end
+
+					if empty then
+						x = xx*10 y =yy*10
+						goto found_slot
+					end
+				end
+			end
+		end
+
+		x = 40 + rnd(200)
+		if (not y) y = 40 + rnd(200)
+
+	end
+
+	::found_slot::
+
+	desktop_items[filename].x = x
+	desktop_items[filename].y = y
 end
 function fetch_desktop_items()
 	local meta = fetch_metadata(desktop_path)
@@ -128,7 +269,8 @@ local function create_file_item(parent, ff, x, y)
 	
 	
 	function el:draw(msg)
-		--clip()
+		clip() -- allow desktop items to be drawn any size (e.g. super long filenames)
+
 		--rect(0,0,self.width-1,self.height-1,2) -- debug: show width
 		pal()
 		local sprx, spry = self.width/2 - 8, 6
@@ -170,7 +312,8 @@ local function create_file_item(parent, ff, x, y)
 		
 		local ww,hh = print(str, 0, -1000000)
 		hh += 1000000
-		ww = min(ww, self.width-8) -- don't clip left text, only right
+
+--		ww = min(ww, self.width-8) -- don't clip left text, only right
 		
 		local w2 = self.width / 2
 		local yy = 30
@@ -231,14 +374,8 @@ function generate_fels_desktop()
 	
 		-- start at random position
 		if (desktop_items[filenames[i]] == nil) then
-			desktop_items[filenames[i]] = 
-			{
-				-- to do: search for unused desktop_item and use that position
-				-- instead (so file doesn't jump around when renaming)
-				-- also: find empty spot in sensible location
-				x = rnd(100)\1+40,
-				y = rnd(80)\1+30
-			}
+
+			set_desktop_item_position(filenames[i], nil, nil)
 			
 			-- temporary hack for default desktop items
 			local fn = filenames[i]
@@ -377,7 +514,7 @@ end
 
 on_event("drop_items",function(msg)
 
-	-- printh("@@ dropped items from proc_id:"..msg.from_proc_id.." // mode:"..mode)
+	--printh("@@ dropped items from proc_id:"..msg.from_proc_id.." // mode:"..mode)
 	
 	-- drop into self
 	if (msg.from_proc_id == pid()) then
@@ -389,7 +526,7 @@ on_event("drop_items",function(msg)
 	
 	-- drop from somewhere else
 	
-	-- printh("@@ drop from a different process:"..pod(msg))
+	--printh("@@ drop from a different process:"..pod(msg))
 	
 	for i=1,#msg.items do
 		local item = msg.items[i]
@@ -397,13 +534,16 @@ on_event("drop_items",function(msg)
 
 			-- MOVE
 			--printh(pod(item))
-
 			-- printh("@@ moving "..tostring(item.fullpath).." to "..pwd())
 			
-			mv(item.fullpath, pwd().."/"..item.filename)
+			-- to do: define which attributes are requied for a well formed file_reference item
+			-- shouldn't ever need .filename
+			-- avoid introducing optional attributes / hints -- easy for another author to expect to exist on receiving end
+
+			mv(item.fullpath, pwd().."/"..item.fullpath:basename())
 			
 			if (mode == "desktop") then	
-				set_desktop_item_position(item.filename, msg.mx, msg.my)
+				set_desktop_item_position(item.fullpath:basename(), msg.mx, msg.my)
 			end
 
 		end
@@ -529,7 +669,7 @@ end)
 
 
 :: finfo.lua
---[[pod_format="raw",created="2023-24-08 09:24:50",modified="2024-03-24 15:04:52",revision=2100,stored="2023-21-29 09:21:19"]]
+--[[pod_format="raw",created="2023-10-08 09:24:50",modified="2024-04-11 22:26:13",revision=2105,stored="2023-21-29 09:21:19"]]
 --[[
 	finfo.lua
 	
@@ -638,6 +778,8 @@ function update_file_info(clear)
 	
 	last_files_pod = pod{mode,pwd(),files}
 	
+	filenames = {}
+
 	-- search for added /changed files
 	local found = {}
 	for i=1,#files do
@@ -657,21 +799,29 @@ function update_file_info(clear)
 		f.attrib   = f.attrib or attrib
 		f.size     = f.size or size
 		f.icon     = get_file_icon(filename)
-		
+
+		add(filenames, f.filename)
 	end
 	
+--[[
 	-- clear out missing items
 	for k,v in pairs(finfo) do
 		if (not found[k]) finfo[k] = nil
 	end
-	
+]]
+
+--[[
 	-- store as sorted list (files)
 	filenames = {}
 	for k,v in pairs(finfo) do
 		add(filenames, k)
 	end
+]]
 
 	--table.sort(filenames) -- commented; maybe can't support table.sort with current cpu model (crosses c boundary)
+
+	-- update: sort by list order
+--[[
 	local tbl = filenames
 	for pass=1,#tbl do
 		for i=1,#tbl-1 do
@@ -680,7 +830,8 @@ function update_file_info(clear)
 			end
 		end
 	end
-	
+]]
+
 	-- update gui elements
 	if (mode == "grid") generate_fels_grid()
 	if (mode == "list") generate_fels_list()
@@ -744,12 +895,55 @@ function update_file_info_menu_item()
 			}
 		end
 
+		-- open in host
+		local kind, size, origin = fstat(which)
+
+		if (not origin or origin:sub(1,5) == "host:") then
+			menuitem{
+				id="open_host_path",	
+--				label = "\^:00304f4141417f00 View in Host OS",
+				label = "\^:0b1b3b033f3f3f00 View in Host OS",
+
+				action = function()
+					send_message(2, {event="open_host_path", path = which, _delay = 0.25}) -- delay so that mouse isn't held while new window is opening
+				end
+			}
+		else
+			-- remove
+			menuitem{id="open_host_path"}
+		end
+
 	else
+		-- no item selected
+
 		-- clear entries
 		menuitem{id="file_info"}
 		menuitem{id="delete_file"}
 		menuitem{id="rename"}
+
+		-- open host folder
+
+		local kind, size, origin = fstat(pwd())
+
+		if (not origin) then -- or origin:sub(1,5) ~= "/ram/") then
+			menuitem{
+				id="open_host_path",	
+				label = "\^:00304f4141417f00 Open Host OS Folder",
+				action = function()
+					send_message(2, {event="open_host_path", path = pwd(), _delay = 0.25})
+				end
+			}
+		else
+			-- remove
+			menuitem{id="open_host_path"}
+		end
+
 	end
+
+
+	
+
+
 	
 end
 
@@ -758,58 +952,8 @@ end
 
 
 
-:: gfx/
-:: gfx/0.gfx
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTM4LTIwIDA2OjM4OjU2Iixtb2RpZmllZD0iMjAyNC0w
-My0yNCAxNTowNDo1MiIscmV2aXNpb249MjI3OSxzdG9yZWQ9IjIwMjMtMzQtMDkgMTk6MzQ6NTMi
-XV1sejQAcwQAAFE6AADzFHtbMF09e2JtcD1weHUAQyAQEATw8CxmbGFncz0wLHBhbl94CADKeT0w
-LHpvb209OH0sMQDzCgCRUAF3BgFAAXcWATABdyYBIAF3NgEQAbcEADQXJmcKAC1GRwoAAwQAL9EA
-dgAc7-AJUYABLSYBAGEtNhHWAgABTwEA0QDLADggJz2zADU3LUcMAEEXLQcNCAAgHXcGACBdNxoA
-I003MAAP1QAhYfEBFpcWEQQAUwcNVw0HDAAzF10XCgAilxbcAJMRJoEWESYBNzEGAEEBAAEWCAAv
-ENFzAByQEKEwAa0BEAEHBgAQEQoAn70BAAEHAR1RLRAACv8DnREQsQcBEBGXDQEgAZ0BQJEgeQAc
-8gXwCkGQMR0BAKEtEd0RLXctER2XHQQAVxcdJx0HCAAhlx0gAP8ATUc9EU0HDQcNBz0R3QEAMgIi
-gDEtAQCRPRHdcwCBV00RLWc9EW1RALEtJw0nPREtBw0HfRYAIT1XJgAPRAIh_gKhQAF3BhEwAXcW
-ESABdyYREA8DANQAETc2Aj8nHScIAAgEKAAOTAIPiAAzXxcdFx03CAABAcgCZhcNBx0HDRAADoYA
-Dx0ENBMtDgEFCAAALQQhRy0MACkdBwgAD4QAQSA3TWwBTzcNJw0IAAMyBy0nngAlLSeeAA_IAEES
-Z-wBGm0KAkkHDQcdEgAlbSdwBA_GAEERt14ANAcdRwwAA5YBHreGAQ98ABQPXAYsYBCBUAF3Da0A
-EB2tABAtrQAWPYEARQFXFjcGAAJoBlgHFhcGVwgAJ0ZXhAY-ILEQswAdnwHRAAHXEQe9BwQAAv8H
-1xEXhicRF4YXBhG3BgEAAbYBILHwA2QAHY8A8QHWEQa9BgQAAv8F1hEWhyYRFocWDRG2DQEAAb0B
-EMFjAB9-CHFgES0mgS0HBS-xARgBIFgRtyHXEQIAIQa3rwCfHZYhthEA0fABHwIeDzEAsA-MAQwS
-1skHIYcWLQIOygEPkgBAEQf7AZwRAFEtRiHGEdYCAAGsAR8AhgBODzEAHWIQsSARlxHnAwQEAA_c
-BBVQBpcGARBfAT4RlhHzAw96AB0zJx0XhgU-Nx0XCAAIBCgAD4YABA96AlQvsQYEAAKV1hEGFwZd
-BhcGCAA-Nl0mhAInDzEAry8AkVsGCwAEAEUXFgcWcAJGJgcWNxgALiY3hAcPfABCXwcWJxY3CAAI
-B6QAD5AHTwBkAl-dEQ2xDQQABgBbC3MNpx0RDZcdrAYfIB0Bpg8xAP8SD64BdQ_IABFfBxYXFkcI
-AAERVgYAVgYHFgcGEAAPhgBGEyYOAQUIAADPCyE3JgwAKRYHCAAPhABBICdGbAFPJwYnBggAAwLb
-BCQHJggAH3eIAEQCtgsqB2YKAgCGAQkSAAMgAB_HhgBEGrd4Ag-nBQsPfgN_AJAFD50MFAKTCx8C
-wwB-YAKxIAG3AWUND0sMAgRVDQ_6AB8PMQD-----------------------------------------
---------gVBtPTh9fQ==
-:: gfx/1.gfx
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEzLTExIDAzOjEzOjAxIixtb2RpZmllZD0iMjAyNC0w
-My0yNCAxNTowNDo1MiIscmV2aXNpb249NDUxXV1sejQAmgAAADMxAADzFHtbMF09e2JtcD1weHUA
-QyAQEATw8CxmbGFncz0wLHBhbl94CADPeT0wLHpvb209OH0sMQAp9QEICAQ3MAcQFyAHECcQBzAH
-BAAvV5BHAC6PV5AHAAcAByBJAA4O8gAPMQD-----------------------------------------
-----------------------9CUG09OH19
-:: gfx/delme/
-:: gfx/delme/.info.pod
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTU0LTExIDA3OjU0OjA2IixzdG9yZWQ9IjIwMjMtNTQt
-MTEgMDc6NTQ6MDYiXV1sejQABAAAAAMAAAAwbmls
-:: gfx/delme2/
-:: gfx/delme2/.info.pod
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTAyLTExIDA4OjAyOjIwIixzdG9yZWQ9IjIwMjMtMDIt
-MTEgMDg6MDI6MjAiXV1sejQABAAAAAMAAAAwbmls
-:: gfx/ha/
-:: gfx/ha/.info.pod
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTA5LTExIDA4OjA5OjQ0IixzdG9yZWQ9IjIwMjMtMDkt
-MTEgMDg6MDk6NDQiXV1sejQABAAAAAMAAAAwbmls
-:: gfx/zxc/
-:: gfx/zxc/.info.pod
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTQxLTExIDA3OjQxOjQxIixzdG9yZWQ9IjIwMjMtNDEt
-MTEgMDc6NDE6NDEiXV1sejQABAAAAAMAAAAwbmls
-:: gfx/.info.pod
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTExLTE1IDA3OjExOjMwIixzdG9yZWQ9IjIwMjMtMTEt
-MTUgMDc6MTE6MzAiXV1sejQABAAAAAMAAAAwbmls
 :: grid.lua
---[[pod_format="raw",created="2023-27-20 06:27:59",modified="2024-03-24 15:04:52",revision=2235,stored="2023-21-29 09:21:19"]]
+--[[pod_format="raw",created="2023-10-20 06:27:59",modified="2024-04-11 22:26:13",revision=2240,stored="2023-21-29 09:21:19"]]
 -- mode: icons on a grid (default folder view; is cutest for < ~100 files)
 local sel = nil
 local function create_file_item(parent, ff, x, y)
@@ -840,7 +984,10 @@ local function create_file_item(parent, ff, x, y)
 			or ll and x >= ll[1] and y >= ll[2] and x <= ll[3] and y <= ll[4]	
 	end
 	
+	-- draw icon on grid
 	function el:draw()
+
+		clip()
 		
 		local sprx, spry = self.width/2 - 8, 6
 		local sprx0, spry0 = sprx, spry
@@ -889,18 +1036,22 @@ local function create_file_item(parent, ff, x, y)
 		local ww,hh = print(str, 0, -1000000)
 		hh += 1000000
 		
-		ww = min(ww, self.width) -- don't clip left text, only right
+		--ww = min(ww, self.width) -- don't clip left text, only right
+
+		local dx = min(ww, self.width) / 2
+
+
 		local w2 = self.width/2
 		local yy = 28
 		
 		color(self.finfo.selected and 1 or 7)
-		rectfill(w2-ww/2-5,yy-4,w2+ww/2+3,yy+hh-1) 
-		rectfill(w2-ww/2-6,yy-3,w2+ww/2+4,yy+hh-2)
+		rectfill(w2-dx-5,yy-4,w2-dx+ww+3,yy+hh-1) 
+		rectfill(w2-dx-6,yy-3,w2-dx+ww+4,yy+hh-2)
 		
-		print(str, w2 - ww / 2, yy, self.finfo.selected and 7 or 13)
+		print(str, w2 - dx, yy, self.finfo.selected and 7 or 13)
 		
 		-- for test_point
-		self.last_label_area = {w2-ww/2-5,yy-4,w2+ww/2+3,yy+hh-1,sprx0,spry0}
+		self.last_label_area = {w2-dx-5,yy-4,w2-dx+ww+3,yy+hh-1,sprx0,spry0}
 		
 		-- for dragging file icons; self.sx,sy isn't set
 		self.finfo.x = sprx + self.x + self.parent.sx
@@ -950,7 +1101,8 @@ function generate_fels_grid()
 	fi = {}
 	
 	for i=1,#filenames do
-		-- to do: auto-stagger for long file names + (xx&1)*14
+		-- to do: auto-stagger for long file names? + (xx&1)*16
+		--add(fi, create_file_item(content, finfo[filenames[i]], 2 + xx*item_w, 2 + yy*item_h + (xx&1)*16))
 		add(fi, create_file_item(content, finfo[filenames[i]], 2 + xx*item_w, 2 + yy*item_h))
 		xx+=1
 		if (xx >= items_x) xx=0 yy+=1
@@ -1191,9 +1343,11 @@ function get_file_icon(filename)
 	local ext = get_file_extension(filename)
 	
 	-- folder sprite if a folder (but .p64 doesn't count)
-	if (ext ~= "p64" and ext ~= "p64.rom" and ext ~= "p64.png" and 
-		fstat(filename) == "folder")
+
+	local kind,size,origin = fstat(filename)
+	if (ext ~= "p64" and ext ~= "p64.rom" and ext ~= "p64.png" and kind == "folder")
 	then
+		if (origin and origin:sub(1,5) == "host:") return get_spr(4)
 		return get_spr(2)
 	end
 	
@@ -1319,7 +1473,7 @@ end
 
 
 :: intention.lua
---[[pod_format="raw",created="2023-49-05 21:49:51",modified="2024-03-24 15:04:52",revision=603]]
+--[[pod_format="raw",created="2023-10-05 21:49:51",modified="2024-04-11 22:26:13",revision=608]]
 --[[
 
 	intention.lua
@@ -1580,7 +1734,7 @@ end
 
 
 :: interf.lua
---[[pod_format="raw",created="2023-11-20 08:11:39",modified="2024-03-24 15:04:52",revision=2910,stored="2023-21-29 09:21:19"]]
+--[[pod_format="raw",created="2023-11-20 08:11:39",modified="2024-04-11 22:26:13",revision=2915,stored="2023-21-29 09:21:19"]]
 -- interface
 
 -- shortcut
@@ -1777,7 +1931,7 @@ end
 
 
 :: list.lua
---[[pod_format="raw",created="2023-27-20 06:27:42",modified="2024-03-24 15:04:52",revision=2560,stored="2023-21-29 09:21:19"]]
+--[[pod_format="raw",created="2023-10-20 06:27:42",modified="2024-04-11 22:26:13",revision=2566,stored="2023-21-29 09:21:19"]]
 -- mode: list
 local item_h = 12
 local function create_file_item(parent, ff, x, y)
@@ -1932,7 +2086,7 @@ end
 
 
 :: main.lua
---[[pod_format="raw",created="2023-24-20 06:24:13",modified="2024-03-24 15:04:52",revision=2819,stored="2023-21-29 09:21:19"]]
+--[[pod_format="raw",created="2023-10-20 06:24:13",modified="2024-04-11 22:26:13",revision=2824,stored="2023-21-29 09:21:19"]]
 --[[
 	ff: theme / app menu integration
 ]]
@@ -1961,7 +2115,8 @@ function _init()
 	
 	window{
 		width = 272, height = 160,
-		title = intention_window_title or intention_title
+		title = intention_window_title or intention_title,
+		has_context_menu = true -- mb2 to open app menu // to do: indicate which items are for context menu
 	}
 	-- mode: list, grid, desktop
 	mode = "grid"
@@ -2073,17 +2228,8 @@ end)
 
 
 
-:: map/
-:: map/map0.map
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Iixtb2RpZmllZD0iMjAyNC0w
-My0wNyAxMDoxMjowMSIscmV2aXNpb249MV1dbHo0AGkAAACjCAAA8BN7bGF5ZXI9e1swXT17Ym1w
-PXVzZXJkYXRhKCJpMTYiLDE2AwAvIjABAP---__hIikscGFuX3g9MAgA8gZ5PTAsc2NhbGU9MSx0
-aWxlX2g9MTYKAG93PTE2fSxLBP----84UDE2fX19
-:: map/.info.pod
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTA3IDEwOjExOjU2IixzdG9yZWQ9IjIwMjQtMDMt
-MDcgMTA6MTE6NTYiXV1sejQABAAAAAMAAAAwbmls
 :: open.lua
---[[pod_format="raw",created="2023-46-04 12:46:16",modified="2024-03-24 15:04:52",revision=2453,stored="2023-21-29 09:21:19"]]
+--[[pod_format="raw",created="2023-10-04 12:46:16",modified="2024-04-11 22:26:13",revision=2458,stored="2023-21-29 09:21:19"]]
 
 	
 	function click_on_file(filename, action, argv)
@@ -2170,20 +2316,8 @@ MDcgMTA6MTE6NTYiXV1sejQABAAAAAMAAAAwbmls
 	end
 
 
-:: sfx/
-:: sfx/sfx0.sfx
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Iixtb2RpZmllZD0iMjAyNC0w
-My0wNyAxMDoxMjowMSIscmV2aXNpb249MV1dbHo0ABABAABRBwAA8CdweHUAAygAAAMABA9AEAIO
-AAGgASACoA4ADxAADfDKAQIDBAUGBwEP-5AICQoLDwwPDQ8ODw8QAPAADQ8RDxIPEw8UDxUPFg8X
-EwDxAQ8YDxkPGg8bDxwPHQ8eDx8UAPEAIA8hDyIPIw8kDyUPJg8nFADxACgPKQ8qDysPLA8tDy4P
-LxQA8QAwDzEPMg8zDzQPNQ82DzcUAP8FOA85DzoPOw88Dz0PPg8-AQ--8P8BAOv-J1oBEAYPIBAB
-IAEgAfAAAhACDBABIA8hIAEwD0Dwww8oD--wxg-4Cg--D4AP9w8NAfAJARAGDDAA-zkf-wEA3L-4
-D0AADUD--7DwcAoA--9kH-8BAJdQ-----x8=
-:: sfx/.info.pod
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTA3IDEwOjExOjU2IixzdG9yZWQ9IjIwMjQtMDMt
-MDcgMTA6MTE6NTYiXV1sejQABAAAAAMAAAAwbmls
 :: tabcomp.lua
---[[pod_format="raw",created="2023-53-26 19:53:00",modified="2024-03-12 11:27:57",revision=57,stored="2023-59-07 07:59:44"]]
+--[[pod_format="raw",created="2023-53-26 19:53:00",modified="2024-04-03 05:32:39",revision=59,stored="2023-59-07 07:59:44"]]
 --[[
 	fa: create gui with relative sizes
 ]]
@@ -2220,20 +2354,27 @@ function tab_complete_filename(cmd)
 	-- find matches
 	local segment = nil
 	local matches = 0
+	local single_filename = nil
+
 	for i=1,#files do
 		--printh(prefix.." :: "..files[i])
 		if (sub(files[i], 1, #prefix) == prefix) then
 			matches = matches + 1
 			local candidate = sub(files[i], #prefix + 1) -- remainder
-			-- 
-			-- to do: segement should be set to the starting sequence common to candidate and segment
+
+			-- set segment to starting sequence common to candidate and segment
 			segment = segment and find_common_prefix(candidate, segment) or candidate
+			single_filename = path_part.."/"..files[i] -- used when single match is found
 		end
 	end
 	
 	if (segment) then
 		cmd = cmd .. segment
 		--cursor_pos = cursor_pos + #segment
+	end
+
+	if matches == 1 and single_filename and fstat(single_filename) == "folder" then
+		cmd ..= "/"
 	end
 
 	
@@ -2243,26 +2384,4 @@ end
 
 
 
-:: .info.pod
-b64$LS1bW3BvZCxhdXRob3I9InplcCIsY3JlYXRlZD0iMjAyMy0xMS0xNSAwNzoxMTozMCIsaWNv
-bj11c2VyZGF0YSgidTgiLDE2LDE2LCIwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAx
-MGQwZDA3MDcwNzA3MDcwNzA3MDcwNzA3MGQwZDAxMDEwZDBkMDcwMTA3MDcwNzA3MDcwNzAxMDcw
-ZDBkMDEwMTBkMGQwNzAxMDcwNzA3MDcwNzA3MDEwNzBkMGQwMTAxMGQwZDA3MDcwNzA3MDcwNzA3
-MDcwNzA3MGQwZDAxMDEwZDBkMDcwNzBkMDcwNzA3MDcwZDA3MDcwZDBkMDEwMTBkMGQwNzA3MDcw
-ZDBkMGQwZDA3MDcwNzBkMGQwMTAxMGQwZDA3MDcwNzA3MDcwNzA3MDcwNzA3MGQwZDAxMDEwZDBk
-MGQwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMDEwMTBkMGQwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMGQw
-MTAxMGQwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMGQwZDAxMDEwZDBkMDEwMTAxMDEwMTAxMDEwMTAx
-MDEwZDBkMDEwMTBkMGQwMTAxMDEwMTA3MDcwNzA3MDcwMTBkMGQwMTAxMGQwZDAxMDEwMTAxMDcw
-NzA3MDcwNzAxMGQwZDAxMDEwZDBkMDEwMTAxMDEwNzA3MDcwNzA3MDEwZDAxMDAwMTAxMDEwMTAx
-MDEwMTAxMDEwMTAxMDEwMTAxMDAwMCIpLG5vdGVzPSIoYykgTGV4YWxvZmZsZSBHYW1lcyBMTFAi
-LHJ1bnRpbWU9MyxzdG9yZWQ9IjIwMjQtMDMtMjQgMTU6MzU6NTYiLHRpdGxlPSJQaWNvdHJvbiBG
-aWxlIE5hdmlnYXRvciIsdmVyc2lvbj0iMC4xYyIsd29ya3NwYWNlcz17e2xvY2F0aW9uPSJtYWlu
-Lmx1YSMxIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJvcGVuLmx1YSM4Iix3b3Jrc3Bh
-Y2VfaW5kZXg9MX0se2xvY2F0aW9uPSJpbnRlcmYubHVhIzEiLHdvcmtzcGFjZV9pbmRleD0xfSx7
-bG9jYXRpb249ImludGVudGlvbi5sdWEjMSIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0i
-ZGVza3RvcC5sdWEjMjM4Iix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJmaW5mby5sdWEj
-MSIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0iZ3JpZC5sdWEjMSIsd29ya3NwYWNlX2lu
-ZGV4PTF9LHtsb2NhdGlvbj0ibGlzdC5sdWEjMSIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlv
-bj0iZ2Z4LzAuZ2Z4Iix3b3Jrc3BhY2VfaW5kZXg9Mn0se2xvY2F0aW9uPSJnZngvMS5nZngiLHdv
-cmtzcGFjZV9pbmRleD0yfX1dXWx6NAAEAAAAAwAAADBuaQ==
 :: [eoc]

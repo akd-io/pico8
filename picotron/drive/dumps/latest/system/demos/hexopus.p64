@@ -1,13 +1,18 @@
 picotron cartridge // www.picotron.net
 version 2
 
+:: .info.pod
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTEyIDE4OjEzOjUzIixtb2RpZmllZD0iMjAyNS0w
+NC0yNyAxNjo0NzoyMCIsc3RvcmVkPSIyMDI0LTAzLTEyIDE4OjEzOjUzIl1dbHo0AAQAAAADAAAA
+MG5pbA==
 :: _meta/
+:: _meta/.info.pod
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTEyIDE4OjEzOjUzIixtb2RpZmllZD0iMjAyNS0w
+NC0yNyAxNjo0NzoyMCIsc3RvcmVkPSIyMDI0LTAzLTEyIDE4OjEzOjUzIl1dbHo0AAQAAAADAAAA
+MG5pbA==
 :: _meta/workspaces.pod
 b64$LS0gcGljb3Ryb24gb2JqZWN0IGRhdGEKe3tjcHJval9maWxlPSJtYWluLmx1YSIsd29ya3Nw
 YWNlX2luZGV4PTF9fQ==
-:: _meta/.info.pod
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTEyIDE4OjEzOjUzIixzdG9yZWQ9IjIwMjQtMDMt
-MTIgMTg6MTM6NTMiXV1sejQABAAAAAMAAAAwbmls
 :: main.lua
 -- flexing hexopus
 -- by zep
@@ -54,7 +59,4 @@ function _draw()
 	clip()
 	print(string.format("%.5f", stat(1)), 12,2,17)
 end
-:: .info.pod
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTEyIDE4OjEzOjUzIixzdG9yZWQ9IjIwMjQtMDMt
-MTIgMTg6MTM6NTMiXV1sejQABAAAAAMAAAAwbmls
 :: [eoc]

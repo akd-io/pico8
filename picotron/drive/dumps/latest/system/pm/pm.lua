@@ -66,5 +66,12 @@ on_event("reboot",
 	end
 )
 
+on_event("mount_host_desktop",
+	function()
+		_signal(65)
+	end
+)
+
+
 
 

@@ -142,7 +142,7 @@ end
 	if dest exists, is deleted!  (cp util / filenav copy operations can do safety)
 
 ]]
-function cp(f0, f1)
+function _cp(f0, f1, moving)
 
 	f0 = fullpath(f0)
 	f1 = fullpath(f1)
@@ -174,19 +174,29 @@ function cp(f0, f1)
 			return "can not copy folder inside self" -- 2 different meanings!
 		end
 
-		-- get a cleared out root folder with fresh metadata
+		-- get a cleared out root folder with empty metadata
+		-- (this allows host folders to stay as folders even when named with .p64 extension -- some people use that workflow)
 		mkdir(f1)
 
 		-- copy each item (could also be a folder)
 
 		local l = ls(f0)
 		for k,fn in pairs(l) do
-			local res = _cp(f0.."/"..fn, f1.."/"..fn)
+			local res = _cp(f0.."/"..fn, f1.."/"..fn, moving)
 			if (res) return res
 		end
 
 		-- copy metadata over if it exists (ls does not return dotfiles)
-		_cp(f0.."/.info.pod", f1.."/.info.pod")
+		-- 0.1.0f: also set initial modified / created values 
+
+		local meta = fetch_metadata(f0) or {}
+
+		-- also set date [and created when not being used by mv())
+		meta.modified = date()
+		if (not moving) meta.created = meta.created or meta.modified -- don't want to clobber .created when moving
+
+		-- store it back at target location
+		store_metadata(f1, meta)
 
 		return
 	end
@@ -195,9 +205,6 @@ function cp(f0, f1)
 	_fcopy(f0, f1)
 
 end
-
-_cp = cp
-
 
 --[[
 
@@ -211,8 +218,12 @@ _cp = cp
 function mv(src, dest)
 
 	if (fullpath(src) == fullpath(dest)) return
-	_cp(src, dest)
+	_cp(src, dest, true)
 	_rm(src)
+end
+
+function cp(src, dest)
+	_cp(src, dest) -- don't expose the moving parameter; is an internal detail
 end
 
 

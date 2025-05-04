@@ -70,9 +70,11 @@ local coco = {}
 function _init()
 end
 
--- to do: p8scii codes, at least for colour
+-- to do: string format for custom prompts?
+-- for now, create a return value so that can use sedit
 local function get_prompt()
-	return pwd().."> "
+	local result = "\f6"..pwd().."\f7> "
+	return result -- custom prompt goes here
 end
 
 
@@ -475,17 +477,20 @@ local function tab_complete_filename()
 
 	local segment = nil
 	local matches = 0
+	local single_filename = nil
+
 	for i=1,#files do
 		--printh(prefix.." :: "..files[i])
 		if (sub(files[i], 1, #prefix) == prefix) then
 			matches = matches + 1
 			local candidate = sub(files[i], #prefix + 1) -- remainder
-			-- 
-			-- to do: segement should be set to the starting sequence common to candidate and segment
+
+			-- set segment to starting sequence common to candidate and segment
 			segment = segment and find_common_prefix(candidate, segment) or candidate
+			single_filename = path_part.."/"..files[i] -- used when single match is found
 		end
 	end
-	
+
 	if (segment) then
 		cmd = cmd .. segment
 		cursor_pos = cursor_pos + #segment
@@ -498,6 +503,16 @@ local function tab_complete_filename()
 			if (sub(files[i], 1, #prefix) == prefix) then
 				add_line(files[i])
 			end
+		end
+	elseif single_filename and fstat(single_filename) == "folder" then
+		-- trailing slash when a single match is a folder
+		-- for folders with an extension, need to already match the full name;
+		--> press tab once for foo.p64 and once more for foo.p64/)
+		-- the vast majority of the time, user wants to refer to the cart itself
+		if not single_filename:ext() or prefix == sub(cmd,-#prefix) 
+		then
+			cmd ..= "/"
+			cursor_pos += 1
 		end
 	end
 
@@ -527,8 +542,6 @@ function _update()
 		return
 	end
 
-
-	-- consume ctrl-* presses first
 
 	if (key("ctrl")) then
 
@@ -561,10 +574,12 @@ function _update()
 			
 		end
 
-		-- clear text intput queue; don't let anything else pass through
-		readtext(true)
+		if (keyp("e")) cursor_pos = #cmd
 
+		-- clear text intput queue; don't let anything else pass through
+		-- readtext(true) -- 0.1.0f: wrong! ctrl sometimes used for text entry (altgr), and anyway ctrl-* shouldn't ever produce textinput event
 	end
+
 
 	while (peektext()) do
 		k = readtext()
@@ -604,7 +619,6 @@ function _update()
 
 	if (keyp("home")) cursor_pos = 0
 	if (keyp("end")) cursor_pos = #cmd
-	if (key("ctrl") and keyp("e")) cursor_pos = #cmd
 
 
 	if (keyp("enter")) then
@@ -634,9 +648,12 @@ function _update()
 	end
 
 	if (keyp("backspace") and #cmd > 0) then
-
 		cmd = sub(cmd, 1, max(0,cursor_pos-1))..sub(cmd, cursor_pos+1)
 		cursor_pos = mid(0, cursor_pos - 1, #cmd)
+	end
+
+	if (keyp("delete")) then
+		cmd = sub(cmd, 1, max(0,cursor_pos))..sub(cmd, cursor_pos+2)
 	end
 
 

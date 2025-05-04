@@ -1,33 +1,38 @@
 picotron cartridge // www.picotron.net
 version 2
 
+:: .info.pod
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTA0LTE2IDEzOjU5OjQxIixtb2RpZmllZD0iMjAyNS0w
+NC0yNyAxNjo0NzoyMCIsc3RvcmVkPSIyMDI0LTAzLTEwIDAzOjU5OjMyIix3b3Jrc3BhY2VzPXt7
+bG9jYXRpb249Im1haW4ubHVhIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJnZngvMC5n
+ZngiLHdvcmtzcGFjZV9pbmRleD0yfSx7bG9jYXRpb249Im1hcC9tYXAwLm1hcCIsd29ya3NwYWNl
+X2luZGV4PTN9LHtsb2NhdGlvbj0ic2Z4L3NmeDAuc2Z4Iix3b3Jrc3BhY2VfaW5kZXg9NH19XV1s
+ejQABAAAAAMAAAAwbmls
 :: gfx/
+:: gfx/.info.pod
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTEwIDAzOjU0OjA4Iixtb2RpZmllZD0iMjAyNS0w
+NC0yNyAxNjo0NzoyMCIsc3RvcmVkPSIyMDI0LTAzLTEwIDAzOjU0OjA4Il1dbHo0AAQAAAADAAAA
+MG5pbA==
 :: gfx/0.gfx
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTEwIDAzOjU0OjA4Iixtb2RpZmllZD0iMjAyNC0w
 My0xMCAwMzo1OTozMiIscmV2aXNpb249MTBdXWx6NABtAAAABTEAAPMUe1swXT17Ym1wPXB4dQBD
 IBAQBPDwLGZsYWdzPTAscGFuX3gIAM95PTAsem9vbT04fSwxAP--------------------------
 -------------------------------------_dQbT04fX0=
-:: gfx/.info.pod
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTEwIDAzOjU0OjA4IixzdG9yZWQ9IjIwMjQtMDMt
-MTAgMDM6NTQ6MDgiXV1sejQABAAAAAMAAAAwbmls
-:: main.lua
---[[pod_format="raw",created="2024-03-10 03:54:08",modified="2024-03-10 03:59:32",revision=14]]
--- placeholder background for tooltray
--- to do: tooltray theme is used for "desktop*" in that context?
-function _draw()
-	cls(1)
-end
-
 :: map/
+:: map/.info.pod
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTEwIDAzOjU0OjA4Iixtb2RpZmllZD0iMjAyNS0w
+NC0yNyAxNjo0NzoyMCIsc3RvcmVkPSIyMDI0LTAzLTEwIDAzOjU0OjA4Il1dbHo0AAQAAAADAAAA
+MG5pbA==
 :: map/map0.map
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTEwIDAzOjU0OjA4Iixtb2RpZmllZD0iMjAyNC0w
 My0xMCAwMzo1OTozMiIscmV2aXNpb249MTBdXWx6NABSAAAATwQAAPAMe1swXT17Ym1wPXVzZXJk
 YXRhKCJpMTYiLDE2AwAvIjABAP---__hIikscGFuX3g9MAgA0nk9MCx0aWxlX2g9MTYKABB3CgCA
 em9vbT0xfX0=
-:: map/.info.pod
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTEwIDAzOjU0OjA4IixzdG9yZWQ9IjIwMjQtMDMt
-MTAgMDM6NTQ6MDgiXV1sejQABAAAAAMAAAAwbmls
 :: sfx/
+:: sfx/.info.pod
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTEwIDAzOjU0OjA4Iixtb2RpZmllZD0iMjAyNS0w
+NC0yNyAxNjo0NzoyMCIsc3RvcmVkPSIyMDI0LTAzLTEwIDAzOjU0OjA4Il1dbHo0AAQAAAADAAAA
+MG5pbA==
 :: sfx/sfx0.sfx
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTEwIDAzOjU0OjA4Iixtb2RpZmllZD0iMjAyNC0w
 My0xMCAwMzo1OTozMiIscmV2aXNpb249N11dbHo0ABABAABRBwAA8CdweHUAAygAAAMABA9AEAIO
@@ -36,13 +41,12 @@ EwDxAQ8YDxkPGg8bDxwPHQ8eDx8UAPEAIA8hDyIPIw8kDyUPJg8nFADxACgPKQ8qDysPLA8tDy4P
 LxQA8QAwDzEPMg8zDzQPNQ82DzcUAP8FOA85DzoPOw88Dz0PPg8-AQ--8P8BAOv-J1oBEAYPIBAB
 IAEgAfAAAhACDBABIA8hIAEwD0Dwww8oD--wxg-4Cg--D4AP9w8NAfAJARAGDDAA-zkf-wEA3L-4
 D0AADUD--7DwcAoA--9kH-8BAJdQ-----x8=
-:: sfx/.info.pod
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTEwIDAzOjU0OjA4IixzdG9yZWQ9IjIwMjQtMDMt
-MTAgMDM6NTQ6MDgiXV1sejQABAAAAAMAAAAwbmls
-:: .info.pod
-b64$LS1bW3BvZCxzdG9yZWQ9IjIwMjQtMDMtMTAgMDM6NTk6MzIiLHdvcmtzcGFjZXM9e3tsb2Nh
-dGlvbj0ibWFpbi5sdWEiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249ImdmeC8wLmdmeCIs
-d29ya3NwYWNlX2luZGV4PTJ9LHtsb2NhdGlvbj0ibWFwL21hcDAubWFwIix3b3Jrc3BhY2VfaW5k
-ZXg9M30se2xvY2F0aW9uPSJzZngvc2Z4MC5zZngiLHdvcmtzcGFjZV9pbmRleD00fX1dXWx6NAAE
-AAAAAwAAADBuaWw=
+:: main.lua
+--[[pod_format="raw",created="2024-03-10 03:54:08",modified="2024-03-10 03:59:32",revision=14]]
+-- placeholder background for tooltray
+-- to do: tooltray theme is used for "desktop*" in that context?
+function _draw()
+	cls(1)
+end
+
 :: [eoc]

@@ -1,95 +1,31 @@
 picotron cartridge // www.picotron.net
 version 2
 
+:: .info.pod
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTA0LTE2IDEzOjU5OjQyIixtb2RpZmllZD0iMjAyNS0w
+NC0yNyAxNjo0NzoyMCIsc3RvcmVkPSIyMDI0LTM1LTAxIDExOjM1OjE0Iix3b3Jrc3BhY2VzPXt7
+bG9jYXRpb249Im1haW4ubHVhIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJzbmlwcGV0
+cy9wYWludC5sdWEiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249InNuaXBwZXRzL3ZwYWlu
+dC5sdWEiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249InNuaXBwZXRzL2RvbnV0Lmx1YSIs
+d29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0ic25pcHBldHMvd2hlZWwubHVhIix3b3Jrc3Bh
+Y2VfaW5kZXg9MX0se2xvY2F0aW9uPSJzbmlwcGV0cy9wdWxzZS5sdWEiLHdvcmtzcGFjZV9pbmRl
+eD0xfX1dXWx6NAAEAAAAAwAAADBuaWw=
 :: _meta/
+:: _meta/.info.pod
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTEwLTAxIDExOjM0OjM3Iixtb2RpZmllZD0iMjAyNS0w
+NC0yNyAxNjo0NzoyMCIsc3RvcmVkPSIyMDI0LTM0LTAxIDExOjM0OjM3Il1dbHo0AAQAAAADAAAA
+MG5pbA==
 :: _meta/workspaces.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTI5LTEyIDA2OjI5OjExIixtb2RpZmllZD0iMjAyMy0w
 My0wMiAyMzowMzo0NCIsbW9kaWZpZWRfdHM9IjIwMDAtMDEtMDEgMDA6MDA6MDAiLHJldmlzaW9u
 PTE4NDZdXWx6NAB5AAAAMAEAAPkce3tjcHJval9maWxlPSJtYWluLmx1YSIsd29ya3NwYWNlX2lu
 ZGV4PTF9LCoA73NuaXBwZXRzL3BhaW50NAADHzI0AAUfdjUACB8zNQAFT2RvbnU0AAQfNDQABV93
 aGVlbDQAAx810QAGT3Vsc2U0AAFQeD02fX0=
-:: _meta/.info.pod
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTM0LTAxIDExOjM0OjM3IixzdG9yZWQ9IjIwMjQtMzQt
-MDEgMTE6MzQ6MzciXV1sejQABAAAAAMAAAAwbmls
-:: main.lua
---[[pod_format="raw",created="2023-30-12 06:30:01",modified="2024-35-01 11:35:14",revision=718]]
---[[
-	proggy: demonstrate live code loading and editor gui
-
-	to view the snippets:
-	
-		cd /ram/cart/snippets
-		ls
-		edit foo.lua
-]]
-
-function _init()
-	g = create_gui()
-	ce = g:attach_text_editor{x=8,y=20,width=215,height=200,
-		markup=true,embed_pods=true,syntax_highlighting=true}
-	ce:attach_scrollbars{autohide=true}
-	ce:set_text{"cls()","circ(120,120,40+cos(t())*10,7)"}
-
-	bmp = userdata("u8",240, 240)
-	
-	create_snippet_buttons()
-	
-end
-
-
-function _draw()
-	cls(5)
-		
-	g:update_all()
-
-	
-	-- recompile bytecode every frame!
-	-- if there is a syntax error, newfunc will be nil and we can ignore it
-	local prog = table.concat(ce:get_text(),"\n")
-	local newfunc = load(prog)
-	if (newfunc) func = newfunc
-	
-	-- some globals for the proglet to use
-	mx,my,mb = mouse()
-	mx -= 232  my -= 20
-	
-	-- draw code editor
-	g:draw_all() 
-	
-	-- run the proglet and show the output
-	set_draw_target(bmp)
-	if (func) coresume(cocreate(func))
-	set_draw_target()
-	blit(bmp, nil, 0, 0, 232, 20)
-	
-	-- show fps
-	print(string.format("cpu:%.3f",stat(1)), 420,5,13)
-end
-
-function create_snippet_buttons()
-
-	snippet=ls("snippets")
-	-- table.sort(snippet) -- perhaps won't be supported (requires c call boundary)
-	
-	local xx = 10
-	local yy = 230
-	for i=1,#snippet do
-		local el = g:attach_button({x=xx,y=yy,label=sub(snippet[i],1,-5), 
-			bgcol=0x0706, fgcol=0x090d,
-			tap=function()
-				local text = fetch("snippets/"..snippet[i])
-				ce:set_text(split(text,"\n"))
-			end})
-		xx += el.width + 4
-		if (xx > 200) then
-			xx = 10
-			yy +=16
-		end
-	end
-	
-end
-
 :: snippets/
+:: snippets/.info.pod
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTEwLTAxIDExOjM0OjM3Iixtb2RpZmllZD0iMjAyNS0w
+NC0yNyAxNjo0NzoyMCIsc3RvcmVkPSIyMDI0LTM0LTAxIDExOjM0OjM3Il1dbHo0AAQAAAADAAAA
+MG5pbA==
 :: snippets/donut.lua
 --[[pod_format="raw",created="2023-52-20 10:52:24",modified="2024-35-01 11:35:14",revision=48]]
 cls()
@@ -274,15 +210,82 @@ for i=31,1,-1 do
 end
 
 
-:: snippets/.info.pod
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTM0LTAxIDExOjM0OjM3IixzdG9yZWQ9IjIwMjQtMzQt
-MDEgMTE6MzQ6MzciXV1sejQABAAAAAMAAAAwbmls
-:: .info.pod
-b64$LS1bW3BvZCxzdG9yZWQ9IjIwMjQtMzUtMDEgMTE6MzU6MTQiLHdvcmtzcGFjZXM9e3tsb2Nh
-dGlvbj0ibWFpbi5sdWEiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249InNuaXBwZXRzL3Bh
-aW50Lmx1YSIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0ic25pcHBldHMvdnBhaW50Lmx1
-YSIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0ic25pcHBldHMvZG9udXQubHVhIix3b3Jr
-c3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJzbmlwcGV0cy93aGVlbC5sdWEiLHdvcmtzcGFjZV9p
-bmRleD0xfSx7bG9jYXRpb249InNuaXBwZXRzL3B1bHNlLmx1YSIsd29ya3NwYWNlX2luZGV4PTF9
-fV1dbHo0AAQAAAADAAAAMG5pbA==
+:: main.lua
+--[[pod_format="raw",created="2023-30-12 06:30:01",modified="2024-35-01 11:35:14",revision=718]]
+--[[
+	proggy: demonstrate live code loading and editor gui
+
+	to view the snippets:
+	
+		cd /ram/cart/snippets
+		ls
+		edit foo.lua
+]]
+
+function _init()
+	g = create_gui()
+	ce = g:attach_text_editor{x=8,y=20,width=215,height=200,
+		markup=true,embed_pods=true,syntax_highlighting=true}
+	ce:attach_scrollbars{autohide=true}
+	ce:set_text{"cls()","circ(120,120,40+cos(t())*10,7)"}
+
+	bmp = userdata("u8",240, 240)
+	
+	create_snippet_buttons()
+	
+end
+
+
+function _draw()
+	cls(5)
+		
+	g:update_all()
+
+	
+	-- recompile bytecode every frame!
+	-- if there is a syntax error, newfunc will be nil and we can ignore it
+	local prog = table.concat(ce:get_text(),"\n")
+	local newfunc = load(prog)
+	if (newfunc) func = newfunc
+	
+	-- some globals for the proglet to use
+	mx,my,mb = mouse()
+	mx -= 232  my -= 20
+	
+	-- draw code editor
+	g:draw_all() 
+	
+	-- run the proglet and show the output
+	set_draw_target(bmp)
+	if (func) coresume(cocreate(func))
+	set_draw_target()
+	blit(bmp, nil, 0, 0, 232, 20)
+	
+	-- show fps
+	print(string.format("cpu:%.3f",stat(1)), 420,5,13)
+end
+
+function create_snippet_buttons()
+
+	snippet=ls("snippets")
+	-- table.sort(snippet) -- perhaps won't be supported (requires c call boundary)
+	
+	local xx = 10
+	local yy = 230
+	for i=1,#snippet do
+		local el = g:attach_button({x=xx,y=yy,label=sub(snippet[i],1,-5), 
+			bgcol=0x0706, fgcol=0x090d,
+			tap=function()
+				local text = fetch("snippets/"..snippet[i])
+				ce:set_text(split(text,"\n"))
+			end})
+		xx += el.width + 4
+		if (xx > 200) then
+			xx = 10
+			yy +=16
+		end
+	end
+	
+end
+
 :: [eoc]

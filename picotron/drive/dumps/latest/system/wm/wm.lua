@@ -235,7 +235,7 @@ function create_workspace_1(proc_id, win_attribs)
 		ws.clear_each_frame = true
 	end
 	
-
+	-- ignore workspace flow while booting
 	visit_workspace(ws)
 
 	function ws:draw()
@@ -309,7 +309,10 @@ end
 function visit_workspace(ws)
 	if (ws.style == "fullscreen") last_fullscreen_workspace = ws
 	if (ws.style ~= "fullscreen") last_non_fullscreen_workspace = ws
-	if (ws.style == "desktop")    last_desktop_workspace = ws
+	if (ws.style == "desktop") then
+		last_desktop_workspace = ws
+	end
+
 end
 
 
@@ -325,10 +328,12 @@ function set_workspace(index)
 
 	if (index == nil) return
 
+--	printh("set_workspace "..tostring(index))
+
 	-- find by value
 	if (type(index) == "table") then		
 		for i=1,#workspace do
-			if (workspace[i] == index) index = i	
+			if (workspace[i] == index) index = i
 		end
 	end
 
@@ -448,7 +453,7 @@ function _init()
 		function(msg)
 			if (ws_gui == nil) then return end
 
-			local forward_events = {keydown=1, keyup=1, textinput=1, mousewheel=1}
+			local forward_events = {keydown=1, keyup=1, textinput=1, mousewheel=1, mouselockedmove=1, drop_items=1}
 			local activity_events = {keydown=1, keyup=1, textinput=1, mousewheel=1, mouse=1}
 
 			
@@ -480,11 +485,6 @@ function _init()
 				local win = get_active_window()
 				if (win and win.proc_id) then
 					send_message(win.proc_id, msg)
-					
-
-					--if (msg.event == "mousewheel") then
-					--	printh("forwarding "..pod(msg))
-					--end
 				end
 			end
 		end
@@ -492,12 +492,14 @@ function _init()
 
 	-- ==========================================================================================================================================
 
+	-- to do: maybe no longer used / needed?
+--[[
 	on_event("set_workspace",
 		function (msg)
 			set_workspace(msg.index)
 		end
 	)
-
+]]
 	on_event("drag_toolbar",
 		function (msg)
 			--toolbar_y_target = mid(0, toolbar_y + msg.dy, tooltray_default_h) -- limiting feels bad
@@ -535,6 +537,8 @@ function _init()
 
 	generate_head_gui()
 
+	--_signal(36) -- finished loading core processes
+	--flip()
 end
 
 
@@ -710,6 +714,8 @@ end
 function create_window(target_ws, attribs)
 
 	local win = nil
+
+--	printh("creating window: "..pod{attribs})
 
 	add(boot_messages, attribs.prog)
 
@@ -918,11 +924,10 @@ function create_window(target_ws, attribs)
 
 		set_active_window(win)
 
-			-- allow operations on desktop
-			-- to do: get rid of desktop_filenav; should just be a window attribute .mb2_toggle_app_menu
-			if (win.desktop_filenav and msg.mb == 2) then
-
-				send_message(3, {event = "toggle_app_menu", _delay = 0.1 , x = msg.mx - 70, y = msg.my - 30, proc_id = win.proc_id })
+			-- context menu on mb2 (used by filenav -- need to provide nicer mechanism for generating that menu)
+			if (win.has_context_menu and msg.mb == 2) then
+				-- keep above 150 -- assume menu is shorter than that. to do: maybe need a keep_inside_parent attribute
+				send_message(3, {event = "toggle_app_menu", _delay = 0.1 , x = win.sx + msg.mx - 70, y = min(win.sy + msg.my - 30, 150) , proc_id = win.proc_id })
 				
 			end
 
@@ -1457,13 +1462,22 @@ function _draw()
 			--printh("@@ process palette "..time())
 
 			-- grab the rgb display palette and video mode from that process
+			-- to do: cross-process memcpy
 			for i=0x5000,0x54ff,4 do
 				poke4(i, _ppeek4(awin.proc_id, i))
 			end
 			poke(0x547c, _ppeek(awin.proc_id, 0x547c))
+
 		else
 			--printh("-- skipped resetting palette "..time())
 		end
+
+		-- copy mouselock state bits
+
+		poke(0x5f28, _ppeek(awin.proc_id, 0x5f28))
+		poke(0x5f29, _ppeek(awin.proc_id, 0x5f29))
+		poke(0x5f2d, _ppeek(awin.proc_id, 0x5f2d))
+
 	else
 		--printh("** default rgb palette "..time())
 		pal(2) -- otherwise use default palette
@@ -1516,6 +1530,7 @@ function sync_working_cartridge_files()
 
 	-- to do: could count number of requests and wait for each process to report save completed (or timeout)
 	-- would normally complete in one frame. and then process the pending save_cart / run at end of _update
+	-- update: no-Rube-Goldberg-machines policy
 
 	for i=1,2 do flip() end
 
@@ -1529,6 +1544,8 @@ function _update()
 		return
 	end
 
+	-- temporary hack: start on desktop
+	if (time() == 1.5) set_workspace(5)
 
 	if (screensaver_proc_id) then
 
@@ -1562,11 +1579,6 @@ function _update()
 		end
 	end
 
-	-- hack to start on desktop workspace (assume finished loading after 1 second)
-	if (t() == 1.0) then
-		set_workspace(last_desktop_workspace)
---		set_workspace(last_fullscreen_workspace)
-	end
 
 	last_mx, last_my = mx, my
 	mx, my, mb, mdx, mdy = mouse_scaled()
@@ -1780,13 +1792,15 @@ function _update()
 		sspr(dd,0,0,w,h,0,0,480*2,270*2)
 		set_draw_target()
 
+		if (not fstat("/desktop/host")) _signal(65) -- /desktop/host
+
 		local num=0
-		while (fstat("/desktop/sshot"..num..".png") and num < 64) do
+		while (fstat("/desktop/host/sshot"..num..".png") and num < 64) do
 			num += 1
 		end
-		store("/desktop/sshot"..num..".png", screen)
+		store("/desktop/host/sshot"..num..".png", screen)
 
-		notify("captured screenshot to /desktop/sshot"..num..".png")
+		notify("captured screenshot to /desktop/host/sshot"..num..".png")
 	end
 
 	-- capture label
@@ -2066,7 +2080,7 @@ function remove_workspace(index)
 	for i=index, #workspace do
 		workspace[i] = workspace[i+1]
 	end
-	set_workspace(mid(1,workspace_index,#workspace))
+	set_workspace(ws_gui)
 end
 
 -- close window here so that don't invalidate window iterator
@@ -2257,10 +2271,6 @@ on_event("set_window", function(msg)
 			target_ws.active_window = win -- give focus immediately
 		end
 
-
-		-- 8. do some validation
-		workspace_index = mid(1, workspace_index, #workspace)
-		set_workspace(workspace[workspace_index])
 
 		generate_head_gui()
 
@@ -2511,7 +2521,7 @@ function save_open_locations_metadata()
 	end
 
 	-- metadata is normally not very large
-	--printh("@@ storing workspace metadata: "..pod(ws_info))
+--	printh("@@ storing workspace metadata: "..pod(ws_info))
 	store_metadata("/ram/cart", {workspaces = ws_info})
 
 end
@@ -2691,6 +2701,7 @@ function toggle_picotron_menu()
 --		{"\^:00387f7f7f7f7f00 Apps", function() create_process("/system/apps/filenav.p64", {argv={"/apps"}, window_attribs={show_in_workspace=true}}) end},
 		{"\^:00387f7f7f7f7f00 Files", function() create_process("/system/apps/filenav.p64", {argv={"/"}, window_attribs={show_in_workspace=true}}) end},
 		{"\^:7f7d7b7d7f083e00 Terminal", function() create_process("/system/apps/terminal.lua", {window_attribs={show_in_workspace=true}}) end},
+--		{"\^:00387f7f7f7f7f00 Host Desktop", function() _signal(65) end},
 
 		--[[ underlay test; -10 means always under regular windows
 		{"\^:7f7d7b7d7f083e00 Terminal2", function() create_process("/system/apps/terminal.lua", 
@@ -2712,6 +2723,11 @@ function toggle_picotron_menu()
 		 -- pop up menu: [Shutdown] [Reboot] [Cancel] 
 		 -- perhaps show unsaved changes 
 		 -- (checkbox: "discard unsaved changes" ~ once checked, buttons clickable)
+
+
+
+
+		{"\^:1c22494949221c00 Reboot", function() send_message(2, {event="reboot"}) end},
 		{"\^:082a494141221c00 Shutdown", function() send_message(2, {event="shutdown"}) end}
 	}
 

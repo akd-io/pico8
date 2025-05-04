@@ -1,7 +1,30 @@
 picotron cartridge // www.picotron.net
 version 2
 
+:: .info.pod
+b64$LS1bW3BvZCx0aXRsZT0iQWJvdXQiLGF1dGhvcj0iemVwIixzdG9yZWQ9IjIwMjQtMDMtMjMg
+MTk6MzQ6MTUiLG5vdGVzPSJGaWxlIG1ldGFkYXRhIHZpZXdlciBhbmQgZWRpdG9yLlxuQ2xpY2sg
+b24gdGhlIGljb24gdG8gZWRpdCBpdCEiLGNyZWF0ZWQ9IjIwMjQtMDQtMTYgMTM6NTk6NDEiLGlj
+b249dXNlcmRhdGEoInU4IiwxNiwxNiwiMDAwMDAwMDEwMTAxMDEwMTAxMDEwMTAxMDEwMDAwMDAw
+MDAwMDEwNzA3MDcwNzA3MDcwNzA3MDcwNzAxMDAwMDAwMDEwNzBkMGQwZDBkMGQwZDBkMGQwZDBk
+MDcwMTAwMDEwNzBkMGQwZDBkMDcwNzA3MDcwZDBkMGQwZDA3MDEwMTA3MGQwZDBkMDcwNzBkMGQw
+NzA3MGQwZDBkMDcwMTAxMDcwZDBkMDcwNzA3MDcwNzA3MDcwNzBkMGQwNzAxMDEwNzBkMGQwNzA3
+MDcwZDBkMDcwNzA3MGQwZDA3MDEwMTA3MGQwZDA3MDcwNzBkMGQwNzA3MDcwZDBkMDcwMTAxMDcw
+ZDBkMDcwNzA3MGQwZDA3MDcwNzBkMGQwNzAxMDEwNzBkMGQwZDA3MDcwZDBkMDcwNzBkMGQwZDA3
+MDEwMTA3MGQwZDBkMGQwNzA3MDcwNzBkMGQwZDBkMDcwMTAxMDYwNzBkMGQwZDBkMGQwZDBkMGQw
+ZDBkMDcwNjAxMDEwNjA2MDcwNzA3MDcwNzA3MDcwNzA3MDcwNjA2MDEwMDAxMDYwNjA2MDYwNjA2
+MDYwNjA2MDYwNjA2MDEwMDAwMDAwMTA2MDYwNjA2MDYwNjA2MDYwNjA2MDEwMDAwMDAwMDAwMDEw
+MTAxMDEwMTAxMDEwMTAxMDEwMDAwMDAiKSxtb2RpZmllZD0iMjAyNS0wNC0yNyAxNjo0NzoyMCIs
+dmVyc2lvbj0iIix3b3Jrc3BhY2VzPXt7bG9jYXRpb249Im1haW4ubHVhIzkwIix3b3Jrc3BhY2Vf
+aW5kZXg9MX0se2xvY2F0aW9uPSJndWkubHVhIzE1MiIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2Nh
+dGlvbj0iaWNvbi5sdWEjMSIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0iZ2Z4LzAuZ2Z4
+Iix3b3Jrc3BhY2VfaW5kZXg9Mn0se2xvY2F0aW9uPSJtYXAvMC5tYXAiLHdvcmtzcGFjZV9pbmRl
+eD0zfX1dXWx6NAAEAAAAAwAAADBuaWw=
 :: gfx/
+:: gfx/.info.pod
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTE2IDA2OjMxOjUyIixtb2RpZmllZD0iMjAyNS0w
+NC0yNyAxNjo0NzoyMCIsc3RvcmVkPSIyMDIzLTMxLTE2IDA2OjMxOjUyIl1dbHo0AAQAAAADAAAA
+MG5pbA==
 :: gfx/0.gfx
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTMyLTE2IDA2OjMyOjE4Iixtb2RpZmllZD0iMjAyNC0w
 My0xMyAwNzowNTo1NCIscmV2aXNpb249OTk4XV1sejQABgIAAEYzAADzF3tbMF09e2JtcD1weHUA
@@ -14,9 +37,21 @@ lgFAkSB1ACARrXUAQK0BEBEKAD_9AQAOAAwUnXUAXw0BIAGddQAgb-EBFpcWEQQABQJqAoMmgRYR
 JgE3MQYAQQEAARYIAC8Q0W0AHLAgkUABlwEgAQedB74AByYCDwQAAVAGB50HBocAATYCD1QBIy-w
 8DEA-0RgEdEAEbchMgT5ABedFxEHDRENFgEGDRENBwwAABwAz9cR3RE9UT0BANHwEZcAHg8xAP--
 ----------------------------------------------------WVBtPTh9fQ==
-:: gfx/.info.pod
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTMxLTE2IDA2OjMxOjUyIixzdG9yZWQ9IjIwMjMtMzEt
-MTYgMDY6MzE6NTIiXV1sejQABAAAAAMAAAAwbmls
+:: map/
+:: map/.info.pod
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTE2IDA2OjMxOjUyIixtb2RpZmllZD0iMjAyNS0w
+NC0yNyAxNjo0NzoyMCIsc3RvcmVkPSIyMDIzLTMxLTE2IDA2OjMxOjUyIl1dbHo0AAQAAAADAAAA
+MG5pbA==
+:: map/0.map
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTMyLTE2IDA2OjMyOjE4Iixtb2RpZmllZD0iMjAyNC0w
+My0xMyAwNzowNTo1NCIscmV2aXNpb249OTMzXV1sejQAXAAAAFgEAADwCHt7Ym1wPXVzZXJkYXRh
+KCJpMTYiLDE2AwAvIjABAP---_-xCCIpLGhpZGRlbj1mYWxzZSxwYW5feD0wCADSeT0wLHRpbGVf
+aD0xNgoAEHcKAIB6b29tPTF9fQ==
+:: sfx/
+:: sfx/.info.pod
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTE2IDA2OjMxOjUyIixtb2RpZmllZD0iMjAyNS0w
+NC0yNyAxNjo0NzoyMCIsc3RvcmVkPSIyMDIzLTMxLTE2IDA2OjMxOjUyIl1dbHo0AAQAAAADAAAA
+MG5pbA==
 :: gui.lua
 --[[pod_format="raw",created="2023-17-22 10:17:57",modified="2024-03-13 07:05:54",revision=926]]
 function generate_gui()
@@ -443,18 +478,16 @@ function _draw()
 	cursor(10, yy) color(13)
 	--?"\014author:    "..("zep" or "-")
 	--?"\014revision:  "..(meta.revision or "-")
-	--[[
-	?"\fg\014file:     \fh"..(fn or "?")
-	?"\fg\014size:     \fi"..((size and (size.." \fhbytes")) or "-")
-	?"\fg\014created:  \fd"..(meta.created or "-")
-	?"\fg\014modified: \fd"..(meta.modified or "-")
-	]]
+
 	--rectfill(0,yy-4,1000,1000,1)
 	color(13)
 	?"\014"..(fn or "?")
 	?"\014"..((size and (size.." bytes on disk")) or "-")
-	?"\014"..(meta.created or "[no date_created]")
-	?"\014"..(meta.modified or "[no date_modified]")
+
+	-- local times; to do: click to toggle gmt
+	-- to do: n days ago
+	?"\014"..(meta.created and date("%Y-%m-%d %H:%M:%S", meta.created) or "[no date_created]")
+	?"\014"..(meta.modified and date("%Y-%m-%d %H:%M:%S", meta.modified) or "[no date_modified]")
 	if (origin) then
 	?"\014origin: "..(origin or fullpath(fn) or "?")	
 	end
@@ -526,35 +559,4 @@ end
 
 
 
-:: map/
-:: map/0.map
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTMyLTE2IDA2OjMyOjE4Iixtb2RpZmllZD0iMjAyNC0w
-My0xMyAwNzowNTo1NCIscmV2aXNpb249OTMzXV1sejQAXAAAAFgEAADwCHt7Ym1wPXVzZXJkYXRh
-KCJpMTYiLDE2AwAvIjABAP---_-xCCIpLGhpZGRlbj1mYWxzZSxwYW5feD0wCADSeT0wLHRpbGVf
-aD0xNgoAEHcKAIB6b29tPTF9fQ==
-:: map/.info.pod
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTMxLTE2IDA2OjMxOjUyIixzdG9yZWQ9IjIwMjMtMzEt
-MTYgMDY6MzE6NTIiXV1sejQABAAAAAMAAAAwbmls
-:: sfx/
-:: sfx/.info.pod
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTMxLTE2IDA2OjMxOjUyIixzdG9yZWQ9IjIwMjMtMzEt
-MTYgMDY6MzE6NTIiXV1sejQABAAAAAMAAAAwbmls
-:: .info.pod
-b64$LS1bW3BvZCxhdXRob3I9InplcCIsaWNvbj11c2VyZGF0YSgidTgiLDE2LDE2LCIwMDAwMDAw
-MTAxMDEwMTAxMDEwMTAxMDEwMTAwMDAwMDAwMDAwMTA3MDcwNzA3MDcwNzA3MDcwNzA3MDEwMDAw
-MDAwMTA3MGQwZDBkMGQwZDBkMGQwZDBkMGQwNzAxMDAwMTA3MGQwZDBkMGQwNzA3MDcwNzBkMGQw
-ZDBkMDcwMTAxMDcwZDBkMGQwNzA3MGQwZDA3MDcwZDBkMGQwNzAxMDEwNzBkMGQwNzA3MDcwNzA3
-MDcwNzA3MGQwZDA3MDEwMTA3MGQwZDA3MDcwNzBkMGQwNzA3MDcwZDBkMDcwMTAxMDcwZDBkMDcw
-NzA3MGQwZDA3MDcwNzBkMGQwNzAxMDEwNzBkMGQwNzA3MDcwZDBkMDcwNzA3MGQwZDA3MDEwMTA3
-MGQwZDBkMDcwNzBkMGQwNzA3MGQwZDBkMDcwMTAxMDcwZDBkMGQwZDA3MDcwNzA3MGQwZDBkMGQw
-NzAxMDEwNjA3MGQwZDBkMGQwZDBkMGQwZDBkMGQwNzA2MDEwMTA2MDYwNzA3MDcwNzA3MDcwNzA3
-MDcwNzA2MDYwMTAwMDEwNjA2MDYwNjA2MDYwNjA2MDYwNjA2MDYwMTAwMDAwMDAxMDYwNjA2MDYw
-NjA2MDYwNjA2MDYwMTAwMDAwMDAwMDAwMTAxMDEwMTAxMDEwMTAxMDEwMTAwMDAwMCIpLG5vdGVz
-PSJGaWxlIG1ldGFkYXRhIHZpZXdlciBhbmQgZWRpdG9yLlxuQ2xpY2sgb24gdGhlIGljb24gdG8g
-ZWRpdCBpdCEiLHN0b3JlZD0iMjAyNC0wMy0yMyAxOTozNDoxNSIsdGl0bGU9IkFib3V0Iix2ZXJz
-aW9uPSIiLHdvcmtzcGFjZXM9e3tsb2NhdGlvbj0ibWFpbi5sdWEjOTAiLHdvcmtzcGFjZV9pbmRl
-eD0xfSx7bG9jYXRpb249Imd1aS5sdWEjMTUyIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9u
-PSJpY29uLmx1YSMxIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJnZngvMC5nZngiLHdv
-cmtzcGFjZV9pbmRleD0yfSx7bG9jYXRpb249Im1hcC8wLm1hcCIsd29ya3NwYWNlX2luZGV4PTN9
-fV1dbHo0AAQAAAADAAAAMG5pbA==
 :: [eoc]

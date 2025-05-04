@@ -17,6 +17,9 @@ do
 	local mouse_b = 0
 	local wheel_x = 0
 	local wheel_y = 0
+	local locked_dx = 0
+	local locked_dy = 0
+
 
 
 	local ident = math.random()
@@ -29,9 +32,25 @@ do
 	local scancode_blocked = {} -- deleteme -- not used or needed   //  update: maybe do? ancient sticky keys problem
 
 	function mouse()
-		-- printh("@mouse() result: "..tostr(mouse_x).." ident:"..ident)
-		return mouse_x, mouse_y, mouse_b, wheel_x, wheel_y -- wheel is since last frame
-	end 
+		return mouse_x, mouse_y, mouse_b, wheel_x, wheel_y -- wheel
+	end
+
+	--[[
+		do_lock bits
+			0x1 enable mouse (P8)       //  ignored; always enabled!
+			0x2 mouse_btn    (P8)       //  mouse buttons trigger player buttons (not implemented)
+			0x4 mouse lock   (P8)       //  lock cursor to picotron host window when set
+			0x8 auto-unlock on mouseup  //  common pattern for dials (observed by gui.lua)
+	]]
+	function mouselock(do_lock, event_sensitivity, move_sensitivity)
+		if (event_sensitivity) poke(0x5f28, mid(0,event_sensitivity*64, 255)) -- controls scale of deltas (64 == 1 per picotron pixel)
+		if (move_sensitivity)  poke(0x5f29, mid(0,move_sensitivity *64, 255)) -- controls speed of cursor while locked (64 == 1 per host pixel)
+		if (type(do_lock) == "number") poke(0x5f2d, do_lock)
+		if (do_lock == true)  poke(0x5f2d, peek(0x5f2d) | 0x4)  -- don't alter flags, just set the lock bit
+		if (do_lock == false) poke(0x5f2d, peek(0x5f2d) & ~0x4) -- likewise
+		return locked_dx, locked_dy -- wheel, locked is since last frame
+	end
+
 
 
 	--[[
@@ -349,15 +368,14 @@ do
 	local future_messages = {}
 
 	--[[
-		called once per _update
+		called once before each _update
 	]]
 	
 	function _process_event_messages()
 
 		frame_keypressed_result = {}
 
-		wheel_x = 0
-		wheel_y = 0
+		wheel_x, wheel_y, locked_dx, locked_dy = 0, 0, 0, 0
 
 
 --[[		for i=0,511 do
@@ -423,9 +441,14 @@ do
 					end
 
 					if (msg.event == "mousewheel") then
-						wheel_x = msg.wheel_x or 0
-						wheel_y = msg.wheel_y or 0
+						wheel_x += msg.wheel_x or 0
+						wheel_y += msg.wheel_y or 0
 
+					end
+
+					if (msg.event == "mouselockedmove") then
+						locked_dx += msg.locked_dx or 0
+						locked_dy += msg.locked_dy or 0
 					end
 
 					if (msg.event == "keydown") then

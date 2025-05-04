@@ -8,12 +8,57 @@ cd(env().path)
 
 local argv = env().argv
 if (#argv < 1) then
-	print("usage: load filename -- can be file or directory")
+	print("\f6usage: load filename -- can be file or directory")
 	exit(1)
 end
 
 
 filename = argv[1]
+
+
+-- load an earlier version of cartridge via anywhen
+
+if (filename:find("@")) then
+
+	filename, when = unpack(split(filename, "@", false))
+	filename = fullpath(filename)
+
+	-- expand when into full local time string
+	
+	local padding = "0000-01-01 00:00:00"
+		
+	if (when:find(":")) then
+		-- time at start: put date at start
+		local now_local = date("%Y-%m-%d %H:%M:%S")
+		when = now_local:sub(1,11)..when
+	end
+
+	-- pad remaining time
+	when ..= padding:sub(#when + 1)
+
+	-- convert to UTC
+	when = date(nil, when, stat(87))
+
+	--...
+
+	local loc = "anywhen:/"..filename.."@"..when
+	print("fetching: "..loc)
+
+	local a = fetch(loc)
+	if (type(a) == "string") then
+		-- switcheroony
+		filename = "/ram/anywhen_temp."..filename:ext()
+
+--		print("opening as "..filename)
+		rm(filename)
+		store(filename, a)
+	else
+		print("could not locate")
+		exit(0)
+	end
+
+	
+end
 
 
 -- bbs cart?
@@ -28,7 +73,7 @@ if (filename:sub(1,1) == "#") then
 
 	if (type(cart_png) == "string" and #cart_png > 0) then
 		print(#cart_png.." bytes")
-		-- rm "/ram/bbs_cart.p64.png" -- unmount. deleteme -- should be unnecessary
+		rm "/ram/bbs_cart.p64.png" -- unmount. deleteme -- should be unnecessary
 		store("/ram/bbs_cart.p64.png", cart_png)
 
 		-- switcheroony
@@ -128,6 +173,6 @@ if (type(dat) == "table") then
 
 end
 
-print("loaded "..filename.." into /ram/cart")
+print("\f6loaded "..filename.." into /ram/cart")
 
 

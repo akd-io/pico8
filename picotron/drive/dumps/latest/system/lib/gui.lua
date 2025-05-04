@@ -779,7 +779,7 @@ do
 
 			self:event(msg)
 
-			-- send message to wm only when changed
+			-- send message to wm when cursor changed
 			if (pid() > 3) then
 				if (last_mouse_cursor_gfx != mouse_cursor_gfx) window{cursor = mouse_cursor_gfx}
 				last_mouse_cursor_gfx = mouse_cursor_gfx
@@ -802,8 +802,6 @@ do
 
 			dx = mx - last_mx
 			dy = my - last_my
-
-			
 
 			if (block_mb and mb == 0) block_mb = false
 			if (block_mb) then
@@ -845,7 +843,8 @@ do
 			
 			local do_double_click = false
 			local do_double_tap = false
-			if (el and last_mb == 0 and mb > 0 and (el.last_click_t and time() - el.last_click_t < 0.4)) then
+			-- mouse buttons needs to match: clicking left and then right quickly should not trigger double click/tap
+			if (el and last_mb == 0 and mb > 0 and (el.last_click_t and time() - el.last_click_t < 0.4) and mb == el.last_click_mb) then
 				do_double_click = true
 				-- (send message at end)
 			end
@@ -864,6 +863,8 @@ do
 				-- is an element that is actively consuming keyboard input via gui:get_keyboard_focus_element
 				--gui.keyboard_focus_el = el 
 				el.last_click_t = time()
+				el.last_click_mb = mb
+
 				msg.event="click" el:event(msg)
 			end
 
@@ -877,13 +878,15 @@ do
 				-- only tap when close to position-at-mousedown within one second, and element existed for 200ms or more
 				-- ref: filenav doubleclick to enter folder -> don't want tap on newly created interface
 				if (dx*dx + dy*dy < 4*4 and time() < drag_t + 1.0 and t() > el.t0 + 0.2) then
+
 					msg.event="tap" msg.last_mb = last_mb el:event(msg)
 
-					-- also send a doubletap if second tap
-					if (el.last_tap_t and time() - el.last_tap_t < 0.4) then
+					-- also send a doubletap if second tap (using same mouse button)
+					if (el.last_tap_t and time() - el.last_tap_t < 0.4 and last_mb == el.last_tap_mb) then
 						do_double_tap = true
 					else
 						el.last_tap_t = time()
+						el.last_tap_mb = last_mb
 					end
 
 				end
@@ -910,10 +913,22 @@ do
 					-- common to want to know where drag started from
 					msg.mx0 = start_mx - el.sx
 					msg.my0 = start_my - el.sy
+
+					-- locked pointer? use that for dx, dy. ref: instrument designer envelope knob
+					if (peek(0x5f2d) & 0x4) > 0 then
+						local locked_dx, locked_dy = mouselock()
+						msg.dx = locked_dx
+						msg.dy = locked_dy
+					end
+
 					dragging_el:event(msg)
 					--printh("dragging_el: "..tostr(dragging_el))
 				elseif (mb == 0) then            -- .. but stop dragging immediately when mouse button released
+
 					dragging_el = nil
+
+					-- auto unlock mouse on release
+					if ((peek(0x5f2d) & 0x8) > 0) poke(0x5f2d, peek(0x5f2d) & ~0x4)
 				end
 			end
 

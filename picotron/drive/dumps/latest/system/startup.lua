@@ -1,13 +1,4 @@
 
--- do this at start to avoid stutter; also helps to move code into wasm/js hot paths?
-bypass = false
-while (time()<0.5) do
-	flip(1)yield()
-	if (stat(988) > 0) bypass = true _signal(35)-- need to call within loop to pump messages
-end
-
---[[pod_format="raw",created="2024-03-14 04:10:03",modified="2024-03-14 04:20:48",revision=8]]
-
 -- load settings
 local sdat = fetch"/appdata/system/settings.pod"
 if not sdat then
@@ -15,6 +6,13 @@ if not sdat then
 	sdat = fetch"/system/misc/default_settings.pod"
 	store("/appdata/system/settings.pod", sdat)
 end
+
+-- newer settings that should default to a non-nil value
+if (sdat.anywhen == nil) then
+	sdat.anywhen = true
+	store("/appdata/system/settings.pod", sdat)
+end
+
 
 -- install default desktop items
 local ff = ls("/desktop")
@@ -44,11 +42,13 @@ store("/ram/system/pwc.pod", "/untitled"..num..".p64")
 create_process("/system/pm/pm.lua")
 create_process("/system/wm/wm.lua")
 
+------------------------------------------------------------------------------------------------
+--   hold down lctrl + rctrl on boot to start with a minimal terminal setup
+--   useful for recovering from borked /appdata/system/startup.lua
+------------------------------------------------------------------------------------------------
 
-------------------------------------------------------------------------------------------------
--- 0.1.0e: hold down lctrl + rctrl on boot to start with a minimal terminal setup
---         useful for recovering from borked /appdata/system/startup.lua
-------------------------------------------------------------------------------------------------
+flip()
+if (stat(988) > 0) bypass = true _signal(35) 
 
 
 if (bypass) then
@@ -97,13 +97,11 @@ local sdat = fetch"/appdata/system/settings.pod"
 local wallpaper = (sdat and sdat.wallpaper) or "/system/wallpapers/pattern.p64"
 if (not fstat(wallpaper)) wallpaper = "/system/wallpapers/pattern.p64"
 
-create_process(wallpaper, {window_attribs = {workspace = "new", desktop_path = "/desktop", wallpaper=true}})
+-- start in desktop workspace (so show_in_workspace = true)
+create_process(wallpaper, {window_attribs = {workspace = "new", desktop_path = "/desktop", wallpaper=true, show_in_workspace=true}})
 
 create_process("/system/tooltray/tooltray.p64", {window_attribs = {workspace = "tooltray", desktop_path = "/appdata/system/desktop2", wallpaper = true}})
-
--- to do: timezones
-create_process("/system/tooltray/clock.lua", {window_attribs = {workspace = "tooltray", x=370, y=7, width=75, height=20}})
-
+create_process("/system/tooltray/clock.lua", {window_attribs = {workspace = "tooltray", x=366, y=7, width=75, height=20}})
 create_process("/system/tooltray/eyes.lua", {window_attribs = {workspace = "tooltray", x=445, y=2, width=32, height=16}})
 
 
@@ -111,8 +109,8 @@ create_process("/system/apps/terminal.lua",
 	{
 		window_attribs = {
 			fullscreen = true,
-			pwc_output = true, -- run programs in this window
-			immortal   = true  -- no close pulldown
+			pwc_output = true,        -- run present working cartridge in this window
+			immortal   = true         -- no close pulldown
 		},
 		immortal   = true -- exit() is a NOP
 	}
@@ -130,7 +128,6 @@ mount("/system/util/edit.lua","/system/util/open.lua")
 if fstat("/appdata/system/startup.lua") then 
 	create_process("/appdata/system/startup.lua")
 end
-
 
 
 

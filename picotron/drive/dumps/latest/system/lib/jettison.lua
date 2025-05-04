@@ -41,7 +41,6 @@ if (pid() > 3) then
 	_open_host_path = nil
 	_print_p8scii = nil
 	_fetch_metadata = nil
-	_date = nil
 	_get_process_list = nil
 	_read_message = nil
 	_unmap_ram = nil
@@ -63,6 +62,7 @@ if (pid() > 3) then
 
 	_fetch_local = nil
 	_fetch_remote = nil
+	_fetch_anywhen = nil
 	_store_local = nil
 	_signal = nil
 	_printh = nil

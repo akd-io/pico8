@@ -1,13 +1,18 @@
 picotron cartridge // www.picotron.net
 version 2
 
+:: .info.pod
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTEwLTAyIDIxOjM5OjUyIixtb2RpZmllZD0iMjAyNS0w
+NC0yNyAxNjo0NzoyMCIsc3RvcmVkPSIyMDI0LTM5LTAyIDIxOjM5OjUyIl1dbHo0AAQAAAADAAAA
+MG5pbA==
 :: _meta/
+:: _meta/.info.pod
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTEwLTAyIDIxOjM5OjUyIixtb2RpZmllZD0iMjAyNS0w
+NC0yNyAxNjo0NzoyMCIsc3RvcmVkPSIyMDI0LTM5LTAyIDIxOjM5OjUyIl1dbHo0AAQAAAADAAAA
+MG5pbA==
 :: _meta/workspaces.pod
 b64$LS0gcGljb3Ryb24gb2JqZWN0IGRhdGEKe3tjcHJval9maWxlPSJtYWluLmx1YSIsd29ya3Nw
 YWNlX2luZGV4PTF9fQ==
-:: _meta/.info.pod
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTM5LTAyIDIxOjM5OjUyIixzdG9yZWQ9IjIwMjQtMzkt
-MDIgMjE6Mzk6NTIiXV1sejQABAAAAAMAAAAwbmls
 :: main.lua
 --[[pod_format="raw",created="2023-40-31 14:40:49",revision=1,stored="2023-41-31 14:41:15"]]
 q=0
@@ -53,7 +58,4 @@ function _draw()
 	end
 	print(string.format("cpu:%.3f",stat(1)),2,2)
 end
-:: .info.pod
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTM5LTAyIDIxOjM5OjUyIixzdG9yZWQ9IjIwMjQtMzkt
-MDIgMjE6Mzk6NTIiXV1sejQABAAAAAMAAAAwbmls
 :: [eoc]

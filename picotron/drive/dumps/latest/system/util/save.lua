@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-23 17:34:07",modified="2024-03-23 17:36:35",revision=4]]
+--[[pod_format="raw",created="2024-03-23 17:34:07",modified="2024-04-07 23:28:24",revision=6]]
 --[[
 	save
 
@@ -48,16 +48,25 @@ for i=1,4 do flip() end
 -- set runtime version metadata
 -- when loading a cartridge, runtime should be greater or equal to this
 -- (splore: refuse to run; otherwise: show a warning)
+
 store_metadata("/ram/cart", {runtime = stat(5)})
 
--- copy /ram/cart to present working cartridge
-local result = cp("/ram/cart", save_as, 0x1)
 
+-- copy /ram/cart to present working cartridge
+
+pwc_meta = fetch_metadata(save_as)
+
+local result = cp("/ram/cart", save_as, 0x1)
 
 if (result) then
 	print(result)
 	exit(1)
 end
+
+-- don't want to clobber existing created timestamp; normally when copying a folder over a folder, target is considered a newly created folder
+-- something similar happens inside _cp but handled separately -- don't want to clobber .created when moving via rm,cp
+if (pwc_meta and pwc_meta.created) store_metadata(save_as, {created = pwc_meta.created}) 
+
 
 store("/ram/system/pwc.pod", save_as)
 

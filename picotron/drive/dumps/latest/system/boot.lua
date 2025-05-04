@@ -14,9 +14,12 @@ _apply_system_settings(sdat)
 -- allowed to assume / and /ram is mounted before boot.lua is run
 -- and that there is already /system
 
+cp("/system/misc/ram_info.pod", "/ram/.info.pod")
+
 mkdir("/ram/cart")
 mkdir("/ram/system") -- system state (userland)
 mkdir("/ram/shared") -- system state visible to sandboxed carts
+mkdir("/ram/drop")   -- host files dropped into picotron -- can just leave them kicking around until reboot
 --mkdir("/ram/log")    -- logs for this session -- to do
 
 mkdir("/desktop")
@@ -117,14 +120,13 @@ end
 
 -- boot sound
 sfx_index = 0
-sfx_delay = 1200
+sfx_delay = 1000 --1200
 r = fetch"/system/misc/boot.sfx"
 
 
 for i=0,0x2ff do
 	poke(0x30000+i*0x100, get(r,i*0x100,0x100))
 end
-
 
 
 local total_frames = 0
