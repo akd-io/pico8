@@ -9,11 +9,15 @@
 do
 
 	local _env = env
+	local _send_message = _send_message
 	local _read_message = _read_message
 	local _update_buttons = _update_buttons
+	local _signal = _signal
 	local _flip = _flip
 	local _pid = pid
 	local _warp_mouse = _warp_mouse
+	
+	local _window_has_focus = false
 
 	local message_hooks = {}
 	local message_subscriber = {}
@@ -25,6 +29,13 @@ do
 	local locked_dx = 0
 	local locked_dy = 0
 
+--	local _req_host_clipboard_text = _req_host_clipboard_text -- old approach; deleteme
+--	local _get_host_clipboard_text = _get_host_clipboard_text
+
+	local _set_host_clipboard_text = _set_host_clipboard_text
+	local _set_userland_clipboard_text = _set_userland_clipboard_text
+	local _get_userland_clipboard_text = _get_userland_clipboard_text
+	local sandbox_clipboard_text = nil
 
 
 	local ident = math.random()
@@ -213,7 +224,7 @@ do
 	-- super-keys that are triggered by a bunch of other keys
 	-- common to want to test for "any ctrl" (+ picotron includes apple command keys as ctrl)
 
-	function create_meta_key(k)
+	local function create_meta_key(k)
 		local result = {}
 		for i=1,#k do	
 			local t2 = name_to_scancodes[k[i]]
@@ -285,8 +296,13 @@ do
 
 		-- first press
 		if (key_state[scancode] and not last_key_state[scancode]) then
-			repeat_key_press_t[scancode] = time() + 0.5
+			repeat_key_press_t[scancode] = time() + 0.5 -- to do: configurable
 			frame_keypressed_result[scancode] = true
+
+			-- experimental: block all buttons! means can process keypresses first in _update so that they won't interfere with buttons mapped to keyboard
+			-- update: nah -- too much magic and not that useful. better to do explicitly in _update() (e.g. ignore button presses while ctrl held)
+			-- _signal(23)
+
 			return true
 		end
 
@@ -318,7 +334,7 @@ do
 
 
 
-	-- clear state until end of frame
+	-- clear state until end of frame (update: or until pressed again?)
 	-- (mapped keys only -- can't be used with raw scancodes)
 	function clear_key(scancode)
 
@@ -361,6 +377,9 @@ do
 		key_state={}
 		last_key_state={}
 
+		-- block buttons
+		_signal(23)
+
 		-- block all keys
 		--[[
 			scancode_blocked = {}
@@ -371,16 +390,82 @@ do
 
 	end
 
+	-- 
+	function get_clipboard()
 
---[[
-	deleteme -- don't need. app can just listen to gained/lost focus themselves. 
-	local _window_has_focus = false
+		if (env().sandbox) then
+			return sandbox_clipboard_text
+		end
 
-	function window_has_focus()
-		return _window_has_focus
+		return _get_userland_clipboard_text()
+		
 	end
-]]
-	
+
+	function set_clipboard(str)
+		if (type(str) ~= "string") return
+
+		-- set at all 3 levels regardless of context: sandbox, userland, host
+		sandbox_clipboard_text = str
+		_set_userland_clipboard_text(str)
+		_set_host_clipboard_text(str)
+	end
+
+
+	local function _update_keybd()
+
+		-- 0.1.0g: disable control keys when alt is held
+		-- don't want ALTgr + 7 to count as ctrl + 7 (some hosts consider ctrl + alt to be held when ALTgr is held)
+		if (key_state[lalt] or key_state[ralt]) then
+			key_state[lctrl] = nil
+			key_state[rctrl] = nil
+		end
+
+
+		if (_pid() > 3 and key"alt") then
+			-- wm workspace flipping shouldn't produce keyp("left") / keyp("right")
+			clear_key("left") 
+			clear_key("right")
+			-- host alt+enter / tab shouldn't produce keyp("enter") / keyp("tab")
+			clear_key("enter")
+			clear_key("tab")
+		end
+
+		-- 0.1.1e: handle ctrl-v
+		if (pressed_ctrl_v) then
+
+--			printh("@@ event:pressed_ctrl_v ~ simulate ctrl-v keyress")
+			key_state[name_to_scancodes["lctrl"][1]] = 1    -- can set any of the physicals keys named "lctrl"
+			key_state[name_to_scancodes["v"][1]] = 1        -- ditto
+			last_key_state[name_to_scancodes["v"][1]] = nil -- so that keyp("v") == true
+			
+			-- pretend all keys are released after 0.1 seconds (artifical keypresses have no keyup message; will be sticky)
+			--send_message(_pid(), {event="reset_kbd", _delay = 0.1})
+
+			send_message(_pid(), {event="keyup", scancode = name_to_scancodes["lctrl"][1], _delay = 0.1})
+			send_message(_pid(), {event="keyup", scancode = name_to_scancodes["v"][1], _delay = 0.1})
+
+			pressed_ctrl_v = false
+
+		elseif stat(318) == 1 then
+			-- web: when ctrl-v, pretend the v didn't happen. 
+			-- the only way to get ctrl-v is via the "pressed_ctrl_v" message
+			if (key("ctrl") and keyp("v")) then
+				clear_key("v") 
+			end
+		end
+
+		-- transfer sandbox clipboard (whether triggered by virtual or regular host)
+
+		if (key("ctrl") and keyp("v")) then
+			sandbox_clipboard_text = _get_userland_clipboard_text() -- ctrl-v taken as permission to transfer from userland clipboard to sandbox
+			_signal(23) -- also: block buttons. Don't want the "v" press to pass through as a button press
+		end
+
+
+	end
+
+
+
 	local future_messages = {}
 
 	--[[
@@ -393,12 +478,6 @@ do
 		frame_keypressed_result = {}
 
 		wheel_x, wheel_y, locked_dx, locked_dy = 0, 0, 0, 0
-
-
---[[		for i=0,511 do
-			last_key_state[i] = key_state[i]
-		end
-]]
 
 		last_key_state = unpod(pod(key_state))
 
@@ -469,50 +548,45 @@ do
 					end
 
 					if (msg.event == "keydown") then
-
-
-						local accept = true
-
-						if (_pid() > 3) then
-							if (key_state[lctrl] or key_state[rctrl]) then
-								-- to do (efficiency) maintain a reverse lookup of keys to filter when ctrl is held
-								if (msg.scancode == name_to_scancodes["s"][1]) accept = false
-								if (msg.scancode == name_to_scancodes["6"][1]) accept = false
-								if (msg.scancode == name_to_scancodes["7"][1]) accept = false
-								if (msg.scancode == name_to_scancodes["0"][1]) accept = false
-								if (msg.scancode == name_to_scancodes["tab"][1]) accept = false
-
-							end
-
-							if (key_state[lalt] or key_state[ralt]) then
-								if (msg.scancode == name_to_scancodes["left"][1])  accept = false -- wm workspace flipping
-								if (msg.scancode == name_to_scancodes["right"][1]) accept = false -- wm workspace flipping
-								if (msg.scancode == name_to_scancodes["enter"][1]) accept = false -- host alt+enter
-								if (msg.scancode == name_to_scancodes["tab"][1])   accept = false -- host alt+tab
-							end
-						end
-
-						if (accept) key_state[msg.scancode] = 1
-						--printh("@@ keydown scancode: "..msg.scancode)
+						key_state[msg.scancode] = 1
 					end
 
 					if (msg.event == "keyup") then
 						key_state[msg.scancode] = nil
 					end
 
+					-- needed for web hacks; defer keypress message until after received clipboard contents
+					if (msg.event == "pressed_ctrl_v") then
+						pressed_ctrl_v = true
+					end
+
+					-- used by wm to stop keypresses getting through
+					if (msg.event == "clear_key") then
+						-- printh("["..pid().."] clear_key: "..tostring(msg.scancode))
+						clear_key(msg.scancode)
+					end
+
+					if (msg.event == "reset_kbd") then
+						reset_kbd_state()
+					end
+
+					if (msg.event == "reset_kbd_for_paste") then
+						clear_key("v")
+					end
+
 					if (msg.event == "textinput" and #text_queue < 1024) then
-						if not(key"ctrl") then -- block some stray ctrl+ combinations getting through. e.g. ctrl+1
+						if not(key"ctrl") then -- ignore textinput when ctrl is held // do here in (rather than in os_sdlem.c) to respect ctrl mapping
 							text_queue[#text_queue+1] = msg.text;
 						end
 					end
 
 					if (msg.event == "gained_focus") then
-						--_window_has_focus = true -- deleteme
+						_window_has_focus = true
 						reset_kbd_state()
 					end
 
 					if (msg.event == "lost_focus") then
-						--_window_has_focus = false -- deleteme
+						_window_has_focus = false
 						reset_kbd_state()
 					end
 
@@ -525,28 +599,40 @@ do
 					end
 
 					if (msg.event == "resize") then
+						--printh("resize: "..pod(msg))
 						-- throw out old display and create new one. can adjust a single dimension
 						if (get_display()) then
-							-- sometimes want to use resize message to also adjust window position so that
+							-- set x,y because sometimes want to use resize message to also adjust window position so that
 							-- e.g. width and x visibly change at the same frame to avoid jitter (ref: window resizing widget)
-							window{width = msg.width, height = msg.height, x = msg.x, y = msg.y}
+							window{width = msg.width, height = msg.height, width0 = msg.width0, height0 = msg.height0, x = msg.x, y = msg.y}
 						end
 					end
 
-				end
-			end
+					if (msg.event == "squash") then
+						
+						window{
+							--width  = max(40, msg.width), -- big enough to grab title bar 
+							--height = max(20, msg.height),
+							width  = msg.width, -- big enough to grab title bar 
+							height = msg.height,
+							x = msg.x, y = msg.y, squash_event = true
+						}
+					end
+
+				end -- blocked_by_hook
+			end -- msg ~= nil
 
 		until not msg
 
-		-- 0.1.0g: disable control keys when alt is held
-		-- don't want ALTgr + 7 to count as ctrl + 7 (some hosts consider ctrl + alt to be held when ALTgr is held)
-		if (key_state[lalt] or key_state[ralt]) then
-			key_state[lctrl] = nil
-			key_state[rctrl] = nil
-		end
+		--------------------------------------------------------------------------------------------------------------------------------
 
+		_update_keybd()
+
+		--------------------------------------------------------------------------------------------------------------------------------
 
 		_update_buttons()
+
+		--------------------------------------------------------------------------------------------------------------------------------
 
 	end
 
@@ -582,15 +668,28 @@ do
 
 		-- for file modification events: let pm know this process is listening for that file
 		if (sub(event, 1, 9) == "modified:") then
-			local filename = sub(event, 10)
+			local filename_userland = sub(event, 10)
+			local filename_kernal = filename_userland
 
 			-- for simplicity, sandboxed processes can't subscribe to anything except /ram/shared/* 
 			-- (otherwise need to handle location rewrites) in message contents
-			if (_env()._sandboxed and filename:sub(1,12) ~= "/ram/shared/") return
+			-- if (_env()._sandbox and filename:sub(1,12) ~= "/ram/shared/") return
+			-- allow /appdata -- pm.lua can handle it
+			if (_env()._sandbox and filename_userland:sub(1,12) ~= "/ram/shared/" and filename_userland:sub(1,9) ~= "/appdata/") return
 
-			send_message(2, {
+			-- sandboxed process: map 
+			-- to do: should us _userland_to_kernal_path here but how to safety expost to events.lua?
+			-- this is a temporary solution for bbs://trashman
+			if (_env().sandbox and _env().bbs_id) then
+				if (filename_userland:sub(1,9) == "/appdata/" and filename_userland:sub(1,16) ~= "/appdata/shared/") then
+					filename_kernal = "/appdata/bbs/".._env().bbs_id.."/"..filename_userland:sub(10)
+				end
+			end
+
+			_send_message(2, {
 				event = "_subscribe_to_file",
-				filename = fullpath(filename)
+				filename_userland = filename_userland, -- the file as it appears in the modified:foo -- could be relative
+				filename_kernal = fullpath(filename_kernal) -- full path of unmapped file on disk / in ram
 			})
 		end
 
@@ -602,14 +701,15 @@ do
 		add(message_subscriber, f)
 	end
 
+
+
+
+	if (pid() > 3) then
+		on_event("pause",       function() poke(0x547f, peek(0x547f) |  0x4) reset_kbd_state() end)
+		on_event("unpause",     function() poke(0x547f, peek(0x547f) & ~0x4) reset_kbd_state() end)
+	--	on_event("toggle_mute", function() poke(0x547f, peek(0x547f) ^^ 0x8) end) -- deleteme; mute should be system-wide (maybe later: per-app volume)
+	end
+
 end
-
-
-if (pid() > 3) then
-	on_event("pause",       function() poke(0x547f, peek(0x547f) |  0x4) end)
-	on_event("unpause",     function() poke(0x547f, peek(0x547f) & ~0x4) end)
---	on_event("toggle_mute", function() poke(0x547f, peek(0x547f) ^^ 0x8) end) -- deleteme; mute should be system-wide (maybe later: per-app volume)
-end
-
 
 

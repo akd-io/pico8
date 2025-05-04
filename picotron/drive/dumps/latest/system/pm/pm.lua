@@ -18,6 +18,7 @@ function _update()
 	if (stat(315) > 0 and #_get_process_list() <= 3) _signal(33)
 
 	-- exported player: shutdown when no userland processes remaining
+	-- to do: this test no longer works
 	if (stat(317) > 0 and #_get_process_list() <= 3) _signal(33)
 
 end
@@ -30,10 +31,11 @@ local file_subscribers = {}
 -- to do: periodically sweep dead process ids from file_subscribers 
 on_event("_subscribe_to_file",
 	function(msg)
-		local fn = msg.filename -- if filename is garbage, will just never be triggered
-		if (not fn) return
+		local fn = msg.filename_kernal -- if filename is garbage, will just never be triggered		
+		if (type(fn) ~= "string" or type(msg.filename_userland) ~= "string") return
+		--printh("_subscribe_to_file "..pod{msg})
 		file_subscribers[fn] = file_subscribers[fn] or {}
-		add(file_subscribers[fn], msg._from)
+		add(file_subscribers[fn], {proc_id = msg._from, filename_userland = msg.filename_userland})
 	end
 )
 
@@ -43,9 +45,11 @@ on_event("_file_stored",
 		local subscribers = file_subscribers[msg.filename]
 		if (not subscribers) return
 		for i=1, #subscribers do
-			send_message(subscribers[i], {
-				event = "modified:"..msg.filename,
-				filename = msg.filename,
+			-- printh("sending to subscriber "..pod(subscribers[i]))
+			send_message(subscribers[i].proc_id,
+			{
+				event = "modified:"..subscribers[i].filename_userland,
+				filename = subscribers[i].filename_userland,
 				proc_id = msg.proc_id
 			})
 		end

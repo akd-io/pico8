@@ -2,10 +2,10 @@ picotron cartridge // www.picotron.net
 version 2
 
 :: canvas.lua
---[[pod_format="raw",created="2023-04-11 02:04:02",modified="2024-08-18 16:06:41",revision=4007,stored="2023-24-28 00:24:00"]]
-local ww,hh=0,0
+--[[pod_format="raw",created="2023-04-11 02:04:02",modified="2025-01-31 18:07:55",revision=4181,stored="2023-24-28 00:24:00"]]
+
 local fill_cpu=0
-local x0,y0=0,0
+
 function do_fill_0(bmp, x, y, tc)
 
 	if (get(bmp,x,y) != tc) return
@@ -115,18 +115,18 @@ end
 
 function create_canvas(el)
 
-	local ww,hh,x0,y0
+	local ww,hh = 16,16
+	local can_x0,can_y0 = 0,0
 	local drag_x0,drag_y0 = 0,0
 	local mtool
-	
-	
 	
 	function el:update()
 	
 		el.cursor = "crosshair"
 		if (mtool == "pan") el.cursor = "grab"
-		if (mtool == "fill") el.cursor = get_spr(56)
-		
+--		if (mtool == "fill") el.cursor = get_spr(56) -- commented; can't use get_spr!
+		if (mtool == "fill") el.cursor = icons.bucket_cursor
+
 		
 		-- safety [during dev]
 		ci.zoom = ci.zoom or 1
@@ -144,8 +144,8 @@ function create_canvas(el)
 		local px = cbmp_width/2  + ci.pan_x
 		local py = cbmp_height/2 + ci.pan_y
 		
-		x0 = el.width\2  - px * ci.zoom
-		y0 = el.height\2 - py * ci.zoom
+		can_x0 = el.width\2  - px * ci.zoom
+		can_y0 = el.height\2 - py * ci.zoom
 		
 	end
 	
@@ -157,8 +157,8 @@ function create_canvas(el)
 			clear_selection()
 		end
 		
-		local x = (msg.mx - x0) \ ci.zoom
-		local y = (msg.my - y0) \ ci.zoom
+		local x = (msg.mx - can_x0) \ ci.zoom
+		local y = (msg.my - can_y0) \ ci.zoom
 		local xx,yy = x,y
 		if (ci.layer) x-= ci.layer_x y-= ci.layer_y
 		--printh("click: "..pod{x,y})
@@ -200,8 +200,8 @@ function create_canvas(el)
 		
 		set_draw_target(tbmp)
 		
-		local x = (msg.mx - x0) \ ci.zoom
-		local y = (msg.my - y0) \ ci.zoom
+		local x = (msg.mx - can_x0) \ ci.zoom
+		local y = (msg.my - can_y0) \ ci.zoom
 		local xx,yy = x,y
 		if (ci.layer) then
 			set_draw_target(ci.layer)
@@ -326,8 +326,8 @@ function create_canvas(el)
 	
 	function el:release(msg)
 
-		local x = (msg.mx - x0) \ ci.zoom
-		local y = (msg.my - y0) \ ci.zoom
+		local x = (msg.mx - can_x0) \ ci.zoom
+		local y = (msg.my - can_y0) \ ci.zoom
 		
 		if (mtool == "select") then
 			if (click_x0 == x and click_y0 == y) then
@@ -355,14 +355,20 @@ function create_canvas(el)
 	
 	
 	function el:draw(msg)
-		local x = (msg.mx - x0) \ ci.zoom
-		local y = (msg.my - y0) \ ci.zoom
+	
+		-- make sure everything is up to date
+		-- (might be out of sync due to keyboard-triggered operation; e.g. rotate)
+		self.update(msg) 
+		
+		local x = (msg.mx - can_x0) \ ci.zoom
+		local y = (msg.my - can_y0) \ ci.zoom
 		
 		--fillp(0x1248)
 		fillp()
 		rectfill(0,0,self.width,self.height,32)
 		fillp()	
 		
+		local x0,y0 = can_x0, can_y0
 		local x1,y1 = x0 + ww, y0 + hh
 		local scale = ci.zoom
 
@@ -456,7 +462,7 @@ end
 
 
 :: draw.lua
---[[pod_format="raw",created="2023-10-12 03:26:20",modified="2024-08-18 16:06:41",revision=2907,stored="2023-24-28 00:24:00"]]
+--[[pod_format="raw",created="2023-10-12 03:26:20",modified="2025-01-31 18:07:55",revision=3069,stored="2023-24-28 00:24:00"]]
 function _draw()
 	
 	cls(5)
@@ -484,7 +490,7 @@ end
 
 
 :: gui.lua
---[[pod_format="raw",created="2023-05-11 02:05:16",modified="2024-08-18 16:06:41",revision=3778,stored="2023-24-28 00:24:00"]]
+--[[pod_format="raw",created="2023-05-11 02:05:16",modified="2025-01-31 18:07:55",revision=3942,stored="2023-24-28 00:24:00"]]
 --[[
 
 	should only need:
@@ -643,7 +649,7 @@ end -- brush elements
 
 end
 
-local tool_gfx={
+tool_gfx={
 pencil="[gfx]08080000700000077700007777700777770070777000700700007770000000000000[/gfx]",
 brush="[gfx]08080000077000007700000770000007000007700000077000007700000000000000[/gfx]",
 line="[gfx]08080000007000000700000070000007000000700000070000007000000000000000[/gfx]",
@@ -739,7 +745,7 @@ end
 
 
 :: main.lua
---[[pod_format="raw",created="2023-04-11 02:04:54",modified="2024-08-18 16:06:41",revision=3825,stored="2023-24-28 00:24:00"]]
+--[[pod_format="raw",created="2023-04-11 02:04:54",modified="2025-01-31 18:07:55",revision=3990,stored="2023-24-28 00:24:00"]]
 --[[
 	gfx6: region selection / multi-copy/paste
 ]]
@@ -1005,7 +1011,7 @@ end)
 
 
 :: nav.lua
---[[pod_format="raw",created="2023-10-11 02:18:48",modified="2024-08-18 16:06:41",revision=4518,stored="2023-24-28 00:24:00"]]
+--[[pod_format="raw",created="2023-10-11 02:18:48",modified="2025-01-31 18:07:55",revision=4679,stored="2023-24-28 00:24:00"]]
 --[[
 	navigate sprite bank
 	+ top-level operations (resize bitmap)
@@ -1013,7 +1019,7 @@ end)
 	tab to toggle pane (and dock/undock toolbar!)
 ]]
 
-local icons=
+icons=
 {
 	-- notes
 	"[gfx]08087777770077777700700007007777770070000700777777000777777000000000[/gfx]",
@@ -1023,7 +1029,10 @@ local icons=
 	
 	-- unlock, lock
 	"[gfx]08080077700007000700070000000777770007707700077777000000000000000000[/gfx]",
-	"[gfx]08080000000000777000070007000777770007707700077777000000000000000000[/gfx]"
+	"[gfx]08080000000000777000070007000777770007707700077777000000000000000000[/gfx]",
+
+	bucket_cursor=unpod("b64:bHo0AE8AAABPAAAA8gBweHUAQyAVFQTQAfADAQcFAPAr4EEHAcABZwGgAQcBRwGwAQcRJwHAAQcBAAEHAdABBwEQAdABIAHgAQcgBwHgASAB8AEBBwHwAwHwjQ=="),
+	
 }
 
 function make_toggle_button(el)
@@ -1422,7 +1431,7 @@ end
 
 
 :: pal.lua
---[[pod_format="raw",created="2023-05-11 02:05:01",modified="2024-08-18 16:06:41",revision=1714,stored="2023-11-28 03:11:19"]]
+--[[pod_format="raw",created="2023-05-11 02:05:01",modified="2025-01-31 18:07:55",revision=1876,stored="2023-11-28 03:11:19"]]
 local pcols = {[0]=
 	0,19,3,27,  11,26,10,23,
 	1,17,12,28, 18,16,13,29,
@@ -1574,7 +1583,7 @@ end
 
 
 :: undo.lua
---[[pod_format="raw",created="2023-10-14 03:29:27",modified="2024-08-18 16:06:41",revision=2083,stored="2023-24-28 00:24:00"]]
+--[[pod_format="raw",created="2023-10-14 03:29:27",modified="2025-01-31 18:07:55",revision=2252,stored="2023-24-28 00:24:00"]]
 local group_op_items = nil
 
 local function undo_save_state(ii)
@@ -1662,7 +1671,7 @@ end
 
 
 :: update.lua
---[[pod_format="raw",created="2023-10-10 07:45:26",modified="2024-08-18 16:06:41",revision=3663,stored="2023-24-28 00:24:00"]]
+--[[pod_format="raw",created="2023-10-10 07:45:26",modified="2025-01-31 18:07:55",revision=3852,stored="2023-24-28 00:24:00"]]
 	
 	function get_selected_rect()
 		local x0,y0 = 10000, 10000
@@ -1709,8 +1718,6 @@ end
 	end
 	
 	function move_selection(dx, dy)
-		
-		backup_state()
 		
 		if (not ci.layer) return rotate_selection(dx, dy)
 		
@@ -1767,6 +1774,34 @@ end
 			end
 		end
 		
+		if (op == "rotate") then
+			-- tricky: item, section need to change dimensions
+			
+			tbmp = tbmp:transpose()
+			orig = tbmp:copy()
+			-- vertical flip to complete rotation
+			for y=0, tbmp:height()-1 do
+				blit(orig,tbmp,0,y,0,tbmp:height()-1-y,tbmp:width(),1)
+			end
+			
+			if (ci.layer) then
+				ci.layer = tbmp
+				-- update floating layer / selection, and center
+				move_selection(
+					(tbmp:height()-tbmp:width())/2,
+					(tbmp:width()-tbmp:height())/2
+				)
+			else
+				item[current_item].bmp = tbmp
+				cbmp = item[current_item].bmp
+				cbmp_width, cbmp_height = cbmp:width(), cbmp:height()
+			end
+			
+			
+
+		end
+		
+		
 		-- layer only -- don't clear whole map with del
 		if (ci.layer and op == "clear") then
 			ci.layer:clear()
@@ -1774,6 +1809,9 @@ end
 		
 		-- update changes
 		if (ci.layer) blit(ci.layer, cbmp, 0, 0, ci.layer_x, ci.layer_y)
+		
+		-- needed for rotate
+		set_current_item(current_item, true)
 	end
 	
 	function get_region_indexes(r)
@@ -1880,15 +1918,17 @@ function _update()
 	end
 	
 	local mag = key("ctrl") and 8 or 1
-	if (keyp("left"))  move_selection(-mag, 0)
-	if (keyp("right")) move_selection( mag, 0)
-	if (keyp("up"))    move_selection( 0,-mag)
-	if (keyp("down"))  move_selection( 0, mag)
+	if (keyp("left"))  backup_state() move_selection(-mag, 0)
+	if (keyp("right")) backup_state() move_selection( mag, 0)
+	if (keyp("up"))    backup_state() move_selection( 0,-mag)
+	if (keyp("down"))  backup_state() move_selection( 0, mag)
 	
 	if (not key"ctrl") then
 	
-	if (keyp("f")) modify_selection("flip_x")
+		if (keyp("f")) modify_selection("flip_x")
 		if (keyp("v")) modify_selection("flip_y")
+		if (keyp("r")) modify_selection("rotate")
+		
 		if (keyp("del") or keyp("backspace")) modify_selection("clear")
 		
 		-- navigate
@@ -2003,25 +2043,25 @@ function _update()
  end
 
 :: .info.pod
-b64$LS1bW3BvZCxzdG9yZWQ9IjIwMjQtMDMtMjIgMTE6NDM6MTIiLGNyZWF0ZWQ9IjIwMjMtMTAt
-MTkgMTI6NTA6NTAiLG5vdGVzPSIiLGljb249dXNlcmRhdGEoInU4IiwxNiwxNiwiMDAwMDAwMDEw
-MTAxMDEwMTAxMDEwMTAxMDEwMDAwMDAwMDAwMDEwNzA3MDcwNzA3MDcwNzA3MDcwNzAxMDAwMDAw
-MDEwNzBkMGQwZDBkMGQwZDBkMGQwZDBkMDcwMTAwMDEwNzBkMGQwZDBkMGQwZDBkMGQwZDBkMGQw
-ZDA3MDEwMTA3MGQwZDBkMDcwNzBkMGQwNzA3MGQwZDBkMDcwMTAxMDcwZDBkMGQwNzA3MGQwZDA3
-MDcwZDBkMGQwNzAxMDEwNzBkMGQwZDA3MDcwZDBkMDcwNzBkMGQwZDA3MDEwMTA3MGQwZDBkMDcw
-NzA3MDcwNzA3MGQwZDBkMDcwMTAxMDcwZDBkMGQwNzBkMDcwNzBkMDcwZDBkMGQwNzAxMDEwNzBk
-MGQwZDA3MDcwNzA3MDcwNzBkMGQwZDA3MDEwMTA3MGQwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMDcw
-MTAxMDYwNzBkMGQwZDBkMGQwZDBkMGQwZDBkMDcwNjAxMDEwNjA2MDcwNzA3MDcwNzA3MDcwNzA3
-MDcwNjA2MDEwMDAxMDYwNjA2MDYwNjA2MDYwNjA2MDYwNjA2MDEwMDAwMDAwMTA2MDYwNjA2MDYw
-NjA2MDYwNjA2MDEwMDAwMDAwMDAwMDEwMTAxMDEwMTAxMDEwMTAxMDEwMDAwMDAiKSxydW50aW1l
-PTgsbW9kaWZpZWQ9IjIwMjUtMDQtMjcgMTY6MDA6NTUiLGF1dGhvcj0ibGV4YWxvZmZsZSIsdGl0
-bGU9IlBpY290cm9uIFBpeGVscyIsdmVyc2lvbj0iMC4xaCIsd29ya3NwYWNlcz17e2xvY2F0aW9u
-PSJtYWluLmx1YSMxNjEiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249ImRyYXcubHVhIzQi
-LHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249Im5hdi5sdWEjOTMiLHdvcmtzcGFjZV9pbmRl
-eD0xfSx7bG9jYXRpb249Imd1aS5sdWEjNjAiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249
-ImNhbnZhcy5sdWEjMzA5Iix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJ1cGRhdGUubHVh
-IzI1NSIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0icGFsLmx1YSMzNCIsd29ya3NwYWNl
-X2luZGV4PTF9LHtsb2NhdGlvbj0idW5kby5sdWEjNjkiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9j
-YXRpb249ImdmeC8wLmdmeCIsd29ya3NwYWNlX2luZGV4PTJ9LHtsb2NhdGlvbj0iZ2Z4LzAuZ2Z4
-Iix3b3Jrc3BhY2VfaW5kZXg9N319XV0=
+b64$LS1bW3BvZCxhdXRob3I9ImxleGFsb2ZmbGUiLGNyZWF0ZWQ9IjIwMjMtMTAtMTkgMTI6NTA6
+NTAiLGljb249dXNlcmRhdGEoInU4IiwxNiwxNiwiMDAwMDAwMDEwMTAxMDEwMTAxMDEwMTAxMDEw
+MDAwMDAwMDAwMDEwNzA3MDcwNzA3MDcwNzA3MDcwNzAxMDAwMDAwMDEwNzBkMGQwZDBkMGQwZDBk
+MGQwZDBkMDcwMTAwMDEwNzBkMGQwZDBkMGQwZDBkMGQwZDBkMGQwZDA3MDEwMTA3MGQwZDBkMDcw
+NzBkMGQwNzA3MGQwZDBkMDcwMTAxMDcwZDBkMGQwNzA3MGQwZDA3MDcwZDBkMGQwNzAxMDEwNzBk
+MGQwZDA3MDcwZDBkMDcwNzBkMGQwZDA3MDEwMTA3MGQwZDBkMDcwNzA3MDcwNzA3MGQwZDBkMDcw
+MTAxMDcwZDBkMGQwNzBkMDcwNzBkMDcwZDBkMGQwNzAxMDEwNzBkMGQwZDA3MDcwNzA3MDcwNzBk
+MGQwZDA3MDEwMTA3MGQwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMDcwMTAxMDYwNzBkMGQwZDBkMGQw
+ZDBkMGQwZDBkMDcwNjAxMDEwNjA2MDcwNzA3MDcwNzA3MDcwNzA3MDcwNjA2MDEwMDAxMDYwNjA2
+MDYwNjA2MDYwNjA2MDYwNjA2MDEwMDAwMDAwMTA2MDYwNjA2MDYwNjA2MDYwNjA2MDEwMDAwMDAw
+MDAwMDEwMTAxMDEwMTAxMDEwMTAxMDEwMDAwMDAiKSxtb2RpZmllZD0iMjAyNS0wNC0yNyAxNTo1
+OToyMCIsbm90ZXM9IiIscnVudGltZT0xMyxzdG9yZWQ9IjIwMjQtMDMtMjIgMTE6NDM6MTIiLHRp
+dGxlPSJQaWNvdHJvbiBQaXhlbHMiLHZlcnNpb249IjAuMS4xZSIsd29ya3NwYWNlcz17e2xvY2F0
+aW9uPSJtYWluLmx1YSMxIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJkcmF3Lmx1YSMx
+Iix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJuYXYubHVhIzEiLHdvcmtzcGFjZV9pbmRl
+eD0xfSx7bG9jYXRpb249Imd1aS5sdWEjMSIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0i
+Y2FudmFzLmx1YSMxMzgiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249InVwZGF0ZS5sdWEj
+MjUwIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJwYWwubHVhIzEiLHdvcmtzcGFjZV9p
+bmRleD0xfSx7bG9jYXRpb249InVuZG8ubHVhIzEiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRp
+b249ImdmeC8wLmdmeCIsd29ya3NwYWNlX2luZGV4PTJ9LHtsb2NhdGlvbj0iZ2Z4LzAuZ2Z4Iix3
+b3Jrc3BhY2VfaW5kZXg9N319XV0=
 :: [eoc]

@@ -5,52 +5,51 @@ version 2
 :: gfx/delme2/
 :: gfx/delme2/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTAyLTExIDA4OjAyOjIwIixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjowMDo1NSIsc3RvcmVkPSIyMDIzLTAyLTExIDA4OjAyOjIwIl1d
+NC0yNyAxNTo1OToyMCIsc3RvcmVkPSIyMDIzLTAyLTExIDA4OjAyOjIwIl1d
 :: gfx/delme/
 :: gfx/delme/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTExIDA3OjU0OjA2Iixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjowMDo1NSIsc3RvcmVkPSIyMDIzLTU0LTExIDA3OjU0OjA2Il1d
+NC0yNyAxNTo1OToyMCIsc3RvcmVkPSIyMDIzLTU0LTExIDA3OjU0OjA2Il1d
 :: gfx/ha/
 :: gfx/ha/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTA5LTExIDA4OjA5OjQ0Iixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjowMDo1NSIsc3RvcmVkPSIyMDIzLTA5LTExIDA4OjA5OjQ0Il1d
+NC0yNyAxNTo1OToyMCIsc3RvcmVkPSIyMDIzLTA5LTExIDA4OjA5OjQ0Il1d
 :: gfx/zxc/
 :: gfx/zxc/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTExIDA3OjQxOjQxIixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjowMDo1NSIsc3RvcmVkPSIyMDIzLTQxLTExIDA3OjQxOjQxIl1d
+NC0yNyAxNTo1OToyMCIsc3RvcmVkPSIyMDIzLTQxLTExIDA3OjQxOjQxIl1d
 :: gfx/0.gfx
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTIwIDA2OjM4OjU2Iixtb2RpZmllZD0iMjAyNC0x
-MC0xNSAwMDoxOTozMiIscmV2aXNpb249MzA4MSxzdG9yZWQ9IjIwMjMtMzQtMDkgMTk6MzQ6NTMi
-XV1sejQAdwQAAI06AADzFHtbMF09e2JtcD1weHUAQyAQEATw8CxmbGFncz0wLHBhbl94CADKeT0w
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTIwIDA2OjM4OjU2Iixtb2RpZmllZD0iMjAyNS0w
+Mi0xNSAwMjo0OToyOCIscmV2aXNpb249MzEwMSxzdG9yZWQ9IjIwMjMtMzQtMDkgMTk6MzQ6NTMi
+XV1sejQAVwQAAI06AADzFHtbMF09e2JtcD1weHUAQyAQEATw8CxmbGFncz0wLHBhbl94CADKeT0w
 LHpvb209OH0sMQDzCgCRUAF3BgFAAXcWATABdyYBIAF3NgEQAbcEADQXJmcKAC1GRwoAAwQAL9EA
 dgAc7-AJUYABLSYBAGEtNhHWAgABTwEA0QDLADggJz2zADU3LUcMAEEXLQcNCAAgHXcGACBdNxoA
 I003MAAP1QAhb-EBFpcWEQQABQLYAIMmgRYRJgE3MQYAQQEAARYIAC8Q0W0AHJAQoTABrQEQAQcG
 ABARCgCfvQEAAQcBHVEtEAAK-wOdERCxBwEQEZcNASABnQFAkSB5ABzyBfAKQZAxHQEAoS0R3REt
 dy0RHZcdBABXFx0nHQcIACGXHSAA-wBNRz0RTQcNBw0HPRHdAQAsAiKAMS0BAJE9Ed1zAIFXTREt
-Zz0RbVEAsS0nDSc9ES0HDQd9FgAhPVcmAA8_AiH6AqFAAXcGETABdxYRIAF3JhEQCQMA1AARNzAC
-PycdJwgACAQoAA5GAg_IADNfFx0XHTcIAAEBwgJmFw0HHQcNEAAOhgAPFwQ0Ey0OAQUIAAAnBCFH
-LQwAKR0HCAAPhABBIDdNbAFPNw0nDQgAAzIHLSeeACUtJ54AD4gAQRJn-AEabQoCSQcNBx0SACVt
-J2oED4YAQRG3XgA0Bx1HDAADlgEet4YBD3wAFA9WBixgEIFQAXcNrQAQHa0AEC2tABY9gQBFAVcW
-NwYAAmIGWAcWFwZXCAAnRld_Bj8gsRCzAB2fAdEAAdcRB70HBAAC-wfXEReGJxEXhhcGEbcGAQAB
-tgEgsfADZAAdjwDxAdYRBr0GBAAC-wXWERaHJhEWhxYNEbYNAQABvQEQwWMAH38IcWARLSaBJwcF
-L-EBGAEgWBG3IdcRAgAhBrevAJ8dliG2EQDR8AH5BidTBw1XDQcMADMXXRcKAA--Bj8v8PAxAH8P
-DgIMEtYMASGHFm8CDgwCD5IAQBEHPQKcEQBRLUYhxhHWAgAB7gEfAIYATg8xAB1iELEgEZcRKQQE
-BAAP3gQVUAaXBgEQXwE_EZYRNQQPegAdMycdF8gFPzcdFwgACAQoAA_GAAQPegJUL7EGBAACldYR
-BhcGXQYXBggAPzZdJoQCJw8xAK8vAJGdBgsABABFFxYHFnACRiYHFjcYAC4mN8YHD3wAQl8HFicW
-NwgACAekAA-SB08AZAJf3RENsQ0EAAYAnQtzDacdEQ2XHe4GHyAdAaYPMQD-Eg_uAXUPiAARXwcW
-FxZHCAABEVYGAFYGBxYHBhAAD4YARhMmDgEFCAAAEQwhNyYMACkWBwgAD4QAQSAnRmwBTycGJwYI
-AAMC2wQkByYIAB93iABEAvgLKgdmCgIAhgEJEgADIAAfh4YARBq3eAIP5wULD34DfgCQBQ-fDBQC
-1QsfAsMAf2ACsSABtwGnDQ_NDAIElw0PugAfDzEA------------------------------------
--------------4FQbT04fX0=
+Zz0RbVEAsS0nDSc9ES0HDQd9FgAhPVcmAA8_AjwABAAA1AARNzACPycdJwgACAQoAA5GAg_IADNf
+Fx0XHTcIAAEBwgJmFw0HHQcNEAAPhgBGEy0OAQUIAAAnBCFHLQwAKR0HCAAPhABBIDdNbAFPNw0n
+DQgAAzIHLSeeACUtJ54AD4gAQRJn-AEabQoCSQcNBx0SACVtJ2oED4YAQRG3XgA0Bx1HDAADlgEe
+t4YBD3wAFA9WBjEQDa0AEB2tABAtrQAWPYEARQFXFjcGAAJiBlgHFhcGVwgAKEZXfgYPswAfnwHR
+AAHXEQe9BwQAAv8H1xEXhicRF4YXBhG3BgEAAbYBILHwA2QAHY8A8QHWEQa9BgQAAv8F1hEWhyYR
+FocWDRG2DQEAAb0BEMFjAB9-CHFgES0mgScHBS-xARgBIFgRtyHXEQIAIQa3rwCfHZYhthEA0fAB
+_QYnUwcNVw0HDAAzF10XCgAP-wY-L-DwMQB-Dw4CDBLWDAEhhxZvAg4MAg_SAEARBz0CnBEAUS1G
+IcYR1gIAAe4BHwCGAE4PMQAdYhCxIBGXESkEBAQAD94EFVAGlwYBEF8BbxGWESCxEHoALDMnHRfI
+BT83HRcIAAgEKAAPhgAED3oCVC_xBgQAApXWEQYXBl0GFwYIAD82XSaEAicPMQCvD50GDQAEAEUX
+FgcWcAJGJgcWNxgALiY3SgcPfABCXwcWJxY3CAAIB6QAL9EAZAJRX90RDbENBAAGAJ0Lcw2nHREN
+lx3uBh8gHQGmDzEA-xIPrgF1D4gAEV8HFhcWRwgAARFWBgBWBgcWBwYQAA_GAEYTJg4BBQgAABEM
+ITcmDAApFgcIAA_EAEEgJ0ZsAU8nBicGCAADAtsEJAcmCAAfd4gARAL4CyoHZgoCAIYBCRIAAyAA
+H4eGAEQat3gCD_cFCw9_A34AkAUP3wwUAtULHwLDAH9gArEgAbcBpw0PjQwCBJcND7oAHw8xAP--
+----------------------------------------------_BUG09OH19
 :: gfx/1.gfx
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTExIDAzOjEzOjAxIixtb2RpZmllZD0iMjAyNC0x
-MC0xNSAwMDoxOTozMiIscmV2aXNpb249MTI1NF1dbHo0AJoAAAAzMQAA8xR7WzBdPXtibXA9cHh1
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTExIDAzOjEzOjAxIixtb2RpZmllZD0iMjAyNS0w
+Mi0xNSAwMjo0OToyOCIscmV2aXNpb249MTI3NV1dbHo0AJoAAAAzMQAA8xR7WzBdPXtibXA9cHh1
 AEMgEBAE8PAsZmxhZ3M9MCxwYW5feAgAz3k9MCx6b29tPTh9LDEAKfUBCAgENzAHEBcgBxAnEAcw
 BwQAL1eQRwAuj1eQBwAHAAcgSQAODvIADzEA----------------------------------------
 ------------------------QlBtPTh9fQ==
 :: gfx/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTExLTE1IDA3OjExOjMwIixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjowMDo1NSIsc3RvcmVkPSIyMDIzLTExLTE1IDA3OjExOjMwIl1d
+NC0yNyAxNTo1OToyMCIsc3RvcmVkPSIyMDIzLTExLTE1IDA3OjExOjMwIl1d
 :: map/
 :: map/map0.map
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Iixtb2RpZmllZD0iMjAyNC0w
@@ -59,7 +58,7 @@ PXVzZXJkYXRhKCJpMTYiLDE2AwAvIjABAP---__hIikscGFuX3g9MAgA8gZ5PTAsc2NhbGU9MSx0
 aWxlX2g9MTYKAG93PTE2fSxLBP----84UDE2fX19
 :: map/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Iixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjowMDo1NSIsc3RvcmVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Il1d
+NC0yNyAxNTo1OToyMCIsc3RvcmVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Il1d
 :: sfx/
 :: sfx/sfx0.sfx
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Iixtb2RpZmllZD0iMjAyNC0w
@@ -71,23 +70,38 @@ IAEgAfAAAhACDBABIA8hIAEwD0Dwww8oD--wxg-4Cg--D4AP9w8NAfAJARAGDDAA-zkf-wEA3L-4
 D0AADUD--7DwcAoA--9kH-8BAJdQ-----x8=
 :: sfx/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Iixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjowMDo1NSIsc3RvcmVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Il1d
+NC0yNyAxNTo1OToyMCIsc3RvcmVkPSIyMDI0LTAzLTA3IDEwOjExOjU2Il1d
 :: desktop.lua
---[[pod_format="raw",created="2023-10-04 15:13:41",modified="2024-10-15 00:19:32",revision=3163,stored="2023-21-29 09:21:19"]]
+--[[pod_format="raw",created="2023-10-04 15:13:41",modified="2025-02-15 02:49:28",revision=3194,stored="2023-21-29 09:21:19"]]
 -- mode: desktop
 local desktop_items = nil
 local desktop_content = nil
 local sel
 
+
+function validate_di(filename, validate_xy)
+	if (not desktop_items[filename]) then
+		desktop_items[filename] = {}
+	end
+
+	-- give item xy if needed
+	if validate_xy and (not desktop_items[filename].x or not desktop_items[filename].y) then
+		set_desktop_item_position(filename)
+	end
+
+	return desktop_items[filename]
+end
+
 -- used when renaming a file
 function copy_desktop_item_attributes(src, dest)
 	if (not desktop_items[src]) return
-	desktop_items[dest] = desktop_items[dest] or {}
+	validate_di(dest)
 	for k,v in pairs(desktop_items[src]) do
 		desktop_items[dest][k] = v
 	end
 	store_desktop_items()
 end
+
 
 function set_desktop_item_position(filename, x, y)
 	if (not desktop_items[filename]) desktop_items[filename] = {}
@@ -143,6 +157,7 @@ function set_desktop_item_position(filename, x, y)
 	desktop_items[filename].x = x
 	desktop_items[filename].y = y
 end
+
 function fetch_desktop_items()
 	local meta = fetch_metadata(desktop_path)
 	desktop_items = meta and meta.file_item or {}
@@ -204,8 +219,7 @@ function shift_selected_desktop_items(dx, dy)
 
 			-- create / update desktop item too
 
-			desktop_items[el2.filename] = desktop_items[el2.filename] or {} -- create new
-			local di = desktop_items[el2.filename]	
+			local di = validate_di(el2.filename) -- create new if needed
 			di.x = el2.x
 			di.y = el2.y
 			
@@ -218,9 +232,8 @@ end
 
 local function create_file_item(parent, ff, x, y)
 	if (not ff or not ff.filename) return
-	local filename = ff.filename
 	
-	desktop_items[filename] = desktop_items[filename] or {}
+	validate_di(ff.filename, true)
 	
 	local el = {
 		x=x,y=y,
@@ -440,6 +453,12 @@ local function create_file_item(parent, ff, x, y)
 		if (not self.group_id) return
 		local g = group[self.group_id]
 		if (#g < 2) return
+
+		-- safety -- should already exist and have positions
+		for i=1,#g do
+			validate_di(g[i].filename, true)
+		end
+
 		if (msg.wheel_y < 0) then
 			local x0, y0 = desktop_items[g[1].filename].x,desktop_items[g[1].filename].y
 			for i=1,#g-1 do
@@ -487,8 +506,9 @@ function sort_file_items_by_y()
 		for i=2,#fi do
 			local fn0=fi[i].filename
 			local fn1=fi[i-1].filename
-			
-			if(desktop_items[fn0].y < desktop_items[fn1].y) then
+			if(
+				desktop_items[fn0] and desktop_items[fn1] and
+				desktop_items[fn0].y < desktop_items[fn1].y) then
 				fi[i],fi[i-1]=fi[i-1],fi[i]
 			end
 		end
@@ -552,8 +572,11 @@ function update_desktop_groups()
 			-- gather actual items to same point
 			-- means stack won't get broken when removing middle item
 			-- and creates more consistent collision with pile (e.g. when inserting)
-			desktop_items[g[j].filename].x = g[j].x
-			desktop_items[g[j].filename].y = g[j].y
+
+			-- desktop_items[g[j].filename] = desktop_items[g[j].filename] or {}
+			-- desktop_items[g[j].filename].x = g[j].x
+			-- desktop_items[g[j].filename].y = g[j].y
+			set_desktop_item_position(g[j].filename, g[j].x, g[j].y)
 			
 			-- used for preserving order when snapping to grid
 			g[j].group_pos = (anchor-j)*spacing
@@ -730,7 +753,7 @@ end
 
 
 :: drop.lua
---[[pod_format="raw",created="2023-10-11 09:19:20",modified="2024-10-15 23:31:36",revision=973,stored="2023-21-29 09:21:19"]]
+--[[pod_format="raw",created="2023-10-11 09:19:20",modified="2025-02-15 02:49:28",revision=1001,stored="2023-21-29 09:21:19"]]
 
 function check_for_overwrites(msg)
 
@@ -801,8 +824,9 @@ end
 
 on_event("drop_items",function(msg)
 
-	--printh("@@ dropped items from proc_id:"..msg.from_proc_id.." // mode:"..mode)
-	
+--	printh("@@ dropped items from proc_id:"..msg.from_proc_id.." // mode:"..mode)
+--	printh("  // msg.mx,msg.my: "..pod{msg.mx,msg.my})
+
 	-- drop into self
 	
 	if (msg.from_proc_id == pid()) then
@@ -889,7 +913,7 @@ end)
 
 
 :: finfo.lua
---[[pod_format="raw",created="2023-10-08 09:24:50",modified="2024-10-16 00:57:09",revision=2981,stored="2023-21-29 09:21:19"]]
+--[[pod_format="raw",created="2023-10-08 09:24:50",modified="2025-02-15 02:49:28",revision=3009,stored="2023-21-29 09:21:19"]]
 --[[
 	finfo.lua
 	
@@ -899,6 +923,41 @@ end)
 -- global
 finfo = {}
 finfo_version = 0 -- bump each time it changes
+
+
+------------------------------------------------------------------------------------------------
+--[[
+	0.1.1e:
+	when running filenav as a bbs_companion, locations are sandboxed
+	-> need to unsandbox them to copy locations to clipboard / open in host
+	kinda messy, but need to straddle both:
+		1. expectation that filenav can always interact with rest of system as usual
+		2. expectation that filenav returns a path that is relative to the same fileview as requesting process 
+]]
+local function path_is_inside(path, container_path)
+	local len = #container_path -- the shorter string
+	if (container_path == "*") return true
+	return path:sub(1,len) == container_path and (#path == len or path[len + 1] == "/")
+end
+function fullpath_unsandbox(path)
+	local path = fullpath(path)
+	local path1 = path
+
+	local fileview = env().fileview
+	if (fileview) then -- safety; should always exist
+		for i=1,#fileview do
+			local rule = fileview[i]
+			if (rule.mode[1] == "R") then
+				if rule.target and path_is_inside(path, rule.location) then
+					path1 = rule.target..path:sub(#rule.location+1)
+				end
+			end
+		end
+	end
+--	printh("fullpath_unsandbox: "..path.." -> "..path1)
+	return fullpath(path1)
+end
+------------------------------------------------------------------------------------------------
 
 function deselect_all()
 	for k,v in pairs(finfo) do
@@ -939,7 +998,7 @@ function copy_selected_files(op)
 	local items = {}
 	for k,v in pairs(finfo) do
 		if (v.selected) then
-			v.fullpath = fullpath(v.filename)
+			v.fullpath = fullpath_unsandbox(v.filename)
 			v.op = op
 			add(items, v)
 		end
@@ -1092,45 +1151,45 @@ function update_file_info(clear)
 	-- search for added /changed files
 	local found = {}
 	for i=1,#files do
-	
 		local filename = files[i]
-		found[filename] = true
-		if (not finfo[filename]) finfo[filename] = {}
-		local f = finfo[filename]
-		
-		--local attrib, size, mount_desc = "file", 0, nil --fstat(filename)
-		local attrib, size, mount_desc = fstat(filename)
-		
-
-		-- update / create info
-		f.pod_type = "file_reference" -- used by dragging_items
-		f.filename = filename
-		f.fullpath = fullpath(filename)
-		f.selected = f.selected or false
-		f.attrib   = f.attrib or attrib
-		f.size     = f.size or size
-		f.meta     = fetch_metadata(filename) or {}
-		f.icon     = get_file_icon(filename, f.meta)
-		f.index    = i
-		f.is_non_cart_folder = false
+		if (filename) then -- to do: why is this nil sometime? (observed in bbs player)
+			found[filename] = true
+			if (not finfo[filename]) finfo[filename] = {}
+			local f = finfo[filename]
+			
+			--local attrib, size, mount_desc = "file", 0, nil --fstat(filename)
+			local attrib, size, mount_desc = fstat(filename)
+			
 	
-		-- derive printable filename (has folder icon infront for folders that aren't carts0
-		f.filename_printable = f.filename
+			-- update / create info
+			f.pod_type = "file_reference" -- used by dragging_items
+			f.filename = filename
+			f.fullpath = fullpath(filename)
+			f.selected = f.selected or false
+			f.attrib   = f.attrib or attrib
+			f.size     = f.size or size
+			f.meta     = fetch_metadata(filename) or {}
+			f.icon     = get_file_icon(filename, f.meta)
+			f.index    = i
+			f.is_non_cart_folder = false
 		
-		if (f.attrib == "folder") then
-			local ext = f.filename:ext()
-			if (ext == "p64" or ext == "p64.png" or ext == "p64.rom") then
-				-- cart icon?	
-				-- f.filename_printable = "\^:00ff8181ffc17f00 "..f.filename_printable
-			else
-				f.is_non_cart_folder = true
-				f.filename_printable = "\^:00387f7f7f7f7f00 "..f.filename_printable
+			-- derive printable filename (has folder icon infront for folders that aren't carts0
+			f.filename_printable = f.filename
+			
+			if (f.attrib == "folder") then
+				local ext = f.filename:ext()
+				if (ext == "p64" or ext == "p64.png" or ext == "p64.rom") then
+					-- cart icon?	
+					-- f.filename_printable = "\^:00ff8181ffc17f00 "..f.filename_printable
+				else
+					f.is_non_cart_folder = true
+					f.filename_printable = "\^:00387f7f7f7f7f00 "..f.filename_printable
+				end
 			end
-		end
-
-		add(filenames, f.filename)
-	end
 	
+			add(filenames, f.filename)
+		end
+	end
 	
 --[[
 	-- clear out missing items
@@ -1177,10 +1236,18 @@ function update_context_menu()
 
 	-- special case: unmount host desktop 
 	if (num_selected == 1 and which == "/desktop/host") then
+
+		-- dupe
+		menuitem{
+			id="open_host_path",	
+			label = "\^:00304f4141417f00 Open Host OS Folder",
+			action = function() send_message(2, {event="open_host_path", path = "/desktop/host", _delay = 0.25}) end
+		}
+
 		-- to do: handle unmounting in a more general way (when there are more things to mount)
 		menuitem{
 			id="unmount_host_desktop",	
-			label = "Unmount",
+			label = "\^:002a012001201500 Unmount",
 			action = function() rm"/desktop/host" end
 		}
 		return
@@ -1264,12 +1331,12 @@ function update_context_menu()
 		menuitem{
 			id="cut_files",	
 			label = "\^:0015200120012a00 Cut",
-			action = cut_selected_files
+			action = function() copy_selected_files("cut") end
 		}
 		menuitem{
 			id="copy_files",	
 			label = "\^:0f013d2525243c00 Copy",
-			action = copy_selected_files
+			action = function() copy_selected_files("copy") end
 		}
 		menuitem{
 			id="delete_file",	
@@ -1364,7 +1431,7 @@ function update_context_menu()
 			id="open_host_path",	
 			label = "\^:00304f4141417f00 Open Host OS Folder",
 			action = function()
-				send_message(2, {event="open_host_path", path = pwd(), _delay = 0.25})
+				send_message(2, {event="open_host_path", path = fullpath_unsandbox(pwd()), _delay = 0.25})
 			end
 		}
 	end
@@ -1379,7 +1446,8 @@ function update_context_menu()
 				label = "\^:0b1b3b033f3f3f00 View in Host OS",
 
 				action = function()
-					send_message(2, {event="open_host_path", path = which, _delay = 0.25}) -- delay so that mouse isn't held while new window is opening ._.
+					-- delay so that mouse isn't held while new window is opening ._.
+					send_message(2, {event="open_host_path", path = fullpath_unsandbox(which), _delay = 0.25}) 
 				end
 			}
 		end
@@ -1397,7 +1465,6 @@ function update_context_menu()
 			end
 		}
 	end
-	
 
 
 end
@@ -1456,7 +1523,8 @@ function update_context_menu_old()
 				label = "\^:0b1b3b033f3f3f00 View in Host OS",
 
 				action = function()
-					send_message(2, {event="open_host_path", path = which, _delay = 0.25}) -- delay so that mouse isn't held while new window is opening
+					-- delay so that mouse isn't held while new window is opening
+					send_message(2, {event="open_host_path", path = fullpath_unsandbox(which), _delay = 0.25}) 
 				end
 			}
 		else
@@ -1482,7 +1550,7 @@ function update_context_menu_old()
 				id="open_host_path",	
 				label = "\^:00304f4141417f00 Open Host OS Folder",
 				action = function()
-					send_message(2, {event="open_host_path", path = pwd(), _delay = 0.25})
+					send_message(2, {event="open_host_path", path = fullpath_unsandbox(pwd()), _delay = 0.25})
 				end
 			}
 		else
@@ -1500,7 +1568,7 @@ end
 
 
 :: grid.lua
---[[pod_format="raw",created="2023-10-20 06:27:59",modified="2024-10-15 00:19:32",revision=3081,stored="2023-21-29 09:21:19"]]
+--[[pod_format="raw",created="2023-10-20 06:27:59",modified="2025-02-15 02:49:28",revision=3109,stored="2023-21-29 09:21:19"]]
 -- mode: icons on a grid (default folder view; is cutest for < ~100 files)
 local sel = nil
 local function create_file_item(parent, ff, x, y)
@@ -1591,11 +1659,14 @@ local function create_file_item(parent, ff, x, y)
 		local w2 = self.width/2
 		local yy = 28
 		
+--		local llww = self.finfo.selected and 3 or -3   -- test: label is only wide when selected
+		local llww = 3
+
 		color(self.finfo.selected and 1 or 7)
-		rectfill(w2-dx-5,yy-4,w2-dx+ww+3,yy+hh-1) 
-		rectfill(w2-dx-6,yy-3,w2-dx+ww+4,yy+hh-2)
+		rectfill(w2-dx-llww-2,yy-3,w2-dx+ww+llww+0,yy+hh-0) 
+		rectfill(w2-dx-llww-3,yy-2,w2-dx+ww+llww+1,yy+hh-1)
 		
-		print(str, w2 - dx, yy, self.finfo.selected and 7 or 13)
+		print(str, w2 - dx, yy, self.finfo.selected and 7 or 1)
 		
 		-- for test_point
 		self.last_label_area = {w2-dx-5,yy-4,w2-dx+ww+3,yy+hh-1,sprx0,spry0}
@@ -1728,7 +1799,7 @@ function generate_interface_grid(y0, add_height)
 		local index = 1 + item_x + item_y * items_x
 		return fi[flr(index)]
 	end
-	function content:update()
+	function content:update(msg)
 		content:clamp_scrolling()
 		
 		-- update pointer element
@@ -1748,10 +1819,16 @@ function generate_interface_grid(y0, add_height)
 		end
 
 		-- to do: better way to handle this?
-		if (pointer_el) then
-			window{cursor = "pointer"}
+		if (msg.has_pointer) then
+			if (pointer_el) then
+				window{cursor = "pointer"}
+			else
+				window{cursor = 1}
+			end
+			self.had_cursor = true
 		else
-			window{cursor = 1}
+			if (self.had_cursor) window{cursor = 1} -- return to default
+			self.had_cursor = nil
 		end
 		
 		self.height=((#filenames + items_x - 1) \ items_x) * item_h
@@ -2045,7 +2122,7 @@ end
 
 
 :: intention.lua
---[[pod_format="raw",created="2023-10-05 21:49:51",modified="2024-10-15 00:19:32",revision=1458]]
+--[[pod_format="raw",created="2023-10-05 21:49:51",modified="2025-02-15 02:49:28",revision=1486]]
 --[[
 
 	intention.lua
@@ -2193,7 +2270,10 @@ function process_intention()
 	if (intention == "new_file" or intention == "new_tab") then
 		if (not filename:ext() and env().use_ext) filename..="."..env().use_ext
 		create_process(env().open_with and env().open_with or "/system/util/open.lua",
-			{ argv = {filename} })
+			{
+				argv = {filename},
+				fileview = {{location=fullpath(filename),mode="RW"}}, -- grant permission to access it (in case opening program is sandboxed)
+			})
 		pop_intention()
 		return
 	end
@@ -2207,7 +2287,8 @@ function process_intention()
 
 	if (intention == "new_cartridge") then
 		if (not filename:ext()) filename..=".p64"
-		mkdir(filename)
+		cp("/system/misc/new_cart.p64", filename)
+		--mkdir(filename)
 		pop_intention()
 		return
 	end
@@ -2236,6 +2317,11 @@ function process_intention()
 	-- e.g. save, save as
 	if (intention_requester_proc_id) then
 		-- printh("sending intention to: "..intention_requester_proc_id)
+
+		-- 1. filenav has the power to greenlight R/W access to a file after user has intentionally selected i
+		send_message(intention_requester_proc_id, {event="extend_fileview", filename=filename})
+
+		-- 2. tell the requester
 		send_message(intention_requester_proc_id, -- env().parent_pid, 
 			{event=intention, filename=filename})
 		exit()
@@ -2247,89 +2333,8 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 :: interf.lua
---[[pod_format="raw",created="2023-11-20 08:11:39",modified="2024-10-15 00:19:32",revision=3761,stored="2023-21-29 09:21:19"]]
+--[[pod_format="raw",created="2023-11-20 08:11:39",modified="2025-02-15 02:49:28",revision=3789,stored="2023-21-29 09:21:19"]]
 -- interface
 
 
@@ -2529,7 +2534,7 @@ end
 
 
 :: list.lua
---[[pod_format="raw",created="2023-10-20 06:27:42",modified="2024-10-15 00:19:32",revision=3432,stored="2023-21-29 09:21:19"]]
+--[[pod_format="raw",created="2023-10-20 06:27:42",modified="2025-02-15 02:49:28",revision=3467,stored="2023-21-29 09:21:19"]]
 -- mode: list
 local item_h = 12
 local function create_file_item(parent, ff, x, y)
@@ -2780,7 +2785,7 @@ end
 
 
 :: main.lua
---[[pod_format="raw",created="2023-10-20 06:24:13",modified="2024-10-15 00:19:32",revision=3683,stored="2023-21-29 09:21:19"]]
+--[[pod_format="raw",created="2023-10-20 06:24:13",modified="2025-02-15 02:49:28",revision=3711,stored="2023-21-29 09:21:19"]]
 --[[
 	fi: shuffleable stacks dev
 ]]
@@ -2815,6 +2820,7 @@ function _init()
 	
 	window{
 		width = 272, height = 160,
+		--squashable = true,   -- commented: jumps around too much. maybe later
 		title = intention_window_title or intention_title,
 		has_context_menu = true -- mb2 to open app menu // to do: indicate which items are for context menu
 	}
@@ -2928,10 +2934,28 @@ function _update()
 	-- + update immediately when gaining focus or some file activity detected 
 	-- (global timestamp of last change in /ram/system? "modifed:.." event applied to folders?)
 
-	if (time() > last_poll_t + 1.0) then
-		update_file_info()
-		last_poll_t = time()
+	if (pwd():prot()) then
+		-- test: load bbs:// icons gradually. 
+		-- update: commented. fine to load all at once from carts.lexaloffle.com and don't need to update listing automatically
+--[[
+		if (time() > last_poll_t + 1.0) then
+			local l=ls()
+			zxc = zxc and zxc or 0
+			zxc = (zxc + 1) % #l
+			printh(#(fetch(l[1 + zxc].."/main.lua") or ""))
+			update_file_info(true)
+			last_poll_t = time()
+		end
+]]
+	else
+		-- refresh all every second
+		if (time() > last_poll_t + 1.0) then
+			update_file_info()
+			last_poll_t = time()
+		end
 	end
+
+	
 	
 	--if (not key"shift") 
 	gui:update_all()
@@ -2957,7 +2981,7 @@ end)
 
 
 :: open.lua
---[[pod_format="raw",created="2023-10-04 12:46:16",modified="2024-10-15 00:19:32",revision=3302,stored="2023-21-29 09:21:19"]]
+--[[pod_format="raw",created="2023-10-04 12:46:16",modified="2025-02-15 02:49:28",revision=3330,stored="2023-21-29 09:21:19"]]
 
 	
 	function click_on_file(filename, action, argv)
@@ -2965,6 +2989,7 @@ end)
 		--printh("opening: "..tostr(filename))
 		
 		--if (not intention and string.sub(filename,-4) == ".loc") then
+
 		if (string.sub(filename,-4) == ".loc") -- 0.1.0c: always open as if folder
 		then
 			local dat = fetch(filename)
@@ -3019,6 +3044,8 @@ end)
 				-- should still mean editing that file as usual
 				-- update: couldn't find an intention that /is/
 				-- appropriate here! -> always edit
+
+				-- printh("clicked on file; {intention, open_with, fullpath(filename), stat(307)}"..pod{intention, env().open_with, fullpath(filename), stat(307)})
 				
 				if (intention == "save_file_as" or intention == "select_file") then
 					-- filename in text field should already be set
@@ -3028,6 +3055,7 @@ end)
 					create_process(env().open_with and env().open_with or "/system/util/open.lua",
 						{
 							argv = {fullpath(filename)},
+							fileview = {{location=fullpath(filename),mode="RW"}}, -- grant permission to access it (in case opening program is sandboxed)
 							--pwd = pwd()
 						}
 					)
@@ -3109,26 +3137,26 @@ end
 
 
 :: .info.pod
-b64$LS1bW3BvZCxzdG9yZWQ9IjIwMjQtMDMtMjQgMTU6MzU6NTYiLGNyZWF0ZWQ9IjIwMjMtMTEt
-MTUgMDc6MTE6MzAiLG5vdGVzPSIoYykgTGV4YWxvZmZsZSBHYW1lcyBMTFAiLGljb249dXNlcmRh
-dGEoInU4IiwxNiwxNiwiMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTBkMGQwNzA3
-MDcwNzA3MDcwNzA3MDcwNzBkMGQwMTAxMGQwZDA3MDEwNzA3MDcwNzA3MDcwMTA3MGQwZDAxMDEw
-ZDBkMDcwMTA3MDcwNzA3MDcwNzAxMDcwZDBkMDEwMTBkMGQwNzA3MDcwNzA3MDcwNzA3MDcwNzBk
-MGQwMTAxMGQwZDA3MDcwZDA3MDcwNzA3MGQwNzA3MGQwZDAxMDEwZDBkMDcwNzA3MGQwZDBkMGQw
-NzA3MDcwZDBkMDEwMTBkMGQwNzA3MDcwNzA3MDcwNzA3MDcwNzBkMGQwMTAxMGQwZDBkMGQwZDBk
-MGQwZDBkMGQwZDBkMGQwZDAxMDEwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMDEwMTBkMGQw
-ZDBkMGQwZDBkMGQwZDBkMGQwZDBkMGQwMTAxMGQwZDAxMDEwMTAxMDEwMTAxMDEwMTAxMGQwZDAx
-MDEwZDBkMDEwMTAxMDEwNzA3MDcwNzA3MDEwZDBkMDEwMTBkMGQwMTAxMDEwMTA3MDcwNzA3MDcw
-MTBkMGQwMTAxMGQwZDAxMDEwMTAxMDcwNzA3MDcwNzAxMGQwMTAwMDEwMTAxMDEwMTAxMDEwMTAx
-MDEwMTAxMDEwMTAwMDAiKSxydW50aW1lPTExLG1vZGlmaWVkPSIyMDI1LTA0LTI3IDE2OjAwOjU1
-IixhdXRob3I9InplcCIsdGl0bGU9IlBpY290cm9uIEZpbGUgTmF2aWdhdG9yIix2ZXJzaW9uPSIw
-LjEuMWQiLHdvcmtzcGFjZXM9e3tsb2NhdGlvbj0ibWFpbi5sdWEjOTQiLHdvcmtzcGFjZV9pbmRl
-eD0xfSx7bG9jYXRpb249ImludGVyZi5sdWEjOTAiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRp
-b249ImdyaWQubHVhIzEiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249ImRyb3AubHVhIzI2
-Iix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJvcGVuLmx1YSM4Iix3b3Jrc3BhY2VfaW5k
-ZXg9MX0se2xvY2F0aW9uPSJpbnRlbnRpb24ubHVhIzExIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xv
-Y2F0aW9uPSJkZXNrdG9wLmx1YSMyMzYiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249ImZp
-bmZvLmx1YSMxNyIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0ibGlzdC5sdWEjMTEiLHdv
-cmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249ImdmeC8wLmdmeCIsd29ya3NwYWNlX2luZGV4PTJ9
-LHtsb2NhdGlvbj0iZ2Z4LzEuZ2Z4Iix3b3Jrc3BhY2VfaW5kZXg9Mn19XV0=
+b64$LS1bW3BvZCxhdXRob3I9InplcCIsY3JlYXRlZD0iMjAyMy0xMS0xNSAwNzoxMTozMCIsaWNv
+bj11c2VyZGF0YSgidTgiLDE2LDE2LCIwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAxMDEwMTAx
+MGQwZDA3MDcwNzA3MDcwNzA3MDcwNzA3MGQwZDAxMDEwZDBkMDcwMTA3MDcwNzA3MDcwNzAxMDcw
+ZDBkMDEwMTBkMGQwNzAxMDcwNzA3MDcwNzA3MDEwNzBkMGQwMTAxMGQwZDA3MDcwNzA3MDcwNzA3
+MDcwNzA3MGQwZDAxMDEwZDBkMDcwNzBkMDcwNzA3MDcwZDA3MDcwZDBkMDEwMTBkMGQwNzA3MDcw
+ZDBkMGQwZDA3MDcwNzBkMGQwMTAxMGQwZDA3MDcwNzA3MDcwNzA3MDcwNzA3MGQwZDAxMDEwZDBk
+MGQwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMDEwMTBkMGQwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMGQw
+MTAxMGQwZDBkMGQwZDBkMGQwZDBkMGQwZDBkMGQwZDAxMDEwZDBkMDEwMTAxMDEwMTAxMDEwMTAx
+MDEwZDBkMDEwMTBkMGQwMTAxMDEwMTA3MDcwNzA3MDcwMTBkMGQwMTAxMGQwZDAxMDEwMTAxMDcw
+NzA3MDcwNzAxMGQwZDAxMDEwZDBkMDEwMTAxMDEwNzA3MDcwNzA3MDEwZDAxMDAwMTAxMDEwMTAx
+MDEwMTAxMDEwMTAxMDEwMTAxMDAwMCIpLG1vZGlmaWVkPSIyMDI1LTA0LTI3IDE1OjU5OjIwIixu
+b3Rlcz0iKGMpIExleGFsb2ZmbGUgR2FtZXMgTExQIixydW50aW1lPTEzLHN0b3JlZD0iMjAyNC0w
+My0yNCAxNTozNTo1NiIsdGl0bGU9IlBpY290cm9uIEZpbGUgTmF2aWdhdG9yIix2ZXJzaW9uPSIw
+LjEuMWQiLHdvcmtzcGFjZXM9e3tsb2NhdGlvbj0ibWFpbi5sdWEjMSIsd29ya3NwYWNlX2luZGV4
+PTF9LHtsb2NhdGlvbj0iaW50ZXJmLmx1YSMxIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9u
+PSJncmlkLmx1YSMxIix3b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJkcm9wLmx1YSMxIix3
+b3Jrc3BhY2VfaW5kZXg9MX0se2xvY2F0aW9uPSJvcGVuLmx1YSMxIix3b3Jrc3BhY2VfaW5kZXg9
+MX0se2xvY2F0aW9uPSJpbnRlbnRpb24ubHVhIzEiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRp
+b249ImRlc2t0b3AubHVhIzEiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249ImZpbmZvLmx1
+YSMyNzUiLHdvcmtzcGFjZV9pbmRleD0xfSx7bG9jYXRpb249Imxpc3QubHVhIzEiLHdvcmtzcGFj
+ZV9pbmRleD0xfSx7bG9jYXRpb249ImdmeC8wLmdmeCIsd29ya3NwYWNlX2luZGV4PTJ9LHtsb2Nh
+dGlvbj0iZ2Z4LzEuZ2Z4Iix3b3Jrc3BhY2VfaW5kZXg9Mn19XV0=
 :: [eoc]

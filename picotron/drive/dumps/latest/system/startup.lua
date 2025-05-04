@@ -1,8 +1,15 @@
+
+
 -- load settings
 local sdat = fetch"/appdata/system/settings.pod"
-if not sdat then
+if type(sdat) ~= "table" -- doesn't exist or needs to be mended
+then
 	-- install defaults
 	sdat = fetch"/system/misc/default_settings.pod"
+	if (stat(317) > 0) then
+		sdat.wallpaper = "/system/wallpapers/pattern.p64"
+		sdat.theme = "/system/themes/classic.theme"
+	end
 	store("/appdata/system/settings.pod", sdat)
 end
 
@@ -19,9 +26,9 @@ if (sdat.pixel_scale == nil) then
 end
 
 
--- install default desktop items
+-- install default desktop items (always re-install for player)
 local ff = ls("/desktop")
-if (not ff or #ff == 0) then
+if (not ff or #ff == 0 or stat(317) > 0) then
 	mkdir ("/desktop") -- just in case
 	cp("/system/misc/drive.loc", "/desktop/drive.loc")
 	cp("/system/misc/readme.txt", "/desktop/readme.txt")
@@ -100,11 +107,12 @@ mkdir "/ram/cart/sfx"
 -- default file name are used by the automatic resource loader
 -- (in many cases only these 4 files are needed in a cartridge)
 
-create_process("/system/apps/code.p64", {argv={"/ram/cart/main.lua"}})
-create_process("/system/apps/gfx.p64", {argv={"/ram/cart/gfx/0.gfx"}})
-create_process("/system/apps/map.p64", {argv={"/ram/cart/map/0.map"}})
-create_process("/system/apps/sfx.p64", {argv={"/ram/cart/sfx/0.sfx"}})
-
+if stat(317) == 0 then -- no tool workspaces for exports / bbs player
+	create_process("/system/apps/code.p64", {argv={"/ram/cart/main.lua"}})
+	create_process("/system/apps/gfx.p64", {argv={"/ram/cart/gfx/0.gfx"}})
+	create_process("/system/apps/map.p64", {argv={"/ram/cart/map/0.map"}})
+	create_process("/system/apps/sfx.p64", {argv={"/ram/cart/sfx/0.sfx"}})
+end
 
 -- new desktop workspace
 
@@ -115,21 +123,20 @@ if (not fstat(wallpaper)) wallpaper = "/system/wallpapers/pattern.p64"
 -- start in desktop workspace (so show_in_workspace = true)
 create_process(wallpaper, {window_attribs = {workspace = "new", desktop_path = "/desktop", wallpaper=true, show_in_workspace=true}})
 
-create_process("/system/tooltray/tooltray.p64", {window_attribs = {workspace = "tooltray", desktop_path = "/appdata/system/desktop2", wallpaper = true}})
-create_process("/system/tooltray/clock.lua", {window_attribs = {workspace = "tooltray", x=366, y=7, width=75, height=20}})
-create_process("/system/tooltray/eyes.lua", {window_attribs = {workspace = "tooltray", x=445, y=2, width=32, height=16}})
+create_process("/system/misc/tooltray.p64", {window_attribs = {workspace = "tooltray", desktop_path = "/appdata/system/desktop2", wallpaper = true}})
 
-
-create_process("/system/apps/terminal.lua", 
-	{
-		window_attribs = {
-			fullscreen = true,
-			pwc_output = true,        -- run present working cartridge in this window
-			immortal   = true         -- no close pulldown
-		},
-		immortal   = true -- exit() is a NOP
-	}
-)
+if stat(317) == 0 then -- no fullscreen terminal for exports / bbs player
+	create_process("/system/apps/terminal.lua", 
+		{
+			window_attribs = {
+				fullscreen = true,
+				pwc_output = true,        -- run present working cartridge in this window
+				immortal   = true         -- no close pulldown
+			},
+			immortal   = true -- exit() is a NOP
+		}
+	)
+end
 
 
 -- aliases
@@ -137,12 +144,47 @@ create_process("/system/apps/terminal.lua",
 mount("/system/util/dir.lua","/system/util/ls.lua")   
 mount("/system/util/edit.lua","/system/util/open.lua") 
 
+-- populate tooltray with widgets
 
--- daisy chain 
+create_process("/system/misc/load_widgets.lua")
 
-if fstat("/appdata/system/startup.lua") then 
+
+
+if stat(317) > 0 then 
+	-- player startup
+	-- mount /system and anything in /cart using fstat
+
+	function fstat_all(path)
+		local l = ls(path)
+		if (l) then
+			for i=1,#l do
+				local k = fstat(path.."/"..l[i])
+				if (k == "folder") fstat_all(path.."/"..l[i])
+			end
+		end
+	end
+	fstat_all("/system")
+	fstat_all("/cart")
+
+	-- no more cartridge mounting (exports are only allowed to load/run the carts they were exported with)
+	
+	if ((stat(317) & 0x3) == 0x3) then -- player that has embedded rom
+		-- printh("** sending signal 39: disabling mounting **")
+		_signal(39) 
+	end
+
+	create_process("/system/misc/load_player.lua")
+
+	-- (don't need custom startup.lua -- the exported / bbs cart itself can play that role)
+
+elseif fstat("/appdata/system/startup.lua") then 
+
+	-- userland startup
+
 	create_process("/appdata/system/startup.lua")
+
 end
+
 
 
 

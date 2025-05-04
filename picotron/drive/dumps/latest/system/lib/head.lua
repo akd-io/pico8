@@ -1,4 +1,5 @@
---[[pod_format="raw",created="2025-04-27 16:00:50",modified="2025-04-27 16:00:50",revision=0]]
+--[[pod_format="raw",created="2025-04-27 15:59:10",modified="2025-04-27 15:59:10",revision=0]]
+-- **** head.lua should not have any metadata; breaks load during bootstrapping // to do: why? ****
 --[[
 
 	head.lua -- kernal space header for each process
@@ -8,8 +9,11 @@
 
 do
 
--- bootstrap
-local _env = function() return env() end
+-- need to define global function env before running head
+-- happens in create_process (inject env pod into source) and boot.lua (dummy empty environment) 
+local _env = env
+
+local _pid = pid
 
 local _stop = _stop
 local _print_p8scii = _print_p8scii
@@ -19,11 +23,9 @@ local _create_process_from_code = _create_process_from_code
 local _unmap_ram = _unmap_ram
 local _get_process_display_size = _get_process_display_size
 local _run_process_slice = _run_process_slice
+local _fetch_metadata_from_file = _fetch_metadata_from_file
 
-local _get_clipboard_text = _get_clipboard_text
 local _blit_process_video = _blit_process_video
-local _set_clipboard_text = _set_clipboard_text
-local _req_clipboard_text = _req_clipboard_text
 local _set_spr = _set_spr
 local _ppeek4 = _ppeek4
 local _set_draw_target = _set_draw_target
@@ -33,13 +35,16 @@ local _kill_process = _kill_process
 local _read_message = _read_message
 local _draw_map = _draw_map
 local _halt = _halt
-
+local _mkdir = _mkdir
 
 local _signal = _signal
 local _unmap
 local _split = split
 local _printh = _printh
 local _tostring  = tostring
+
+local _send_message  = _send_message
+
 
 -- sprites are owned by head -- process can assume exists
 local _spr = {} 
@@ -90,6 +95,12 @@ function reset()
 	-- window draw mask, interaction mask 
 	poke(0x547d,0x0,0x0)
 
+	-- audio 
+	poke(0x5538,
+		0x40,0x40, -- (1.0) global volume for sfx, music
+		0x40,0x40, -- (1.0) default volume parameters when not given to sfx(), music()
+		0x03,0x03  -- base address for sfx, music (0x30000, 0x30000)
+	)
 
 end
 
@@ -183,31 +194,101 @@ local function get_short_prog_name(p)
 	return p
 end
 
+-- for rate limiting
+local create_process_t = 0
+local create_process_n = 0
 
-function create_process(prog_name, env_patch, do_debug)
+-- returns process id on success, otherwise: nil, err_msg
+function create_process(prog_name_p, env_patch, do_debug)
 
-	if (_env().sandboxed) return nil, "sandboxed process can not create_process()"
+	-- sandboxed programs can not create processes
+	if _env().sandbox and ((stat(307) & 0x1) == 0) then -- sandboxed program that is not a trusted system app
 
-	prog_name = fullpath(prog_name)
+		-- placeholder exceptions: can open file picker / can open notebook for docs
+		-- picocalendar uses open.lua to open text files
+		-- perhaps all of these can be replaced with "open()"? (which runs /util/open.lua)
 
+		local grant_exception = false
+
+		if (prog_name_p == "/system/apps/filenav.p64") grant_exception = true -- sandboxed filenav! ._.
+		if (prog_name_p == "/system/apps/notebook.p64") grant_exception = true -- some carts use this I think
+		if (prog_name_p == "/system/util/open.lua") grant_exception = true  --  can also use open()
+		-- if (prog_name_p:prot() == "bbs") grant_exception = true -- to do: can launch any other bbs app! (should be part of a pico-8 style stack with navigation?)
+
+		if (not grant_exception) then
+			-- printh("## create_process denied from sandboxed program: "..prog_name_p)
+			return nil, "sandboxed process can not create_process()"
+		end
+
+		-- printh("[create_process] granting exception in sandbox: "..prog_name_p)
+
+		-- rate limiting // prevent bbs cart from process-bombing
+	
+		if (time() > create_process_t + 60) then
+			-- reset every minute
+			create_process_t = time()
+			create_process_n = 0
+		end
+		if (create_process_n >= 10) then
+			-- limit: 10 per minute
+			return nil, "sandboxed process can not create_process() more than 10 / minute"
+		end
+		create_process_n += 1
+
+	end
+
+
+	local prog_name = fullpath(prog_name_p)
+	local running_pwc = prog_name == "/ram/cart/main.lua" or (env_patch and env_patch.corun_program == "/ram/cart/main.lua")
+
+	
 	-- .p64 files: find boot file in root of .p64 (and thus set default path there too)
 	local boot_file = prog_name
+	local metadata
+
 	if  string.sub(prog_name,-4) == ".p64"     or 
 		string.sub(prog_name,-8) == ".p64.rom" or
 		string.sub(prog_name,-8) == ".p64.png"
 	then
-		boot_file ..= "/main.lua"
 
-		-- only check runtime on carts; not stored on lua files
-		--[[
-			** commented: fetch_metadata not available
-
-		local meta = fetch_metadata(prog_name)
-		if (meta and type(meta.runtime) == "number" and meta.runtime > stat(5)) then
-			notify("** warning: running cartridge with future runtime version **")
+		-- bbs:// -- normalise by stripping path paths
+		-- where should this happen? need for favourites too
+		if (prog_name:prot() == "bbs") then
+			prog_name = "bbs://"..prog_name:basename()
+			--printh("normalised bbs prog path to: "..prog_name)
 		end
-		]]
+
+		boot_file = prog_name.."/main.lua"
+
 	end
+
+	------------------------------------------ locate metadata ------------------------------------------
+
+	-- look for metadata inside p64 / folder
+	local metadata = _fetch_metadata_from_file(prog_name.."/.info.pod")
+
+	-- special case: co-running /ram/cart from terminal
+	if not metadata and running_pwc then
+		local fn2 = "/ram/cart/.info.pod"
+		metadata = _fetch_metadata_from_file(fn2)
+	end
+	
+	-- maybe running main.lua directly inside a cart (or /ram/cart/main.lua)
+	if (not metadata and prog_name:basename() == "main.lua") then
+		metadata = _fetch_metadata_from_file(boot_file:dirname().."/.info.pod")
+	end
+
+	-- no metadata found -> default is {}
+	if (not metadata) metadata = {}
+
+	-- check for future cartridge
+	-- applies to carts / folders -- lua files don't have this metadata
+	if (type(metadata.runtime) == "number" and metadata.runtime > stat(5)) then
+		notify("** cartridge has future runtime version: "..prog_name_p)
+		return -- to do: allow_future
+	end
+
+	------------------------------------------ locate metadata ------------------------------------------
 
 --	printh("create_process "..prog_name.." ("..boot_file..") env: "..pod(env_patch))
 
@@ -239,37 +320,146 @@ function create_process(prog_name, env_patch, do_debug)
 	end
 
 
-	
 	-- add system env info
 
-	new_env.prog_name = prog_name
-	new_env.title = get_short_prog_name(prog_name)
-	new_env.parent_pid = pid()
-	new_env.argv = new_env.argv or {} -- guaranteed to exist at least as an empty table
+--	new_env.prog_name = prog_name -- 0.1.1e: removed; now stored in argv[0]
+--	new_env.title = get_short_prog_name(prog_name)  --  0.1.1e: removed; doesn't mean much and creates ambiguity
+	new_env.parent_pid = _pid()
+	new_env.argv = type(new_env.argv) == "table" and new_env.argv or {} -- guaranteed to exist at least as an empty table
+	--if (type(new_env.argv) ~= "table") printh("@@ type(new_env.argv):"..type(new_env.argv).."  "..pod(new_env.argv))
+	new_env.argv[0] = prog_name -- e.g. /system/apps/gfx.p64
 
-	-- sandboxed cart must have a cart_id for /appdata to map to
-	if (new_env.sandboxed and not new_env.cart_id) printh("bad cart_id -- can't sandbox") return nil
-	if (new_env.sandboxed) then
-		--printh("creating new sandboxed process with appdata: ".."/appdata/bbs/"..new_env.cart_id)
-		mkdir("/appdata/bbs")
-		-- mkdir("/appdata/bbs/"..new_env.cart_id) -- create on write;
+	if (not new_env.sandbox and prog_name:prot() == "bbs") then
+		new_env.sandbox = "bbs"
+		local ext = prog_name:ext()
+		if (ext and ext:is_cart()) new_env.bbs_id = prog_name:basename():sub(1,-(#ext+2)) -- foo-3
+	end
+
+	
+	-- grab sandbox from cartridge metadata if not already set in environment
+	-- (can opt to turn sandboxing off in env_patch with {sandbox=false}; or otherwise override sandbox specified in metadata)
+	if (not new_env.sandbox and metadata.sandbox and metadata.bbs_id) then
+		new_env.sandbox = metadata.sandbox -- "bbs"
+		new_env.bbs_id = metadata.bbs_id
 	end
 
 
+	-- created by sandboxed program -> inherit fileview  (e.g. open filenav -> should have same /appdata mapping)
+	if (not new_env.sandbox and _env().sandbox) then
+		new_env.sandbox = "bbs_companion"
+		new_env.bbs_id = _env().bbs_id
+	end
+
+
+	-- sandboxed cart must have a bbs_id for /appdata to map to
+	if (new_env.sandbox == "bbs" and not new_env.bbs_id) then
+		-- printh("** bad bbs_id -- can't sandbox") 
+		return nil, "bad bbs_id -- can't sandbox"
+	end
+
+
+	new_env.fileview = new_env.fileview or {}
+
+	-- only "trusted system apps" (currently /system/*) can pass in a custom fileview
+	if (stat(307) & 0x1) == 0 then
+		new_env.fileview = {}
+	end
+
+	-- printh("creating process "..prog_name_p.." with starting fileview: "..pod{new_env.fileview})
+	-- printh("creating process "..prog_name_p.." with sandbox: "..pod{new_env.sandbox})
+	
+	-- create fileview / rules for sandbox
+
+	if (new_env.sandbox == "bbs") then
+
+		-- essential read access
+		add(new_env.fileview, {location = "/system", mode = "R"}) -- read libraries and resources
+		add(new_env.fileview, {location = prog_name, mode = "R"}) -- cart/program can read itself (to do: allow running main.lua directly? probably no need)
+		add(new_env.fileview, {location = "/ram/shared", mode = "R"}) -- can always read /ram/shared
+
+		-- deleteme -- shouldn't need to read system settings
+--		add(new_env.fileview, {location = "/appdata/system", mode = "R"}) -- read settings
+
+		-- partial view of processes.pod
+		add(new_env.fileview, {location = "/ram/system/processes.pod", mode = "X"})
+
+		-- partial view of /desktop metadata (only icon x,y available; ref: bbs://desktop_pet.p64)
+		add(new_env.fileview, {location = "/desktop/.info.pod", mode = "X"})
+		
+		-- can read/write /ram/cart 
+		--[[
+			UPDATE: user must grant permission explicitly by choosing file in filenav
+			(filenav has the authority to extend another process's fileview)
+			means default file location (/ram/cart/gfx/0.pal) needs to be bumped to /appdata, but that's
+			not a terrible thing esp when just quickly trying out a tool ~ get a persistent demo file.
+		]]
+		-- add(new_env.fileview, {location = "/ram/cart", mode = "RW"})
+
+		-- but can read it if running /ram/cart/main.lua (e.g. using bbs dummy id during dev)
+		if (running_pwc) add(new_env.fileview, {location = "/ram/cart", mode = "R"})
+
+		-- (dev) read/write mounted bbs:// cart while sandboxed
+		-- deleteme -- only needed in kernal space in fs.lua
+		--add(new_env.fileview, {location = "/ram/bbs/"..new_env.bbs_id..".p64.png", mode = "RW"})
+
+		-- any carts can read/write /appdata/shared \m/
+		add(new_env.fileview, {location = "/appdata/shared", mode = "RW"})
+
+		-- any other /appdata path should be mapped to /appdata/bbs/bbs_id
+		local bbs_id_base = split(new_env.bbs_id, "-", false)[1] -- don't include the version part
+		_mkdir("/appdata/bbs") -- safety; should already exist (boot creates)
+		--_mkdir("/appdata/bbs/"..bbs_id_base) -- to do: only create when actually about to write something?
+		add(new_env.fileview, {location = "/appdata", mode = "RW", target="/appdata/bbs/"..bbs_id_base})
+
+	end
+
+	-- bbs_comapnion e.g. open filenav / notebook from bbs cart. always a trusted app from /system
+	-- the companion program has full access, except should have same /appdata mapping as parent process
+	if (new_env.sandbox == "bbs_companion") then
+
+		new_env.fileview={}
+
+		-- same /appdata mapping as parent process
+		local bbs_id_base = split(_env().bbs_id, "-", false)[1] -- don't include the version part
+		_mkdir("/appdata/bbs")
+		_mkdir("/appdata/bbs/"..bbs_id_base) -- create on launch in case want to browse it with filenav
+		add(new_env.fileview, {location = "/appdata", mode = "RW", target="/appdata/bbs/"..bbs_id_base})
+
+		-- printh("created companion mapping for /appdata: ".."/appdata/bbs/"..bbs_id_base)
+
+		-- everything else is allowed (e.g. filenav can freely browse drive and choose where to load / save file)
+		add(new_env.fileview, {location = "*", mode = "RW"})
+	end
+
+	--printh("new_env.fileview: "..pod{new_env.fileview})
+
+
+	
+	
+	----
+
+
 	local str = [[
+
+		-- environment for new process; use _pod to generate immutable version
+		-- (generates new table every time it is called)
+		env = function() 
+			return ]].._pod(new_env,0x0)..[[
+		end
+		_env = env
 
 		local head_code = load(fetch("/system/lib/head.lua"), "@/system/lib/head.lua", "t", _ENV)
 		if (not head_code) then printh"*** ERROR: could not load head. borked file system / out of pfile slots? ***" end
 		head_code()
 
-		env = function() 
-			return ]].._pod(new_env,0x0)..[[
-		end
-
 		include("/system/lib/legacy.lua")
-		include("/system/lib/fs.lua")
+		
 		include("/system/lib/api.lua")		
 		include("/system/lib/events.lua")
+
+		include("/system/lib/fs.lua") -- depends on events
+		
+		include("/system/lib/socket.lua")
 		include("/system/lib/gui.lua")
 		include("/system/lib/app_menu.lua")
 		include("/system/lib/wrangle.lua")
@@ -294,9 +484,9 @@ function create_process(prog_name, env_patch, do_debug)
 
 	]]
 
-	-- printh("create_process with env: "..pod(env))
+	-- printh("create_process with env: "..pod(new_env))
 
-	local proc_id = _create_process_from_code(str, get_short_prog_name(prog_name))
+	local proc_id = _create_process_from_code(str, get_short_prog_name(prog_name), prog_name)
 
 	
 	if (not proc_id) then
@@ -312,13 +502,23 @@ function create_process(prog_name, env_patch, do_debug)
 
 	if (env_patch and env_patch.blocking) then
 		-- this process should stop running until proc_id is completed
-		
+		-- (update: is that actually useful?)
 	end
 
 
 	return proc_id
 
 end
+
+
+function open(loc)
+	if (type(loc)~="string") return
+
+	-- works for sandboxed carts, but open.lua will be run in a bbs_companion sandbox
+	--> can open anything that is accessible to calling processes's fileview
+	create_process("/system/util/open.lua",{argv={loc}})
+end
+
 
 -- manage process-level data: dispay, env
 
@@ -357,9 +557,6 @@ end
 		return _disp
 	end
 
-	-- starting environment: none; overwritten by injected process code
-	function env() return {} end
-
 	---------------------------------------------------------------------------------------------------
 
 	local first_set_window_call = true
@@ -368,7 +565,7 @@ end
 
 		-- to do: shouldn't be needed by window manager itself (?)
 		-- to what extent should the wm be considered a visual application that happens to be running in kernel?
-		-- if (pid() <= 3) return
+		-- if (_pid() <= 3) return
 
 		attribs = attribs or {}
 
@@ -381,7 +578,6 @@ end
 
 			first_set_window_call = false
 		
-			-- ** _env not defined yet!
 			if type(_env().window_attribs) == "table" then
 				for k,v in pairs(_env().window_attribs) do
 					attribs[k] = v
@@ -390,7 +586,9 @@ end
 
 			-- set the program this window was created with (for workspace matching)
 
-			attribs.prog = _env().prog_name
+--			attribs.prog = _env().prog_name
+			attribs.prog = _env().argv[0]
+
 
 			-- special case: when corunning a program under terminal, program name is /ram/cart/main.lua
 			-- (search /ram/cart/main.lua in wrangle.lua -- works with workspace matching for tabs)
@@ -489,7 +687,7 @@ end
 			end
 		end
 
-		send_message(3, {event="set_window", attribs = attribs})
+		_send_message(3, {event="set_window", attribs = attribs})
 
 	end
 
@@ -506,7 +704,7 @@ end
 			-- special case: adjust position by dx, dy
 			-- discard other 
 			if (attribs.dx or attribs.dy) then
-				send_message(3, {event="move_window", dx=attribs.dx, dy=attribs.dy})
+				_send_message(3, {event="move_window", dx=attribs.dx, dy=attribs.dy})
 				return
 			end
 
@@ -551,9 +749,7 @@ end
 	-- immediately close program & window
 	function exit(exit_code)
 		if (_env().immortal) return
-		
-		--send_message(pid(), {event="halt"})
-		send_message(2, {event="kill_process", proc_id=pid()})
+		_send_message(2, {event="kill_process", proc_id=_pid()})
 		_halt() -- stop executing immediately
 	end
 
@@ -562,46 +758,26 @@ end
 	function stop(txt, ...)
 		if (txt) print(txt, ...)
 
-		send_message(pid(), {event="halt"}) -- same as pressing escape; goes to terminal
+		_send_message(_pid(), {event="halt"}) -- same as pressing escape; goes to terminal
 		yield() -- get out of terminal callback (only works if not inside a coroutine ** and doesn't resume at that point **)
 	end
+
+	_stop = stop
 
 	-- any process can kill any other process!
 	-- deleteme -- send a message to process manager instead. process manager might want to decline.
 	--[[
 	function kill_process(proc_id, exit_code)
-		send_message(2, {event="kill_process", proc_id=proc_id, exit_code = exit_code})
+		_send_message(2, {event="kill_process", proc_id=proc_id, exit_code = exit_code})
 	end
 	]]
 
-	-- 
-	function get_clipboard()
-		_req_clipboard_text()
-
-		-- ** commented; can't support get_clipboard on web yet
-		--flip() -- wait at least one frame (even on binary platforms -- just how it be)
-
-		-- wait up to 10 frames for the browser to separately process ctrl-v (setting codo_textarea contents) 
-		for i=1,10 do
-			
-			local ret = _get_clipboard_text()
-			if (ret) then return ret end
-			flip()
-		end
-
-		return nil -- could not fetch
-	end
-
-	function set_clipboard(...)
-		return _set_clipboard_text(...)
-	end
-
-
+	
 
 
 	
 	function printh(str)
-		_printh(string.format("[%03d] %s", pid(), _tostring(str)))
+		_printh(string.format("[%03d] %s", _pid(), _tostring(str)))
 	end
 
 	
@@ -616,15 +792,16 @@ end
 			_printh(_tostring(str)) 
 		else
 			-- when print_to_proc_id is not set, send to self (e.g. printing to terminal)
-			send_message(_env().print_to_proc_id or pid(), {event="print",content=_tostring(str)})
+			-- printh("printing to "..tostring(_env().print_to_proc_id or _pid()))
+			_send_message(_env().print_to_proc_id or _pid(), {event="print",content=_tostring(str)})
 		end
 
 	end
 
+
+	unpack = table.unpack
+	pack = table.pack
 	
-
-
-	sub = string.sub
 
 	-- get filename extension
 	-- include double extensions; .p64.png is treated differently from .png
@@ -646,28 +823,37 @@ end
 		return nil -- "no extension"
 	end
 
+	string.split = _split
+
 	function string:path()
-		return _split(self,"#")[1]
+		return _split(self,"#",false)[1]
 	end
 
 	function string:hloc()
-		return _split(self,"#")[2]
+		return _split(self,"#",false)[2]
 	end
 
 	function string:basename()
-		local segs = _split(self:path(),"/")
+		local segs = _split(self:path(),"/",false)
 		return segs[#segs]
 	end
 
 	function string:dirname()
-		local segs = _split(self:path(),"/")
+		local segs = _split(self:path(),"/",false)
 		return self:sub(1,-#segs[#segs]-2)
 	end
 
+	-- max 8 chars
+	-- to do: check is all lowercase alphanumeric chars
 	function string:prot()
-		local segs = _split(self:path(),":")
-		return (type(segs[2]) == "string" and segs[2]:sub(1,2) == "//") and segs[1] or nil
+		local segs = _split(self:path(),":",false)
+		return (type(segs[2]) == "string" and segs[2]:sub(1,2) == "//") and #segs[1] <= 8 and segs[1] or nil
 	end
+
+	function string:is_cart()
+		return self=="p64" or self=="p64.png" or self=="p64.rom"
+	end
+
 
 	-- PICO-8 style string indexing;  ("abcde")[2] --> "b"  
 	-- to do: implement in lvm.c?
@@ -678,24 +864,17 @@ end
 	end
 
 	--[[
-		** experimental -- perhaps a bad idea **  
+		include()
 
-		//  goal: want a simple, transparent, commonly used path for including code
+		shorthand for: fetch(filename)()  //  so always relative to pwd()
 
-		include is similar to require() but searches:
-			1. current path (libraries bundled with program)
-			2. /system/lib  (common libraries -- dunno what that would be though! font should be standard)
-				// maybe should use pico-8 style #include so can manage .p64.png packaging automatically
-				// could just rewrite #include filename as include "filename" in preprocessor! 
-
-		** "include" is a bad name -- included code has scope and can't read parent locals
+		// not really an include, but for users who don't care about the difference, serves the same purpose
+		// and is used in the same way: a bunch of include("foo.lua") at the start of main.lua
 
 		related reading: Lua Module Function Critiqued // old module system deprecated in 5.2 in favor of require()
 			// avoids multiple module authors writing to the same global environment
-
 			http://lua-users.org/wiki/LuaModuleFunctionCritiqued
 			https://web.archive.org/web/20170703165506/https://lua-users.org/wiki/LuaModuleFunctionCritiqued
-
 	]]
 
 	function include(filename)
@@ -703,9 +882,9 @@ end
 		local src = fetch(filename)
 
 		if (type(src) ~= "string") then 
+			if (_pid() <= 3) printh("** could not include "..filename)
 			notify("could not include "..filename)
-			stop()
-			return
+			_stop()
 		end
 
 		-- https://www.lua.org/manual/5.4/manual.html#pdf-load
@@ -715,36 +894,12 @@ end
 
 		-- syntax error while loading
 		if (not func) then 
-			send_message(3, {event="report_error", content = "*syntax error"})
-			send_message(3, {event="report_error", content = _tostring(err)})
-
-			stop()
-			return
+			_send_message(3, {event="report_error", content = "*syntax error"})
+			_send_message(3, {event="report_error", content = _tostring(err)})
+			_stop()
 		end
 
---[[
-		-- method 1. run as a coroutine
-		--local res, err = coresume(cocreate(func))
-
-		-- method 2: pcall
-		--local res, err = pcall(func)
-
-		if (not res) then
-			notify(debug.traceback())
-			notify(err) -- will show the filename the runtime error ocurred in			
-			--notify(":: runtime error in "..filename)
-			stop()
-		end
-		return res, err
-]]
-
-		-- call directly; allows complete stacktrace -- runtime error can be handled in general case
-		
-		-- hrrm
-		-- if (filename:sub(1,12) ~= "/system/lib/") cd(filename:dirname())
-			func()
-
-		return true -- ok, no error including   -- to do: shouldn't a successful include just return nil?
+		return func() -- 0.1.1e: allow private modules (used to return true)
 	end
 	
 	
@@ -787,8 +942,9 @@ end
 		if (flags_val) poke(0xc000 + index, flags_val)
 	end
 
+	-- 0.1.1e: only 32 banks (was &0x3fff). bits 0xe000 reserved for orientation (flip x,y,diagonal)
 	function get_spr(index)
-		return _spr[flr(index) & 0x3fff]
+		return _spr[flr(index) & 0x1fff]
 	end
 
 
@@ -813,27 +969,23 @@ end
 function create_undo_stack(...)
 
 	if (not UNDO) then
-		include("/system/lib/undo.lua")
+		UNDO = include("/system/lib/undo.lua")
 	end
 	return UNDO:new(...)
 end
-
 
 
 --------------------------------------------------------------------------------------------------------------------------------
 --    Coroutines
 --------------------------------------------------------------------------------------------------------------------------------
 
-
+-- aliases
 yield = coroutine.yield
 cocreate = coroutine.create
 costatus = coroutine.status
 
 local _coresume = coroutine.resume -- used internally
-
--- move to local; only used here
-local _yielded_to_escape_slice = __yielded_to_escape_slice
-__yielded_to_escape_slice = nil
+local _yielded_to_escape_slice = _yielded_to_escape_slice
 
 --[[
 
@@ -855,6 +1007,9 @@ function coresume(c,...)
 	return r0,r1
 end
 
+-- 0.1.1e library version should do the same
+coroutine.resume = coresume
+
 
 --------------------------------------------------------------------------------------------------------------------------------
 
@@ -870,17 +1025,44 @@ end
 function notify(msg_str)
 
 	-- notify user and add to infobar history
-	send_message(3, {event="user_notification", content = msg_str})
+	_send_message(3, {event="user_notification", content = msg_str})
 
 	-- logged by window manager
-	-- send_message(3, {event="log", content = msg_str})
+	-- _send_message(3, {event="log", content = msg_str})
 	
-	-- printh("@notify: "..msg_str.."\n")
+	-- web debug
+	if (stat(318)==1) printh("@notify: "..msg_str.."\n")
+end
+
+--[[
+	send_message()
+
+	security concern: 
+	userland apps may perform dangerous actions in response to messages, not realising they can be triggered by arbitrary bbs carts
+	-> sandboxed processes can only send messages to self, or to /system processes (0.1.1e)
+		-- e.g. sandboxed terminal can send terminal set_haltable_proc_id to wm, or request a screenshot capture
+		-- assumption: /system programs can all handle arbitrary messages safely
+		-- to do: should accept message going to process 2, but then reject most/all of them from those handlers. clearer
+]]
+function send_message(proc_id, msg, ...)
+
+	if 
+		not _env().sandbox or                         -- userland processes can send messages anywhere
+		proc_id == _pid() or                          -- can always send message to self
+		(stat(307) & 0x1) == 1 or                     -- can always send message if is bundled /system app (filenav)
+		proc_id == 3 or                               -- can always send message to wm
+		-- special case: sandboxed app can set map/gfx palette via pm; (to do: how to generalise this safely?)
+		msg.event == "set_palette" or -- used by #okpal
+		(msg.event == "broadcast" and msg.msg and msg.msg.event == "set_palette") -- not sure if used in the wild
+	then
+		_send_message(proc_id, msg, ...)
+	else
+		--printh("send_message() declined: "..pod(msg))
+	end
+
 end
 
 
-
--- notifications
 
 init_runtime_state()
 

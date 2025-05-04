@@ -1,4 +1,3 @@
---[[pod_format="raw",created="2024-10-16 01:44:56",modified="2024-10-16 01:45:18",revision=1]]
 --[[
 
 	gui.lua
@@ -27,11 +26,21 @@ do
 
 	local next_id = 0
 
+	-- 0.1.1e: moved here so can be used by helper class
+	-- grabbed once per frame at start of update_all (once for each gui, but is harmless)
+	local mx, my, mb, wheel_x, wheel_y = 0,0,0,0,0
 	
+	-- 0.1.1e a dummy draw function always exists; simplifies clipping / hiding logic
+	function GuiElement:draw() end
+
+
 	function GuiElement:new(el)
 		el = el or {}
 		setmetatable(el, self)
 		self.__index = self
+
+		-- test: deleteme
+		--if (not el.draw) el.draw = function() end
 
 		-- el.debug_id = next_id -- for debugging
 		next_id = next_id + 1
@@ -56,6 +65,10 @@ do
 		if (el.clip_to_parent == nil) then
 			el.clip_to_parent = true
 		end
+
+		-- to do: update when used with relative sizes
+		el.width0  = el.width
+		el.height0 = el.height
 
 		el.child = el.child or {}
 
@@ -142,8 +155,13 @@ do
 
 	function GuiElement:attach_pulldown_item(el)
 
-		local item = unpod(pod(el)) -- copy attributes
+		-- deleteme
+		-- 0.1.1e: commented; (see https://www.lexaloffle.com/bbs/?tid=145205 "attach_pulldown_item's loss of event handlers")
+		-- was there a reason to make a copy rather than reuse el (like the rest of the gui library)? seems not.
+		-- local item = unpod(pod(el)) -- copy attributes
 
+		local item = el or {}
+		
 		-- need to copy function separately
 		item.action     = el.action
 
@@ -201,6 +219,7 @@ do
 		if (el.divider) item_h -= 4 -- line break is shorter
 		self.item_y += item_h
 		self.height += item_h
+		self.height0 = self.height
 
 		return self:attach(item)
 	end
@@ -288,14 +307,16 @@ do
 
 		local bar_w = 8
 
-		local attribs = attribs or {} -- to do: should use usual pattern where (duck-type) extend from el
+		local attribs = attribs or {} 
 
+		-- pick out only attributes relevant to scrollbar (autohide)
+		-- caller could adjust them after though -- to do: perhaps should just spill everything in attribs as starting values
 		local scrollbar = {
 			x = 0, justify = "right",
-			y = 1,                             -- 1px boundary at top
+			y = 0,
 			width = bar_w,
-			height = container.height-1,       -- allow for 1px boundary at top
-			height_rel = 1.0, height_add = -1, -- 1 pixel less than container's height
+			height = container.height,
+			height_rel = 1.0,
 			autohide = attribs.autohide,
 			bar_y = 0,
 			bar_h = 0,
@@ -310,50 +331,48 @@ do
 				local emp_h = h0 - bar_h - 1          -- empty height (-1 for 1px boundary at bottom)
 				local max_y = max(0, contents.height - container.height)
 
-
-				-- clamp only if contents has a specially named callback
-				-- update: don't need to be responsible for that here; deleteme
-				--[[
-					if (contents.clamp_scrolling) then
-						contents:clamp_scrolling()
-					end
-				]]
-
 				self.scroll_spd = max_y / emp_h
-				self.bar_y = flr(- emp_h * contents.y / max_y)
-				self.bar_h = bar_h
-				
+				if (max_y > 0) then
+					self.bar_y = flr(- emp_h * contents.y / max_y)
+					self.bar_h = bar_h
+				else
+					self.bar_y = 0
+					self.bar_h = 0
+				end
 
 				if (self.autohide) then
 					self.hidden = contents.height <= container.height
 				end
+
+				-- hack: match update height same frame 
+				-- otherwise /almost/ works because gets squashed by virtue of height being relative to container, but a frame behind
+				-- (doesn't work in some cases! to do: nicer way to solve this?)
+				-- self.squash_to_clip = container.squash_to_clip 
+
+				-- 0.1.1e: always clamp
+				contents.x = mid(0, contents.x, container.width  - contents.width)
+				contents.y = mid(0, contents.y, container.height - contents.height)
+
 			end,
 			
 			draw = function(self, msg)
 				local bgcol = 13
 				local fgcol = 6
 
-				-- allow for 1px boundary at top; draw 1px outside of self at top
-				clip()
-				
-				rectfill(0,-1,self.width-1, self.height-1, bgcol | (fgcol << 8)) 
-				rectfill(1,self.bar_y,self.width-2,self.bar_y + self.bar_h-1, fgcol)
+				rectfill(0, 0, self.width-1, self.height-1, bgcol | (fgcol << 8)) 
+				if (self.bar_h > 0) rectfill(1, self.bar_y+1, self.width-2, self.bar_y + self.bar_h-1, fgcol)
 
-				-- lil grip thing; needs a mid UI colour though?
-				--if (msg.has_pointer) then
-					local yy = self.bar_y + self.bar_h/2
-					line(2, yy-1, self.width-3, yy-1, bgcol)
-					line(2, yy+1, self.width-3, yy+1, bgcol)
-				--end
+				-- lil grip thing; same colour as background
+				local yy = self.bar_y + self.bar_h/2
+				line(2, yy-1, self.width-3, yy-1, bgcol)
+				line(2, yy+1, self.width-3, yy+1, bgcol)
 
-				-- rounded?
-				-- [[
-				pset(1,self.bar_y,bgcol)
-				pset(self.width-2, self.bar_y,bgcol)
+				-- rounded (to do: rrect)
+				pset(1,self.bar_y + 1,bgcol)
+				pset(self.width-2, self.bar_y + 1, bgcol)
 				pset(1,self.bar_y + self.bar_h-1,bgcol)
 				pset(self.width-2, self.bar_y + self.bar_h-1,bgcol)
-				--]]
-
+				
 			end,
 			drag = function(self, msg)
 				local content = self.parent.child[1]
@@ -377,6 +396,9 @@ do
 			local content = self.child[1]
 			if (not content) return
 
+			local old_x = content.x
+			local old_y = content.y
+
 			if (key("ctrl")) then
 				content.x += msg.wheel_y * 32 
 			else
@@ -385,6 +407,13 @@ do
 
 			-- clamp
 			content.y = mid(0, content.y, -max(0, content.height - container.height))
+
+
+			-- 0.1.1e: consume event (e.g. for nested scrollables)
+			return true
+
+			-- experimental: consume only if scrolled
+			--if (old_x ~= content.x or old_y ~= content.y) return true 
 			
 		end
 
@@ -422,12 +451,10 @@ do
 
 	end
 
-
+	local attach_text_editor = nil 
 	function GuiElement:attach_text_editor(...)
-
 		-- lazily load the text editor
-		if (not attach_text_editor) include("/system/lib/gui_ed.lua")
-
+		if (not attach_text_editor) attach_text_editor = include("/system/lib/gui_ed.lua")
 		return attach_text_editor(self, ...)
 	end
 
@@ -475,22 +502,35 @@ do
 		-- this helper is not scoped to a particular Gui -- need to pass in pointer_element via head
 	
 		if (self.head.pointer_element == self) then
-			local mx, my, mb = mouse()
+			-- local mx, my = mouse()
 			msg.has_pointer = (mx >= self.sx and my >= self.sy and mx < self.sx + self.width and my < self.sy + self.height)
 		else
 			msg.has_pointer = nil
 		end
 
 		local fin = false
-		local cl,ct,cw,ch,cc,capture_cache
+		local cl,ct,cw,ch,cc
 
 		-- call event handler if it exists
 		if (type(self[msg.event]) == "function") then
 
-			if (self.hidden and msg.event ~= "update") then
-				-- no callbacks (except update is still called ~ might want to control if self is hidden! (scrollbars))
+			if (self.hidden) then
+
+				-- no callbacks, no propagation to children
 				fin = true
+
+				-- exception: update callback is called on hidden elements but does not propagate to children
+				-- means element can update own hidden state. ref: scrollbars autohide
+				if (msg.event == "update") then
+					self[msg.event](self, msg)
+				end
 			else
+
+				-- 0.1.1e: always set mx,my,mb in message // was confused when tried to use if from an update callback
+				-- to do: settle on which events get which state values
+				-- local mx, my, mb = mouse() 
+				msg.mx, msg.my = mx - self.sx, my - self.sy
+				msg.mb = mb
 
 				if (msg.event == "draw") then
 					-- draw is special: optionally clip children and set camera position
@@ -511,9 +551,10 @@ do
 						end
 					]]
 
-					-- 0.1.0c: mosue position should be relative to element
-					local mx, my, mb = mouse()
-					msg.mx, msg.my = mx - self.sx, my - self.sy
+					-- deleteme -- set above for all messages
+					-- 0.1.0c: mouse position should be relative to element
+					-- local mx, my, mb = mouse()
+					-- msg.mx, msg.my = mx - self.sx, my - self.sy
 
 
 					-- 0.1.1c: only bother drawing when state that this element depends on has changed
@@ -526,7 +567,7 @@ do
 							fin = self.draw(self, msg)
 							self.last_state_str = state_str
 						else
-							-- -> can skip drawing this entire cranch
+							-- -> can skip drawing this entire branch
 							fin = true
 						end
 					else
@@ -599,7 +640,7 @@ do
 
 		local gui = GuiElement:new(head_el)
 
-		local mx, my, mb, wheel_x, wheel_y = 0,0,0,0,0
+		-- local mx, my, mb, wheel_x, wheel_y = 0,0,0,0,0 -- moved to top level; only need to grab once per frame
 		local last_mx, last_my, last_mb = 0,0,0
 		local dx, dy = 0
 		local start_mx, start_my,start_el,tap0_mx,tap0_my = 0,0,nil,0,0
@@ -642,31 +683,128 @@ do
 		end
 ]]
 
-		
-		local function update_absolute_position(el)
-
-				local px = el.parent.sx or 0
-				local py = el.parent.sy or 0
-
+		-- to do: rename: "evaluate_element"?
+		local function update_absolute_position(el, px0, py0, px1, py1)
+				
 				-- hack: update head so that tree structure can change (should that be allowed? wm does it!)
 				el.head = el.parent.head or el
 
-				-- relative size
-				if (el.width_rel)  el.width  = el.parent.width  * el.width_rel  + (el.width_add or 0)
-				if (el.height_rel) el.height = el.parent.height * el.height_rel + (el.height_add or 0)
+				-- optimisation: shouldn't need to calculate for hidden elements
+				if (el.hidden) return
 
-				-- to do: (optimisation) table of functions
-				if (el.justify == "right")  then px = px + el.parent.width - el.width end
-				if (el.justify == "center") then px = px + el.parent.width/2 - el.width/2 end
+				local px = el.parent.sx or 0
+				local py = el.parent.sy or 0
+				local elx = el.x or 0 -- necessary! to do: review .x .y existence
+				local ely = el.y or 0
+				
+				-- set clipping rectangle to union of self and parent clipping // dupe from el_at_xy_recursive
+				local sx0, sy0 = el.sx, el.sy
+				local sx1 = sx0 + el.width
+				local sy1 = sy0 + el.height
+				if (el.clip_to_parent) then
+					sx0 = mid(px0, sx0, px1)
+					sy0 = mid(py0, sy0, py1)
+					sx1 = mid(px0, sx1, px1)
+					sy1 = mid(py0, sy1, py1)
+				end
 
-				if (el.vjustify == "bottom") then py = py + el.parent.height - el.height end
-				if (el.vjustify == "center") then py = py + el.parent.height/2 - el.height/2 end
+				-- relative size (might get squashed)
+				if (el.width_rel)  el.width  = el.parent.width  * el.width_rel  + (el.width_add or 0)   el.width0 = el.width
+				if (el.height_rel) el.height = el.parent.height * el.height_rel + (el.height_add or 0)  el.height0 = el.height
 
-				el.sx = (px + (el.x or 0)) \ 1
-				el.sy = (py + (el.y or 0)) \ 1
+
+				-- confining and squashing
+				if (el.confine_to_clip or el.squash_to_clip or el.confine_to_parent or el.squash_to_parent) then
+					-- similar to confine_to_parent, but use px0, py0, px1, py1 relative to parent sx, sy
+					local x0 = px0 - el.parent.sx
+					local y0 = py0 - el.parent.sy
+					local x1 = px1 - el.parent.sx
+					local y1 = py1 - el.parent.sy
+
+					-- when confine_*() or squash_*() is used on an element, the width and height attrs change meaning to "evaluated size".
+					-- to change the size of such elements, modify width0, height0 instead  //  wm does this
+					el.width  = el.width0
+					el.height = el.height0
+
+					-- squash first because might still want to confine afterwards due to minimum width, height
+
+					if (el.squash_to_parent) then
+						-- adjust size to fit 
+						if (elx < 0) then
+							el.width += elx
+							elx = 0
+						end
+						if (ely < 0) then
+							el.height += ely
+							ely = 0
+						end
+						el.width = max(el.min_width,   min(el.width, el.parent.width - elx))
+						el.height = max(el.min_height, min(el.height, el.parent.height - ely))
+						
+					end
+
+					-- ditto
+
+					if (el.squash_to_clip) then
+						-- adjust size to fit 
+						--printh("squash_to_clip: "..pod{x0,y0,x1,y1})
+						if (elx < x0) then
+							el.width = max(el.min_width, el.width - (x0 - elx))
+							--printh("squash left: adjust elx "..elx.." to x0:"..x0)
+							elx = x0
+						end
+						if (ely < y0) then
+							el.height = max(el.min_height, el.height - (y0 - ely))
+							ely = y0
+						end
+						el.width  = max(el.min_width,  min(el.width,  x1 - elx))
+						el.height = max(el.min_height, min(el.height, y1 - ely))
+					end
+
+					-- confine_to_parent: reposition so that element remains inside parent
+					-- (when oversized, set x / y to 0 -- can use with squash_to_parent)
+
+					if (el.confine_to_parent) then
+						-- bump left, up
+						elx = min(elx, el.parent.width - el.width)
+						ely = min(ely, el.parent.height - el.height)
+						-- bump right, down 
+						elx = max(0, elx)
+						ely = max(0, ely)
+					end
+					
+					if (el.confine_to_clip) then
+						-- bump left, up
+						elx = min(elx, x1 - el.width)
+						ely = min(ely, y1 - el.height)
+						-- bump right, down 
+						elx = max(x0, elx)
+						ely = max(y0, ely)
+					end
+
+					
+				end
+
+				
+				if (el.justify == "right") then
+--					printh("justify right  el.x,width,parent.width: "..pod{el.x, el.width, el.parent.width})
+				end
+
+				-- apply justification by modifying parent position
+				if (el.justify or el.vjustify) -- faster test: unusually false
+				then
+					if (el.justify == "right")  then px = px + el.parent.width - el.width end
+					if (el.justify == "center") then px = px + el.parent.width/2 - el.width/2 end
+					if (el.vjustify == "bottom") then py = py + el.parent.height - el.height end
+					if (el.vjustify == "center") then py = py + el.parent.height/2 - el.height/2 end
+				end
+
+				-- add parent position
+				el.sx = (px + elx) \ 1
+				el.sy = (py + ely) \ 1
 
 				for i=1, #el.child do
-					update_absolute_position(el.child[i])
+					update_absolute_position(el.child[i], sx0, sy0, sx1, sy1)
 				end
 
 		end
@@ -682,14 +820,21 @@ do
 				height = get_display():height()
 			}
 
-			update_absolute_position(head_el) -- head_el /is/ the gui
+--			update_absolute_position(head_el) -- head_el /is/ the gui
+
+			-- in case squash_*() or confine_*() is used, need to calculate clipping rectangle -- same pattern as el_at_xy()
+			-- using sfx.p64 instrument editor to measure: ~15% cpu increase
+			-- to do: flatten gui tree once and iterate over that? do later when gui has settled down
+			if (head_el.sx) then -- safety; should always be set already
+				update_absolute_position(head_el, head_el.sx, head_el.sy, head_el.sx + head_el.width, head_el.sy + head_el.height)
+			end
 
 			gui.parent = nil
 
 		end
 
 
-		local function el_at_xy_recursive(el, px0, py0, px1, py1, x, y, depth)
+		local function el_at_xy_recursive(el, px0, py0, px1, py1, x, y) --, depth)
 
 			-- was needed due to superyield L->top borking bug -- can guarantee now?
 			--[[
@@ -703,8 +848,8 @@ do
 			local best_el = nil
 
 			local sx0, sy0 = el.sx, el.sy
-			local sx1 = el.sx + el.width
-			local sy1 = el.sy + el.height
+			local sx1 = sx0 + el.width
+			local sy1 = sy0 + el.height
 
 			-- clip by parent -- events should also be clipped when not visibly interacting
 
@@ -725,42 +870,44 @@ do
 				best_el = el
 			end
 			
-			-- optimisation: only need to search children when inside
+			-- only search children when inside
 			-- (unless clip_to_parent is false, in which case children could be anywhere)
-			if (true or is_inside or not el.clip_to_parent) 
-			then
-				for i=1, #el.child do
-					best_el = el_at_xy_recursive(el.child[i], el.sx, el.sy, sx1, sy1, x, y, depth + 1) or best_el
+			-- 0.1.1e: fixed; was "if (true or is_inside.." -- thx Eiyeron!
+			-- need to test for every child; is the /child/ that might not be clipped and should be clickable
+			-- https://www.lexaloffle.com/bbs/?tid=145205 // "Scrollbar content are clickable past their parents"
+			for i=1, #el.child do
+				if (is_inside or not el.child[i].clip_to_parent) then
+					--best_el = el_at_xy_recursive(el.child[i], sx0, sy0, sx1, sy1, x, y, depth + 1) or best_el -- debug
+					best_el = el_at_xy_recursive(el.child[i], sx0, sy0, sx1, sy1, x, y) or best_el
 				end
 			end
-
+			
 			return best_el
 		
 		end
 
-
-
-		-- to do: element can have collision test called when inside bounding rectangle
 		-- x, y are relative to TLC of gui
 		function gui:el_at_xy(x, y)
 			local el = nil
 
-			-- don't interact with gui a moment after it was created; avoid complex edge cases
-			-- e.g. dragging while regenerate gui -> don't want to immediately pick up whatever
-			-- is under the cursor. (confusing)
+			--[[
+				don't interact with gui a moment after it was created; avoid complex edge cases
+				e.g. dragging while regenerate gui -> don't want to immediately pick up whatever
+				is under the cursor. (confusing)
+			]]
+			-- 0.1.0c: commented; pushes complexity to other places! e.g. drop file into newly opened window
 			--if (time() < gui.t0 + 0.2) return false
-			-- 0.1.0c: commente; pushes complexity to other places! e.g. drop file into newly opened window
 
-			--el = el_at_xy_recursive(gui, gui.x, gui.y, gui.x + gui.width, gui.y + gui.height, x, y)
-
-			el = el_at_xy_recursive(gui, 0, 0, 480, 270, x, y ,0)
+			-- no element when outside of gui itself (head element)
+			el = el_at_xy_recursive(gui, gui.x, gui.y, gui.x + gui.width, gui.y + gui.height, x, y, 0)
+			--el = el_at_xy_recursive(gui, 0, 0, 480, 270, x, y ,0)
 			
 			--printh("--> el_at_xy: "..tostring(el).."  //  "..pod{el.sx,el.sy,el.width,el.height})
 			return el
 
 		end
 
-
+		-- deleteme
 		function gui:el_at_pointer(x,y)
 			printh("** FIXME: el_at_pointer -> el_at_xy")
 			return gui:el_at_xy(x,y)
@@ -791,7 +938,6 @@ do
 			msg.propagate_to_children = true
 
 			-- should gui be responsible for preserving draw state?
-			--set(draw_state, 0, peek8(0x5480, 24))
 			draw_state:peek(0x5480, 0, 24) -- back up 192 bytes of draw state
 			clip() camera()
 			self:event(msg)
@@ -804,7 +950,6 @@ do
 		function gui:update_all()
 
 			last_mx, last_my, last_mb = mx, my, mb
-
 			mx, my, mb, wheel_x, wheel_y = mouse() -- screen space
 
 			dx = mx - last_mx
@@ -917,8 +1062,9 @@ do
 				--local dy = start_my - my
 
 				-- only tap when close to position-at-mousedown within one second, and element existed for 200ms or more
+				-- 0.1.1e: tap must be within 0.3 seconds (was 1.0 -- too slow; could be meant as a drag)
 				-- ref: filenav doubleclick to enter folder -> don't want tap on newly created interface
-				if (dx*dx + dy*dy < 4*4 and time() < drag_t + 1.0 and t() > el.t0 + 0.2) then
+				if (dx*dx + dy*dy < 4*4 and time() < drag_t + 0.3 and t() > el.t0 + 0.2) then
 
 					msg.event="tap" msg.last_mb = last_mb el:event(msg)
 

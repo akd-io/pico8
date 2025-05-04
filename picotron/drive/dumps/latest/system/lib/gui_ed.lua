@@ -93,10 +93,10 @@ end
 
 -- attach_text_editor
 -- returns the content -- all exposed methods (incl :attach_scrollbars!) and attributes can be stored there  
-function attach_text_editor(g, parent)
+local function attach_text_editor(g, parent)
 
-	
 	local container = g:attach(parent)
+
 	local content                -- referenced by container:draw
 	local undo_stack
 
@@ -115,10 +115,7 @@ function attach_text_editor(g, parent)
 	local hydrated = {}
 	local hydrate_y = 1
 
-
 	local sel = {{line=0, char=0}, {line=0, char=-1}, {line=0, char=0}}
-
-
 
 
 
@@ -1597,6 +1594,5 @@ function attach_text_editor(g, parent)
 end
 
 
-
-
+return attach_text_editor
 

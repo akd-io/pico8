@@ -16,7 +16,7 @@ JgE3MQYAQQEAARYIAC8Q0W0AHLAgkUABlwEgAQedB74AByYCDwQAAVAGB50HBocAATYCD1QBIy-w
 ----------------------------------------------------WVBtPTh9fQ==
 :: gfx/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTE2IDA2OjMxOjUyIixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjowMDo1NSIsc3RvcmVkPSIyMDIzLTMxLTE2IDA2OjMxOjUyIl1d
+NC0yNyAxNTo1OToyMCIsc3RvcmVkPSIyMDIzLTMxLTE2IDA2OjMxOjUyIl1d
 :: map/
 :: map/0.map
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTMyLTE2IDA2OjMyOjE4Iixtb2RpZmllZD0iMjAyNC0w
@@ -25,44 +25,123 @@ KCJpMTYiLDE2AwAvIjABAP---_-xCCIpLGhpZGRlbj1mYWxzZSxwYW5feD0wCADSeT0wLHRpbGVf
 aD0xNgoAEHcKAIB6b29tPTF9fQ==
 :: map/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTE2IDA2OjMxOjUyIixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjowMDo1NSIsc3RvcmVkPSIyMDIzLTMxLTE2IDA2OjMxOjUyIl1d
+NC0yNyAxNTo1OToyMCIsc3RvcmVkPSIyMDIzLTMxLTE2IDA2OjMxOjUyIl1d
 :: sfx/
 :: sfx/.info.pod
 b64$LS1bW3BvZCxjcmVhdGVkPSIyMDIzLTEwLTE2IDA2OjMxOjUyIixtb2RpZmllZD0iMjAyNS0w
-NC0yNyAxNjowMDo1NSIsc3RvcmVkPSIyMDIzLTMxLTE2IDA2OjMxOjUyIl1d
+NC0yNyAxNTo1OToyMCIsc3RvcmVkPSIyMDIzLTMxLTE2IDA2OjMxOjUyIl1d
 :: gui.lua
 --[[pod_format="raw",created="2023-17-22 10:17:57",modified="2024-03-13 07:05:54",revision=926]]
+
+function create_infotext(el)
+	el.width=140
+	el.height=7
+	el.vjustify="bottom"
+	el = gui:attach(el)
+	function el:draw()
+		local l = el.label
+		if (type(l) == "function") l = l()
+		color(el.col)
+		print("\014"..l,0,1)
+	end
+	return el
+end
+
+
+
 function generate_gui()
 	
 	gui = create_gui()
 	
 	if mode == "view" then
 	
-	gui:attach_button{
-		x=-10,y=-4,
-		justify="right",
-		vjustify="bottom",
-		label = "Edit",
-		bgcol=0x070d,
-		click = function()	
-			mode = "edit"
-			generate_gui()
-		end
-	}
+		gui:attach_button{
+			x=-10,y=-4,
+			justify="right",
+			vjustify="bottom",
+			label = "Edit",
+			bgcol=0x070d,
+			click = function()	
+				mode = "edit"
+				generate_gui()
+			end
+		}
 
-	-- icon
+
+		-- icon
+		
+		gui:attach{
+			x=10,y=8,
+			width=16, height=16,
+			draw = function()
+				spr(meta.icon or get_spr(8),0,0)
+			end,
+			click = function()	
+				mode = "icon"
+				generate_gui()
+			end
+		}	
+
+		-- info
+
+		
+
+
+		local attribs, size, origin = fstat(fn)
 	
-	gui:attach{
-		x=10,y=8,
-		width=16, height=16,
-		draw = function()
-			spr(meta.icon or get_spr(8),0,0)
-		end,
-		click = function()	
-			mode = "icon"
-			generate_gui()
+		local yy = -42
+
+		local is_sandboxable_cart = fn:ext() and fn:ext():split(".")[1] == "p64"
+		if (fn == "/ram/cart") is_sandboxable_cart = true -- special case; normally don't want to sandbox plain folders
+		if (fn:sub(1,8) == "/system/") is_sandboxable_cart = false
+		if (not is_sandboxable_cart) yy += 14 -- don't need the last 2 lines
+
+		create_infotext{col=18,x=10,y=yy,label=(fn or "?")} yy += 7
+		create_infotext{col=13,x=10,y=yy,label=(size and (size.." bytes on disk")) or "-"} yy += 7
+		create_infotext{col=13,x=10,y=yy,label=meta.created and date("%Y-%m-%d %H:%M:%S", meta.created) or "[no date_created]"} yy += 7
+		create_infotext{col=13,x=10,y=yy,label=meta.modified and date("%Y-%m-%d %H:%M:%S", meta.modified) or "[no date_modified]"} yy += 7
+
+		
+		-- for carts: show bbs id (if there is one) and sandbox toggle
+		if (is_sandboxable_cart and fn:prot() == "bbs") then
+			-- show id and read-only sandbox info 
+			local bbs_id = fn:basename():split(".", false)[1]
+			--create_infotext{col=18,x=10,y=yy,label="[bbs_id: "..bbs_id.."]"} 
+			yy += 7
+			create_infotext{col=18,x=10,y=yy,label="[sandboxed]"}  -- always sandboxed because bbs:// -- just to avoid confusion
+			yy += 7
+		elseif (is_sandboxable_cart and fn:prot()) then
+			-- some other protocol?
+			-- no other protocols currently support running a cartridge
+		elseif is_sandboxable_cart then
+			-- local cart
+			if (meta.bbs_id) create_infotext{col=18,x=10,y=yy,label="bbs_id: "..meta.bbs_id} 
+			yy += 7
+
+			-- sandbox status
+
+			local el = create_infotext{col=18,x=10,y=yy,
+				label=function()
+					if (meta.sandbox == "bbs") return "\fi[/] sandboxed"
+					return "\fd[ ] sandboxed"
+				end
+			} yy += 7
+
+			el.tap = function(self)
+				if (meta.sandbox == "bbs") then
+					meta.sandbox = false -- can't overwrite nil with store_metadata!
+				else
+					meta.sandbox = "bbs"
+					if (not meta.bbs_id) then
+						meta.bbs_id = "_dev"..flr(rnd(10000))
+						generate_gui()
+					end
+				end
+				sync_metadata()
+			end
+
+			el.cursor = "pointer"
 		end
-	}	
 	
 	end
 	
@@ -185,6 +264,20 @@ function generate_gui()
 			end
 		}
 	end
+
+--[[
+	if (mode == "edit") then
+		gui:attach_button{
+			label = "Sandbox",
+			x=68,y=-4,justify="left",vjustify="bottom",
+			bgcol=0x070d,
+			click = function()
+				--mode="icon"
+				--generate_gui()
+			end
+		}
+	end
+]]
 	
 	end
 	
@@ -367,7 +460,7 @@ function sync_metadata()
 
 	if (meta) store_metadata(fn, meta)
 	meta = meta or fetch_metadata(fn) or {}
-	--printh("[a3] fetching metadata for file: "..fn.."  // path:"..pwd())
+	--printh("[about] fetching metadata for file: "..fn.."  // path:"..pwd())
 	
 end
 
@@ -384,7 +477,7 @@ function _init()
 	cd(env().path) -- can use from terminal
 	fn = env().argv[1] or env().prog or "/ram/cart"
 	
-	--printh("[a3] initial fn: "..fn)
+	--printh("[about] initial fn: "..fn)
 	fn = fullpath(fn)
 	
 	local segs = split(fn,"/",false)
@@ -393,13 +486,14 @@ function _init()
 
 	cd(fn_path) -- same path as the file or folder in question
 	
-	--printh("[a3] changed to fn_path: "..fn_path)
+	--printh("[about] changed to fn_path: "..fn_path)
 
 	sync_metadata()
 	
 	window{
 		width = 200,
-		height = 108,
+--		height = 108,
+		height = 116,
 		title = "About"
 	}
 	
@@ -451,24 +545,43 @@ function _draw()
 	
 	local attribs, size, origin = fstat(fn)
 	
-	local yy = get_display():height()-38
-	if (not origin) yy += 6
+	local yy = get_display():height()-42
+--	if (not origin) yy += 6
+	if (not meta.bbs_id) yy += 12
+
+
+--[[
 	cursor(10, yy) color(13)
 	--?"\014author:    "..("zep" or "-")
 	--?"\014revision:  "..(meta.revision or "-")
 
 	--rectfill(0,yy-4,1000,1000,1)
-	color(13)
+	color(18)
 	?"\014"..(fn or "?")
 	?"\014"..((size and (size.." bytes on disk")) or "-")
 
 	-- local times; to do: click to toggle gmt
 	-- to do: n days ago
+	color(13)
 	?"\014"..(meta.created and date("%Y-%m-%d %H:%M:%S", meta.created) or "[no date_created]")
 	?"\014"..(meta.modified and date("%Y-%m-%d %H:%M:%S", meta.modified) or "[no date_modified]")
-	if (origin) then
-	?"\014origin: "..(origin or fullpath(fn) or "?")	
+
+
+	if (origin) ?"\014origin: "..(origin or fullpath(fn) or "?")	
+	
+	if (meta.bbs_id) then
+		color(18)
+		?"\014bbs_id: "..meta.bbs_id
+
+		if (meta.sandbox == "bbs") then
+			?"\014\fi    [/] sandboxed"
+		else
+			?"\014\fd    [ ] sandboxed"
+		end
+
 	end
+]]
+
 	
 	end -- "view" mode
 	
@@ -538,19 +651,19 @@ end
 
 
 :: .info.pod
-b64$LS1bW3BvZCxzdG9yZWQ9IjIwMjQtMDMtMjMgMTk6MzQ6MTUiLGF1dGhvcj0iemVwIixub3Rl
-cz0iRmlsZSBtZXRhZGF0YSB2aWV3ZXIgYW5kIGVkaXRvci5cbkNsaWNrIG9uIHRoZSBpY29uIHRv
-IGVkaXQgaXQhIixpY29uPXVzZXJkYXRhKCJ1OCIsMTYsMTYsIjAwMDAwMDAxMDEwMTAxMDEwMTAx
-MDEwMTAxMDAwMDAwMDAwMDAxMDcwNzA3MDcwNzA3MDcwNzA3MDcwMTAwMDAwMDAxMDcwZDBkMGQw
-ZDBkMGQwZDBkMGQwZDA3MDEwMDAxMDcwZDBkMGQwZDA3MDcwNzA3MGQwZDBkMGQwNzAxMDEwNzBk
-MGQwZDA3MDcwZDBkMDcwNzBkMGQwZDA3MDEwMTA3MGQwZDA3MDcwNzA3MDcwNzA3MDcwZDBkMDcw
-MTAxMDcwZDBkMDcwNzA3MGQwZDA3MDcwNzBkMGQwNzAxMDEwNzBkMGQwNzA3MDcwZDBkMDcwNzA3
-MGQwZDA3MDEwMTA3MGQwZDA3MDcwNzBkMGQwNzA3MDcwZDBkMDcwMTAxMDcwZDBkMGQwNzA3MGQw
-ZDA3MDcwZDBkMGQwNzAxMDEwNzBkMGQwZDBkMDcwNzA3MDcwZDBkMGQwZDA3MDEwMTA2MDcwZDBk
-MGQwZDBkMGQwZDBkMGQwZDA3MDYwMTAxMDYwNjA3MDcwNzA3MDcwNzA3MDcwNzA3MDYwNjAxMDAw
-MTA2MDYwNjA2MDYwNjA2MDYwNjA2MDYwNjAxMDAwMDAwMDEwNjA2MDYwNjA2MDYwNjA2MDYwNjAx
-MDAwMDAwMDAwMDAxMDEwMTAxMDEwMTAxMDEwMTAxMDAwMDAwIiksbW9kaWZpZWQ9IjIwMjUtMDQt
-MjcgMTY6MDA6NTUiLGNyZWF0ZWQ9IjIwMjQtMTAtMTYgMTA6NDk6MTgiLHRpdGxlPSJBYm91dCIs
+b64$LS1bW3BvZCxhdXRob3I9InplcCIsY3JlYXRlZD0iMjAyNS0wMi0xOCAwNjoxMToyOCIsaWNv
+bj11c2VyZGF0YSgidTgiLDE2LDE2LCIwMDAwMDAwMTAxMDEwMTAxMDEwMTAxMDEwMTAwMDAwMDAw
+MDAwMTA3MDcwNzA3MDcwNzA3MDcwNzA3MDEwMDAwMDAwMTA3MGQwZDBkMGQwZDBkMGQwZDBkMGQw
+NzAxMDAwMTA3MGQwZDBkMGQwNzA3MDcwNzBkMGQwZDBkMDcwMTAxMDcwZDBkMGQwNzA3MGQwZDA3
+MDcwZDBkMGQwNzAxMDEwNzBkMGQwNzA3MDcwNzA3MDcwNzA3MGQwZDA3MDEwMTA3MGQwZDA3MDcw
+NzBkMGQwNzA3MDcwZDBkMDcwMTAxMDcwZDBkMDcwNzA3MGQwZDA3MDcwNzBkMGQwNzAxMDEwNzBk
+MGQwNzA3MDcwZDBkMDcwNzA3MGQwZDA3MDEwMTA3MGQwZDBkMDcwNzBkMGQwNzA3MGQwZDBkMDcw
+MTAxMDcwZDBkMGQwZDA3MDcwNzA3MGQwZDBkMGQwNzAxMDEwNjA3MGQwZDBkMGQwZDBkMGQwZDBk
+MGQwNzA2MDEwMTA2MDYwNzA3MDcwNzA3MDcwNzA3MDcwNzA2MDYwMTAwMDEwNjA2MDYwNjA2MDYw
+NjA2MDYwNjA2MDYwMTAwMDAwMDAxMDYwNjA2MDYwNjA2MDYwNjA2MDYwMTAwMDAwMDAwMDAwMTAx
+MDEwMTAxMDEwMTAxMDEwMTAwMDAwMCIpLG1vZGlmaWVkPSIyMDI1LTA0LTI3IDE1OjU5OjIwIixu
+b3Rlcz0iRmlsZSBtZXRhZGF0YSB2aWV3ZXIgYW5kIGVkaXRvci5cbkNsaWNrIG9uIHRoZSBpY29u
+IHRvIGVkaXQgaXQhIixzdG9yZWQ9IjIwMjQtMDMtMjMgMTk6MzQ6MTUiLHRpdGxlPSJBYm91dCIs
 dmVyc2lvbj0iIix3b3Jrc3BhY2VzPXt7bG9jYXRpb249Im1haW4ubHVhIzkwIix3b3Jrc3BhY2Vf
 aW5kZXg9MX0se2xvY2F0aW9uPSJndWkubHVhIzE1MiIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2Nh
 dGlvbj0iaWNvbi5sdWEjMSIsd29ya3NwYWNlX2luZGV4PTF9LHtsb2NhdGlvbj0iZ2Z4LzAuZ2Z4

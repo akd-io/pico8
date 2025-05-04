@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-47-08 23:47:10",modified="2024-04-05 14:04:42",revision=2]]
+--[[pod_format="raw",created="2024-10-08 23:47:10",modified="2024-11-20 20:35:50",revision=4]]
 --[[
 
 	edit a file
@@ -10,6 +10,7 @@
 	used by:
 		filenav.p64: double click on file
 		load.lua: to restore workspace tabs
+		open() // can be used from sandboxed programs
 
 ]]
 
@@ -48,7 +49,7 @@ for i = 1, #argv do
 	else
 
 		filename = fullpath(argv[i])
-		local prog_name = prog_for_ext[filename:ext()]
+		
 
 
 		if (fstat(filename) == "folder") then
@@ -60,24 +61,38 @@ for i = 1, #argv do
 				window_attribs = {show_in_workspace = show_in_workspace}
 			})
 
-		elseif (prog_name) then
-
-			create_process(prog_name,
-				{
-					argv = {filename},
-					
-					window_attribs = {
-						show_in_workspace = show_in_workspace,
-						unique_location = true, -- to do: could be optional. wrangle also sets this.
-					}
-				}
-			)
-
 		else
-			-- to do: use podtree (generic pod editor)
-			print("no program found to open this file")
 
-			notify("* * * file type not found * * *")
+			local prog_name = prog_for_ext[filename:ext()]
+			if (not prog_name) then
+				-- no preferred program to open with; check metadata for recommended bbs:// program
+				-- (bbs:// only -- maybe dangerous to allow un-sandboxed programs to open a file that 
+				-- could be crafted to exploit some weakness in that program's loader)
+				-- note: bbs program includes the version number! could optionally strip it here
+				-- to do: run most recent version by default? [if online]
+				local meta = fetch_metadata(filename)
+				if (meta and meta.prog and meta.prog:prot() == "bbs") prog_name = meta.prog
+			end
+
+			if (prog_name) then
+
+				create_process(prog_name,
+					{
+						argv = {filename},
+						fileview = {{location=filename, mode="RW"}}, -- let sandboxed app read/write file
+						window_attribs = {
+							show_in_workspace = show_in_workspace,
+							unique_location = true, -- to do: could be optional. wrangle also sets this.
+						}
+					}
+				)
+
+			else
+				-- to do: use podtree (generic pod editor)
+				print("no program found to open this file")
+
+				notify("*** file type not found ***")
+			end
 		end
 	end
 

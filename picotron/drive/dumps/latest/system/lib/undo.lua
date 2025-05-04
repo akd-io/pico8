@@ -16,6 +16,9 @@
 
 local Undo = {}
 
+local create_delta = create_delta
+local apply_delta = apply_delta
+
 function Undo:reset()
 
 	self.prev_state_str = nil
@@ -101,6 +104,5 @@ function Undo:new(save_state, load_state, pod_flags, item)
 	return u
 end
 
--- export class used by head
-UNDO = Undo
+return Undo
 

@@ -54,12 +54,16 @@ function make_window_button(parent, label, x, y, width, height, win)
 	function b:draw(event)
 		local yy = (event.mb > 0 and event.has_pointer) and 1 or 0
 
-		pal(7, theme(parent.col_k or "toolbar_item"))
-			for y=yy+2,yy+6,2 do
-				line(2,y,8,y,7)
-			end
-		pal(7,7)
+		local col = theme(parent.col_k or "toolbar_item")
+		for y=yy+2,yy+6,2 do
+			line(2,y,8,y,col)
+		end
 
+	end
+
+	function b:update()
+		-- make space for tiny window
+		if (self.parent.width < 32) self.x = 0
 	end
 
 	function b:tap(event)

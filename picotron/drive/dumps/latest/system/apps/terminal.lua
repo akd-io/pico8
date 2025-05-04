@@ -27,11 +27,16 @@ end
 if (pwd() == "/system/apps") cd("/") -- start in root instead of location of terminal.lua
 
 
+-- 0.1.1e: set starting path
+if fullpath(env().argv[1]) then
+	cd(fullpath(env().argv[1]))
+end
+
+
 --- *** NO GLOBALS ***   --   don't want to collide with co-running program
 
 local cmd=""
 
---local line={"picotron 0.0.1","(c) lexaloffle games 2020~2022 ",""}
 local line={}
 local lineh={}
 local history={}
@@ -55,6 +60,7 @@ local cproj_draw, cproj_update
 -- to do: nice way to get a local copy of needed api
 -- co-running program should be free to redefine any of these
 
+local env = env
 local blit = blit
 local cls = cls
 local set_draw_target = set_draw_target
@@ -193,6 +199,11 @@ local function suspend_cproj()
 	-- stop playing any sound  // to do: need to pause mixer so that it is resumable 
 	-- play_note(0,-1,0,0,0, 0)
 
+	if (env().sandbox) then
+		add_line("\fdsuspended sandboxed process // use \"exit\" to escape sandbox")
+	end
+
+
 end
 
 
@@ -206,7 +217,7 @@ end
 
 
 local function try_multiple_extensions(prog_name)
---	printh(" - - - - trying multiple entensions for: "..tostr(prog_name))
+	--printh(" - - - - trying multiple entensions for: "..tostr(prog_name))
 
 	if (type(prog_name) ~= "string") return nil
 
@@ -214,7 +225,9 @@ local function try_multiple_extensions(prog_name)
 		--(fstat(prog_name) and prog_name and get_file_extension(prog_name)) or  --  needs extension because don't want regular folder to match
 		(fstat(prog_name) and prog_name:ext() and prog_name) or  --  needs extension because don't want regular folder to match
 		(fstat(prog_name..".lua") and prog_name..".lua") or
-		(fstat(prog_name..".p64") and prog_name..".p64") or -- only .p64 carts can be run without specifying extension (would be overkill; reduce ambiguity)
+		-- only .p64 carts can be run without specifying extension (would be overkill; reduce ambiguity)
+		-- also: don't automatically append .p64 when checking a bbs:// address -- causes e.g. checking server for cd.p64
+		(not (fullpath(prog_name) and fullpath(prog_name):prot()) and fstat(prog_name..".p64") and prog_name..".p64") or 
 		nil
 	--printh(" - - - - - - - - -")
 	return res
@@ -261,7 +274,8 @@ local function run_program_inside_terminal(prog_name)
 	local prog_str = fetch(prog_name)
 
 	if (not prog_str) then
-		printh("** could not run "..prog_name.." **")
+		-- printh("** could not run "..prog_name.." **")
+		add_line("could not fetch "..prog_name)
 		return
 	end
 
@@ -320,15 +334,19 @@ end
 ]]
 local function run_program_in_new_process(prog_name, argv)
 
-	local proc_id = create_process(
-		prog_name, 
+	local proc_id, err = create_process(
+		prog_name,
 		{
-			print_to_proc_id = pid(),  -- tell new process where to print to               
 			argv = argv,
 			path = pwd(), -- used by commandline programs -- cd(env().path)
-			window_attribs = {show_in_workspace = true}
+			window_attribs = {show_in_workspace = true},
+
+			-- tell new process where to print to  (0.1.1e unless new terminal!)
+			print_to_proc_id = prog_name ~= env().argv[0] and pid() or nil,
 		}
 	)
+
+	if (err) add_line(err)
 
 end
 
@@ -357,11 +375,15 @@ local function run_terminal_command(cmd)
 
 --	printh("run_terminal_command program: "..tostr(prog_name))
 
-	local argv = split(cmd," ",false)
+	local argv = {}
+	local argv0 = split(cmd," ",false)
 
-	-- 0-based so that 1 is first argument!
-	for i=1,#argv+1 do
-		argv[i-1] = argv[i]
+	local index = 0 -- 0-based so that 1 is first argument
+	for i=1,#argv0 do
+		if (argv0[i] ~= "") then -- 0.1.1e: don't pass "" arguments (e.g. trailing space). dangerous!
+			argv[index] = argv0[i]
+			index += 1
+		end
 	end
 
 	-----
@@ -385,6 +407,8 @@ local function run_terminal_command(cmd)
 	elseif (cmd == "reset") then
 
 		reset()
+		window{pauseable=false}
+		vid(0)
 
 	elseif (cmd == "resume") then
 
@@ -480,10 +504,19 @@ function add_line(s)
 		deli(line, 1)		
 		deli(lineh, 1)
 	end
-	
-	local xx,yy = print(s, 0, 1000, 7)
-	add(line,  s)
-	add(lineh, (yy or 1012) - 1000)
+
+	if (#line >= 1 and sub(line[#line],-1) == "\000") then
+		-- append to previous line; roughly match behaviour of cursor when printing to display
+		-- kinda inefficient if do many appends, but simplifies height calculation.
+		line[#line] = sub(line[#line], 1, -2)..s
+		-- update height
+		local xx,yy = print(line[#line], 0, 10000, 7)
+		lineh[#lineh] = (yy or 1012) - 10000
+	else
+		local xx,yy = print(s, 0, 10000, 7)
+		add(line,  s)
+		add(lineh, (yy or 1012) - 10000)
+	end
 
 	show_last_line()
 end
@@ -509,6 +542,8 @@ end
 --[[
 	
 	tab_complete_filename
+
+	0.1.1e: can handle protocol locations
 	
 ]]
 local function tab_complete_filename()
@@ -522,6 +557,14 @@ local function tab_complete_filename()
 	-- construct path prefix  -- everything (canonical path) except the filename
 	local prefix = fullpath(prefix)
 	if (not prefix) return -- bad path
+
+	local prot = prefix:prot()
+	local prot_str = prot and (prot.."://") or ""
+	if (prot) then
+		prefix = prefix:sub(#prot+3)
+	end
+
+
 	local pathseg = split(prefix,"/",false)
 	local path_part = ""
 	for i=1,#pathseg-1 do
@@ -532,8 +575,8 @@ local function tab_complete_filename()
 	prefix = (pathseg and pathseg[#pathseg]) or "/"
 
 
-	-- printh("@@@ path part: "..path_part.." pwd:"..pwd())
-	local files = ls(path_part)
+	-- printh("@@@ listing: "..prot_str..path_part)
+	local files = ls(prot_str..path_part)
 
 	if (not files) return
 
@@ -544,7 +587,7 @@ local function tab_complete_filename()
 	local single_filename = nil
 
 	for i=1,#files do
-		--printh(prefix.." :: "..files[i])
+		-- printh(prefix.." :: "..files[i])
 		if (sub(files[i], 1, #prefix) == prefix) then
 			matches = matches + 1
 			local candidate = sub(files[i], #prefix + 1) -- remainder
@@ -825,7 +868,6 @@ end
 
 on_event("print", function(msg)
 
-
 	add_line(msg.content)	
 
 end)
@@ -891,8 +933,10 @@ on_event("reload_src", function(msg)
 		return
 	end
 
-	local prog_name = msg.working_file -- env().corun_program
+	local prog_name = msg.location
 	local prog_str = fetch(prog_name)
+
+	if (not prog_str) return
 
 	local f = load(prog_str, "@"..prog_name, "t", _ENV)
 

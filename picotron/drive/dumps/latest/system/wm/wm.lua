@@ -38,6 +38,10 @@ local held_frames = 0
 local sdat = fetch"/appdata/system/settings.pod" or {}
 
 
+local _set_userland_clipboard_text = _set_userland_clipboard_text
+local _get_host_clipboard_text = _get_host_clipboard_text
+
+
 function show_reported_error() -- happens when error is reported
 	open_infobar()
 	infobar_y_target = 200 -- not too high, want to see code
@@ -89,17 +93,13 @@ function generate_head_gui()
 
 	head_gui.child = {}
 	head_gui:attach(tooltray_gui)
+	head_gui:attach(tooltray_overlay)
 	head_gui:attach(ws_gui)
+	head_gui:attach(ws_gui_overlay)
+
 	head_gui:attach(toolbar_gui)
 	head_gui:attach(infobar_gui)
 
-	
---[[
-	--printh("@@ generate_head_gui: #ws_gui.child: "..#ws_gui.child)
-	printh("@@ generate_head_gui: ws_gui "..tostr(ws_gui).."  (workspace_index: "..workspace_index..")")
-	if (ws_gui and ws_gui.child) printh("  // #ws_gui.child: "..#ws_gui.child)
-	if (ws_gui and ws_gui.child and ws_gui.child[1]) printh("  // ws_gui.child[1].width: "..tostr(ws_gui.child[1].width))
-]]
 
 	function head_gui:update()
 
@@ -319,7 +319,8 @@ function visit_workspace(ws)
 	if (ws.style ~= "fullscreen") last_non_fullscreen_workspace = ws
 	if (ws.style == "desktop") last_desktop_workspace = ws
 	if (ws.style ~= "desktop") last_non_desktop_workspace = ws
-	
+	if (ws.pwc_output) last_pwc_output_workspace = ws
+
 end
 
 
@@ -376,18 +377,6 @@ function set_workspace(index)
 	generate_head_gui()
 
 
---  deleteme: should only need to happen on save
---	save_open_locations_metadata()
-	
---[[
-	printh("set workspace: "..ws_gui.index)
-	if (ws_gui.child) then
-	for i=1,#ws_gui.child do
-		printh("  "..ws_gui.child[i].proc_id)
-	end
-	end
-]]
-
 end
 
 -- can return nil
@@ -402,8 +391,21 @@ function get_active_window()
 		return nil 
 	end
 
-	if (ws_gui.active_window) return ws_gui.active_window
+	-- prefer last clicked window
+	
+	if (ws_gui.active_window and not ws_gui.active_window.closing and not ws_gui.active_window.wallpaper) then
+		return ws_gui.active_window
+	end
 
+	-- look backwards through list of windows
+	for i=#ws_gui.child, 1, -1 do
+		if not ws_gui.child[i].closing and not ws_gui.child[i].wallpaper then
+			return ws_gui.child[i]
+		end
+	end
+
+	-- safety: return last child // happens during startup?
+	-- printh("using last child in get_active_window")
 	return ws_gui.child[#ws_gui.child]
 end
 
@@ -438,7 +440,7 @@ function _init()
 	-- 
 
 	tooltray_gui = {x=0, y=0, width=480, height=270, 
-		draw=function(self) 
+		draw=function(self, msg) 
 			--[[
 			rectfill(0,0,self.width,self.height, 3) -- green background for debugging
 			print("tooltray:"..#self.child, 4,4, 7)
@@ -451,13 +453,58 @@ function _init()
 		end
 	}
 
+	tooltray_overlay = {x=0, y=0, width=0, height=0, -- don't interact
+		draw=function(self, msg)
+			if (msg.mb and dragging_window and dragging_window.parent ~= tooltray_gui and msg.my < toolbar_y) then
+				clip()
+				local win = dragging_window
+				local x0 = msg.mx - dragging_window_xo
+				local y0 = msg.my - (dragging_window_yo - toolbar_y)
+				if (win.has_frame) y0 -= 12 -- drop down because titlebar not drawn
+				y0 = max(y0, 0) -- snap to y >= 0 when dropped
+				_blit_process_video(win.proc_id, 0, 0, nil, nil,x0, y0)
+			end
+		end,
+		-- abuse visibility mechanism: don't draw in window actual position this frame		
+		update=function(self, msg)
+			local mx,my = mouse()
+			if (msg.mb and dragging_window and dragging_window.parent ~= tooltray_gui and msg.my < toolbar_y) then
+				dragging_window.visible = false
+			end
+		end
+		
+	}
+
+	-- for dragging windows from toolbar -> ws_gui (copied and modified from above)
+	ws_gui_overlay = {x=0, y=0, width=0, height=0, -- don't interact
+		draw=function(self, msg)
+			if (msg.mb and dragging_window and dragging_window.parent == tooltray_gui and msg.my >= toolbar_y) then
+				clip()
+				local win = dragging_window
+				local x0 = msg.mx - dragging_window_xo
+				local y0 = msg.my - dragging_window_yo
+				if (win.has_frame) y0 -= 12 -- drop down because titlebar not drawn
+				y0 = max(y0, toolbar_y + 12) -- snap to under toolbar (same as when dragging from desktop -> tooltray)
+				_blit_process_video(win.proc_id, 0, 0, nil, nil,x0, y0)
+			end
+		end,
+		-- abuse visibility mechanism: don't draw in window actual position this frame		
+		update=function(self, msg)
+			if (msg.mb and dragging_window and dragging_window.parent == tooltray_gui and msg.my >= toolbar_y) then
+				dragging_window.visible = false	
+			end
+		end
+	}
+
+
+
 	-- ==========================================================================================================================================
 
 	-- forward (low-level) event messages to active window
-	-- should be fast; everything has to go throught here
+	-- should be fast; everything has to go through here
 
-	local forward_events = {keydown=1, keyup=1, textinput=1, mousewheel=nil, mouselockedmove=1, drop_items=1}
-	local activity_events = {keydown=1, keyup=1, textinput=1, mousewheel=1, mouse=1}
+	local forward_events = {keydown=1, keyup=1, textinput=1, mousewheel=nil, mouselockedmove=1, pressed_ctrl_v=1, reset_kbd=1}
+	local activity_events = {keydown=1, keyup=1, textinput=1, mousewheel=1, mouse=1, pressed_ctrl_v=1}
 
 	_subscribe_to_events( 
 		function(msg)
@@ -507,6 +554,20 @@ function _init()
 		end
 	)
 
+	-- 0.1.1e forward drop_items to active window, but need to add mx,my ("drop_items" was in forward_events)
+	-- when from hosts, always choose mx,my at center of window for now
+	-- (mouse position not available on all platforms, best just to not expose it)
+	on_event("drop_items", function(msg)
+		local win = get_active_window()
+		--printh("wm: forwarding drop_items message to "..(win and win.proc_id or 0))
+		if (win and win.proc_id) then
+			msg.mx = win.width \ 2
+			msg.my = win.height \ 2
+			msg.from_proc_id = 0 -- special meaning: dropped from host
+			send_message(win.proc_id, msg)
+		end
+	end)
+
 	-- ==========================================================================================================================================
 
 	-- to do: maybe no longer used / needed?
@@ -536,7 +597,7 @@ function _init()
 	on_event("bring_window_to_front",
 		function (msg)
 			local win = get_window_by_proc_id(msg.proc_id)
-			set_active_window(win)		
+			if (win) set_active_window(win)		
 		end
 	)
 
@@ -546,6 +607,23 @@ function _init()
 			sdat = fetch"/appdata/system/settings.pod"
 		end
 	)
+
+	-- window can request that it be grabbed (normally used by frameless windows)
+	on_event("grab", function(msg)
+		local win = get_window_by_proc_id(msg._from)
+		local mx,my,mb = mouse()
+		if (win and mb == 1) then
+			dragging_window = win
+			if (win) set_active_window(win)
+			local mx, my = mouse()
+			dragging_window_xo = mx - win.x
+			dragging_window_yo = my - win.y
+			win.start_grab_x = win.x\1
+			win.start_grab_y = win.y\1
+			win.start_grab_t = time()
+		end
+	end)
+
 	
 	toolbar_gui = toolbar_init()
 	infobar_gui = infobar_init()
@@ -560,12 +638,13 @@ end
 
 function draw_window_frame(win)
 
-
-	local x0 = win.x
-	local y0 = win.y
-	local x1 = win.x + win.width  - 1
-	local y1 = win.y + win.height - 1
-
+	-- screen coordinates; want to use clip() for title
+	-- to do: how to use clip() relative to camera? there should be a nice way
+	camera()
+	local x0 = win.sx
+	local y0 = win.sy
+	local x1 = win.sx + win.width  - 1
+	local y1 = win.sy + win.height - 1
 	
 	local bar_col = theme"dormant_frame"
 	local border_col = theme"dormant_border"
@@ -573,11 +652,7 @@ function draw_window_frame(win)
 
 	-- adjust for base gui position; to do: shouldn't be necessary
 
-	camera()
-	x0 = x0 + ws_gui.sx
-	y0 = y0 + ws_gui.sy
-	x1 = x1 + ws_gui.sx
-	y1 = y1 + ws_gui.sy
+	
 
 	if (get_active_window() == win) then 
 		-- active window colours
@@ -664,7 +739,9 @@ function draw_window_paused_menu(win,sx,sy)
 	if (not win.pmenu) return
 
 	local ww,hh = 70, 12 + (#win.pmenu) * 6
-	local x0,y0 = sx + win.width/2 - ww, sy + win.height/2 - hh
+	local winw = win.width / pixel_scale()
+	local winh = win.height / pixel_scale()
+	local x0,y0 = sx + winw/2 - ww, sy + winh/2 - hh
 	local x1,y1 = x0 + ww*2 - 1, y0 + hh * 2 - 1
 
 	rectfill(x0,y0,x1,y1,0)
@@ -706,9 +783,8 @@ function update_window_paused_menu(win)
 		end
 
 	else
-		-- pause button to pause (not within first 6 frames  ~ is left over button state)
-		-- to do: button blocking scheme?
-		if (btnp(6) and time() > win.created_t + 0.1) then
+		-- pause button to pause (not within first 0.5 seconds ~ could be left over button state used to launch the window)
+		if (btnp(6) and time() > win.created_t + 0.5) then
 			win.paused = true
 			generate_paused_menu(win)
 			send_message(win.proc_id, {event = "pause"})
@@ -719,6 +795,7 @@ end
 
 on_event("toggle_pause_menu", function(msg)
 	local win = get_active_window()
+	if (not win or not win.pauseable) return -- e.g. can't pause desktop wallpaper from html shell
 	if (win.paused) then
 		win.paused = false
 		send_message(win.proc_id, {event = "unpause"})
@@ -729,10 +806,23 @@ on_event("toggle_pause_menu", function(msg)
 	end
 end)
 
+on_event("close_pause_menu", function(msg)
+	local win = get_active_window()
+	if (win.paused) then -- only happens for fullscreen apps
+		win.paused = false
+		send_message(win.proc_id, {event = "unpause"})
+		send_message(win.proc_id, {event = "update_menu_labels"}) -- might as well; sometimes labels change as a result of selected item
+	end
+end)
+
 
 
 function generate_paused_menu(win)
 	win.pmenu = {}
+
+	-- let app know it should update menu items (the ones that are functions)
+	-- to do: how to get results back in time to display menu? see last value for a moment
+	send_message(win.proc_id, {event = "update_menu_labels"})
 
 	add(win.pmenu, {label = "Continue", action = function() 
 		win.paused = false
@@ -746,6 +836,7 @@ function generate_paused_menu(win)
 		for i=1,#menu do
 			add(win.pmenu,
 			{
+				id = menu[i].id,
 				label = menu[i].label or "??",
 				action = function(b)
 					send_message(win.proc_id, {event="menu_action", id=menu[i].id, b=b})
@@ -789,7 +880,8 @@ function generate_paused_menu(win)
 
 	-- useful when running locally -- often just want to close the whole workspace when done running a fullscreen cart
 	-- (doesn't happen for carts running via ctrl+r (just press ESC), exported carts, or carts running on bbs html player
-	if haltable_proc_id ~= win.proc_id and stat(317) == 0 then
+	if haltable_proc_id ~= win.proc_id and (stat(317) & 0x2) == 0 then -- no Exit for (web) export; [currently] doesn't make sense
+--	if haltable_proc_id ~= win.proc_id then -- to do: include Exit in exports / bbs player -- might be launched as part of a bundle
 		add(win.pmenu, {label = "Exit", action = function()
 			if (haltable_proc_id == win.proc_id) then
 				-- halt program and enable command prompt (update: never happens -- menu item is not added in that case)
@@ -808,7 +900,10 @@ function generate_paused_menu(win)
 		end})
 	end
 
+	-- always start at Continue
 	win.pmenu.ii = 1
+
+	
 	
 end
 
@@ -823,7 +918,8 @@ function close_window(win, do_kill)
 	_kill_process(do_kill and win and win.proc_id)
 
 	win = win or get_active_window() -- is the get_active_window default ever used? to do: review and remove
-	if (win.closing) then return end
+
+	if (win.closing) then return end -- already started the closing process. don't want to send messages twice
 
 	-- invalidate active window
 	if (win.parent.active_window == win) win.parent.active_window = nil
@@ -880,6 +976,456 @@ function set_active_window(win)
 end
 
 
+function install_widget(win)
+
+	if (win.prog:sub(1,9) == "/ram/cart" and (win.prog[10] == "/" or win.prog[10] == nil)) then
+		notify("installed "..win.prog.." as a temporary widget")
+		return
+	end
+
+--	printh(pod{win.prog, win.location})
+
+	local widgets = fetch("/appdata/system/widgets.pod") or {}
+	add(widgets,{
+		x = win.x,
+		y = max(win.y, 0),
+		width = win.resizeable and win.width or nil,
+		height = win.resizeable and win.height or nil,
+		location = win.location,
+		prog = win.prog,
+		had_frame = win.had_frame
+	})
+	store("/appdata/system/widgets.pod", widgets)
+	notify("installed widget: "..win.prog)
+end
+
+function update_widget_position(win)
+
+	local widgets = fetch("/appdata/system/widgets.pod") or {}
+
+	local found_widget_to_update
+
+	for i=1,#widgets do
+		local wid = widgets[i]
+		-- identify by position and prog
+		-- always happen after a grab and drag (so start_grab_x/y is set)
+		if (wid.x\1 == win.start_grab_x and wid.y\1 == win.start_grab_y and wid.prog == win.prog) 
+		then
+			found_widget_to_update = true
+			wid.x = win.x\1
+			wid.y = win.y\1
+		end
+	end
+
+	if (found_widget_to_update) then
+		store("/appdata/system/widgets.pod", widgets)
+		--notify("updated widget: "..win.prog)
+	end
+end
+
+
+function uninstall_widget(win)
+	local widgets = fetch("/appdata/system/widgets.pod") or {}
+
+	local widget_to_delete
+	for i=1,#widgets do
+		local widget = widgets[i]
+		-- identify by (old or grabbed) position and program
+		if (widget.x\1 == win.x\1 or widget.x\1 == win.start_grab_x) and (widget.y\1 == win.y\1 or widget.y\1 == win.start_grab_y) and widget.prog == win.prog 
+		then
+			widget_to_delete = widget		
+		end
+	end
+
+	if (widget_to_delete) then
+		del(widgets, widget_to_delete)
+		store("/appdata/system/widgets.pod", widgets)
+		notify("uninstalled widget: "..win.prog)
+		return widget_to_delete.width
+	else
+		notify("** could not uninstall widget: "..win.prog)
+	end
+
+end
+
+function pop_out_widget(win, new_x, new_y)
+	local size_was_set = uninstall_widget(win)
+	-- move window to desktop
+	win:detach()
+	ws_gui:attach(win)
+	win.x = new_x
+	win.y = max(new_y, 12) -- can't drop on toolbar
+	-- give frame -- to do: store original setting
+	if (win.had_frame) then
+		win.has_frame = true
+		win.moveable = true    -- a fair assumption if it was installed in the first place
+		if (size_was_set) win.resizeable = true  -- if there was a width set on widgets.pod item, must be resizeable (usually the case)
+		create_window_frame(win)
+	end
+end
+
+
+local function drag_window(win)
+
+	local mx, my = mouse()
+	local x0, y0 = win.sx, win.sy
+	local x1 = mx - dragging_window_xo
+	local y1 = my - dragging_window_yo
+	local min_y1 = win.has_frame and 24 or 12
+	if (win.parent == tooltray_gui) min_y1 = 0
+	y1 = max(min_y1, y1)
+
+	-- let application know; app can also send message requesting move
+	send_message(win.proc_id, {event="move", x = x1, y = y1, dx = x1 - x0, dy = y1 - y0})
+
+	-- this section is needed to keep display size in sync with window size when it is squashed
+	-- tricky because gui element changes size too late for display size to change before draw
+	--> detect if it is /going/ to be changed, and defer window position change to next frame
+	--  via a drag_squashable_window message
+	local squashed_display_changed_size = false -- or unsquashed; changed size due to squashing
+	if (win.squashable) then
+		local pwidth, pheight = _get_process_display_size(win.proc_id)
+		-- predict new squashed width this frame -- logic needs to match gui.lua (!)
+		local ww = min(win.width0, (x1 + win.width0) - 0)
+		ww = max(win.min_width, min(ww, ws_gui.width - x1))
+		local hh = min(win.height0, (y1 + win.height0) - 0)
+		hh = max(win.min_height, min(hh, ws_gui.height - y1))
+		if (ww ~= pwidth or hh ~= pheight) then
+			send_message(win.proc_id, {event="squash", width = ww, height = hh})
+			squashed_display_changed_size = true
+		end
+	end
+
+	if (squashed_display_changed_size) then
+		-- move next frame (otherwise display size is a frame behind)
+		send_message(3, {event="drag_squashable_window", x = x1, y = y1, proc_id = win.proc_id})
+	else
+		-- can move same frame
+		win.x = x1
+		win.y = y1
+	end
+end
+
+function drop_window(win)
+	-- drop into tooltray
+
+	local mx,my = mouse()
+
+	if (my < toolbar_y) 
+	then
+		if (win.parent == tooltray_gui) then
+			-- already in tooltray: store position (e.g. can drag owl around)
+			-- printh("moved within tooltray")
+			if (win.start_grab_x) then
+				local dx,dy = win.x - win.start_grab_x,  win.y - win.start_grab_y
+				if (dx*dx+dy*dy>=3*3 or time() > win.start_grab_t + 0.7) then
+					update_widget_position(win)
+				else
+					-- snap back when move less than 3 pixels and dragged for less than 0.7 seconds (might be intended to be a click / tap)
+					win.x = win.start_grab_x
+					win.y = win.start_grab_y
+				end
+			end
+		else
+			-- printh("dropped into tooltray: "..my)
+			win:detach()				
+			win.x = mx - dragging_window_xo
+			win.y = my - dragging_window_yo + toolbar_y - (win.has_frame and 12 or 0)
+			win.y = max(0, win.y) -- never off the top
+
+			-- remove frame if there is one
+			win.had_frame = win.has_frame and true or nil -- remember for when popping out
+			win.has_frame = false
+			win.child={}
+			tooltray_gui:attach(win)
+
+			-- remove squashy attributes (interesting, but maybe later)
+			update_squashable_attributes(win)
+			
+			-- install in /system/appdata/widgets.pod
+			install_widget(win)
+		end
+	elseif (win.parent == tooltray_gui) then
+		pop_out_widget(win, mx - dragging_window_xo, my - dragging_window_yo - toolbar_y)
+		
+	end
+
+end
+
+
+function create_window_frame(win)
+
+	local bar = win:attach(
+		{
+			x = 0, y = -bar_h,
+			width_rel = 1.0,
+			height = bar_h,
+			clip_to_parent = false,
+			cursor = "grab", -- to do: why doesn't this work? because outside of parent?
+			is_window_bar = true
+		}
+	)
+
+	-- close button
+	bar:attach(
+		{
+			cursor = "pointer",
+			x = -2, justify="right",
+			y = 0, vjustify="center",
+			width = 12, height = 12,
+			tap = function(self)
+				close_window(self.parent.parent, true)
+			end,
+			draw = function(self, msg)
+				(msg.has_pointer and circfill or circ)(self.width / 2, self.height / 2 - 1, 2, 
+					win.parent.active_window == win and theme("window_button") or theme("dormant_button")) 					
+			end,
+			update = function(self)
+				-- make space for tiny window
+				if(self.width < 32) self.x = 0
+			end
+		}
+	)
+
+	-- app menu button
+	bar:attach(make_window_button(bar, "app menu", 4, 1, 12, 10 +1)) -- height +1 so that window frame border is not clobbered
+
+	function bar:update(event)
+		self.col_k = win.parent.active_window == win and "window_button" or "dormant_button"
+	end
+
+	-- to do: keep offset; when go up into tooltray area and back down, relative grab position should stay the same
+	function bar:drag(event)
+		if (not win.moveable) return
+		drag_window(win)
+	end
+
+	function bar:release(msg)
+		--printh("dropped: "..pod(msg))
+		dragging_window = false
+		drop_window(win)
+	end
+
+	function bar:click(msg)
+		if (not key("lshift")) then -- key state test, but actually quite useful! drag windows around underneath
+			bar.parent:bring_to_front()
+		end
+		win.parent.active_window = win -- either way: this window becomes the active window
+
+		if (not win.fullscreen) then
+			dragging_window = win
+			local mx, my = mouse()
+			dragging_window_xo = mx - win.x
+			dragging_window_yo = my - win.y
+		end
+	end
+
+	function bar:doubletap()
+		-- maximise
+--			win.x = 0
+--			win.y = 12
+
+		if (not win.resizeable) return
+
+		if (win.maximised) then
+			win.maximised = false
+			send_message(win.proc_id, {event="resize", x = win.old_x, y = win.old_y, width = win.old_width, height = win.old_height})
+		else
+			win.maximised = true
+			win.old_x = win.x
+			win.old_y = win.y
+			win.old_width = win.width
+			win.old_height = win.height
+			-- space to see frame
+			send_message(win.proc_id, {event="resize", x = 1, y = 24, width = 478, height = 245})
+		end
+
+	end
+
+
+
+	--[[--------------------------------------------------------------------------------------------------------------
+
+		resize widget
+
+		// always attach if not resizeable; window attribute can change after creation
+
+		to do: could be a single large rectangle behind window
+		(so only works when cursor is slightly outside of window)
+		or -- put in front and use test_point (ha!)
+	
+	--------------------------------------------------------------------------------------------------------------]]--
+
+	local function resize_click(self, event) 
+
+		-- burn in evaluated size and position (for squashable windows)
+		win.x = win.sx - win.parent.sx
+		win.y = win.sy - win.parent.sy
+		win.width0 = win.width
+		win.height0 = win.height
+
+		-- resize modifications relative to a starting position and size
+		win.start_mx, win.start_my = mx, my
+		win.start_w, win.start_h = win.width, win.height
+		win.start_x, win.start_y = win.x, win.y
+
+	end
+
+	function resize_draw(self, event) 
+		-- debug: view the widget // don't need to clip() because .clip_to_parent == false
+		-- rect(0, 0, self.width-1, self.height-1, 5)
+	end
+
+	-- resize bottom right
+	if (win.resizeable) then
+
+		win:attach({
+			width = 8, height = 8,
+			clip_to_parent = false,
+			cursor  = 8,
+
+			update = function(self)
+				self.x = win.width - 4
+				self.y = win.height - 4
+			end,
+			draw  = resize_draw,
+			click = resize_click,
+			drag = function(self, event)
+				if (win.resizeable and (event.dx ~= 0 or event.dy ~= 0)) then
+					-- use window manager mx, my because using relative event.mx,event.my will jump around as window resizes
+				
+					local new_width  = max(win.min_width, win.start_w + (mx - win.start_mx))
+					local new_height = max(win.min_height, win.start_h + (my - win.start_my))
+					send_message(win.proc_id, {event="resize", width = new_width, height = new_height})
+			
+				end
+			end
+		})
+
+		-- resize bottom left
+		win:attach({
+			width = 8, height = 8,
+			clip_to_parent = false,
+			cursor  = 9,
+
+			update = function(self)
+				self.x = -4
+				self.y = win.height - 4
+			end,
+			draw  = resize_draw,
+			click = resize_click,
+
+			drag = function(self, event) 
+				if (win.resizeable and (event.dx ~= 0 or event.dy ~= 0)) then
+					-- set x in same message so that visible change is simultaneously (otherwise jitters)
+					local new_width  = max(64, win.start_w\1 - (mx - win.start_mx))
+					local new_height = max(32, win.start_h + (my - win.start_my))
+					send_message(win.proc_id, {event="resize", width = new_width, height = new_height, x = win.start_x + (mx - win.start_mx)
+				})
+
+				end
+			end
+		})
+	end
+--[[
+	-- commented; maybe nice to have just bottom left, bottom right widgets.
+
+	-- resize bottom
+	win:attach({
+		x = 4, 
+		y = win.height - 4,
+		width = win.width - 8,
+		height = 8,
+		clip_to_parent = false,
+		update = function(self)
+			self.y = win.height - 4
+			self.width = win.width - 8
+		end,
+		draw  = resize_draw,
+		click = resize_click,
+		drag = function(self, event) 
+			if (event.dx ~= 0 or event.dy ~= 0) then
+				send_message(win.proc_id, {event="resize", height = win.start_h + (my - win.start_my)})
+			end
+		end
+	})
+
+	-- resize left
+	win:attach({
+		x = -4, y = 0, 
+		width = 8, height = win.height  - 4,
+		clip_to_parent = false,
+		update = function(self)
+			self.height = win.height  - 4
+		end,
+		draw  = resize_draw,
+		click = resize_click,
+		drag = function(self, event) 
+			if (event.dx ~= 0 or event.dy ~= 0) then
+				send_message(win.proc_id, {event="resize", 
+					width = win.start_w\1 - (mx - win.start_mx)\1, 
+					x = win.start_x + (mx - win.start_mx)
+				})
+			end
+		end
+	})
+
+	-- resize right
+	win:attach({
+		x = win.width-4, y = 0, 
+		width = 8, height = win.height  - 4,
+		clip_to_parent = false,
+		update = function(self)
+			self.height = win.height  - 4
+			self.x = win.width-4
+		end,
+		draw  = resize_draw,
+		click = resize_click,
+		drag = function(self, event) 
+			if (event.dx ~= 0 or event.dy ~= 0) then
+				send_message(win.proc_id, {event="resize", 
+					width = win.start_w\1 + (mx - win.start_mx)\1, 
+				})
+			end
+		end
+	})
+]]
+
+
+
+end
+
+-- wm bundles gui attributes together as "squashable"
+-- --> means display is squashable and squash/confine_to_* attributes are set accordingly
+-- to do: could use *_to_crop for tabs
+function update_squashable_attributes(win)
+
+	local was_squashy = win.squash_to_parent or win.confine_to_parent or win.squash_to_clip or win.confine_to_clip
+
+	win.squash_to_parent  = nil
+	win.confine_to_parent = nil
+	win.squash_to_clip    = nil
+	win.confine_to_clip   = nil
+
+	if (win.squashable and win.has_frame) then
+		-- use *_to_parent -- to_clip is too messy
+		win.squash_to_parent  = true
+		win.confine_to_parent = true
+		if not was_squashy then
+			-- going from not squishy -> squishy: set base size (safety)
+			win.width0 = win.width
+			win.height0 = win.height
+		end
+	elseif was_squashy then
+		-- going from squishy -> regular; set window position and size to match evaluated region
+		win.x = win.sx - win.parent.sx
+		win.y = win.sy - win.parent.sy
+		win.width0 = win.width
+		win.height0 = win.height
+	end
+
+end
+
 
 -- new version
 function create_window(target_ws, attribs)
@@ -914,7 +1460,17 @@ function create_window(target_ws, attribs)
 
 	if (attribs.pauseable == nil) attribs.pauseable = attribs.fullscreen and not attribs.desktop_filenav and not attribs.wallpaper
 
+	if (attribs.min_width == nil) attribs.min_width = 40
+	if (attribs.min_height == nil) attribs.min_height = 20
+
+	-- squashable
+	update_squashable_attributes(attribs)
+
 	win = target_ws:attach(attribs)
+
+	-- finished recovering output terminal by creating this window
+	target_ws.recovering = false
+	
 	
 	-- position at top of same-z stack
 	win:push_to_back()    -- bottom of same-z stack (push behind any foreground layers)
@@ -942,7 +1498,8 @@ function create_window(target_ws, attribs)
 	function win:draw()
 
 		-- not visible or about to close --> skip
-		if (not win.visible or win.closing) return
+		if (not win.visible or win.closing) return true -- don't draw children
+
 		--if (win.closing) return
 
 		-- don't render on first visible frame as process :draw has likely not been called
@@ -1056,7 +1613,8 @@ function create_window(target_ws, attribs)
 			draw_window_paused_menu(win, win.sx, win.sy)
 		end
 
-		-- stickers
+		-- stickers  //  deleteme -- stickers now regular children
+		--[[
 		if (type(win.stickers) == "table") then
 			clip() camera()
 			for i=1,#win.stickers do
@@ -1072,23 +1630,22 @@ function create_window(target_ws, attribs)
 				end
 			end
 		end
+		]]
 		
 	end
 
 
 	function win:update()
-		
-		win.width, win.height = _get_process_display_size(win.proc_id)
 
 		win.is_active = self == get_active_window()
 
 		-- no process --> close 
 		-- except when in the middle of resetting cartridge: there might be a few frames where process has no display
-		if (win.width == 0 or win.height == 0) and not win.resetting then
+		if _process_state(win.proc_id) < 0 and not win.resetting then
+			-- printh("closing dead process. "..tostring(win.closing))
 			close_window(win)
 			return
 		end
-		
 
 		-- autoclose a non-tabbed window that is covered by a tabbed window
 		-- otherwise: need some way to access that window. don't want to tab it! sheesh
@@ -1116,6 +1673,23 @@ function create_window(target_ws, attribs)
 			end
 		end
 
+		-- 
+		update_squashable_attributes(win)
+
+		-- squashable display: keep display size in sync with width, height (instead of width0, height0)
+		-- bar:drag handles the common case and ensures elements size matches draw size (drag_squashable_window)
+		-- but this is needed for other cases where window is squashed (e.g. app requests position change)
+		if (win.squashable) then
+			local pwidth, pheight = _get_process_display_size(win.proc_id)
+			if (pwidth and pwidth ~= win.width) or (pheight and pheight ~= win.height) then
+				-- printh("squash from win:update(): "..pod{pwidth, win.width, win.width, win.height})
+				send_message(win.proc_id, {event="squash", 
+					width = win.width, 
+					height = win.height, 
+					x = win.x, y = win.y})
+			end
+		end
+
 	end
 
 	
@@ -1124,6 +1698,13 @@ function create_window(target_ws, attribs)
 
 		set_active_window(win)
 
+		-- forward click to window 
+		-- to do: review if window be getting gui messages like this? i.e. can use from on_event()
+		-- (if so, need to also send tap / doubletap etc. a bit of extra code but not a perf question)
+		-- maybe app should always set up a gui; seems nicer to have one consistent way of doing it
+		-- BUT -- maybe kinda surprising can't do on_event("click", ...)
+		-- send_message(win.proc_id, msg)
+
 		return true -- processed
 	end
 
@@ -1131,7 +1712,7 @@ function create_window(target_ws, attribs)
 
 		-- context menu on mb2 (used by filenav -- need to provide nicer mechanism for generating that menu)
 		-- inside tap message so that filenav has chance to generate menu based on new selection
-		if (win.has_context_menu and msg.last_mb == 2) 
+		if (win.has_context_menu or win.parent == tooltray_gui) and msg.last_mb == 2
 		then
 			send_message(3, {event = "toggle_app_menu", 
 				_delay = 0.0 , is_context_menu = true, 
@@ -1139,250 +1720,31 @@ function create_window(target_ws, attribs)
 				y = min(win.sy + msg.my - 30, 150), -- keep y above 150 (assume menu is shorter) // to do: maybe need a keep_inside_parent attribute
 				proc_id = win.proc_id }
 			)
+		else
+			-- forward tap to window  -- deleteme; apps should set up a gui instead
+			-- send_message(win.proc_id, msg)
 		end
 
 	end
 
-
+	-- can move window around by grabbing interior if app sends a "grab" message
 	function win:drag(msg)
-		-- drag event is generate by window's own gui.lua
-		-- send_message(win.proc_id, msg) -- forward to window 
+		if (dragging_window == win) drag_window(win)
+	end
+	function win:release(msg)
+		if (dragging_window == win) then
+			drop_window(win)
+		end
+		dragging_window = nil		
 	end
 
 
 	-- titlebar
 
 	if (win.has_frame) then
-
-		local bar = win:attach(
-			{
-				x = 0, y = -bar_h,
-				width = win.width,
-				height = bar_h,
-				clip_to_parent = false,
-				cursor = "grab", -- to do: why doesn't this work? because outside of parent?
-				is_window_bar = true
-			}
-		)
-
-		function bar:draw()
-		end
-
-		-- close button
-		bar:attach(
-			{
-				cursor = "pointer",
-				x = -2, justify="right",
-				y = 0, vjustify="center",
-				width = 12, height = 12,
-				tap = function(self)
-					close_window(self.parent.parent, true)
-				end,
-				draw = function(self, msg)
-					(msg.has_pointer and circfill or circ)(self.width / 2, self.height / 2 - 1, 2, 
-						win.parent.active_window == win and theme("window_button") or theme("dormant_button")) 					
-				end
-			}
-		)
-
-		-- app menu button
-		bar:attach(make_window_button(bar, "app menu", 4, 1, 12, 10 +1)) -- height +1 so that window frame border is not clobbered
-
-
-		function bar:update(event)
-			self.width = self.parent.width
-			self.col_k = win.parent.active_window == win and "window_button" or "dormant_button"
-
-			-- to do: also need to adjust buttons
-			-- maybe positions could be right-justified? would be nice!
-			-- e.g. btn.justify = "left" | "center" | "right"
-		end
-		
-
-		function bar:drag(event)
-			if (not win.moveable) return
-			win.x += event.dx
-			win.y = max(24, win.y + event.dy)
-			-- let application know! app can also send message requesting move
-			send_message(win.proc_id, {event="move", x = win.x, y = win.y, dx = event.dx, dy = event.dy})
-		end
-
-		function bar:click()
-			if (not key("lshift")) then -- key state test, but actually quite useful! drag windows around underneath
-				bar.parent:bring_to_front()
-			end
-			win.parent.active_window = win -- either way: this window becomes the active window
-		end
-
-		function bar:doubletap()
-			-- maximise
---			win.x = 0
---			win.y = 12
-
-			if (not win.resizeable) return
-
-			if (win.maximised) then
-				win.maximised = false
-				send_message(win.proc_id, {event="resize", x = win.old_x, y = win.old_y, width = win.old_width, height = win.old_height})
-			else
-				win.maximised = true
-				win.old_x = win.x
-				win.old_y = win.y
-				win.old_width = win.width
-				win.old_height = win.height
-				-- space to see frame
-				send_message(win.proc_id, {event="resize", x = 1, y = 24, width = 478, height = 245})
-			end
-
-		end
-
-
-
-		--[[--------------------------------------------------------------------------------------------------------------
-
-			resize widget
-
-			// always attach if not resizeable; window attribute can change after creation
-
-			to do: could be a single large rectangle behind window
-			(so only works when cursor is slightly outside of window)
-			or -- put in front and use test_point (ha!)
-		
-		--------------------------------------------------------------------------------------------------------------]]--
-
-
-		local function resize_click(self, event) 
-			win.start_mx, win.start_my = mx, my
-			win.start_w, win.start_h = win.width, win.height
-			win.start_x, win.start_y = win.x, win.y
-		end
-
-		function resize_draw(self, event) 
-			-- debug: view the widget // don't need to clip() because .clip_to_parent == false
-			-- rect(0, 0, self.width-1, self.height-1, 5)
-		end
-
-		-- resize bottom right
-		if (win.resizeable) then
-
-			win:attach({
-				width = 8, height = 8,
-				clip_to_parent = false,
-				cursor  = 8,
-
-				update = function(self)
-					self.x = win.width - 4
-					self.y = win.height - 4
-				end,
-				draw  = resize_draw,
-				click = resize_click,
-				drag = function(self, event)
-					if (win.resizeable and (event.dx ~= 0 or event.dy ~= 0)) then
-						-- use window manager mx, my because using relative event.mx,event.my will jump around as window resizes
-						-- hard-coded minimum window size: 64x32
-						local new_width  = max(64, win.start_w + (mx - win.start_mx))
-						local new_height = max(32, win.start_h + (my - win.start_my))
-						send_message(win.proc_id, {event="resize", width = new_width, height = new_height})
-					end
-				end
-			})
-
-			-- resize bottom left
-			win:attach({
-				width = 8, height = 8,
-				clip_to_parent = false,
-				cursor  = 9,
-
-				update = function(self)
-					self.x = -4
-					self.y = win.height - 4
-				end,
-				draw  = resize_draw,
-				click = resize_click,
-
-				drag = function(self, event) 
-					if (win.resizeable and (event.dx ~= 0 or event.dy ~= 0)) then
-						-- set x in same message so that visible change is simultaneously (otherwise jitters)
-						local new_width  = max(64, win.start_w\1 - (mx - win.start_mx))
-						local new_height = max(32, win.start_h + (my - win.start_my))
-						send_message(win.proc_id, {event="resize", 
-							width = new_width, 
-							height = new_height, 
-							x = win.start_x + (mx - win.start_mx)
-					})
-
-					end
-				end
-			})
-		end
---[[
-		-- commented; maybe nice to have just bottom left, bottom right widgets.
-
-		-- resize bottom
-		win:attach({
-			x = 4, 
-			y = win.height - 4,
-			width = win.width - 8,
-			height = 8,
-			clip_to_parent = false,
-			update = function(self)
-				self.y = win.height - 4
-				self.width = win.width - 8
-			end,
-			draw  = resize_draw,
-			click = resize_click,
-			drag = function(self, event) 
-				if (event.dx ~= 0 or event.dy ~= 0) then
-					send_message(win.proc_id, {event="resize", height = win.start_h + (my - win.start_my)})
-				end
-			end
-		})
-
-		-- resize left
-		win:attach({
-			x = -4, y = 0, 
-			width = 8, height = win.height  - 4,
-			clip_to_parent = false,
-			update = function(self)
-				self.height = win.height  - 4
-			end,
-			draw  = resize_draw,
-			click = resize_click,
-			drag = function(self, event) 
-				if (event.dx ~= 0 or event.dy ~= 0) then
-					send_message(win.proc_id, {event="resize", 
-						width = win.start_w\1 - (mx - win.start_mx)\1, 
-						x = win.start_x + (mx - win.start_mx)
-					})
-				end
-			end
-		})
-
-		-- resize right
-		win:attach({
-			x = win.width-4, y = 0, 
-			width = 8, height = win.height  - 4,
-			clip_to_parent = false,
-			update = function(self)
-				self.height = win.height  - 4
-				self.x = win.width-4
-			end,
-			draw  = resize_draw,
-			click = resize_click,
-			drag = function(self, event) 
-				if (event.dx ~= 0 or event.dy ~= 0) then
-					send_message(win.proc_id, {event="resize", 
-						width = win.start_w\1 + (mx - win.start_mx)\1, 
-					})
-				end
-			end
-		})
-]]
-
-
-
+		create_window_frame(win)
 	end
-
+		
 
 	-- creating a desktop wallpaper --> automatically create a filenav overlay
 
@@ -1528,9 +1890,7 @@ function _draw()
 		local win = get_window_by_proc_id(screensaver_proc_id)
 		if (win) win:draw()
 	else
-
 		head_gui:draw_all()
-	
 	end
 
 	camera()
@@ -1777,10 +2137,41 @@ function _draw()
 
 --	print("cpu: "..(stat(1)\.01).." mem:"..(stat(0)\1024).."k",30,260,8)
 
-	-- don't open on a tabbed tool (wait for desktop or terminal to be ready before displaying)
-	if (ws_gui.style != "tabbed") then 
-		if (not sent_presentable_signal) _signal(37) -- wm is presentable
-		sent_presentable_signal = true
+	-- decide when window manager is presentable
+	if (not sent_presentable_signal) then
+		if (stat(317) > 0) then
+			-- exported cartridge / bbs player: show when a window is open, active (0x1) and not holding frame (0x2)
+			-- cart is last run process is the cart (/ram/cart/main.lua -> "main
+			-- search through all processes for main -- maybe cart generates another windowed process
+				-- if /that/ thing is called main and has drawn and is active, then fine -- present that!
+			local p = fetch"/ram/system/processes.pod"
+			for j=4,#p do
+				-- printh(pod{p[j].name, _ppeek(p[j].id, 0x547f)})
+				-- main for exports, bbs id for bbs player
+				-- to do: could use awin.player_cart instead
+				if ((p[j].name == "main" or p[j].name == stat(101)) and (_ppeek(p[j].id, 0x547f) & 0x3) == 0x1) then
+					if (last_fullscreen_workspace) set_workspace(last_fullscreen_workspace)
+					_signal(37)
+					sent_presentable_signal = true
+				end
+			end
+		else
+			-- regular binaries:
+			-- don't open on a tabbed tool (wait for desktop or terminal to be ready before displaying)
+			if (ws_gui.style ~= "tabbed") then
+				if (last_desktop_workspace) set_workspace(last_desktop_workspace)
+				_signal(37) 
+				sent_presentable_signal = true
+			end
+		end
+
+		-- in any case, show after 7 seconds (safety)
+		if (t() > 7.0) then
+			_signal(37)
+			sent_presentable_signal = true
+			-- if (stat(318) > 0) printh("@@ forced signal 37")
+		end
+
 	end
 
 	-- show gif capture (don't draw inside captured area!)
@@ -1816,6 +2207,17 @@ function _draw()
 
 	-- debug: show when battery saver is being applied
 	-- if (stat(330) > 0) circfill(20,20,10,8) circfill(20,20,5,1)
+
+
+	--[[
+		-- kinda cute but wrong semantic level!
+		-- also: doesn't really make sense in a host window
+		-- maybe later, in same category as pixel shaders
+		pset(0,0,0)
+		pset(479,0,0)
+		pset(0,269,0)
+		pset(479,269,0)
+	]]
 
 end
 
@@ -1856,7 +2258,12 @@ function run_pwc(argv, do_inject, path)
 
 	if (do_inject and haltable_proc_id) then
 		-- inject 
+		-- printh("injecting")
 		send_message(haltable_proc_id,{event="reload_src", location = get_active_window().location})
+
+		-- jump back to output
+		set_workspace(last_pwc_output_workspace)
+
 	else
 		-- launch terminal and request it to corun cproj
 		-- terminal will skip creating a window and allow guest program to create it
@@ -1891,6 +2298,21 @@ function max_gif_frames()
 	--return frames
 end
 
+function discard_key(k)
+	local awin = get_active_window()
+	-- prevent e.g. r from reaching the map editor when ctrl-r as key("r")  
+	if (awin) send_message(awin.proc_id, {event="clear_key", scancode = k})
+	clear_key(k)
+end
+
+
+function dkeyp(k)
+	if keyp(k) then
+		discard_key(k)
+		return true
+	end
+end
+
 
 function _update()
 
@@ -1900,13 +2322,16 @@ function _update()
 		return
 	end
 
-	-- temporary hack: start on desktop
-	if (time() == 1.5) set_workspace(5)
-
+	-- deleme
+	-- temporary hack: start on desktop (when not an export / bbs player)
+	-- deleteme -- happens when window manager sends signal(37) (wm_is_presentable)
+	-- if (time() == 1.5 and stat(317) == 0) set_workspace(5)
+	
 	-- make sure fullscreen terminal process exists
 	if (time() > 5) then -- temporary hack: finished with booting
 		for i=1,#workspace do
 			if (workspace[i].style == "fullscreen" and workspace[i].pwc_output and #workspace[i].child == 0 and not workspace[i].recovering) then
+				-- printh("recreating output terminal // recovering:"..tostring(workspace[i].recovering))
 				create_process("/system/apps/terminal.lua",
 				{
 					window_attribs = {
@@ -1920,7 +2345,7 @@ function _update()
 					reload_history = true,
 				})
 
-				workspace[i].recovering = true -- avoid restarting terminal more than once
+				workspace[i].recovering = true -- avoid recreating output terminal more than once
 			end 
 		end
 	end
@@ -1940,8 +2365,8 @@ function _update()
 		end
 
 		-- kill when activity happened in the last second
-		if (last_input_activity_t > time() - 1) then			
-			_kill_process(screensaver_proc_id)
+		if (last_input_activity_t > time() - 1) then				
+			_kill_process(screensaver_proc_id) -- window will close by itself when process is dead
 			test_screensaver_t0 = nil
 			screensaver_proc_id = nil
 		end
@@ -1954,7 +2379,7 @@ function _update()
 			if (sdat and sdat.screensaver) then
 				-- note: program doesn't need to know it is a screensaver; just kill process on activity event
 				screensaver_proc_id = create_process(sdat.screensaver, 
-					{window_attribs = {workspace="current", autoclose = true}})
+					{screensaver = true, window_attribs = {workspace="current", autoclose = true}})
 				test_screensaver_t0 = time() -- abuse same mechanism to ignore interrupts for first half second
 			else
 				last_input_activity_t = time() -- don't check again for another 3 minutes
@@ -2041,24 +2466,25 @@ function _update()
 	end
 
 	-- ctrl-q to fastquit // dangerous so needs to be turned on
-	if (key("ctrl") and keyp("q")) then
+	if (key("ctrl") and dkeyp("q")) then
 		if (sdat.fastquit) _signal(33)
 	end
 
 	-- alt-f4 always available (er.. does windows do that anyway?	
-	if (key("alt") and keyp("f4")) then
+	if (key("alt") and dkeyp("f4")) then
 		_signal(33)
 	end
 
+	
 
 	-- :: ctrl-r  (is a window manager thing!)
 
-	-- happens first so that there's time to send lost_focus messages to tools so they
-	-- can save their files to /ram/cart before the running program picks them up
-	if (key("ctrl") and keyp("r")) then
+	-- happens early in this _update so that there's time to send lost_focus messages to tools 
+	-- (so they can save their files to /ram/cart before the running program picks them up)
+	if (key("ctrl") and dkeyp("r")) then
 
-		if stat(317) == 1 then
-			-- exported player: reset cart
+		if stat(317) > 0 and awin and (awin.player_cart) then
+			-- exported player or bbs player: reset cart
 			local win = get_active_window()
 			send_message(2, {event="restart_process", proc_id = win.proc_id})
 			win.paused = false
@@ -2102,7 +2528,7 @@ function _update()
 
 	-- :: ctrl-s
 
-	if (key("ctrl") and keyp("s")) then
+	if (key("ctrl") and dkeyp("s")) then
 
 		local win = get_active_window()
 
@@ -2125,7 +2551,7 @@ function _update()
 
 	-- :: ctrl-1, ctrl-2 to toggle toolbar / infobar
 
-	if (key("ctrl") and keyp("1")) then
+	if (key("ctrl") and dkeyp("1")) then
 		ws_gui.show_toolbar = not ws_gui.show_toolbar
 		if (not ws_gui.show_toolbar) toolbar_y_target = 0 -- immediately close even when mouse cursor is over it (intention + visual feedback)
 
@@ -2133,13 +2559,24 @@ function _update()
 --		notify(ws_gui.show_toolbar and "docked toolbar" or "auto-hide toolbar")
 	end
 
-	if (key("ctrl") and keyp("2")) ws_gui.show_infobar = not ws_gui.show_infobar
+	if (key("ctrl") and dkeyp("2")) ws_gui.show_infobar = not ws_gui.show_infobar
 
-	-- past file references
-	if (key("ctrl") and keyp("v") and awin) then
+	-- paste
+	if (key("ctrl") and awin and keyp("v")) then
+
+		-- paste from host:
+		-- requires proof of intention (ctrl-v)
+		-- don't discard at this point -- want the message to go through to active window (except for file references paste below)
+
+		-- set userland clipboard text here if it is available
+		-- otherwise (i.e. for web), platform is expected to proactively push using api.c::set_userland_clipboard_text() from inside browser event
+		if (_get_host_clipboard_text) _set_userland_clipboard_text(_get_host_clipboard_text())
+
+		-- paste file references
 		local p, m = unpod(get_clipboard())
 		if m and m.pod_type == "file_references" then
 			readtext(true) -- receiving program won't get the ctrl-v message
+			discard_key("v")
 			send_message(awin.proc_id, {event="drop_items", 
 				items = p,
 				from_proc_id = 3,
@@ -2150,7 +2587,7 @@ function _update()
 			})
 			--notify("pasting "..#p.." items") -- let app handle notifications
 		else
-			-- commented; should be handled by app
+			-- commented; should be handled by app -- let the message pass through
 			-- notify("no items found to paste")
 		end
 	end
@@ -2158,7 +2595,7 @@ function _update()
 	
 	--============================================== capture =========================================================
 
-	if key("ctrl") and keyp("6") then
+	if key("ctrl") and dkeyp("6") then
 		if key("shift") then
 			-- select first
 			create_process("/system/apps/capture.p64", {
@@ -2171,13 +2608,13 @@ function _update()
 		end
 	end
 
-	if key("ctrl") and keyp("7") then
+	if key("ctrl") and dkeyp("7") then
 		capture_screenshot{as_label=true}
 	end
 
 	
 	-- capture gif
-	if key("ctrl") and keyp("8") then
+	if key("ctrl") and dkeyp("8") then
 		if key("shift") then
 			-- select first
 			create_process("/system/apps/capture.p64", {
@@ -2191,13 +2628,13 @@ function _update()
 
 	-- finish capturing gif
 	if (stat(320) > 0) then
-		if (key("ctrl") and keyp("9") or stat(321) >= max_gif_frames()) then	
+		if (key("ctrl") and dkeyp("9") or stat(321) >= max_gif_frames()) then	
 			_signal(19)
 		end
 	end
 
 	-- audio capture
-	if (key("ctrl") and keyp("0")) then
+	if (key("ctrl") and dkeyp("0")) then
 		if (not fstat("/desktop/host")) _signal(65)
 		_signal(16) -- placeholder mechanism
 	end
@@ -2234,7 +2671,9 @@ function _update()
 	
 	-- modified mouse position or mouse button
 	if (win and win.proc_id) then
-		if (mx ~= last_mx or my ~= last_my or mb ~= last_mb or win.send_mouse_update) then
+		if (mx ~= last_mx or my ~= last_my or mb ~= last_mb or win.send_mouse_update) and
+			not (mb == 2 and win.parent == tooltray_gui) -- mb2 reserved for context menu for widgets 
+		then
 
 			last_input_activity_t = time() 
 
@@ -2276,7 +2715,7 @@ function _update()
 
 	end
 
-	if (keyp("escape")) then
+	if (dkeyp("escape")) then
 
 		-- look for haltable process
 		-- (assumes there is only one)
@@ -2287,7 +2726,7 @@ function _update()
 		elseif (awin and awin.paused) then
 			awin.paused = false
 			send_message(awin.proc_id, {event = "unpause"})
-		elseif (get_active_window() and get_active_window().autoclose) then
+		elseif (awin and awin.autoclose) then
 			close_window(get_active_window(), true) -- e.g. about / settings
 		elseif toolbar_y_target > 0 then
 			-- close tooltray if open
@@ -2295,12 +2734,16 @@ function _update()
 		elseif infobar_y_target < 270 then
 			-- close infobar if open
 			hide_infobar()
-		elseif (get_active_window() and get_active_window().capture_escapes) then
+		elseif (awin and awin.capture_escapes) then
 			-- let active window handle it
-		elseif (width and width > 0) then 
+		elseif (width and width > 0 and awin and awin.proc_id == haltable_proc_id) then 
 			-- stop haltable process
 			send_message(haltable_proc_id, {event="halt"})
 			haltable_proc_id = false
+		elseif (awin and awin.pauseable) then
+			win.paused = true
+			generate_paused_menu(win)
+			send_message(win.proc_id, {event = "pause"})
 		else
 			-- toggle between output / last workspace
 			if (ws_gui.style == "fullscreen") then
@@ -2317,9 +2760,8 @@ function _update()
 
 	-- keyboard control
 	if (key("alt")) then
-		if (keyp("left")) then set_workspace(workspace_index - 1) used_alt_navigation = true end
-		if (keyp("right")) then set_workspace(workspace_index + 1) used_alt_navigation = true end
-
+		if (dkeyp("left")) then set_workspace(workspace_index - 1) used_alt_navigation = true end
+		if (dkeyp("right")) then set_workspace(workspace_index + 1) used_alt_navigation = true end
 	end
 
 	-- toggle (host) fullscreen
@@ -2329,19 +2771,21 @@ function _update()
 		store("/appdata/system/settings.pod", sdat)
 		-- clear key buffer (avoid "enter" being sent to text editor)
 		readtext(true)
+		discard_key("enter") -- for good measure: key("enter") shouldn't be true either until repressed
 	end
 	last_enter_key_state = key("enter")
 
 	-- toggle mute
 
-	if key("ctrl") and keyp("m") then		
+	if key("ctrl") and dkeyp("m") then
 		send_message(pid(), {event = "toggle_mute", notify=true})
 	end
 
 
 	local dtab_index = 0
-
-	if (key("ctrl") and keyp("tab")) dtab_index = key("shift") and -1 or 1
+	if (key("ctrl") and dkeyp("tab")) then
+		dtab_index = key("shift") and -1 or 1
+	end
 
 --[[
 	-- don't need yet -- no flipping through windows, and ctrl-tab is nicer for tabs.
@@ -2415,16 +2859,46 @@ function _update()
 				local item = dragging_items[i]
 				--printh("item: "..pod(item))
 				if (item.pod_type == "sticker") then
-					if (type(win2.stickers) != "table") win2.stickers = {} 
-					add(win2.stickers, {
-						x = mx - win2.x,
-						y = my - win2.y,
-						bmp =  item.icon -- lazy change of meaning; the icon /is/ the content
-					})
+					--if (type(win2.stickers) != "table") win2.stickers = {} 
+
+					-- imprint location
+					if (not item.location and win2.location) then
+						item.location = win2.location
+						notify("assign location: "..item.location)
+					end
+					
+					win2:attach{
+						x = mx - win2.sx + item.xo,
+						y = my - win2.sy + item.yo,
+						width=12, height=12,
+						item = item,
+						cursor = "grab",
+						clip_to_parent = false,
+						draw = function(self, msg)
+							spr(self.item.icon,0,0)
+						end,
+						drag = function(self, msg)
+							local dx = msg.mx - msg.mx0
+							local dy = msg.my - msg.my0
+							if (dx*dx + dy*dy > 2*2 and not dragging_items) then
+								dragging_items = {
+									item
+								}
+
+								self:detach() -- remove
+							end
+						end,
+						tap = function(self, msg)
+							if (self.item and self.item.location) then
+								create_process("/system/util/open.lua", { argv = {self.item.location} })
+							end
+						end
+					}
 				end
 			end
 
 			-- send to window for processing
+			-- printh("drop_items send to window with mx,my: "..pod{mx - win2.sx, my - win2.sy})
 			send_message(win2.proc_id, {event="drop_items", 
 				items = dragging_items,
 				from_proc_id = dragging_items_from_proc_id,
@@ -2472,6 +2946,15 @@ function _update()
 	end
 
 
+	-- debug: changing focus
+	--[[
+		awin = get_active_window()
+		if (awin and awin ~= last_awin) then
+			printh("active: "..awin.proc_id)
+		end
+		last_awin = awin
+	--]]
+
 end
 
 
@@ -2508,6 +2991,8 @@ end
 on_event("close_window", 
 	function(msg)
 
+		--printh("received close_window: "..pod{msg})
+
 		for i=1,#workspace do
 			local pos = 1
 			local num = #workspace[i].child
@@ -2532,7 +3017,7 @@ on_event("close_window",
 
 		generate_head_gui()
 
-		-- finally, kill the process
+		-- finally, kill the process (if not already dead)
 		_kill_process(msg.proc_id)
 	end
 )
@@ -2597,10 +3082,26 @@ on_event("app_menu_item", function(msg)
 		return
 	end
 
-	-- look for existing item by label
+	-- look for existing item by id
 	local pos = #menu + 1 -- default: add new
 	for i=1,#menu do
-		if (menu[i].id == msg.attribs.id) pos = i
+		if (menu[i].id == msg.attribs.id) then
+			pos = i
+
+			-- update label (might have changed due to callback)
+			if (msg.attribs.label) then
+				menu[i].label = msg.attribs.label
+				local win = get_window_by_proc_id(msg._from)
+				if (win and win.pmenu) then
+					for i=1,#win.pmenu do
+						if (win.pmenu[i].id == msg.attribs.id) then
+							win.pmenu[i].label = msg.attribs.label
+						end
+					end
+				end
+			end
+
+		end
 	end
 	
 	menu[pos] = msg.attribs
@@ -2611,6 +3112,17 @@ on_event("app_menu_item", function(msg)
 end)
 
 
+-- allow dragging a frame late for windows with squashable used when squashing so that display size matches 
+-- evaluated element size on draw, by delaying window movement by a frame. stoopid solutions for stoopid problems
+on_event("drag_squashable_window", function(msg)
+	if (msg._from ~= 3) return
+	--printh("drag_squashable_window "..pod{msg})
+	local win = get_window_by_proc_id(msg.proc_id)
+	win.x = msg.x
+	win.y = msg.y
+	win.sx = win.parent.sx + win.x
+	win.sy = win.parent.sy + win.y
+end)
 
 on_event("set_window", function(msg)
 
@@ -2747,8 +3259,12 @@ on_event("set_window", function(msg)
 		end
 	end
 
-	
-
+	-- for squash_to_clip / squash_to_parent
+	if (not attribs.squash_event) then -- don't want to do this during a squash event though
+		if (attribs.width)  win.width0  = win.width
+		if (attribs.height) win.height0 = win.height
+		attribs.squash_event = false -- temporary directive sent by squash event in events.lua
+	end
 
 	-- when changing location or creating new window, apply unique location logic:
 	-- open in existing process where possible and optionally show in workspace
@@ -2953,6 +3469,42 @@ on_event("toggle_mute",
 	end
 )
 
+
+function poke_capture_name(name)
+	if not name then
+		-- use program name of active window
+		local awin = get_active_window()
+
+		if (awin and awin.prog == "/system/apps/capture.p64" and not awin.has_frame) then
+			-- using the capture tool -- name should be for the next window down
+			awin = ws_gui.child[#ws_gui.child-1]
+		end
+
+		if (awin and awin.prog) then
+			if (awin.prog == "/ram/cart/main.lua") then
+				name = fetch("/ram/system/pwc.pod")
+				if (name) name = name:basename():split(".")[1]
+			else
+				name = awin.prog:basename():split(".")[1]
+			end
+		end
+	end
+	name = name or "picotron" -- safety
+
+	local sdat = fetch"/appdata/system/settings.pod" or {}
+	if (sdat.capture_timestamps) then
+		-- append a timestamp so that filenames don't collide e.g. when adding files to
+		-- a collection of previous captures with the same name
+		local d = date()
+		name ..= "_"..d:sub(3,4)..d:sub(6,7)..d:sub(9,10)
+	end
+
+	-- up to 64 chars
+	memset(0x60,0,64)
+	if (name) poke(0x60,ord(name:sub(1,64),1,64))
+end
+
+
 function capture_video(cdat)
 
 	if (not fstat("/desktop/host")) _signal(65)
@@ -2967,13 +3519,19 @@ function capture_video(cdat)
 		tonum(cdat.scale)  or 2,
 		tonum(cdat.frames) or 30*120, -- max: 2 minutes (to do: configurable)
 		-- delay: +1 because want to start on the display data that is /going to/ be send to video out this frame
-		(tonum(cdat.delay) or 0) + 1 -- frames to skip at start.
+		(tonum(cdat.delay) or 0) + 1, -- frames to skip at start.
+		cdat.silent and 1 or 0
 	)
+
+	-- name: up to 64 chars long
+	poke_capture_name(cdat.name)
 	
 	_signal(18)
 end
 
 function capture_screenshot(cdat)
+
+--	printh("capture_screenshot "..pod(cdat))
 
 	if (not fstat("/desktop/host")) _signal(65)
 
@@ -2986,8 +3544,12 @@ function capture_screenshot(cdat)
 		tonum(cdat.scale)  or 2,
 		cdat.as_label and 1 or 0,
 		-- delay: +1 because want to start on the display data that is /going to/ be send to video out this frame
-		(tonum(cdat.delay) or 0) + 1 -- frames to skip at start.
+		(tonum(cdat.delay) or 0) + 1, -- frames to skip at start.
+		cdat.silent and 1 or 0
 	)
+
+	-- name: up to 64 chars long
+	poke_capture_name(cdat.name)
 	
 	_signal(21)
 end
@@ -3125,14 +3687,11 @@ function toggle_app_menu(x, y, win, is_context_menu)
 
 	local mm = {}
 
-	x = mid(0,x,480-142)
-	y = max(0,y)
-
-
 	local pulldown = create_modal_gui():attach_pulldown{
 		is_app_menu = true,
+		confine_to_clip = true, -- all of menu visible; bump inside when needed
 		x = x, y = y,
-		width = 142 -- to do: be adaptive when drawing
+		width = 128 -- to do: be adaptive when drawing
 	}
 
 	pulldown.onclose = dismiss_modal
@@ -3174,15 +3733,26 @@ function toggle_app_menu(x, y, win, is_context_menu)
 
 	-- window management items at bottom
 
-	
-
-	-- is a tab
-	if (win.height == 270) then -- hack: window is fullscreen file navigator (desktop)
-		-- no close
-	elseif (win.sy < 12) then
+	if (win.width == 480 and win.height == 270) then
+		-- can't close (fullscreen file navigator on desktop)
+	elseif (win.width == 480 and win.sy < 12) then
+		-- tab (to do: better test!)
 		add(mm, {divider=true})
 		add(mm, {label="\^:1c3e6b776b3e1c00 Close Tab", action = function() close_window(win, true) end})
+	elseif (win.parent == tooltray_gui) then
+		add(mm, {divider=true})
+
+		add(mm, {label="\^:1c3e6b776b3e1c00 Pop Out Widget", action = function()
+			set_workspace(last_desktop_workspace)
+			pop_out_widget(win, 240-win.width/2, 30)
+		end})
+
+		add(mm, {label="\^:1c3e6b776b3e1c00 Remove Widget", action = function() 
+			uninstall_widget(win)
+			close_window(win, true)			
+		end})
 	else
+		-- regular window
 		add(mm, {divider=true})
 		add(mm, {label="\^:1c3e6b776b3e1c00 Close Window", action = function() close_window(win, true) end})
 	end
@@ -3229,14 +3799,15 @@ function toggle_picotron_menu()
 		{"\^:3f7f5077057f7e00 About Picotron", function() create_process("/system/apps/about.p64", 
 			{prog="/system",window_attribs={workspace="current",  autoclose = true}}) end},
 		"---",
-
-		{"\^:307f3000067f0600 System Settings",	function() create_process("/system/apps/settings.p64", 
-			{prog="/system",window_attribs={workspace="current", autoclose = true}}) end},
-
-		{"\^:7f77777f777f0301 Show Messages", show_reported_error}
 	}
 
 
+	
+
+	add(item, {"\^:307f3000067f0600 System Settings",	function() create_process("/system/apps/settings.p64", 
+		{prog="/system",window_attribs={workspace="current", autoclose = true}}) end})
+
+	add(item, {"\^:7f77777f777f0301 Show Messages", show_reported_error})
 
 	if (stat(320) > 0) then
 		add(item, {"\^:06ff81b5b181ff00 End Recording", function() _signal(19) end})
@@ -3248,37 +3819,48 @@ function toggle_picotron_menu()
 
 	add(item, "---")
 
---	add(item, {"\^:00387f7f7f7f7f00 Apps", function() create_process("/system/apps/filenav.p64", {argv={"/apps"}}) end})
+	--	add(item, {"\^:00387f7f7f7f7f00 Apps", function() create_process("/system/apps/filenav.p64", {argv={"/apps"}}) end})
 	add(item, {"\^:00387f7f7f7f7f00 Files", function() create_process("/system/apps/filenav.p64", {argv={"/"}}) end})
 
---[[
-	-- test: should at least be able to browse /system (but not alter anything) while sandboxed
-	add(item, {"\^:00387f7f7f7f7f00 Files (sandboxed)", function() create_process("/system/apps/filenav.p64", 
-		{argv={"/"}, sandboxed = true, cart_id = "_filenav"}) end})
-]]
+--		add(item, {"\^:7e9f9dfd7a341800 BBS", function() create_process("/system/apps/filenav.p64", {argv={"bbs://"}}) end})
+
+	-- bbs:// not available for exports (and hide for bbs player)
+	if (stat(317) == 0) then
+		add(item, {"\^:007f41417f613f00 BBS Carts", function() create_process("/system/apps/filenav.p64", {argv={"bbs://"}}) end})
+	end
+
+
+
+	--[[
+		-- test: should at least be able to browse /system (but not alter anything) while sandboxed
+		add(item, {"\^:00387f7f7f7f7f00 Files (sandboxed)", function() create_process("/system/apps/filenav.p64", 
+			{argv={"/"}, sandbox = "bbs", bbs_id = "_filenav"}) end})
+	]]
 
 	add(item, {"\^:7f7d7b7d7f083e00 Terminal", function() create_process("/system/apps/terminal.lua") end})
---	add(item, {"\^:00387f7f7f7f7f00 Host Desktop", function() _signal(65) end})
+	--	add(item, {"\^:00387f7f7f7f7f00 Host Desktop", function() _signal(65) end})
 
-		
+			
 	-- later (using filenav intention); use load / save commands for now
---[[
-	add(item, "---")
-	add(item, "\^:00ff8181ffc17f00 Load Cartridge")
-	add(item, "\^:00ff8181ffc17f00 Save Cartridge")
-	add(item, "\^:00ff8181ffc17f00 Save Cartridge As")
-	add(item, {"\^:1c367f7777361c00 Cartridge Info", function() create_process("/system/apps/about.p64") end})
-]]
+	--[[
+		add(item, "---")
+		add(item, "\^:00ff8181ffc17f00 Load Cartridge")
+		add(item, "\^:00ff8181ffc17f00 Save Cartridge")
+		add(item, "\^:00ff8181ffc17f00 Save Cartridge As")
+		add(item, {"\^:1c367f7777361c00 Cartridge Info", function() create_process("/system/apps/about.p64") end})
+	]]
 
 	add(item, "---")
+
+
 	 -- pop up menu: [Shutdown] [Reboot] [Cancel] 
 	 -- perhaps show unsaved changes 
 	 -- (checkbox: "discard unsaved changes" ~ once checked, buttons clickable)
 
 
 	add(item, {"\^:1c22494949221c00 Reboot", function() send_message(2, {event="reboot"}) end})
-	add(item, {"\^:082a494141221c00 Shutdown", function() send_message(2, {event="shutdown"}) end})
-	
+	-- no need to shutdown on web 
+	if (stat(318) == 0) add(item, {"\^:082a494141221c00 Shutdown", function() send_message(2, {event="shutdown"}) end})
 
 	local pulldown = create_modal_gui():attach_pulldown{
 		is_pictron_menu = true,
