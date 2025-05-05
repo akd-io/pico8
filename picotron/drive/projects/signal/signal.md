@@ -60,7 +60,7 @@ This document will try to document every `_signal()` code.
 
 ## Binary Ninja
 
-From Binary Ninja (Picotron 0.2.0c)
+From [`0.2.0c.bndb`](picotron/versions/bndbs/0.2.0c.bndb):
 
 ```
 100075f10    int64_t _lua54__signal()
@@ -69,52 +69,56 @@ From Binary Ninja (Picotron 0.2.0c)
 100075f31        void* rdi
 100075f31        int32_t signal_code = _p64_intp(rdi, 1, 0)
 100075f31
-100075f39        if (signal_code == 18)
+100075f39        if (signal_code == 18)  // _signal(18)
 100075f5f            if (_gif_start() == 0)
-100075f68                data_1001d3200:8 = 1
+100075f68                capture_buffer:8 = 1
 100075f39        else if (signal_code != 16)
-100075f82            if (signal_code != 19 || data_1001d3200:8.d == 0)
+100075f82            if (signal_code != 19 || capture_buffer:8.d == 0)
 100075f94                uint64_t signal_code_minus_21 = zx.q(signal_code - 21)
 100075f94
 100075f9a                if (signal_code_minus_21.d u<= 44)
 100075faa                    switch (signal_code_minus_21)
 100075fae                        case 0
-100075fae                            _request_screenshot()
+100075fae                            _request_screenshot()  // _signal(21)
 100075fb3                            data_1001d3210:4.d = 1
 100075fea                        case 1
+100075fea                            // _signal(22)
 100075fea                            data_1001d3250.q = _os_get_time()
 100075ffa                        case 2
-100075ffa                            int64_t _cproc_1 = _cproc
+100075ffa                            int64_t _cproc_1 = _cproc  // _signal(23)
 100076035                            __builtin_memset(s: _cproc_1 + 0x35688, c: 1, n: 0x80)
 10007603f                            __builtin_memset(s: _cproc_1 + 0x35608, c: 0, n: 0x80)
 10007607c                        case 12
-10007607c                            data_1001d3270:12.d = 1
+10007607c                            data_1001d3270:12.d = 1  // _signal(33)
 10007608b                        case 13
-10007608b                            data_1001d3270:8.d = 1
+10007608b                            data_1001d3270:8.d = 1  // _signal(34)
 10007609a                        case 14
-10007609a                            data_1001d31e0.d = 1
+10007609a                            data_1001d31e0.d = 1  // _signal(35)
 1000760a6                        case 15
-1000760a6                            data_1001d31e0:4.d = 1
+1000760a6                            data_1001d31e0:4.d = 1  // _signal(36)
 1000760b2                        case 16
-1000760b2                            data_1001d3220.d = 1
+1000760b2                            data_1001d3220.d = 1  // _signal(37)
 1000760d8                        case 17
+1000760d8                            // _signal(38)
 1000760d8                            _lua_gc(*(_cproc + 0x158), 2, 0)
 1000760dd                            void* _cproc_2 = _cproc
 1000760dd
 1000760e8                            if (*(_cproc_2 + 0x36150) == 0)
 1000760f5                                *(_cproc_2 + 0x36150) = *(_cproc_2 + 0x36148)
 100076101                        case 18
-100076101                            data_1001d3220:8.d = 1
+100076101                            data_1001d3220:8.d = 1  // _signal(39)
 10007611a                        case 19
-10007611a                            data_1001d3240:8 = *_cproc
+10007611a                            data_1001d3240:8 = *_cproc  // _signal(40)
 100076123                        case 20
-100076123                            data_1001d3240:8 = 0
+100076123                            data_1001d3240:8 = 0  // _signal(41)
 100076132                        case 21
+100076132                            // _signal(42)
 100076132                            _flush_dirty_mounts_immediately()
 100076139                            _do_export()
 100076148                            *(_cproc + 0x298) = 0
 100076168                        case 44
 100076168                            char var_418[0x400]
+100076168                            // _signal(65)
 100076168                            _codo_prefix_with_desktop_path("picotron_desktop", &var_418)
 100076170                            _codo_mkdir(&var_418)
 100076170
@@ -123,12 +127,12 @@ From Binary Ninja (Picotron 0.2.0c)
 10007617f                            else
 10007618f                                _mount_host_path("/desktop/host", &var_418)
 100075f82            else
-100075f86                _gif_end()
-100075f8b                data_1001d3200:8.d = 0
-100075f3e        else if (data_1001d31f8 == 0)
-100075fbe            _audio_capture_start()
+100075f86                _gif_end()  // _signal(19) AND capture_buffer:8.d != 0
+100075f8b                capture_buffer:8.d = 0
+100075f3e        else if (is_capturing_audio == 0)
+100075fbe            _audio_capture_start()  // 16 AND NOT capturing audio
 100075f4b        else
-100075f4f            _audio_capture_end()
+100075f4f            _audio_capture_end()  // 16 AND capturing audio
 100075f4f
 100075fd1        if (*___stack_chk_guard == rax)
 100075fe2            return 0
