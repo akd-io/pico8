@@ -2,8 +2,8 @@ picotron cartridge // www.picotron.net
 version 2
 
 :: .info.pod
-b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI1LTA1LTAzIDIwOjQxOjE0Iixtb2RpZmllZD0iMjAyNS0w
-NS0wMyAyMDo0MToxNCJdXQ==
+b64$LS1bW3BvZCxjcmVhdGVkPSIyMDI1LTA1LTA1IDAzOjQyOjQ5Iixtb2RpZmllZD0iMjAyNS0w
+NS0wNSAwMzo0Mjo0OSJdXQ==
 :: main.lua
 --[[pod_format="raw",created="2025-04-09 22:01:52",modified="2025-04-18 15:30:57",revision=16]]
 -- See pico8 react for docs/comments.
