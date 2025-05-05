@@ -19,21 +19,12 @@ This document will try to document every `_signal()` code.
 - `_signal(22)`
   - Functionality unknown.
   - The `_signal(22)` call in `wm.lua` is commented "stay awake", in relation to battery saver.
-  - Binary Ninja: `100075fea          data_1001d3250.q = _os_get_time()`
 - `_signal(23)`
   - Block buttons until released.
-  - Binary Ninja:
-    ```
-    100075ffa          int64_t _cproc_1 = _cproc
-    100076035          __builtin_memset(s: _cproc_1 + 0x35688, c: 1, n: 0x80)
-    10007603f          __builtin_memset(s: _cproc_1 + 0x35608, c: 0, n: 0x80)
-    ```
 - `_signal(33)`
   - Shuts down Picotron.
-  - Binary Ninja: `10007607c          data_1001d3270:12.d = 1`
 - `_signal(34)`
   - Reboots Picotron.
-  - Binary Ninja: `10007608b          data_1001d3270:8.d = 1`
 - `_signal(35)`
   - Relates to booting to a minimal terminal setup.
   - The minimal terminal setup acts as a safe boot mode, and is used to recover from a borked `/appdata/system/startup.lua`.
@@ -42,61 +33,109 @@ This document will try to document every `_signal()` code.
     - Calling `_signal(35)` from un-jettisoned userland code does not reboot the system for example.
   - It is used in `startup.lua` to secure boot when both control keys are held down.
   - Found with the help of `@kutuptilkisi` on Discord.
-  - Binary Ninja: `10007609a          data_1001d31e0.d = 1`
 - `_signal(36)`
   - Functionality unknown.
   - Described to "finish loading core processes" in `wm.lua`.
-  - Binary Ninja: `1000760a6          data_1001d31e0:4.d = 1`
 - `_signal(37)`
   - Functionality unknown.
   - Dubbed "presentable signal" in `wm.lua`.
-  - Binary Ninja: `1000760b2          data_1001d3220.d = 1`
 - `_signal(38)`
   - Used in `head.lua` to
     > start of userland code (for memory accounting)
-  - Binary Ninja:
-    ```
-    1000760d8          _lua_gc(*(_cproc + 0x158), 2, 0)
-    1000760dd          void* _cproc_2 = _cproc
-    1000760dd
-    1000760e8          if (*(_cproc_2 + 0x36150) == 0)
-    1000760f5              *(_cproc_2 + 0x36150) = *(_cproc_2 + 0x36148)
-    ```
 - `_signal(39)`
   - Disable mounting.
-  - Binary Ninja: `100076101          data_1001d3220:8.d = 1`
 - `_signal(40)`
   - Lock flushing.
-  - Binary Ninja: `10007611a          data_1001d3240:8 = *_cproc`
 - `_signal(41)`
   - Unlock flushing.
   - Lock and unlock is done before and after Picotron file system operations in
     `fs.lua`. I assume Picotron holds its file system in memory, and "flushing"
     means writing it to disk. Flushing is locked during file system operations
     to prevent corruption.
-  - Binary Ninja: `100076123          data_1001d3240:8 = 0`
 - `_signal(42)`
   - Export cartridge.
   - No guardrails. Consider using the `export` command instead.
-  - Binary Ninja:
-    ```
-    100076132          _flush_dirty_mounts_immediately()
-    100076139          _do_export()
-    100076148          *(_cproc + 0x298) = 0
-    ```
 - `_signal(65)`
   - Mounts host desktop.
-  - Binary Ninja:
-    ```
-    100076168          char var_418[0x400]
-    100076168          _codo_prefix_with_desktop_path("picotron_desktop", &var_418)
-    100076170          _codo_mkdir(&var_418)
-    100076170
-    10007617f          if (_host_directory_exists() == 0)
-    1000761a0              _notify("could not mount desktop")
-    10007617f          else
-    10007618f              _mount_host_path("/desktop/host", &var_418)
-    ```
+
+## Binary Ninja
+
+From Binary Ninja (Picotron 0.2.0c)
+
+```
+100075f10    int64_t _lua54__signal()
+
+100075f23        int64_t rax = *___stack_chk_guard
+100075f31        void* rdi
+100075f31        int32_t signal_code = _p64_intp(rdi, 1, 0)
+100075f31
+100075f39        if (signal_code == 18)
+100075f5f            if (_gif_start() == 0)
+100075f68                data_1001d3200:8 = 1
+100075f39        else if (signal_code != 16)
+100075f82            if (signal_code != 19 || data_1001d3200:8.d == 0)
+100075f94                uint64_t signal_code_minus_21 = zx.q(signal_code - 21)
+100075f94
+100075f9a                if (signal_code_minus_21.d u<= 44)
+100075faa                    switch (signal_code_minus_21)
+100075fae                        case 0
+100075fae                            _request_screenshot()
+100075fb3                            data_1001d3210:4.d = 1
+100075fea                        case 1
+100075fea                            data_1001d3250.q = _os_get_time()
+100075ffa                        case 2
+100075ffa                            int64_t _cproc_1 = _cproc
+100076035                            __builtin_memset(s: _cproc_1 + 0x35688, c: 1, n: 0x80)
+10007603f                            __builtin_memset(s: _cproc_1 + 0x35608, c: 0, n: 0x80)
+10007607c                        case 12
+10007607c                            data_1001d3270:12.d = 1
+10007608b                        case 13
+10007608b                            data_1001d3270:8.d = 1
+10007609a                        case 14
+10007609a                            data_1001d31e0.d = 1
+1000760a6                        case 15
+1000760a6                            data_1001d31e0:4.d = 1
+1000760b2                        case 16
+1000760b2                            data_1001d3220.d = 1
+1000760d8                        case 17
+1000760d8                            _lua_gc(*(_cproc + 0x158), 2, 0)
+1000760dd                            void* _cproc_2 = _cproc
+1000760dd
+1000760e8                            if (*(_cproc_2 + 0x36150) == 0)
+1000760f5                                *(_cproc_2 + 0x36150) = *(_cproc_2 + 0x36148)
+100076101                        case 18
+100076101                            data_1001d3220:8.d = 1
+10007611a                        case 19
+10007611a                            data_1001d3240:8 = *_cproc
+100076123                        case 20
+100076123                            data_1001d3240:8 = 0
+100076132                        case 21
+100076132                            _flush_dirty_mounts_immediately()
+100076139                            _do_export()
+100076148                            *(_cproc + 0x298) = 0
+100076168                        case 44
+100076168                            char var_418[0x400]
+100076168                            _codo_prefix_with_desktop_path("picotron_desktop", &var_418)
+100076170                            _codo_mkdir(&var_418)
+100076170
+10007617f                            if (_host_directory_exists() == 0)
+1000761a0                                _notify("could not mount desktop")
+10007617f                            else
+10007618f                                _mount_host_path("/desktop/host", &var_418)
+100075f82            else
+100075f86                _gif_end()
+100075f8b                data_1001d3200:8.d = 0
+100075f3e        else if (data_1001d31f8 == 0)
+100075fbe            _audio_capture_start()
+100075f4b        else
+100075f4f            _audio_capture_end()
+100075f4f
+100075fd1        if (*___stack_chk_guard == rax)
+100075fe2            return 0
+100075fe2
+1000761aa        ___stack_chk_fail()
+1000761aa        noreturn
+```
 
 ## Code search
 
