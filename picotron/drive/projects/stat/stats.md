@@ -137,9 +137,12 @@ This file attempts to document all `stat()` codes, enriching the official docume
   - See also `_signal(16)` in the [`_signal()` Documentation](../signal/signal.md#results)
 - `stat(330)` (undocumented)
   - Returns `1.0` when Picotron's battery saver is active, and `0.0` otherwise.
-  - It does not simply reflect the `battery_saver` property of the system settings file at `appdata/system/settings.pod`. Rather, it seems to reflects whether the actual functionality of the battery saver feature is currently active.
-  - See also: `@_maxine_`'s [message](https://discord.com/channels/1068899948592107540/1358151110917099785/1366547309399249028) on Discord.
-  - TODO: Translate Maxine's decompiled code to plain text, and update 330 docs.
+  - It does not simply reflect the `battery_saver` property of the system settings file at `appdata/system/settings.pod`. Rather, it reflects whether the actual functionality of the battery saver feature is currently active.
+  - Our current understanding is that battery saver will cap calls to `_update()` and `_draw()` to 30 times per second, when there has been no user input for 500 milliseconds.
+  - Both key presses, mouse button presses, mouse movement, and moving the Picotron window, seems to count as user input, and resets the 500ms timer.
+  - See also: [`test-330.lua`](./test-330.lua), or a gif of it [here](https://discord.com/channels/1068899948592107540/1358151110917099785/1368733765290950706).
+  - Found with the help of `@_maxine_`'s [message](https://discord.com/channels/1068899948592107540/1358151110917099785/1366547309399249028) on Discord.
+  - TODO: Test if battery saver just caps `_update()` and `_draw()` to 30 times per second, or if it halves updates and draws in cases of exceeding the 0.9 CPU usage threshold.
   - See [code references](#330-search)
 - `stat(400 + c, 0)` note is held (0 false 1 true)
 - `stat(400 + c, 1)` channel instrument
