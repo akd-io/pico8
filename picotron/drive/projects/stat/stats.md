@@ -264,6 +264,442 @@ The following list contains stats gathered from [stat.lua](stat.lua), with docum
 
 But it seems there are 16 instead of the expected 8. Might just be because of stereo.
 
+## Binary Ninja
+
+From [`0.2.0c.bndb`](picotron/versions/bndbs/0.2.0c.bndb):
+
+```
+10006cb30    uint64_t _lua54_stat(uint64_t statArgs)
+
+10006cb4b        int32_t arg1 = _p64_intp(statArgs, 1, 0)
+10006cb62        int64_t arg2 = _p64_intp(statArgs, 2, 0)
+10006cb6f        int32_t arg3
+10006cb6f        uint64_t output[0x2]
+10006cb6f        arg3, output = _p64_intp(statArgs, 3, 0)
+10006cb7b        int32_t num_values_pushed_to_statArgs
+10006cb7b
+10006cb7b        if (arg1 u<= 7)
+10006d286            switch (arg1)
+10006cbad                case 0
+10006cbad                    // stat(0)
+10006cbad                    output = _lua_gc(*(_cproc + 0x158), 2, 0)
+10006cbb2                    void* _cproc_1 = _cproc
+10006cbd4                    output[0] = float.d(*(_cproc_1 + 0x36158) + *(_cproc_1 + 0x36148)
+10006cbd4                        - *(_cproc_1 + 0x36150) + 0x80000)
+10006cbd9                    *(_cproc_1 + 0x3616c) = arg2.d
+10006cbdf                    goto label_10006cd2c
+10006cc50                case 1
+10006cc50                    // stat(1)
+10006cc50                    output[0] = float.d(_cpu_cycles + *(_cproc + 0x288))
+10006cc54                    output[0] = output[0] f/ 279620.0
+10006cc5c                    goto label_10006cd2c
+10006cb8e                case 2, 4, 6  // stat(2), stat(4), stat(6)
+10006cb8e                    goto label_10006cbfb
+10006cc7f                case 3
+10006cc7f                    _lua_gc(*(_cproc + 0x158), 2, 0)  // stat(3)
+10006cc9f                    int32_t r12_3 = _lua_gc(*(_cproc + 0x158), 3, 0) << 0xa
+10006ccba                    int32_t rax_12
+10006ccba                    rax_12, output = _lua_gc(*(_cproc + 0x158), 4, 0)
+10006ccc2                    output[0] = float.d(rax_12 + r12_3)
+10006ccc6                    goto label_10006cd2c
+10006ccd0                case 5
+10006ccd0                    _lua_pushinteger(statArgs, 0x11)  // stat(5)
+10006ccdf                    _lua_pushstring(statArgs, "0.2.0c")
+10006cce4                    num_values_pushed_to_statArgs = 2
+10006ccf9                case 7
+10006ccf9                    int32_t rax_15 = *(_cproc + 0x294)  // stat(7)
+10006cd01                    int32_t rcx_7 = 0x3c
+10006cd01
+10006cd06                    if (rax_15 != 0)
+10006cd06                        rcx_7 = rax_15
+10006cd06
+10006cd09                    output[0] = float.d(rcx_7)
+10006cd09
+10006cd1b                    if (data_1001d3250:8.d != 0)
+10006cd1d                        output[0] = output[0] f* 0.5
+10006cd1d
+10006cd1b                    goto label_10006cd2c
+10006cb7b        else if (arg1 != 86)
+10006cbfb            label_10006cbfb:
+10006cbfb
+10006cbff            if (arg1 == 87)  // stat(87)
+10006d3ba                output[0] = float.d(*_timezone)
+10006d3ba
+10006d3c3                if (arg1 != 101)
+10006cc1a                    label_10006cc1a:
+10006cc1a
+10006cc1d                    if (arg1 - 150 u> 3)  // arg1 >= 154
+10006d3d6                        uint64_t arg1_minus_301 = zx.q(arg1 - 301)
+10006d3e0                        int64_t rax_69
+10006d3e0                        int32_t rdi_46
+10006d3e0
+10006d3e0                        if (arg1_minus_301.d u> 12)
+10006d498                            label_10006d498:
+10006d498
+10006d49f                            if (arg1 != 314)
+10006d4ac                                if (arg1 == 315)
+10006d4ac                                    goto label_case_315
+10006d4ac
+10006d4ac                                goto label_10006d4b2
+10006d4ac
+10006d592                            output = 0x400921fb54442d18
+10006d592
+10006d5a1                            if (arg1 == 315)  // stat(315)
+10006d5ae                                label_case_315:
+10006d5ae                                output = zx.o(0)
+10006d5b1                                output[0] = float.d(data_1001d87bc)
+10006d5b1
+10006d5c0                                if (arg1 != 321)
+10006d5c0                                    goto label_10006d4bf
+10006d5c0
+10006d5c0                                goto label_case_321
+10006d5c0
+10006d4b2                            label_10006d4b2:
+10006d4b2
+10006d4b9                            if (arg1 == 321)  // stat(321)
+10006d5cd                                label_case_321:
+10006d5cd
+10006d5d1                                if (capture_buffer:8.d == 0)
+10006d5f8                                    label_10006d5f8:
+10006d5f8                                    output = _mm_xor_pd(output, output)
+10006d5fc                                    goto label_10006cd2c
+10006d5fc
+10006d5d3                                int32_t rax_74 = capture_buffer:0xc.d
+10006d5df                                output = zx.o(0)
+10006d5e2                                output[0] = float.d(((rax_74 u>> 0x1f) + rax_74) s>> 1)
+10006d5e6                                goto label_10006cd2c
+10006d5e6
+10006d4bf                            label_10006d4bf:
+10006d4bf
+10006d4c6                            if (arg1 == 320)  // stat(320)
+10006d5f6                                if (capture_buffer:8.d == 0)
+10006d5f6                                    goto label_10006d5f8
+10006d5f6
+10006d601                                output = 0x3ff0000000000000
+10006d609                                goto label_10006cd2c
+10006d609
+10006d4d3                            if (arg1 != 316)
+10006d4d3                                goto label_10006cd2c
+10006d4d3
+10006cc2d                            // stat(316)
+10006cc2d                            _lua_pushstring(statArgs, &headless_script_path)
+10006d46c                            num_values_pushed_to_statArgs = 1
+10006d3e0                        else
+10006d3f4                            switch (arg1_minus_301)
+10006d3fd                                case 0
+10006d3fd                                    output = zx.o(0)  // stat(301)
+10006d400                                    output[0] = float.d(_get_total_frame_cycles())
+10006d404                                    output[0] = output[0] f/ 279620.0
+10006d40c                                    goto label_10006cd2c
+10006d491                                case 1
+10006d491                                    // stat(302)
+10006d491                                    _lua_pushstring(statArgs, _os_key_from_scancode())
+10006d46c                                    num_values_pushed_to_statArgs = 1
+10006d3f4                                case 2, 3, 4, 5
+10006d3f4                                    goto label_10006d498
+10006d4f4                                case 6
+10006d4f4                                    output = zx.o(0)  // stat(307)
+10006d4f7                                    output[0] = float.d(*(_cproc + 336))
+10006d4ff                                    goto label_10006cd2c
+10006d506                                case 7
+10006d506                                    // stat(308)
+10006d506                                    rax_69 = _get_total_num_buffers()
+10006d521                                    label_10006d521:
+10006d521                                    uint128_t zmm1_1 = __subpd_xmmpd_mempd(
+10006d521                                        __punpckldq_xmmdq_memdq(zx.o(rax_69),
+10006d521                                            data_100123740),
+10006d521                                        data_100123750)
+10006d52d                                    output = _mm_unpackhi_pd(zmm1_1, zmm1_1.q)
+10006d531                                    output[0] = output[0] f+ zmm1_1.q
+10006d535                                    goto label_10006cd2c
+10006d50f                                case 8
+10006d50f                                    // stat(309)
+10006d50f                                    rax_69 = _get_total_buffer_allocation()
+10006d50f                                    goto label_10006d521
+10006d53a                                case 9
+10006d53a                                    rdi_46 = 2  // stat(310)
+10006d548                                    label_10006d548:
+10006d548                                    output = zx.o(0)
+10006d54b                                    output[0] = float.d(_pdisk_count_slots_by_kind(rdi_46))
+10006d54f                                    goto label_10006cd2c
+10006d541                                case 10
+10006d541                                    rdi_46 = 0  // stat(311)
+10006d541                                    goto label_10006d548
+10006d566                                case 11
+10006d566                                    output = zx.o(0)  // stat(312)
+10006d569                                    output[0] = float.d(
+10006d569                                        *(_cproc + (sx.q(arg2.d s>> 12) << 2) + 33664))
+10006d572                                    goto label_10006cd2c
+10006d581                                case 12
+10006d581                                    output = zx.o(0)  // stat(313)
+10006d584                                    output[0] = float.d(*(_cproc + 0x36158))
+10006d58d                                    goto label_10006cd2c
+10006cc1d                    else
+10006cc23                        // arg1 < 154
+10006cc2d                        _lua_pushstring(statArgs, &data_100134ee8)
+10006d46c                        num_values_pushed_to_statArgs = 1
+10006d3c3                else
+10006d3cc                    _lua_pushnil(statArgs)  // stat(101)
+10006d46c                    num_values_pushed_to_statArgs = 1
+10006cbff            else
+10006cc05                output = _mm_xor_pd(output, output)  // arg1 != 87
+10006cc05
+10006cc0d                if (arg1 != 101)
+10006cc0d                    goto label_10006cc1a
+10006cc0d
+10006d3cc                _lua_pushnil(statArgs)
+10006d46c                num_values_pushed_to_statArgs = 1
+10006cbe8        else
+10006cbec            time_t rax_5
+10006cbec            rax_5, output = _time(nullptr)  // stat(86)
+10006cbf1            output[0] = float.d(rax_5)
+10006cd2c            label_10006cd2c:
+10006cd2c
+10006cd33            if (arg1 != 322)
+10006cd40                if (arg1 == 330)
+10006cd40                    goto label_case_330
+10006cd40
+10006cd40                goto label_skip_330
+10006cd40
+10006d016            output = zx.o(0)  // stat(322)
+10006d019            output[0] = float.d(is_capturing_audio)
+10006d019
+10006d027            if (arg1 == 330)  // stat(330)
+10006d02d                label_case_330:
+10006d02d                output = zx.o(0)
+10006d030                output[0] = float.d(data_1001d3250:8.d)
+10006d030
+10006d045                if ((arg1 & 0xfffffff0) == 400)
+10006d045                    goto label_case_400_and_401
+10006d045
+10006d045                goto label_not_case_400_or_401
+10006d045
+10006cd4c            label_skip_330:
+10006cd4c
+10006cd51            if ((arg1 & 0xfffffff0) != 400)
+10006d04b                label_not_case_400_or_401:
+10006d04b
+10006d052                if (arg1 == 465)  // stat(465)
+10006d0ff                    label_case_465:
+10006d0ff                    _audio_op_start(*_cproc, 0)
+10006d104                    data_1001d3290.d += 1
+10006d125                    uint64_t output_1[0x2] = zx.o(0)
+10006d128                    output_1[0] = float.d(_mudo_get_channel_state(0xffffffff, 0xffffffff,
+10006d128                        &_audio_dat))
+10006d136                    double zmm1_2 = output_1[0] f+ output_1[0]
+10006d136
+10006d142                    if (not(zmm1_2 f<= _mm_xor_pd(output_1, output_1)[0]))
+10006d144                        int32_t rbx = 1
+10006d149                        int64_t r13_2 = 0
+10006d185                        int64_t zmm0
+10006d185
+10006d185                        do
+10006d16a                            _poke2(arg3 + r13_2.d, sx.d(*(r13_2 + &_audio_dat)))
+10006d177                            zmm0 = float.d(rbx)
+10006d17b                            r13_2 += 2
+10006d17f                            rbx += 1
+10006d185                        while (zmm1_2 f> zmm0)
+10006d185
+10006d189                    _audio_op_end()
+10006d18e                    output = 0x3fe0000000000000
+10006d196                    output[0] = output[0] f* output_1[0]
+10006d19f                    _spend_cpu(int.d(output[0]))
+10006d1a4                    output = output_1
+10006d1ad                    goto label_10006d1b4
+10006cd51            else
+10006cd61                label_case_400_and_401:
+10006cd61                int64_t* _cproc_3 = _cproc
+10006cd65                int64_t rdi_9 = *_cproc_3
+10006cd65
+10006cd6c                if (rdi_9 != data_1001d31e0:8)
+10006d0d0                    output = -0x4010000000000000
+10006d0d0
+10006d0e6                    if (arg1 != 465)
+10006d0e6                        goto label_10006d058
+10006d0e6
+10006d0e6                    goto label_case_465
+10006d0e6
+10006cd75                if (arg2.d s> 18)
+10006d2a5                    _audio_op_start(rdi_9, 0)
+10006d2b1                    data_1001d3288 += 1
+10006d2ca                    uint64_t rax_54 =
+10006d2ca                        _mudo_get_channel_state(arg1 - 400, arg2.d, &_audio_dat)
+10006d2d3                    uint64_t output_2[0x2] = zx.o(0)
+10006d2d6                    output_2[0] = float.d(rax_54)
+10006d2e2                    uint64_t zmm1_4[0x2] = _audio_op_end()
+10006d2e2
+10006d2ee                    if (arg2.d != 19)
+10006d34d                        label_10006d34d:
+10006d34d
+10006d350                        if (arg2.d - 20 u<= 7)
+10006d35b                            output = output_2
+10006d35b
+10006d360                            if (rax_54 s> 0)
+10006d362                                int32_t rbx_2 = 1
+10006d367                                int64_t r12_5 = 0
+10006d394                                int64_t i
+10006d394
+10006d394                                do
+10006d379                                    _poke2(arg3 + r12_5.d, sx.d(*(r12_5 + &_audio_dat)))
+10006d37e                                    output = output_2
+10006d386                                    i = float.d(rbx_2)
+10006d38a                                    r12_5 += 2
+10006d38e                                    rbx_2 += 1
+10006d394                                while (output[0] f> i)
+10006d394
+10006d360                            goto label_10006d3a1
+10006d360
+10006d445                        output = output_2
+10006d445
+10006d451                        if (arg1 == 465)
+10006d451                            goto label_case_465
+10006d2ee                    else
+10006d2f0                        output = output_2  // arg2 == 19
+10006d2f9                        uint64_t i_1 = output[0] f+ output[0]
+10006d2f9
+10006d305                        if (not(i_1 f<= _mm_xor_pd(zmm1_4, zmm1_4)[0]))
+10006d30b                            int32_t rbx_1 = 1
+10006d310                            int64_t r12_4 = 0
+10006d310
+10006d344                            do
+10006d329                                _poke2(arg3 + r12_4.d, sx.d(*(r12_4 + &_audio_dat)))
+10006d333                                output = zx.o(0)
+10006d336                                output[0] = float.d(rbx_1)
+10006d33a                                r12_4 += 2
+10006d33e                                rbx_1 += 1
+10006d344                            while (i_1 f> output[0])
+10006d344
+10006d344                            goto label_10006d34d
+10006d344
+10006d3a1                        label_10006d3a1:
+10006d3a1
+10006d3a8                        if (arg1 == 465)
+10006d3a8                            goto label_case_465
+10006cd75                else
+10006cd89                    if (_cproc_3[0x6c21] != _cproc_3[0x4e])
+10006cd97                        int64_t i_2 = 0
+10006cd9b                        _audio_op_start(rdi_9, 0)
+10006cda7                        data_1001d3284 += 1
+10006cdad                        void* _cproc_2 = _cproc
+10006cdb8                        *(_cproc_2 + 0x36108) = *(_cproc_2 + 0x270)
+10006cdbf                        int32_t r13_1 = 0
+10006cdbf
+10006cfc9                        do
+10006cde0                            *(_cproc + i_2 + 0x35908) =
+10006cde0                                _mudo_get_channel_state(r13_1, 0, nullptr)
+10006cdfa                            *(_cproc + i_2 + 0x3590c) =
+10006cdfa                                _mudo_get_channel_state(r13_1, 1, nullptr)
+10006ce14                            *(_cproc + i_2 + 0x35910) =
+10006ce14                                _mudo_get_channel_state(r13_1, 2, nullptr)
+10006ce2e                            *(_cproc + i_2 + 0x35914) =
+10006ce2e                                _mudo_get_channel_state(r13_1, 3, nullptr)
+10006ce48                            *(_cproc + i_2 + 0x35918) =
+10006ce48                                _mudo_get_channel_state(r13_1, 4, nullptr)
+10006ce62                            *(_cproc + i_2 + 0x3591c) =
+10006ce62                                _mudo_get_channel_state(r13_1, 5, nullptr)
+10006ce7c                            *(_cproc + i_2 + 0x35920) =
+10006ce7c                                _mudo_get_channel_state(r13_1, 6, nullptr)
+10006ce96                            *(_cproc + i_2 + 0x35924) =
+10006ce96                                _mudo_get_channel_state(r13_1, 7, nullptr)
+10006ceb0                            *(_cproc + i_2 + 0x35928) =
+10006ceb0                                _mudo_get_channel_state(r13_1, 8, nullptr)
+10006ceca                            *(_cproc + i_2 + 0x3592c) =
+10006ceca                                _mudo_get_channel_state(r13_1, 9, nullptr)
+10006cee4                            *(_cproc + i_2 + 0x35930) =
+10006cee4                                _mudo_get_channel_state(r13_1, 10, nullptr)
+10006cefe                            *(_cproc + i_2 + 0x35934) =
+10006cefe                                _mudo_get_channel_state(r13_1, 11, nullptr)
+10006cf18                            *(_cproc + i_2 + 0x35938) =
+10006cf18                                _mudo_get_channel_state(r13_1, 12, nullptr)
+10006cf32                            *(_cproc + i_2 + 0x3593c) =
+10006cf32                                _mudo_get_channel_state(r13_1, 13, nullptr)
+10006cf4c                            *(_cproc + i_2 + 0x35940) =
+10006cf4c                                _mudo_get_channel_state(r13_1, 14, nullptr)
+10006cf66                            *(_cproc + i_2 + 0x35944) =
+10006cf66                                _mudo_get_channel_state(r13_1, 15, nullptr)
+10006cf80                            *(_cproc + i_2 + 0x35948) =
+10006cf80                                _mudo_get_channel_state(r13_1, 16, nullptr)
+10006cf9a                            *(_cproc + i_2 + 0x3594c) =
+10006cf9a                                _mudo_get_channel_state(r13_1, 17, nullptr)
+10006cfb4                            *(_cproc + i_2 + 0x35950) =
+10006cfb4                                _mudo_get_channel_state(r13_1, 18, nullptr)
+10006cfbb                            r13_1 += 1
+10006cfbe                            i_2 -= -0x80
+10006cfc9                        while (i_2 != 0x800)
+10006cfc9
+10006cfd1                        _audio_op_end()
+10006cfd6                        _cproc_3 = _cproc
+10006cfd6
+10006cff5                    output = zx.o(0)
+10006cff8                    output[0] = float.d(*
+10006cff8                        (&_cproc_3[zx.q(arg1 - 400) * 16] + (sx.q(arg2.d) << 2) + 0x35908))
+10006cff8
+10006d00f                    if (arg1 == 465)
+10006d00f                        goto label_case_465
+10006d00f
+10006d058            label_10006d058:
+10006d058
+10006d05f            if (arg1 != 464)
+10006d1b4                label_10006d1b4:
+10006d1b4
+10006d1bb                if (arg1 == 985)  // stat(985)
+10006d20d                    output = zx.o(0)
+10006d210                    output[0] = float.d(data_1001d3210:0xc.d)
+10006d467                    _lua_pushnumber(statArgs, output[0])
+10006d46c                    num_values_pushed_to_statArgs = 1
+10006d1bb                else if (arg1 == 467)
+10006d22b                    _audio_op_start(*_cproc, 0)  // stat(467)
+10006d230                    data_1001d3290:4.d += 1
+10006d238                    num_values_pushed_to_statArgs = 1
+10006d24e                    _lua_pushinteger(statArgs, sx.q(_mudo_get_music_state(1)))
+10006d255                    _audio_op_end()
+10006d1c4                else if (arg1 != 466)
+10006d266                    if (arg1 == 986)  // stat(986)
+10006d268                        output = zx.o(0)
+10006d26b                        output[0] = float.d(data_1001d31e0:4.d)
+10006d26b
+10006d279                    if (arg1 == 988)  // stat(988)
+10006d413                        output = _start_frame()
+10006d41d                        int32_t rax_63 = _os_key_state(0xe0)
+10006d424                        int32_t rax_64
+10006d424
+10006d424                        if (rax_63 != 0)
+10006d42b                            rax_64 = _os_key_state(0xe4)
+10006d42b
+10006d432                        if (rax_63 != 0 && rax_64 != 0)
+10006d45c                            output = 0x3ff0000000000000
+10006d432                        else
+10006d434                            output = _mm_xor_pd(output, output)
+10006d279                    else if (arg1 == 987)
+10006d293                        output = zx.o(0)  // stat(987)
+10006d296                        output[0] = float.d(_boot_get_time())
+10006d296
+10006d467                    _lua_pushnumber(statArgs, output[0])
+10006d46c                    num_values_pushed_to_statArgs = 1
+10006d1cd                else  // stat(466)
+10006d1e2                    _audio_op_start(*_cproc, 0)
+10006d1e7                    data_1001d3290:4.d += 1
+10006d1fc                    _lua_pushinteger(statArgs, sx.q(_mudo_get_music_state(0)))
+10006d203                    _audio_op_end()
+10006d46c                    num_values_pushed_to_statArgs = 1
+10006d05f            else
+10006d06c                int64_t* _cproc_4 = _cproc  // stat(464)
+10006d06c
+10006d07d                if (_cproc_4[0x6c22] != _cproc_4[0x4e])
+10006d084                    _audio_op_start(*_cproc_4, 0)
+10006d089                    data_1001d3284 += 1
+10006d091                    void* _cproc_5 = _cproc
+10006d09b                    *(_cproc_5 + 0x36110) = *(_cproc_5 + 0x270)
+10006d0ac                    *(_cproc + 0x36118) = _mudo_get_active_channels()
+10006d0b4                    _audio_op_end()
+10006d0b9                    _cproc_4 = _cproc
+10006d0b9
+10006d0c6                _lua_pushinteger(statArgs, sx.q(_cproc_4[0x6c23].d))
+10006d46c                num_values_pushed_to_statArgs = 1
+10006d46c
+10006d483        return zx.q(num_values_pushed_to_statArgs)
+```
+
 ## Source search
 
 A search through a dump of `/ram` and `/system` using a VSCode Search Editor with the below settings yielded the results found in [search.txt](search.txt).
