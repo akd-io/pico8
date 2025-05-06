@@ -152,9 +152,27 @@ Note: Shorthand `..=` is non-standard.
 
 [3.4.7 – The Length Operator](https://www.lua.org/manual/5.4/manual.html#3.4.7)
 
-| Name            | Operator | Metamethod |
-| --------------- | -------- | ---------- |
-| Length operator | `#`      | `__len`    |
+| Name   | Operator | Metamethod |
+| ------ | -------- | ---------- |
+| Length | `#`      | `__len`    |
+
+#### Miscellaneous unary Picotron operators
+
+Picotron has a couple of additional unary operators that are syntactic sugar to access frequently used Picotron-functions.
+
+| Name        | Operator | Metamethod | Function equivalent |
+| ----------- | -------- | ---------- | ------------------- |
+| Print       | `?`      | n/a        | `print()`           |
+| 64-bit peek | `*`      | n/a        | `peek8()`           |
+
+Great example of `?` and `*` by [`abledbody` on Discord](https://discord.com/channels/1068899948592107540/1068901222947504199/1369198990322700318):
+
+```
+> ?string.format("%X", *0x5000)
+1D2B5300000000
+```
+
+Thanks go to `abledbody` for mentioning these operators were missing, and providing the example.
 
 ### Other metamethods
 
