@@ -222,7 +222,3 @@ dist
 # Custom ignores
 .env
 .aider*
-
-# Custom Picotron ignores
-picotron/drive/dumps/*/ram/mount/
-picotron/versions/out/
