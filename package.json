@@ -2,11 +2,7 @@
   "name": "pico",
   "private": true,
   "type": "module",
-  "scripts": {
-    "download": "bun run picotron/versions/download-versions.ts",
-    "unzip": "bun run picotron/versions/unzip.ts",
-    "print-envs": "bun run picotron/versions/print-envs.ts"
-  },
+  "scripts": {},
   "devDependencies": {
     "@types/bun": "latest",
     "@types/d3-color": "^3.1.3"
