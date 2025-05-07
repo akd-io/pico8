@@ -1,2 +1,0 @@
-Picotron Workstation OS 0.1.0f (c) Lexaloffle Games
-https://www.picotron.net  //  build: 240416-230354
