@@ -168,8 +168,8 @@ Picotron has a couple of additional unary operators that are syntactic sugar to 
 Great example of `?` and `*` by [`abledbody` on Discord](https://discord.com/channels/1068899948592107540/1068901222947504199/1369198990322700318):
 
 ```
-> ?string.format("%X", *0x5000)
-1D2B5300000000
+> ?string.format("%016X", *0x5000)
+001D2B5300000000
 ```
 
 Thanks go to `abledbody` for mentioning these operators were missing, and providing the example.

@@ -157,4 +157,4 @@ printh("Miscellaneous unary Picotron operators:")
 printh("?\"hello\": (prints \"hello\" in the picotron console, not host os console)")
 ?"hello"
 printh("*5000 = "..(*0x5000))
-printh("string.format(\"%X\", *0x5000) = "..string.format("%X", *0x5000))
+printh("string.format(\"%016X\", *0x5000) = "..string.format("%016X", *0x5000))
